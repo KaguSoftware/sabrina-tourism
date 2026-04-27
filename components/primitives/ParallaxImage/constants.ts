@@ -1,0 +1,1 @@
+export const DEFAULT_PARALLAX_AMOUNT = 0.1;
