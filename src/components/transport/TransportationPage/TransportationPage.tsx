@@ -268,7 +268,7 @@ export function TransportationPage() {
   return (
     <main>
       {/* HERO */}
-      <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative z-30 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
           <TransportHeroSVG className="w-full h-full" />
         </div>
@@ -293,8 +293,8 @@ export function TransportationPage() {
       </section>
 
       {/* TABBED FORM */}
-      <section className="bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)]">
-        <div className="max-w-[1320px] mx-auto">
+      <section className="relative z-30 px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)]">
+        <div className="max-w-[1320px] mx-auto bg-cream">
           {/* Tabs */}
           <div className="relative inline-flex border-b border-rule mb-12">
             {([["airport", "A · Airport transfer"], ["custom", "B · Custom chauffeur"]] as const).map(
@@ -325,9 +325,9 @@ export function TransportationPage() {
       </section>
 
       {/* FLEET */}
-      <section className="px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)]">
+      <section className="relative z-30 px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)]">
         <div className="max-w-[1320px] mx-auto">
-          <div className="mb-14">
+          <div className="mb-14 bg-cream">
             <Reveal><Kicker>The fleet</Kicker></Reveal>
             <Reveal delay={120}>
               <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
@@ -336,7 +336,7 @@ export function TransportationPage() {
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-rule">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-rule bg-cream">
             {VEHICLES.map((v, i) => (
               <Reveal
                 key={v.id}

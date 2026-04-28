@@ -56,7 +56,7 @@ export function PackageListPage() {
   return (
     <>
       {/* Header — flat illustrated mosaic */}
-      <section className="relative overflow-hidden bg-sky-soft/30 pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
+      <section className="relative z-30 overflow-hidden bg-sky-soft/30 pt-35 pb-16 px-[clamp(20px,4vw,56px)]">
         {/* Image mosaic — right side */}
         <div className="hidden lg:grid absolute right-0 top-0 bottom-0 w-[42%] grid-cols-2 gap-0.5 pointer-events-none" aria-hidden="true">
           {[
@@ -100,7 +100,7 @@ export function PackageListPage() {
       <FilterBar filters={filters} onChange={updateFilters} onClear={clearFilters} />
 
       {/* Results */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
+      <section className="relative z-30 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
         <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
           <span className="text-ochre font-display italic text-[18px] mr-1">{visible.length}</span>
           {visible.length === 1 ? "itinerary" : "itineraries"}

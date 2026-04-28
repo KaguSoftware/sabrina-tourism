@@ -8,9 +8,9 @@ import { SECTION_HEADING } from "./constants";
 
 export function SignatureDestinations() {
   return (
-    <section className="relative z-10 py-[clamp(80px,10vw,130px)] px-[clamp(20px,4vw,56px)]">
+    <section className="relative z-30 py-[clamp(80px,10vw,130px)] px-[clamp(20px,4vw,56px)]">
       <div className="max-w-[1320px] mx-auto">
-        <div className="mb-14">
+        <div className="mb-14 bg-cream">
           <Reveal>
             <Kicker>Signature destinations</Kicker>
           </Reveal>

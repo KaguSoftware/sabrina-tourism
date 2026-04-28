@@ -4,7 +4,7 @@ import { genericMessage } from "@/lib/whatsapp/whatsapp";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-navy text-cream relative z-10">
+    <footer className="bg-navy text-cream relative z-30">
       {/* CTA pitch */}
       <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-[clamp(80px,10vw,130px)] pb-14">
         <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ochre mb-5">

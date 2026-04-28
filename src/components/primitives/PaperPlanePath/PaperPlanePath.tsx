@@ -112,7 +112,10 @@ export function PaperPlanePath() {
         rafRef.current = 0;
         const docH =
           document.documentElement.scrollHeight - window.innerHeight;
-        const progress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
+        const rawProgress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
+        // keep plane roughly in viewport by biasing progress toward scroll position
+        const viewportBias = window.scrollY / document.documentElement.scrollHeight;
+        const progress = Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
         updatePlane(progress);
       });
     };

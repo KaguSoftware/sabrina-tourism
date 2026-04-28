@@ -5,8 +5,8 @@ import { ABOUT_HEADING, ABOUT_BODY } from "./constants";
 
 export function AboutStrip() {
   return (
-    <section className="relative z-10 bg-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)]">
-      <div className="max-w-[920px] mx-auto">
+    <section className="relative z-30 py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)]">
+      <div className="max-w-[920px] mx-auto bg-cream">
         <Reveal>
           <Kicker>About — Est. 2014</Kicker>
         </Reveal>
@@ -19,7 +19,7 @@ export function AboutStrip() {
           </GoldUnderlineHeading>
         </Reveal>
         <Reveal delay={240}>
-          <p className="text-[clamp(16px,1.4vw,19px)] leading-[1.65] text-ink-soft max-w-[65ch]">
+          <p className="text-[clamp(16px,1.4vw,19px)] leading-[1.65] text-ink-soft max-w-[65ch] bg-cream">
             {ABOUT_BODY}
           </p>
         </Reveal>

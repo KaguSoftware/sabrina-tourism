@@ -118,8 +118,8 @@ function StepCard({ step, index }: { step: Step; index: number }) {
 
 export function HowItWorks() {
   return (
-    <section className="relative z-10 bg-cream py-[clamp(80px,10vw,130px)] px-[clamp(20px,4vw,56px)]">
-      <div className="max-w-[1320px] mx-auto">
+    <section className="relative z-30 py-[clamp(80px,10vw,130px)] px-[clamp(20px,4vw,56px)]">
+      <div className="max-w-[1320px] mx-auto bg-cream">
         <div className="mb-14">
           <Reveal>
             <Kicker>How it works</Kicker>
