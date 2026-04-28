@@ -67,7 +67,7 @@ function AirportForm() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 gap-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 gap-y-8 bg-cream">
         <FormField label="Airport">
           <select value={airport} onChange={(e) => setAirport(e.target.value)} className={selectCls}>
             {AIRPORTS.map((a) => (
@@ -184,7 +184,7 @@ function CustomForm() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 gap-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 gap-y-8 bg-cream">
         <FormField label="Pickup location">
           <input type="text" value={pickup} placeholder="Hotel, address, neighbourhood"
             onChange={(e) => setPickup(e.target.value)} className={fieldCls} />
@@ -294,7 +294,7 @@ export function TransportationPage() {
 
       {/* TABBED FORM */}
       <section className="relative z-30 px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)]">
-        <div className="max-w-[1320px] mx-auto bg-cream">
+        <div className="max-w-[1320px] mx-auto">
           {/* Tabs */}
           <div className="relative inline-flex border-b border-rule mb-12">
             {([["airport", "A · Airport transfer"], ["custom", "B · Custom chauffeur"]] as const).map(

@@ -18,7 +18,7 @@ export function PackageListPage() {
   const searchParams = useSearchParams();
 
   const [filters, setFilters] = useState<FilterState>({
-    region: searchParams.get("region") ?? "",
+    region: searchParams.get("region") ? searchParams.get("region")!.split(",") : [],
     people: parseInt(searchParams.get("people") ?? "0") || 0,
     date: searchParams.get("date") ?? "",
   });
@@ -27,7 +27,7 @@ export function PackageListPage() {
     const next = { ...filters, ...patch };
     setFilters(next);
     const params = new URLSearchParams();
-    if (next.region) params.set("region", next.region);
+    if (next.region.length) params.set("region", next.region.join(","));
     if (next.people) params.set("people", String(next.people));
     if (next.date) params.set("date", next.date);
     const qs = params.toString();
@@ -35,7 +35,7 @@ export function PackageListPage() {
   }
 
   function clearFilters() {
-    setFilters({ region: "", people: 0, date: "" });
+    setFilters({ region: [], people: 0, date: "" });
     router.replace(pathname, { scroll: false });
   }
 
@@ -48,7 +48,7 @@ export function PackageListPage() {
         const d = new Date(filters.date);
         if (d < new Date(p.availableFrom) || d > new Date(p.availableTo)) return false;
       }
-      if (filters.region && p.region !== filters.region) return false;
+      if (filters.region.length && !filters.region.includes(p.region)) return false;
       return true;
     });
   }, [filters]);
@@ -104,8 +104,8 @@ export function PackageListPage() {
         <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
           <span className="text-ochre font-display italic text-[18px] mr-1">{visible.length}</span>
           {visible.length === 1 ? "itinerary" : "itineraries"}
-          {filters.region && (
-            <em className="not-italic text-ink"> in {filters.region}</em>
+          {filters.region.length > 0 && (
+            <em className="not-italic text-ink"> in {filters.region.join(", ")}</em>
           )}
         </p>
 
