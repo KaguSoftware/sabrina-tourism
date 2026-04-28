@@ -80,10 +80,10 @@ export function PackageListPage() {
                     aria-hidden="true"
                 >
                     {[
-                        "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=600&q=70",
+                        "/Antalya-hero.png",
+                        "/Pamukkale-hero.png",
+                        "/istanbul-hero.png",
+                        "/capadocia-bg.png",
                     ].map((src, i) => (
                         <div key={i} className="relative overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}

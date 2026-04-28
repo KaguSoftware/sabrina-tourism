@@ -5,15 +5,13 @@ export const SIGNATURE_DESTINATIONS: SignatureDestination[] = [
     name: "Istanbul",
     region: "Istanbul",
     kicker: "The old capital",
-    image:
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1600&q=80",
+    image: "/istanbul-bg.png",
   },
   {
     name: "Cappadocia",
     region: "Cappadocia",
     kicker: "Stone & sky",
-    image:
-      "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=1600&q=80",
+    image: "/capadocia-bg.png",
   },
   {
     name: "Pamukkale & Ephesus",
