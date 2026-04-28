@@ -270,7 +270,7 @@ function StepCard({ step, index }: { step: Step; index: number }) {
 
 export function HowItWorks() {
     return (
-        <section className="relative z-10 bg-cream py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative z-30 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Diagonal hatch — top-left */}
             <div
                 aria-hidden="true"

@@ -8,7 +8,7 @@ import { SECTION_HEADING } from "./constants";
 
 export function SignatureDestinations() {
     return (
-        <section className="relative z-10 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative z-30 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Rings — top-right (bigger, more layers) */}
             <div
                 aria-hidden="true"

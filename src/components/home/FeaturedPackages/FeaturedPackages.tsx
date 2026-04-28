@@ -12,7 +12,7 @@ export function FeaturedPackages() {
     ).filter(Boolean);
 
     return (
-        <section className="relative z-10  py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative z-30 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Diagonal hatch — bottom-left */}
 
             {/* Diagonal hatch — top-right */}
