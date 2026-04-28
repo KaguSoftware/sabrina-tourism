@@ -55,24 +55,45 @@ export function PackageListPage() {
 
   return (
     <>
-      {/* Header */}
-      <section className="pt-[160px] pb-14 px-[clamp(20px,4vw,56px)] max-w-[1320px] mx-auto">
-        <Reveal>
-          <Kicker>Itineraries</Kicker>
-        </Reveal>
-        <Reveal delay={120}>
-          <GoldUnderlineHeading
-            as="h1"
-            className="text-[clamp(40px,6vw,80px)] mt-6 mb-6 tracking-[-0.025em] max-w-[14ch]"
-          >
-            {PAGE_HEADING}
-          </GoldUnderlineHeading>
-        </Reveal>
-        <Reveal delay={200}>
-          <p className="text-[clamp(15px,1.3vw,18px)] text-ink-soft leading-[1.6] max-w-[60ch]">
-            {PAGE_LEDE}
-          </p>
-        </Reveal>
+      {/* Header — flat illustrated mosaic */}
+      <section className="relative overflow-hidden bg-sky-soft/30 pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
+        {/* Image mosaic — right side */}
+        <div className="hidden lg:grid absolute right-0 top-0 bottom-0 w-[42%] grid-cols-2 gap-0.5 pointer-events-none" aria-hidden="true">
+          {[
+            "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=70",
+            "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=600&q=70",
+            "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=600&q=70",
+            "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=600&q=70",
+          ].map((src, i) => (
+            <div key={i} className="relative overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt="" className="w-full h-full object-cover" style={{ aspectRatio: "1/1" }} />
+              <div className="absolute inset-0 bg-sky-soft/20" />
+            </div>
+          ))}
+          {/* left-edge fade so it blends into the cream bg */}
+          <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent" />
+        </div>
+
+        {/* Text */}
+        <div className="max-w-[1320px] mx-auto relative z-10">
+          <Reveal>
+            <Kicker>Itineraries</Kicker>
+          </Reveal>
+          <Reveal delay={120}>
+            <GoldUnderlineHeading
+              as="h1"
+              className="text-[clamp(40px,6vw,80px)] mt-6 mb-6 tracking-[-0.025em] max-w-[14ch]"
+            >
+              {PAGE_HEADING}
+            </GoldUnderlineHeading>
+          </Reveal>
+          <Reveal delay={200}>
+            <p className="text-[clamp(15px,1.3vw,18px)] text-ink-soft leading-[1.6] max-w-[52ch]">
+              {PAGE_LEDE}
+            </p>
+          </Reveal>
+        </div>
       </section>
 
       {/* Filter bar */}
