@@ -41,19 +41,13 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  cursor: none;
   margin: 0;
   padding: 0;
 }
 
-@media (hover: none) {
-  body {
-    cursor: auto;
-  }
-  a,
-  button {
-    cursor: pointer;
-  }
+a,
+button {
+  cursor: pointer;
 }
 
 img {
@@ -69,7 +63,7 @@ button {
   color: inherit;
   background: none;
   border: 0;
-  cursor: none;
+  cursor: pointer;
   padding: 0;
 }
 

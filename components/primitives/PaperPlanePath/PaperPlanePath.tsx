@@ -80,8 +80,9 @@ export function PaperPlanePath() {
     const dist = progress * total;
     const pt = pathEl.getPointAtLength(dist);
     const ahead = pathEl.getPointAtLength(Math.min(total, dist + 4));
+    // nose points left (toward origin), so no +180 flip needed
     const angle =
-      (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI + 180;
+      (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
 
     planeEl.setAttribute(
       "transform",
@@ -95,10 +96,15 @@ export function PaperPlanePath() {
     ).matches;
 
     buildPath();
-    setTimeout(buildPath, 300);
-    setTimeout(buildPath, 1000);
+    updatePlane(0);
+    // Re-measure after layout settles
+    setTimeout(() => { buildPath(); updatePlane(0); }, 100);
+    setTimeout(() => { buildPath(); updatePlane(window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)); }, 1000);
 
-    if (prefersReduced) return;
+    if (prefersReduced) {
+      updatePlane(0);
+      return;
+    }
 
     const onScroll = () => {
       if (rafRef.current) return;
@@ -127,6 +133,7 @@ export function PaperPlanePath() {
     };
   }, [buildPath, updatePlane]);
 
+
   return (
     <svg
       ref={svgRef}
@@ -136,7 +143,7 @@ export function PaperPlanePath() {
         top: 0,
         left: 0,
         pointerEvents: "none",
-        zIndex: 0,
+        zIndex: 20,
         overflow: "visible",
       }}
     >

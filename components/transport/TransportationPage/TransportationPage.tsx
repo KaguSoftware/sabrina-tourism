@@ -50,17 +50,20 @@ function AirportForm() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [passengers, setPassengers] = useState("2");
-  const [vehicleId, setVehicleId] = useState(VEHICLES[0].id);
+  const [vehicleId, setVehicleId] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const vClass = VEHICLES.find((v) => v.id === vehicleId);
-  const href = transferMessage({
+  const vehicleMissing = submitted && !vehicleId;
+
+  const href = vehicleId ? transferMessage({
     airport,
     direction,
     date: date || "—",
     time: time || "—",
     passengers,
     vehicleClass: vClass ? `${vClass.label} (${vClass.capacity})` : vehicleId,
-  });
+  }) : "#";
 
   return (
     <div>
@@ -81,7 +84,9 @@ function AirportForm() {
                 type="button"
                 onClick={() => setDirection(d)}
                 className={`flex-1 font-mono text-[12px] tracking-[0.1em] uppercase py-2.5 border transition-all duration-200 ${
-                  direction === d ? "bg-navy text-cream border-navy" : "border-rule text-ink-soft hover:border-ochre"
+                  direction === d
+                    ? "bg-teal-deep text-cream border-teal-deep"
+                    : "border-rule text-ink-soft hover:border-ochre"
                 }`}
               >
                 {d === "pickup" ? "Pick-up" : "Drop-off"}
@@ -108,7 +113,7 @@ function AirportForm() {
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </FormField>
 
-        <FormField label="Vehicle class" hint={vClass ? `${vClass.capacity} · ${vClass.from}` : ""} span>
+        <FormField label="Vehicle class *" hint={vClass ? `${vClass.capacity} · ${vClass.from}` : ""} span>
           <div className="flex flex-wrap gap-2 mt-1">
             {VEHICLES.map((v) => (
               <button
@@ -116,13 +121,18 @@ function AirportForm() {
                 type="button"
                 onClick={() => setVehicleId(v.id)}
                 className={`font-mono text-[12px] tracking-[0.1em] uppercase px-4 py-2.5 border transition-all duration-200 ${
-                  vehicleId === v.id ? "bg-navy text-cream border-navy" : "border-rule text-ink-soft hover:border-ochre"
+                  vehicleId === v.id
+                    ? "bg-teal-deep text-cream border-teal-deep"
+                    : "border-rule text-ink-soft hover:border-ochre"
                 }`}
               >
                 {v.label}
               </button>
             ))}
           </div>
+          {vehicleMissing && (
+            <p className="text-[12px] text-terracotta mt-1">Please select a vehicle class.</p>
+          )}
         </FormField>
       </div>
 
@@ -132,18 +142,21 @@ function AirportForm() {
         <div className="flex-1">
           <Kicker>Message preview</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hello Meridian — I'd like a ${direction === "pickup" ? "pickup from" : "drop-off to"} ${airport} on ${date || "—"} at ${time || "—"} for ${passengers} passenger(s), ${vClass ? vClass.label : vehicleId}. Could you quote?`}
+            {`Hello Meridian — I'd like a ${direction === "pickup" ? "pickup from" : "drop-off to"} ${airport} on ${date || "—"} at ${time || "—"} for ${passengers} passenger(s), ${vClass ? vClass.label : "no vehicle selected"}. Could you quote?`}
           </pre>
         </div>
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => {
+            setSubmitted(true);
+            if (!vehicleId) return;
+            window.open(href, "_blank", "noopener,noreferrer");
+          }}
           className="inline-flex items-center gap-3.5 bg-ochre text-navy px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-medium transition-colors duration-300 hover:bg-gold whitespace-nowrap group"
         >
           <span>Reserve via WhatsApp</span>
           <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-        </a>
+        </button>
       </div>
     </div>
   );
@@ -155,17 +168,19 @@ function CustomForm() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [passengers, setPassengers] = useState("2");
-  const [vehicleId, setVehicleId] = useState(VEHICLES[1].id);
+  const [vehicleId, setVehicleId] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const vClass = VEHICLES.find((v) => v.id === vehicleId);
-  const href = chauffeurMessage({
+  const vehicleMissing = submitted && !vehicleId;
+  const href = vehicleId ? chauffeurMessage({
     pickup: pickup || "—",
     destinations: destinations || "—",
     startDate: startDate || "—",
     endDate: endDate || undefined,
     passengers,
     vehicleClass: vClass ? `${vClass.label} (${vClass.capacity})` : vehicleId,
-  });
+  }) : "#";
 
   return (
     <div>
@@ -188,7 +203,7 @@ function CustomForm() {
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </FormField>
 
-        <FormField label="Vehicle class" hint={vClass ? `${vClass.capacity} · ${vClass.from}` : ""} span>
+        <FormField label="Vehicle class *" hint={vClass ? `${vClass.capacity} · ${vClass.from}` : ""} span>
           <div className="flex flex-wrap gap-2 mt-1">
             {VEHICLES.map((v) => (
               <button
@@ -196,13 +211,18 @@ function CustomForm() {
                 type="button"
                 onClick={() => setVehicleId(v.id)}
                 className={`font-mono text-[12px] tracking-[0.1em] uppercase px-4 py-2.5 border transition-all duration-200 ${
-                  vehicleId === v.id ? "bg-navy text-cream border-navy" : "border-rule text-ink-soft hover:border-ochre"
+                  vehicleId === v.id
+                    ? "bg-teal-deep text-cream border-teal-deep"
+                    : "border-rule text-ink-soft hover:border-ochre"
                 }`}
               >
                 {v.label}
               </button>
             ))}
           </div>
+          {vehicleMissing && (
+            <p className="text-[12px] text-terracotta mt-1">Please select a vehicle class.</p>
+          )}
         </FormField>
 
         <FormField label="Destinations & stops" span>
@@ -222,18 +242,21 @@ function CustomForm() {
         <div className="flex-1">
           <Kicker>Message preview</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hello Meridian — I'd like a private chauffeur. Pickup: ${pickup || "—"}. Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}. Vehicle: ${vClass ? vClass.label : vehicleId}. Could you quote?`}
+            {`Hello Meridian — I'd like a private chauffeur. Pickup: ${pickup || "—"}. Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}. Vehicle: ${vClass ? vClass.label : "no vehicle selected"}. Could you quote?`}
           </pre>
         </div>
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => {
+            setSubmitted(true);
+            if (!vehicleId) return;
+            window.open(href, "_blank", "noopener,noreferrer");
+          }}
           className="inline-flex items-center gap-3.5 bg-ochre text-navy px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-medium transition-colors duration-300 hover:bg-gold whitespace-nowrap group"
         >
           <span>Reserve via WhatsApp</span>
           <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-        </a>
+        </button>
       </div>
     </div>
   );
