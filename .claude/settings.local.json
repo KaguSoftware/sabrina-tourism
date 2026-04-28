@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(git mv *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(git stash *)",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "Bash(awk '{print $2}')"
+    ]
+  }
+}

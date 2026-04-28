@@ -9,14 +9,15 @@ export function Reveal({
   as: Tag = "div",
 }: RevealProps) {
   const ref = useReveal();
+  const AnyTag = Tag as React.ElementType;
 
   return (
-    <Tag
-      ref={ref as React.RefObject<never>}
+    <AnyTag
+      ref={ref}
       className={className}
       style={{ transitionDelay: delay ? `${delay}ms` : undefined }}
     >
       {children}
-    </Tag>
+    </AnyTag>
   );
 }
