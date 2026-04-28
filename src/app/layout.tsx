@@ -3,9 +3,7 @@ import "../styles/globals.css";
 import { fraunces, inter, jetbrainsMono } from "./fonts";
 import { SiteHeader } from "@/components/layout/SiteHeader/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter/SiteFooter";
-import { CustomCursor } from "@/components/primitives/CustomCursor/CustomCursor";
 import { PaperPlanePath } from "@/components/primitives/PaperPlanePath/PaperPlanePath";
-import { PassportStampTracker } from "@/components/primitives/PassportStampTracker/PassportStampTracker";
 
 export const metadata: Metadata = {
   title: "Meridian & Co. — Turkey, considered.",
@@ -32,8 +30,6 @@ export default function RootLayout({
       className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="relative">
-        <CustomCursor />
-        <PassportStampTracker />
         <SiteHeader />
         <PaperPlanePath />
         <main>{children}</main>

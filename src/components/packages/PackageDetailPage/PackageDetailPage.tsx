@@ -302,8 +302,24 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       </section>
 
       {/* ── CTA STRIP ── */}
-      <section className="bg-navy text-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)]">
-        <div className="max-w-[1320px] mx-auto">
+      <section className="bg-navy text-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative overflow-hidden">
+        {/* Rings — right (bigger, more layers) */}
+        <div aria-hidden="true" className="absolute right-[-180px] top-1/2 -translate-y-1/2 -z-10">
+          {[680, 520, 360, 210, 80].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(255,255,255,${0.04 + i * 0.012})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        {/* Rings — left accent */}
+        <div aria-hidden="true" className="absolute left-[-140px] top-1/2 -translate-y-1/2 -z-10">
+          {[440, 290, 140].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: "1px solid rgba(201,154,63,0.08)", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        {/* Diagonal hatch — top-left */}
+        <div aria-hidden="true" className="deco-hatch" style={{ top: 0, left: 0, width: 360, height: 360, color: "rgba(201,154,63,0.08)" }} />
+        {/* Diagonal hatch — bottom-right */}
+        <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, right: 0, width: 280, height: 280, color: "rgba(255,255,255,0.03)" }} />
+        <div className="max-w-[1320px] mx-auto relative z-10">
           <Reveal><Kicker className="kicker--light">Reserve</Kicker></Reveal>
           <Reveal delay={120}>
             <GoldUnderlineHeading as="h2" className="text-[clamp(40px,6vw,84px)] mt-6 mb-7 tracking-[-0.02em]">
