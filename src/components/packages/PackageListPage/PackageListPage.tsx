@@ -64,7 +64,7 @@ export function PackageListPage() {
     return (
         <>
             {/* Header — flat illustrated mosaic */}
-            <section className="relative overflow-hidden bg-sky-soft/30 pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
+            <section className="relative overflow-hidden bg-cream pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
                 {/* Diagonal hatch — bottom-left */}
 
                 {/* Diagonal hatch — top-right (behind mosaic) */}

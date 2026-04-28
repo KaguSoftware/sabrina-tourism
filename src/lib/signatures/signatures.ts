@@ -17,14 +17,12 @@ export const SIGNATURE_DESTINATIONS: SignatureDestination[] = [
     name: "Pamukkale & Ephesus",
     region: "Aegean",
     kicker: "The Aegean",
-    image:
-      "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1600&q=80",
+    image: "/Pamukkale-hero.png",
   },
   {
     name: "Antalya Coast",
     region: "Mediterranean",
     kicker: "The Mediterranean",
-    image:
-      "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=1600&q=80",
+    image: "/Antalya2.png",
   },
 ];

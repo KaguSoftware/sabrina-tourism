@@ -69,8 +69,6 @@ export const PACKAGES: Package[] = [
       "/istanbul-galery1.png",
       "/istanbul-galery2.png",
       "/istanbul-galery3.png",
-      "/istanbul-galery4.png",
-      "/istanbul-galery5.png",
     ],
     itinerary: [
       {
@@ -139,8 +137,6 @@ export const PACKAGES: Package[] = [
       "/capadocia-galery1.png",
       "/capadocia-galery2.png",
       "/capadocia-galery3.png",
-      "/capadocia-galery4.png",
-      "/capadocia-galery5.png",
     ],
     itinerary: [
       {
@@ -215,16 +211,15 @@ export const PACKAGES: Package[] = [
     durationDays: 4,
     shortDescription:
       "White travertine terraces and the marble streets of an ancient capital.",
-    heroImage: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=2000&q=85",
+    heroImage: "/Pamukkale-hero.png",
     overview: [
       "Two of Turkey's most photographed sites, walked at the right hours and read with the right voices. Ephesus is opened by a classical archaeologist; Pamukkale is timed for late afternoon, when the terraces glow.",
       "Between the two we lunch in Şirince, a hill village of stone houses and fruit wine, and sleep above the Aegean.",
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1639390645789-1e2773574e58?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1589308078055-13b8e1f10dc1?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1599994758393-c2ce19f6cb1f?auto=format&fit=crop&w=1600&q=80",
+      "/Pamukkale-hero.png",
+      "/Pamukkale-hero.png",
+      "/Pamukkale-hero.png",
     ],
     itinerary: [
       {
@@ -273,16 +268,15 @@ export const PACKAGES: Package[] = [
     durationDays: 6,
     shortDescription:
       "Old harbours, quiet coves, and the ruined cities of the Lycian shore.",
-    heroImage: "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=2000&q=85",
+    heroImage: "/Antalya-hero.png",
     overview: [
       "From Kaleiçi's stone alleys we move west along the coast — to the rock tombs of Myra, the sunken city of Kekova, and the long lunches that the Mediterranean demands.",
       "Hotels are small and well-chosen. Three of the days are spent on a private wooden gulet, anchoring in coves only locals know.",
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1605186049369-19ad36ce4c45?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1561129639-d5c2cd6d39d4?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1583959743893-7656f7e02e26?auto=format&fit=crop&w=1600&q=80",
+      "/Antalya-hero.png",
+      "/Antalya-hero.png",
+      "/Antalya-hero.png",
     ],
     itinerary: [
       {
@@ -343,7 +337,7 @@ export const PACKAGES: Package[] = [
     durationDays: 5,
     shortDescription:
       "Cliffside monasteries, mountain plateaus, and the green of the Pontic Alps.",
-    heroImage: "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=2000&q=85",
+    heroImage: "/black-sea.png",
     overview: [
       "The Black Sea coast is Turkey's quiet alternative — cooler, greener, and far from the cruise routes. We base in Trabzon and move inland to the Sumela Monastery and the high plateaus of Ayder.",
       "Tea is taken seriously here. So is hospitality.",
@@ -405,7 +399,7 @@ export const PACKAGES: Package[] = [
     durationDays: 7,
     shortDescription:
       "Toppled stone heads at sunrise, an inland sea, and the deep east.",
-    heroImage: "https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?auto=format&fit=crop&w=2000&q=85",
+    heroImage: "/Eastern.png",
     overview: [
       "Eastern Anatolia is the Turkey few visitors see. We move from the colossal heads of Mount Nemrut to the Armenian churches on Akdamar Island, and on to the high citadel of Hoşap.",
       "Logistics here are the hardest part of any Turkey itinerary — which is why we plan it day-by-day with our most experienced fixers.",
