@@ -265,7 +265,7 @@ export function TransportationPage() {
   return (
     <main>
       {/* HERO */}
-      <section className="relative z-30 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
           <TransportHeroSVG className="w-full h-full" />
         </div>
@@ -306,7 +306,7 @@ export function TransportationPage() {
       </section>
 
       {/* TABBED FORM */}
-      <section className="relative z-3 bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
+      <section className="relative bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
         {/* Rings — right side */}
         <div aria-hidden="true" className="absolute right-[-160px] top-1/2 -translate-y-1/2 -z-10">
           {[920, 700, 500, 300, 110].map((size, i) => (
@@ -319,7 +319,7 @@ export function TransportationPage() {
             <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(27,77,92,${0.13 + i * 0.03})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           ))}
         </div>
-        <div className="max-w-[1320px] mx-auto relative z-10">
+        <div className="max-w-[1320px] mx-auto relative z-30">
           {/* Tabs */}
           <div className="relative inline-flex border-b border-rule mb-12">
             {([["airport", "A · Airport transfer"], ["custom", "B · Custom chauffeur"]] as const).map(
@@ -349,7 +349,7 @@ export function TransportationPage() {
       </section>
 
       {/* FLEET */}
-      <section className="px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] relative z-3 bg-cream overflow-hidden">
+      <section className="px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] relative overflow-hidden">
         {/* Rings — top left */}
         <div aria-hidden="true" className="absolute left-[-80px] top-[-80px] -z-10">
           {[400, 270, 140].map((size, i) => (
@@ -368,7 +368,7 @@ export function TransportationPage() {
             />
           ))}
         </div>
-        <div className="max-w-[1320px] mx-auto relative z-10">
+        <div className="max-w-[1320px] mx-auto relative z-30">
           <div className="mb-12">
             <Reveal><Kicker>The fleet</Kicker></Reveal>
             <Reveal delay={120}>
