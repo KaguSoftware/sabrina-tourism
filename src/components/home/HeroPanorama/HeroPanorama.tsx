@@ -45,6 +45,23 @@ export function HeroPanorama() {
         </Reveal>
       </div>
 
+      {/* Decorative rings — bottom right (bigger, more layers) */}
+      <div aria-hidden="true" className="absolute right-[-140px] bottom-[-140px] z-[1]">
+        {[700, 540, 380, 220, 80].map((size, i) => (
+          <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(27,77,92,${0.05 + i * 0.015})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+        ))}
+      </div>
+      {/* Diagonal hatch — top right */}
+      <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 320, height: 320, color: "rgba(27,77,92,0.06)" }} />
+      {/* Diagonal hatch — bottom left */}
+      <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, left: 0, width: 260, height: 260, color: "rgba(201,154,63,0.06)" }} />
+      {/* Rings — top left (smaller accent) */}
+      <div aria-hidden="true" className="absolute left-[-80px] top-[-80px] z-[1]">
+        {[380, 240, 110].map((size, i) => (
+          <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: "1px solid rgba(201,154,63,0.07)", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+        ))}
+      </div>
+
       {/* Scroll cue */}
       <div
         className="absolute left-[clamp(20px,4vw,56px)] bottom-10 z-[2] flex items-center gap-3.5 text-[11px] tracking-[0.24em] uppercase text-teal-deep/70"
