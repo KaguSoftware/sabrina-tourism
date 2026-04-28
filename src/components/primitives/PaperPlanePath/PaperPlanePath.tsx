@@ -39,17 +39,26 @@ export function PaperPlanePath() {
 
     const w = window.innerWidth;
     const h = document.documentElement.scrollHeight;
+    const isMobile = w < 768;
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     svg.setAttribute("width", String(w));
     svg.setAttribute("height", String(h));
     svg.style.height = `${h}px`;
 
-    const margin = Math.min(120, w * PATH_MARGIN_FRACTION);
-    const lx = margin + 40;
-    const rx = w - margin - 40;
+    const margin = isMobile ? Math.min(24, w * 0.04) : Math.min(120, w * PATH_MARGIN_FRACTION);
+    const lx = margin + (isMobile ? 16 : 40);
+    const rx = w - margin - (isMobile ? 16 : 40);
     const mid = w / 2;
 
-    const rawPts = [
+    const rawPts = isMobile ? [
+      { x: mid, y: 180 },
+      { x: rx, y: 520 },
+      { x: lx, y: 900 },
+      { x: mid, y: 1300 },
+      { x: rx, y: 1750 },
+      { x: lx, y: 2200 },
+      { x: mid, y: h - 200 },
+    ] : [
       { x: mid - 40, y: 180 },
       { x: rx, y: 480 },
       { x: mid + 20, y: 860 },
@@ -76,18 +85,24 @@ export function PaperPlanePath() {
     const planeEl = planeRef.current;
     if (!pathEl || !planeEl || !pathLengthRef.current) return;
 
+    const size = window.innerWidth < 768 ? 32 : PLANE_SIZE;
     const total = pathLengthRef.current;
     const dist = progress * total;
     const pt = pathEl.getPointAtLength(dist);
     const ahead = pathEl.getPointAtLength(Math.min(total, dist + 4));
-    // nose points left (toward origin), so no +180 flip needed
     const angle =
       (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
 
     planeEl.setAttribute(
       "transform",
-      `translate(${(pt.x - PLANE_SIZE / 2).toFixed(2)} ${(pt.y - PLANE_SIZE / 2).toFixed(2)}) rotate(${angle.toFixed(2)} ${PLANE_SIZE / 2} ${PLANE_SIZE / 2})`
+      `translate(${(pt.x - size / 2).toFixed(2)} ${(pt.y - size / 2).toFixed(2)}) rotate(${angle.toFixed(2)} ${size / 2} ${size / 2})`
     );
+
+    const svgEl = planeEl.querySelector("svg");
+    if (svgEl) {
+      svgEl.setAttribute("width", String(size));
+      svgEl.setAttribute("height", String(size));
+    }
   }, []);
 
   useEffect(() => {
@@ -95,43 +110,42 @@ export function PaperPlanePath() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    buildPath();
-    updatePlane(0);
-    // Re-measure after layout settles
-    setTimeout(() => { buildPath(); updatePlane(0); }, 100);
-    setTimeout(() => { buildPath(); updatePlane(window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)); }, 1000);
+    const getProgress = () => {
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const rawProgress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
+      const viewportBias = window.scrollY / document.documentElement.scrollHeight;
+      return Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
+    };
 
-    if (prefersReduced) {
-      updatePlane(0);
-      return;
-    }
+    const rebuild = () => {
+      buildPath();
+      updatePlane(getProgress());
+    };
+
+    // Use ResizeObserver on body to catch late-rendering content
+    const ro = new ResizeObserver(() => rebuild());
+    ro.observe(document.body);
+
+    rebuild();
+
+    if (prefersReduced) return () => ro.disconnect();
 
     const onScroll = () => {
       if (rafRef.current) return;
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = 0;
-        const docH =
-          document.documentElement.scrollHeight - window.innerHeight;
-        const rawProgress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
-        // keep plane roughly in viewport by biasing progress toward scroll position
-        const viewportBias = window.scrollY / document.documentElement.scrollHeight;
-        const progress = Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
-        updatePlane(progress);
+        updatePlane(getProgress());
       });
     };
 
-    const onResize = () => {
-      buildPath();
-      onScroll();
-    };
-
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", rebuild);
     onScroll();
 
     return () => {
+      ro.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", rebuild);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [buildPath, updatePlane]);
@@ -148,6 +162,7 @@ export function PaperPlanePath() {
         pointerEvents: "none",
         zIndex: 20,
         overflow: "visible",
+        maxHeight: "100%",
       }}
     >
       <path

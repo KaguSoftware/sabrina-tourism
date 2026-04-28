@@ -119,7 +119,7 @@ function StepCard({ step, index }: { step: Step; index: number }) {
 export function HowItWorks() {
   return (
     <section className="relative z-30 py-[clamp(80px,10vw,130px)] px-[clamp(20px,4vw,56px)]">
-      <div className="max-w-[1320px] mx-auto bg-cream">
+      <div className="max-w-[1320px] mx-auto">
         <div className="mb-14">
           <Reveal>
             <Kicker>How it works</Kicker>
@@ -131,7 +131,7 @@ export function HowItWorks() {
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-[clamp(24px,4vw,64px)] border-t border-rule">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-[clamp(24px,4vw,64px)] border-t border-rule bg-cream">
           {STEPS.map((step, i) => (
             <Reveal key={step.num} delay={i * 100}>
               <StepCard step={step} index={i} />

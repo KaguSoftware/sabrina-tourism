@@ -10,7 +10,7 @@ export function SignatureDestinations() {
   return (
     <section className="relative z-30 py-[clamp(80px,10vw,130px)] px-[clamp(20px,4vw,56px)]">
       <div className="max-w-[1320px] mx-auto">
-        <div className="mb-14 bg-cream">
+        <div className="mb-14">
           <Reveal>
             <Kicker>Signature destinations</Kicker>
           </Reveal>

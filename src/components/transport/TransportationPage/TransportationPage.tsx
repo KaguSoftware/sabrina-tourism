@@ -327,7 +327,7 @@ export function TransportationPage() {
       {/* FLEET */}
       <section className="relative z-30 px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)]">
         <div className="max-w-[1320px] mx-auto">
-          <div className="mb-14 bg-cream">
+          <div className="mb-14">
             <Reveal><Kicker>The fleet</Kicker></Reveal>
             <Reveal delay={120}>
               <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
