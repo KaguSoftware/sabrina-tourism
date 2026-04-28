@@ -60,18 +60,17 @@ export const PACKAGES: Package[] = [
     durationDays: 5,
     shortDescription:
       "Hagia Sophia at first light, the Bosphorus at dusk, and the bazaars between.",
+    heroImage: "/istanbul-bg.png",
     overview: [
       "A measured, deliberate introduction to Istanbul — a city that does not reveal itself in a hurry. We move slowly through the old peninsula at the hours when the crowds are thin, then drift north along the Bosphorus to the quieter neighborhoods of Bebek and Arnavutköy.",
       "Mornings are spent inside the great monuments. Afternoons unfold over long lunches and walks through Karaköy and Galata. Evenings are reserved — a private dinner above the strait, a hammam at the Çemberlitaş, a final raki on a wooden boat.",
     ],
-    heroImage:
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=2000&q=85",
     gallery: [
-      "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1527838832700-5059252407fa?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1601999816901-e9b81e5547c5?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1589561084283-930aa7b1ce50?auto=format&fit=crop&w=1600&q=80",
+      "/istanbul-galery1.png",
+      "/istanbul-galery2.png",
+      "/istanbul-galery3.png",
+      "/istanbul-galery4.png",
+      "/istanbul-galery5.png",
     ],
     itinerary: [
       {
@@ -135,14 +134,13 @@ export const PACKAGES: Package[] = [
       "Cappadocia is best understood from above and below. We rise before dawn for the balloons, then spend the rest of the day at ground level — walking the Rose and Red valleys, lunching in stone houses in Mustafapaşa, watching the light fall on Uçhisar.",
       "Accommodation is in restored cave suites, not hotels pretending to be caves. Each evening ends with dinner on a quiet terrace.",
     ],
-    heroImage:
-      "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=2000&q=85",
+    heroImage: "/capadocia-bg.png",
     gallery: [
-      "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1570424638295-1d3a8d3a1226?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1570077188672-e3a9f6f9fdbf?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1605196560547-b2f7281b8355?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1599140785865-44c2dc7a6c1d?auto=format&fit=crop&w=1600&q=80",
+      "/capadocia-galery1.png",
+      "/capadocia-galery2.png",
+      "/capadocia-galery3.png",
+      "/capadocia-galery4.png",
+      "/capadocia-galery5.png",
     ],
     itinerary: [
       {
@@ -217,12 +215,11 @@ export const PACKAGES: Package[] = [
     durationDays: 4,
     shortDescription:
       "White travertine terraces and the marble streets of an ancient capital.",
+    heroImage: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=2000&q=85",
     overview: [
       "Two of Turkey's most photographed sites, walked at the right hours and read with the right voices. Ephesus is opened by a classical archaeologist; Pamukkale is timed for late afternoon, when the terraces glow.",
       "Between the two we lunch in Şirince, a hill village of stone houses and fruit wine, and sleep above the Aegean.",
     ],
-    heroImage:
-      "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=2000&q=85",
     gallery: [
       "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1639390645789-1e2773574e58?auto=format&fit=crop&w=1600&q=80",
@@ -276,12 +273,11 @@ export const PACKAGES: Package[] = [
     durationDays: 6,
     shortDescription:
       "Old harbours, quiet coves, and the ruined cities of the Lycian shore.",
+    heroImage: "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=2000&q=85",
     overview: [
       "From Kaleiçi's stone alleys we move west along the coast — to the rock tombs of Myra, the sunken city of Kekova, and the long lunches that the Mediterranean demands.",
       "Hotels are small and well-chosen. Three of the days are spent on a private wooden gulet, anchoring in coves only locals know.",
     ],
-    heroImage:
-      "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=2000&q=85",
     gallery: [
       "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1605186049369-19ad36ce4c45?auto=format&fit=crop&w=1600&q=80",
@@ -347,12 +343,11 @@ export const PACKAGES: Package[] = [
     durationDays: 5,
     shortDescription:
       "Cliffside monasteries, mountain plateaus, and the green of the Pontic Alps.",
+    heroImage: "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=2000&q=85",
     overview: [
       "The Black Sea coast is Turkey's quiet alternative — cooler, greener, and far from the cruise routes. We base in Trabzon and move inland to the Sumela Monastery and the high plateaus of Ayder.",
       "Tea is taken seriously here. So is hospitality.",
     ],
-    heroImage:
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=2000&q=85",
     gallery: [
       "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1591018653372-3b3aabd00a93?auto=format&fit=crop&w=1600&q=80",
@@ -410,12 +405,11 @@ export const PACKAGES: Package[] = [
     durationDays: 7,
     shortDescription:
       "Toppled stone heads at sunrise, an inland sea, and the deep east.",
+    heroImage: "https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?auto=format&fit=crop&w=2000&q=85",
     overview: [
       "Eastern Anatolia is the Turkey few visitors see. We move from the colossal heads of Mount Nemrut to the Armenian churches on Akdamar Island, and on to the high citadel of Hoşap.",
       "Logistics here are the hardest part of any Turkey itinerary — which is why we plan it day-by-day with our most experienced fixers.",
     ],
-    heroImage:
-      "https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?auto=format&fit=crop&w=2000&q=85",
     gallery: [
       "https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?auto=format&fit=crop&w=1600&q=80",
       "https://images.unsplash.com/photo-1626621934489-3aa3b9e91e4d?auto=format&fit=crop&w=1600&q=80",

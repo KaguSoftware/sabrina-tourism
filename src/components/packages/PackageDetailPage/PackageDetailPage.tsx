@@ -61,7 +61,11 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       {/* ── HERO ── */}
       <section className="relative min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
-          <RegionHeroSVG region={pkg.region as Region} className="w-full h-full" />
+          {pkg.heroImage.startsWith("/") ? (
+            <Image src={pkg.heroImage} alt="" fill className="object-cover object-top" priority sizes="100vw" />
+          ) : (
+            <RegionHeroSVG region={pkg.region as Region} className="w-full h-full" />
+          )}
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/85" />
         <div className="relative z-10 max-w-[1320px] mx-auto w-full">
