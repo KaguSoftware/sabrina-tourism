@@ -10,6 +10,7 @@ export const metadata = {
 export default function PackagesPage() {
   return (
     <Suspense>
+
       <PackageListPage />
     </Suspense>
   );
