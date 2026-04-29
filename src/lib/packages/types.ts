@@ -31,6 +31,7 @@ export interface Package {
   shortDescription: string;
   overview: string[];
   heroImage: string;
+  cardImage?: string;
   gallery: string[];
   itinerary: ItineraryDay[];
   tiers: [Tier, Tier, Tier];

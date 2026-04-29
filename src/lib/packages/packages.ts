@@ -60,15 +60,17 @@ export const PACKAGES: Package[] = [
     durationDays: 5,
     shortDescription:
       "Hagia Sophia at first light, the Bosphorus at dusk, and the bazaars between.",
-    heroImage: "/istanbul-bg.png",
+    heroImage: "/istanbul-hero.png",
+    cardImage: "/istanbul-ifr3.png",
     overview: [
       "A measured, deliberate introduction to Istanbul — a city that does not reveal itself in a hurry. We move slowly through the old peninsula at the hours when the crowds are thin, then drift north along the Bosphorus to the quieter neighborhoods of Bebek and Arnavutköy.",
       "Mornings are spent inside the great monuments. Afternoons unfold over long lunches and walks through Karaköy and Galata. Evenings are reserved — a private dinner above the strait, a hammam at the Çemberlitaş, a final raki on a wooden boat.",
     ],
     gallery: [
-      "/istanbul-galery1.png",
-      "/istanbul-galery2.png",
-      "/istanbul-galery3.png",
+      "/istanbul-ifr1.png",
+      "/istanbul-ifr2.png",
+      "/istanbul-ifr3.png",
+      "/istanbul-ifr4.png",
     ],
     itinerary: [
       {
@@ -132,7 +134,7 @@ export const PACKAGES: Package[] = [
       "Cappadocia is best understood from above and below. We rise before dawn for the balloons, then spend the rest of the day at ground level — walking the Rose and Red valleys, lunching in stone houses in Mustafapaşa, watching the light fall on Uçhisar.",
       "Accommodation is in restored cave suites, not hotels pretending to be caves. Each evening ends with dinner on a quiet terrace.",
     ],
-    heroImage: "/capadocia-bg.png",
+    heroImage: "/capadocia-hero.png",
     gallery: [
       "/capadocia-galery1.png",
       "/capadocia-galery2.png",
@@ -337,7 +339,7 @@ export const PACKAGES: Package[] = [
     durationDays: 5,
     shortDescription:
       "Cliffside monasteries, mountain plateaus, and the green of the Pontic Alps.",
-    heroImage: "/black-sea.png",
+    heroImage: "/black-sea-hero.png",
     overview: [
       "The Black Sea coast is Turkey's quiet alternative — cooler, greener, and far from the cruise routes. We base in Trabzon and move inland to the Sumela Monastery and the high plateaus of Ayder.",
       "Tea is taken seriously here. So is hospitality.",
@@ -399,7 +401,7 @@ export const PACKAGES: Package[] = [
     durationDays: 7,
     shortDescription:
       "Toppled stone heads at sunrise, an inland sea, and the deep east.",
-    heroImage: "/Eastern.png",
+    heroImage: "/Eastern-hero.png",
     overview: [
       "Eastern Anatolia is the Turkey few visitors see. We move from the colossal heads of Mount Nemrut to the Armenian churches on Akdamar Island, and on to the high citadel of Hoşap.",
       "Logistics here are the hardest part of any Turkey itinerary — which is why we plan it day-by-day with our most experienced fixers.",

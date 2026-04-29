@@ -5,7 +5,7 @@ export const SIGNATURE_DESTINATIONS: SignatureDestination[] = [
     name: "Istanbul",
     region: "Istanbul",
     kicker: "The old capital",
-    image: "/istanbul-bg.png",
+    image: "/istanbul-ifr3.png",
   },
   {
     name: "Cappadocia",
