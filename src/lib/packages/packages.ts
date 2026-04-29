@@ -135,10 +135,12 @@ export const PACKAGES: Package[] = [
       "Accommodation is in restored cave suites, not hotels pretending to be caves. Each evening ends with dinner on a quiet terrace.",
     ],
     heroImage: "/capadocia-hero.png",
+    cardImage: "/cappadocia-ifr3.png",
     gallery: [
-      "/capadocia-galery1.png",
-      "/capadocia-galery2.png",
-      "/capadocia-galery3.png",
+      "/cappadocia-ifr1.png",
+      "/cappadocia-ifr2.png",
+      "/cappadocia-ifr3.png",
+      "/cappadocia-ifr4.png",
     ],
     itinerary: [
       {

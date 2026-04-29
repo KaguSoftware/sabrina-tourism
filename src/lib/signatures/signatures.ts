@@ -11,7 +11,7 @@ export const SIGNATURE_DESTINATIONS: SignatureDestination[] = [
     name: "Cappadocia",
     region: "Cappadocia",
     kicker: "Stone & sky",
-    image: "/capadocia-bg.png",
+    image: "/cappadocia-ifr3.png",
   },
   {
     name: "Pamukkale & Ephesus",
