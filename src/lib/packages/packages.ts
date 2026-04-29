@@ -60,7 +60,7 @@ export const PACKAGES: Package[] = [
     durationDays: 5,
     shortDescription:
       "Hagia Sophia at first light, the Bosphorus at dusk, and the bazaars between.",
-    heroImage: "/istanbul-hero.png",
+    heroImage: "/istanbul-hero1.png",
     cardImage: "/istanbul-ifr3.png",
     overview: [
       "A measured, deliberate introduction to Istanbul — a city that does not reveal itself in a hurry. We move slowly through the old peninsula at the hours when the crowds are thin, then drift north along the Bosphorus to the quieter neighborhoods of Bebek and Arnavutköy.",

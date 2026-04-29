@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
@@ -10,12 +10,17 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
+  useLayoutEffect(() => {
+    const threshold = pathname.startsWith("/packages/")
+      ? window.innerHeight * 0.8
+      : pathname === "/packages"
+      ? window.innerHeight * 0.3
+      : SCROLL_THRESHOLD;
+    const onScroll = () => setScrolled(window.scrollY > threshold);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -27,7 +32,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   const isHeroPage =
-    pathname === "/" || pathname.startsWith("/packages/");
+    pathname === "/" || pathname.startsWith("/packages");
   const transparent = isHeroPage && !scrolled;
 
   return (

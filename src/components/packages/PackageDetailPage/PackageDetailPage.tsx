@@ -57,7 +57,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
   return (
     <main className="bg-cream">
       {/* ── HERO ── */}
-      <section className="relative min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative z-10 min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
           <Image src={pkg.heroImage} alt={pkg.region} fill priority className="object-cover" sizes="100vw" />
         </div>
@@ -75,21 +75,23 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
               {pkg.region.toUpperCase()} · {pkg.duration.toUpperCase()}
             </Kicker>
           </Reveal>
-          <Reveal delay={260}>
-            <h1 className="font-display font-light text-[clamp(48px,8vw,120px)] leading-[0.96] tracking-[-0.03em] mb-7 max-w-[16ch]">
-              {pkg.name}
-            </h1>
-          </Reveal>
-          <Reveal delay={400}>
-            <p className="font-display italic font-light text-[clamp(18px,2vw,26px)] text-cream/88 max-w-[36ch] leading-[1.4]">
-              {pkg.shortDescription}
-            </p>
-          </Reveal>
+          <div className="inline-block backdrop-blur-[1px] bg-black/30 rounded-3xl px-[5%] py-5">
+            <Reveal delay={260}>
+              <h1 className="font-display font-light text-[clamp(48px,8vw,120px)] leading-[0.96] tracking-[-0.03em] mb-7 max-w-[16ch]">
+                {pkg.name}
+              </h1>
+            </Reveal>
+            <Reveal delay={400}>
+              <p className="font-display italic font-light text-[clamp(18px,2vw,26px)] text-cream/88 max-w-[36ch] leading-[1.4]">
+                {pkg.shortDescription}
+              </p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ── OVERVIEW ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)] grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-[clamp(40px,6vw,100px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)] grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-[clamp(40px,6vw,100px)]">
         <div>
           <Reveal>
             <Kicker>The route, in brief</Kicker>
@@ -122,7 +124,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       </section>
 
       {/* ── ITINERARY ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="mb-14">
           <Reveal><Kicker>Day by day</Kicker></Reveal>
           <Reveal delay={120}>
@@ -163,7 +165,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       </section>
 
       {/* ── TIER SELECTOR ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="mb-14">
           <Reveal><Kicker>Choose your tier</Kicker></Reveal>
           <Reveal delay={120}>
@@ -227,7 +229,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
 
 
       {/* ── INCLUDES ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
           <div>
             <Kicker>Included</Kicker>
@@ -255,7 +257,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       </section>
 
       {/* ── GALLERY ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="mb-14">
           <Reveal><Kicker>In photographs</Kicker></Reveal>
           <Reveal delay={120}>
@@ -289,7 +291,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       </section>
 
       {/* ── CTA STRIP ── */}
-      <section className="bg-navy text-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative overflow-hidden">
+      <section className="bg-navy text-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative z-10 overflow-hidden">
         {/* Rings — right (bigger, more layers) */}
         <div aria-hidden="true" className="absolute right-[-180px] top-1/2 -translate-y-1/2 -z-10">
           {[680, 520, 360, 210, 80].map((size, i) => (

@@ -268,7 +268,7 @@ export function TransportationPage() {
   return (
     <main>
       {/* HERO */}
-      <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative z-10 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
           <TransportHeroSVG className="w-full h-full" />
         </div>
@@ -309,7 +309,7 @@ export function TransportationPage() {
       </section>
 
       {/* TABBED FORM */}
-      <section className="relative bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
+      <section className="relative z-10 bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
         {/* Rings — right side */}
         <div aria-hidden="true" className="absolute right-[-160px] top-1/2 -translate-y-1/2 -z-10">
           {[920, 700, 500, 300, 110].map((size, i) => (
@@ -353,7 +353,7 @@ export function TransportationPage() {
       </section>
 
       {/* FLEET */}
-      <section className="px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] relative overflow-hidden">
+      <section className="px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] relative z-10 overflow-hidden">
         {/* Rings — top left */}
         <div aria-hidden="true" className="absolute left-[-80px] top-[-80px] -z-10">
           {[400, 270, 140].map((size, i) => (
