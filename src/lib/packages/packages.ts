@@ -216,14 +216,16 @@ export const PACKAGES: Package[] = [
     shortDescription:
       "White travertine terraces and the marble streets of an ancient capital.",
     heroImage: "/Pamukkale-hero.png",
+    cardImage: "/pamukkale-ifr3.png",
     overview: [
       "Two of Turkey's most photographed sites, walked at the right hours and read with the right voices. Ephesus is opened by a classical archaeologist; Pamukkale is timed for late afternoon, when the terraces glow.",
       "Between the two we lunch in Şirince, a hill village of stone houses and fruit wine, and sleep above the Aegean.",
     ],
     gallery: [
-      "/Pamukkale-hero.png",
-      "/Pamukkale-hero.png",
-      "/Pamukkale-hero.png",
+      "/pamukkale-ifr1.png",
+      "/pamukkale-ifr2.png",
+      "/pamukkale-ifr3.png",
+      "/pamukkale-ifr4.png",
     ],
     itinerary: [
       {
@@ -273,14 +275,16 @@ export const PACKAGES: Package[] = [
     shortDescription:
       "Old harbours, quiet coves, and the ruined cities of the Lycian shore.",
     heroImage: "/Antalya-hero.png",
+    cardImage: "/antalya-ifr3.png",
     overview: [
       "From Kaleiçi's stone alleys we move west along the coast — to the rock tombs of Myra, the sunken city of Kekova, and the long lunches that the Mediterranean demands.",
       "Hotels are small and well-chosen. Three of the days are spent on a private wooden gulet, anchoring in coves only locals know.",
     ],
     gallery: [
-      "/Antalya-hero.png",
-      "/Antalya-hero.png",
-      "/Antalya-hero.png",
+      "/antalya-ifr1.png",
+      "/antalya-ifr2.png",
+      "/antalya-ifr3.png",
+      "/antalya-ifr4.png",
     ],
     itinerary: [
       {
@@ -342,14 +346,16 @@ export const PACKAGES: Package[] = [
     shortDescription:
       "Cliffside monasteries, mountain plateaus, and the green of the Pontic Alps.",
     heroImage: "/black-sea-hero.png",
+    cardImage: "/blacksea-ifr3.png",
     overview: [
       "The Black Sea coast is Turkey's quiet alternative — cooler, greener, and far from the cruise routes. We base in Trabzon and move inland to the Sumela Monastery and the high plateaus of Ayder.",
       "Tea is taken seriously here. So is hospitality.",
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1591018653372-3b3aabd00a93?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1601824516843-0c0d11d97a5e?auto=format&fit=crop&w=1600&q=80",
+      "/blacksea-ifr1.png",
+      "/blacksea-ifr2.png",
+      "/blacksea-ifr3.png",
+      "/blacksea-ifr4.png",
     ],
     itinerary: [
       {
@@ -404,15 +410,16 @@ export const PACKAGES: Package[] = [
     shortDescription:
       "Toppled stone heads at sunrise, an inland sea, and the deep east.",
     heroImage: "/Eastern-hero.png",
+    cardImage: "/eastern-ifr3.png",
     overview: [
       "Eastern Anatolia is the Turkey few visitors see. We move from the colossal heads of Mount Nemrut to the Armenian churches on Akdamar Island, and on to the high citadel of Hoşap.",
       "Logistics here are the hardest part of any Turkey itinerary — which is why we plan it day-by-day with our most experienced fixers.",
     ],
     gallery: [
-      "https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1626621934489-3aa3b9e91e4d?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1605649461784-edc01e3a6cf1?auto=format&fit=crop&w=1600&q=80",
-      "https://images.unsplash.com/photo-1620109258569-4a30f3a04dee?auto=format&fit=crop&w=1600&q=80",
+      "/eastern-ifr1.png",
+      "/eastern-ifr2.png",
+      "/eastern-ifr3.png",
+      "/eastern-ifr4.png",
     ],
     itinerary: [
       {

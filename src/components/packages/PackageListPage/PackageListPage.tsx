@@ -80,10 +80,10 @@ export function PackageListPage() {
                     aria-hidden="true"
                 >
                     {[
-                        "/Antalya-hero.png",
-                        "/Pamukkale-hero.png",
-                        "/istanbul-hero.png",
-                        "/capadocia-bg.png",
+                        "/antalya-ifr1.png",
+                        "/pamukkale-ifr1.png",
+                        "/istanbul-ifr3.png",
+                        "/cappadocia-ifr1.png",
                     ].map((src, i) => (
                         <div key={i} className="relative overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
