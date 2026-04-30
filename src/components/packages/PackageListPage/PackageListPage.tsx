@@ -18,7 +18,7 @@ export function PackageListPage() {
     const searchParams = useSearchParams();
 
     const [filters, setFilters] = useState<FilterState>({
-        region: searchParams.get("region") ?? "",
+        region: searchParams.get("region") ? searchParams.get("region")!.split(",") : [],
         people: parseInt(searchParams.get("people") ?? "0") || 0,
         date: searchParams.get("date") ?? "",
     });
@@ -27,7 +27,7 @@ export function PackageListPage() {
         const next = { ...filters, ...patch };
         setFilters(next);
         const params = new URLSearchParams();
-        if (next.region) params.set("region", next.region);
+        if (next.region.length) params.set("region", next.region.join(","));
         if (next.people) params.set("people", String(next.people));
         if (next.date) params.set("date", next.date);
         const qs = params.toString();
@@ -35,7 +35,7 @@ export function PackageListPage() {
     }
 
     function clearFilters() {
-        setFilters({ region: "", people: 0, date: "" });
+        setFilters({ region: [], people: 0, date: "" });
         router.replace(pathname, { scroll: false });
     }
 
@@ -56,7 +56,7 @@ export function PackageListPage() {
                 )
                     return false;
             }
-            if (filters.region && p.region !== filters.region) return false;
+            if (filters.region.length && !filters.region.includes(p.region)) return false;
             return true;
         });
     }, [filters]);
