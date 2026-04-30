@@ -4,7 +4,7 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
-import { TransportHeroSVG } from "@/components/illustrations/TransportHeroSVG/TransportHeroSVG";
+import Image from "next/image";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
 import { AIRPORTS, VEHICLES } from "@/lib/transport/transport";
 import { transferMessage, chauffeurMessage } from "@/lib/whatsapp/whatsapp";
@@ -268,11 +268,10 @@ export function TransportationPage() {
   return (
     <main>
       {/* HERO */}
-      <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-navy">
         <div className="absolute inset-0">
-          <TransportHeroSVG className="w-full h-full" />
+          <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-center" priority />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/20 to-navy/85" />
         {/* Diagonal hatch — top-right */}
         <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)" }} />
         {/* Diagonal hatch — bottom-left */}
@@ -291,7 +290,7 @@ export function TransportationPage() {
         </div>
         <div className="relative z-10 max-w-[1320px] mx-auto w-full">
           <Reveal>
-            <Kicker className="kicker--light">Private chauffeur</Kicker>
+            <Kicker className="kicker--dark">Private chauffeur</Kicker>
           </Reveal>
           <Reveal delay={140}>
             <h1 className="font-display font-light text-[clamp(40px,7vw,96px)] leading-[0.98] tracking-[-0.025em] mt-6 mb-7 max-w-[16ch]">
@@ -301,7 +300,7 @@ export function TransportationPage() {
             </h1>
           </Reveal>
           <Reveal delay={280}>
-            <p className="text-cream/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
+            <p className="text-navy/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
               {HERO_SUB}
             </p>
           </Reveal>

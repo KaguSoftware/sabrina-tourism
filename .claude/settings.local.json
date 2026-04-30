@@ -8,7 +8,12 @@
       "Bash(git stash *)",
       "Bash(git add *)",
       "Bash(git rm *)",
-      "Bash(awk '{print $2}')"
+      "Bash(awk '{print $2}')",
+      "Read(//Users/saitaydin/Pictures/turizm/**)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/saitaydin/Pictures/turizm/chauffer.png)"
+    ],
+    "additionalDirectories": [
+      "/Users/saitaydin/Pictures/turizm"
     ]
   }
 }
