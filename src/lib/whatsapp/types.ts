@@ -8,6 +8,7 @@ export interface PackageMessageContext {
 export interface TransferMessageContext {
   airport: string;
   direction: "pickup" | "dropoff";
+  destination: string;
   date: string;
   time: string;
   passengers: string | number;

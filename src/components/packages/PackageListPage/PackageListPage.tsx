@@ -64,10 +64,41 @@ export function PackageListPage() {
 
     return (
         <>
-            {/* Header */}
-            <section className="relative overflow-hidden bg-sky-soft/30 pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
-                <div className="absolute inset-0">
-                    <Image src="/tours.png" alt="Tours hero" fill className="object-cover object-center" priority />
+            {/* Header — flat illustrated mosaic */}
+            <section className="relative z-10 overflow-hidden bg-cream pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
+                {/* Diagonal hatch — bottom-left */}
+
+                {/* Diagonal hatch — top-right (behind mosaic) */}
+
+                {/* Rings — bottom-left */}
+                <div
+                    aria-hidden="true"
+                    className="absolute left-[-140px] bottom-[-140px] -z-10"
+                ></div>
+                {/* Image mosaic — right side */}
+                <div
+                    className="hidden lg:grid absolute right-0 top-0 bottom-0 w-[42%] grid-cols-2 gap-0.5 pointer-events-none"
+                    aria-hidden="true"
+                >
+                    {[
+                        "/antalya-ifr1.png",
+                        "/pamukkale-ifr1.png",
+                        "/istanbul-ifr3.png",
+                        "/cappadocia-ifr1.png",
+                    ].map((src, i) => (
+                        <div key={i} className="relative overflow-hidden">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                                src={src}
+                                alt=""
+                                className="w-full h-full object-cover"
+                                style={{ aspectRatio: "1/1" }}
+                            />
+                            <div className="absolute inset-0 bg-sky-soft/20" />
+                        </div>
+                    ))}
+                    {/* left-edge fade so it blends into the cream bg */}
+                    <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent" />
                 </div>
                 <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
 
@@ -100,7 +131,7 @@ export function PackageListPage() {
             />
 
             {/* Results */}
-            <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
+            <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
                 <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
                     <span className="text-ochre font-display italic text-[18px] mr-1">
                         {visible.length}
