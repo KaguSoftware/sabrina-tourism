@@ -7,7 +7,7 @@ const pillActive = "bg-navy text-ochre font-semibold";
 const pillInactive = "bg-gray-100 text-ink hover:bg-gray-200";
 
 export function FilterBar({ filters, onChange, onClear }: FilterBarProps) {
-  const hasActive = !!(filters.region || filters.people || filters.date);
+  const hasActive = !!(filters.region.length || filters.people || filters.date);
 
   return (
     <div className="relative z-20 sm:sticky sm:top-18 sm:z-40 bg-cream/95 backdrop-blur-md border-y border-rule">
