@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
@@ -63,41 +64,10 @@ export function PackageListPage() {
 
     return (
         <>
-            {/* Header — flat illustrated mosaic */}
+            {/* Header */}
             <section className="relative overflow-hidden bg-sky-soft/30 pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
-                {/* Diagonal hatch — bottom-left */}
-
-                {/* Diagonal hatch — top-right (behind mosaic) */}
-
-                {/* Rings — bottom-left */}
-                <div
-                    aria-hidden="true"
-                    className="absolute left-[-140px] bottom-[-140px] -z-10"
-                ></div>
-                {/* Image mosaic — right side */}
-                <div
-                    className="hidden lg:grid absolute right-0 top-0 bottom-0 w-[42%] grid-cols-2 gap-0.5 pointer-events-none"
-                    aria-hidden="true"
-                >
-                    {[
-                        "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=600&q=70",
-                    ].map((src, i) => (
-                        <div key={i} className="relative overflow-hidden">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src={src}
-                                alt=""
-                                className="w-full h-full object-cover"
-                                style={{ aspectRatio: "1/1" }}
-                            />
-                            <div className="absolute inset-0 bg-sky-soft/20" />
-                        </div>
-                    ))}
-                    {/* left-edge fade so it blends into the cream bg */}
-                    <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent" />
+                <div className="absolute inset-0">
+                    <Image src="/tours.png" alt="Tours hero" fill className="object-cover object-center" priority />
                 </div>
 
                 {/* Text */}

@@ -1,4 +1,4 @@
-import { HeroPanoramaSVG } from "@/components/illustrations/HeroPanoramaSVG/HeroPanoramaSVG";
+import Image from "next/image";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HERO_HEADLINE_TOP, HERO_HEADLINE_EM, HERO_SUB, HERO_KICKER } from "./constants";
@@ -8,7 +8,7 @@ export function HeroPanorama() {
     <section className="relative min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-0">
-        <HeroPanoramaSVG className="w-full h-full" />
+        <Image src="/homepage.png" alt="Hero panorama" fill className="object-cover object-center" priority />
       </div>
 
       {/* Veil — subtle cream fade so text stays readable */}
