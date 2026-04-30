@@ -26,7 +26,7 @@ export function transferMessage(ctx: TransferMessageContext): string {
   const direction =
     ctx.direction === "pickup" ? "pickup from" : "drop-off to";
   return waLink(
-    `Hello Meridian — I'd like a ${direction} ${ctx.airport} on ${ctx.date} at ${ctx.time} for ${ctx.passengers} passenger(s), ${ctx.vehicleClass}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
+    `Hello Meridian — I'd like a ${direction} ${ctx.airport} on ${ctx.date} at ${ctx.time} for ${ctx.passengers} passenger(s), ${ctx.vehicleClass}. Area / Hotel: ${ctx.destination || "—"}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
   );
 }
 
