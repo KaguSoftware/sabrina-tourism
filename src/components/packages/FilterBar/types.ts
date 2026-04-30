@@ -1,5 +1,5 @@
 export interface FilterState {
-  region: string;
+  region: string[];
   people: number;
   date: string;
 }

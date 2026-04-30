@@ -270,8 +270,9 @@ export function TransportationPage() {
       {/* HERO */}
       <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-navy">
         <div className="absolute inset-0">
-          <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-center" priority />
+          <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
         </div>
+        <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
         {/* Diagonal hatch — top-right */}
         <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)" }} />
         {/* Diagonal hatch — bottom-left */}
