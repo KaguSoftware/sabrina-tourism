@@ -13,7 +13,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
         {/* Image */}
         <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">
           <Image
-            src={pkg.heroImage}
+            src={pkg.cardImage ?? pkg.heroImage}
             alt={pkg.name}
             fill
             loading="lazy"

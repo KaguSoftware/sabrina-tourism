@@ -5,7 +5,7 @@ import { HERO_HEADLINE_TOP, HERO_HEADLINE_EM, HERO_SUB, HERO_KICKER } from "./co
 
 export function HeroPanorama() {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
+    <section className="relative z-10 min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-0">
         <HeroPanoramaSVG className="w-full h-full" />

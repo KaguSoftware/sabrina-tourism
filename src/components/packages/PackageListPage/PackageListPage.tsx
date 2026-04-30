@@ -64,7 +64,7 @@ export function PackageListPage() {
     return (
         <>
             {/* Header — flat illustrated mosaic */}
-            <section className="relative overflow-hidden bg-sky-soft/30 pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
+            <section className="relative z-10 overflow-hidden bg-cream pt-[140px] pb-16 px-[clamp(20px,4vw,56px)]">
                 {/* Diagonal hatch — bottom-left */}
 
                 {/* Diagonal hatch — top-right (behind mosaic) */}
@@ -80,10 +80,10 @@ export function PackageListPage() {
                     aria-hidden="true"
                 >
                     {[
-                        "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1641128324972-af3212f0f6bd?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=600&q=70",
-                        "https://images.unsplash.com/photo-1589395937772-f67057e233df?auto=format&fit=crop&w=600&q=70",
+                        "/antalya-ifr1.png",
+                        "/pamukkale-ifr1.png",
+                        "/istanbul-ifr3.png",
+                        "/cappadocia-ifr1.png",
                     ].map((src, i) => (
                         <div key={i} className="relative overflow-hidden">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -129,7 +129,7 @@ export function PackageListPage() {
             />
 
             {/* Results */}
-            <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
+            <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
                 <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
                     <span className="text-ochre font-display italic text-[18px] mr-1">
                         {visible.length}
