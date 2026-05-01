@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
   return {
-    title: `${slug.replace(/-/g, " ")} — Meridian & Co.`,
+    title: `${slug.replace(/-/g, " ")} — Sabrina Turizm`,
   };
 }
 

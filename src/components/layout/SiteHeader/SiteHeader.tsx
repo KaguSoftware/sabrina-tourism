@@ -54,26 +54,18 @@ export function SiteHeader() {
                     {/* Brand */}
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-3 group"
-                        aria-label="Meridian & Co. — home"
+                        className="inline-flex items-center group"
+                        aria-label="Sabrina Turizm — home"
                     >
-                        <span
-                            className={`font-display italic text-[22px] w-9 h-9 rounded-full border flex items-center justify-center tracking-tight transition-colors duration-300 ${
-                                transparent
-                                    ? "border-ochre text-ochre"
-                                    : "border-ochre text-ochre"
-                            }`}
-                        >
-                            M
-                        </span>
-                        <span
-                            className={`font-display text-[20px] tracking-tight transition-colors duration-300 ${
-                                transparent ? "text-cream" : "text-ink"
-                            }`}
-                        >
-                            Meridian{" "}
-                            <span className="text-ochre italic">&amp;</span> Co.
-                        </span>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/logo-sabrina.png"
+                            alt="Sabrina Turizm"
+                            width="140"
+                            height="48"
+                            className={`h-10 w-auto object-contain transition-opacity duration-300 ${transparent ? "brightness-0 invert" : ""}`}
+                            style={transparent ? { filter: "brightness(0) invert(1)" } : {}}
+                        />
                     </Link>
 
                     {/* Desktop nav */}
@@ -148,10 +140,14 @@ export function SiteHeader() {
                 aria-hidden={!menuOpen}
             >
                 <div className="flex justify-between items-center pb-10">
-                    <span className="font-display text-[20px]">
-                        Meridian{" "}
-                        <span className="text-ochre italic">&amp;</span> Co.
-                    </span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src="/logo-sabrina.png"
+                        alt="Sabrina Turizm"
+                        width="140"
+                        height="48"
+                        className="h-10 w-auto object-contain brightness-0 invert"
+                    />
                     <button
                         className="text-3xl leading-none"
                         onClick={() => setMenuOpen(false)}
@@ -192,7 +188,7 @@ export function SiteHeader() {
                         Reserve via WhatsApp
                     </a>
                     <p className="text-cream/50 text-[13px] tracking-[0.12em]">
-                        concierge@meridianandco.tr · Istanbul
+                        Istanbul
                     </p>
                 </div>
             </div>

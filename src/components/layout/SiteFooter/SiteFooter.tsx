@@ -32,9 +32,8 @@ export function SiteFooter() {
       <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Brand col */}
         <div>
-          <p className="font-display text-[22px] mb-3">
-            Meridian <span className="text-ochre italic">&amp;</span> Co.
-          </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-sabrina.png" alt="Sabrina Turizm" width="140" height="48" className="h-10 w-auto object-contain brightness-0 invert mb-3" />
           <p className="text-cream/60 text-sm leading-relaxed">
             Boutique tourism &amp; private chauffeur
             <br />
@@ -80,10 +79,10 @@ export function SiteFooter() {
               WhatsApp
             </a>
             <a
-              href="mailto:concierge@meridianandco.tr"
+              href="mailto:info@sabrinaturizm.com"
               className="text-sm py-1 text-cream/80 hover:text-cream transition-colors duration-200"
             >
-              concierge@meridianandco.tr
+              info@sabrinaturizm.com
             </a>
           </div>
           <p className="font-mono text-[11px] text-cream/30 mt-5 tracking-[0.14em]">
@@ -95,7 +94,7 @@ export function SiteFooter() {
       {/* Base */}
       <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-7 border-t border-cream/10 pt-7 flex flex-col sm:flex-row justify-between gap-3">
         <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-cream/40">
-          © 2026 Meridian &amp; Co. Licensed TÜRSAB operator.
+          © 2026 Sabrina Turizm. Licensed TÜRSAB operator.
         </span>
         <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-cream/40">
           Made in Istanbul.

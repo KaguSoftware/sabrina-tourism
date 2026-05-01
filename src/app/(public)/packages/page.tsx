@@ -6,7 +6,7 @@ import { getAllPackages } from "@/lib/db/packages";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "Itineraries — Meridian & Co.",
+  title: "Itineraries — Sabrina Turizm",
   description:
     "Six curated routes through Türkiye. Filter by region, dates, and group size.",
 };

@@ -112,7 +112,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
         <div className="flex-1">
           <Kicker>Message preview</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hello Meridian — I'd like a ${direction === "pickup" ? "pickup from" : "drop-off to"} ${airport} on ${date || "—"} at ${time || "—"} for ${passengers} passenger(s), ${vClass ? vClass.label : "no vehicle selected"}. Area / Hotel: ${destination || "—"}. Could you quote?`}
+            {`Hey Sabrina — I'd like a ${direction === "pickup" ? "pickup from" : "drop-off to"} ${airport} on ${date || "—"} at ${time || "—"} for ${passengers} passenger(s), ${vClass ? vClass.label : "no vehicle selected"}. Area / Hotel: ${destination || "—"}. Could you quote?`}
           </pre>
         </div>
         <button

@@ -3,14 +3,14 @@ import "../styles/globals.css";
 import { fraunces, inter, jetbrainsMono } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "Meridian & Co. — Turkey, considered.",
+  title: "Sabrina Turizm — Turkey, considered.",
   description:
     "Boutique tours and private chauffeur service across Türkiye. Slow itineraries built one guest, one driver, one road at a time.",
   keywords: ["Turkey tours", "Türkiye travel", "boutique tourism", "private chauffeur", "Istanbul", "Cappadocia"],
   openGraph: {
-    title: "Meridian & Co. — Turkey, considered.",
+    title: "Sabrina Turizm — Turkey, considered.",
     description: "Boutique tours and private chauffeur across Türkiye.",
-    siteName: "Meridian & Co.",
+    siteName: "Sabrina Turizm",
     locale: "en_US",
     type: "website",
   },

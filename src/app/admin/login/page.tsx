@@ -108,7 +108,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="mt-6 text-center font-mono text-[10px] tracking-[0.2em] uppercase text-muted">
-          Meridian &amp; Co. · Concierge
+          Sabrina Turizm · Concierge
         </p>
       </div>
     </div>

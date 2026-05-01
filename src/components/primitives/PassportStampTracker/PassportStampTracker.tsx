@@ -75,7 +75,7 @@ export function PassportStampTracker({ sections = DEFAULT_SECTIONS }: PassportSt
       >
         <div className="bg-navy/92 backdrop-blur-sm border border-ochre/20 p-4 rounded-sm shadow-2xl">
           <p className="font-mono text-[10px] tracking-[0.25em] uppercase text-ochre mb-3 text-center">
-            Meridian Passport
+            Sabrina Passport
           </p>
           <div className="grid grid-cols-3 gap-1">
             {sections.map((name, i) => (

@@ -12,13 +12,13 @@ function waLink(message: string): string {
 
 export function genericMessage(): string {
   return waLink(
-    "Hello Meridian — I'd like to start a conversation about a trip to Türkiye."
+    "Hey Sabrina — I'd like to start a conversation about a trip to Türkiye."
   );
 }
 
 export function packageMessage(ctx: PackageMessageContext): string {
   return waLink(
-    `Hello Meridian — I'd like to reserve "${ctx.name}" at the ${ctx.tier} tier for ${ctx.count} guest(s), starting ${ctx.date}. Could you confirm availability?`
+    `Hey Sabrina — I'd like to reserve "${ctx.name}" at the ${ctx.tier} tier for ${ctx.count} guest(s), starting ${ctx.date}. Could you confirm availability?`
   );
 }
 
@@ -26,7 +26,7 @@ export function transferMessage(ctx: TransferMessageContext): string {
   const direction =
     ctx.direction === "pickup" ? "pickup from" : "drop-off to";
   return waLink(
-    `Hello Meridian — I'd like a ${direction} ${ctx.airport} on ${ctx.date} at ${ctx.time} for ${ctx.passengers} passenger(s), ${ctx.vehicleClass}. Area / Hotel: ${ctx.destination || "—"}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
+    `Hey Sabrina — I'd like a ${direction} ${ctx.airport} on ${ctx.date} at ${ctx.time} for ${ctx.passengers} passenger(s), ${ctx.vehicleClass}. Area / Hotel: ${ctx.destination || "—"}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
   );
 }
 
@@ -35,6 +35,6 @@ export function chauffeurMessage(ctx: ChauffeurMessageContext): string {
     ? `${ctx.startDate} to ${ctx.endDate}`
     : ctx.startDate;
   return waLink(
-    `Hello Meridian — I'd like a private chauffeur. Pickup: ${ctx.pickup}. Destinations: ${ctx.destinations}. Dates: ${dates}. Passengers: ${ctx.passengers}. Vehicle: ${ctx.vehicleClass}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
+    `Hey Sabrina — I'd like a private chauffeur. Pickup: ${ctx.pickup}. Destinations: ${ctx.destinations}. Dates: ${dates}. Passengers: ${ctx.passengers}. Vehicle: ${ctx.vehicleClass}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
   );
 }

@@ -95,7 +95,7 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
         <div className="flex-1">
           <Kicker>Message preview</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hello Meridian — I'd like a private chauffeur. Pickup: ${pickup || "—"}. Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}. Vehicle: ${vClass ? vClass.label : "no vehicle selected"}. Could you quote?`}
+            {`Hey Sabrina — I'd like a private chauffeur. Pickup: ${pickup || "—"}. Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}. Vehicle: ${vClass ? vClass.label : "no vehicle selected"}. Could you quote?`}
           </pre>
         </div>
         <button

@@ -5,7 +5,7 @@ import { getAirports, getVehicles } from "@/lib/db/transport";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "Private Chauffeur & Airport Transfer — Meridian & Co.",
+  title: "Private Chauffeur & Airport Transfer — Sabrina Turizm",
   description:
     "Mercedes E-Class, V-Class and S-Class. English-speaking, licensed chauffeurs across Türkiye. Airport transfers and custom routes.",
 };

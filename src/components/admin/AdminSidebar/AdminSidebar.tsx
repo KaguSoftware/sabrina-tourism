@@ -70,13 +70,9 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
 
   const brand = (
     <div className="flex items-center gap-3">
-      <span className="font-display italic text-[17px] w-7 h-7 rounded-full border border-ochre text-ochre flex items-center justify-center tracking-tight flex-shrink-0">
-        M
-      </span>
       <div>
-        <span className="font-display text-[16px] tracking-tight text-ink leading-none">
-          Meridian <span className="text-ochre italic">&amp;</span> Co.
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-sabrina.png" alt="Sabrina Turizm" width="120" height="40" className="h-8 w-auto object-contain" />
         <p className="font-mono text-[9px] tracking-[0.22em] uppercase text-muted mt-0.5">
           Concierge
         </p>
