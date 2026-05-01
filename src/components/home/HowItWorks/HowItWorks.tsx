@@ -1,11 +1,10 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
-import { SECTION_HEADING, STEPS } from "./constants";
 import type { Step } from "./types";
 
 function CompassIcon({ animate }: { animate: boolean }) {
@@ -227,7 +226,6 @@ function WhatsAppIcon({ animate }: { animate: boolean }) {
 function StepCard({ step, index }: { step: Step; index: number }) {
     const ref = useRef<HTMLDivElement>(null);
     const hasAnimated = useRef(false);
-    const { useState } = require("react");
     const [animate, setAnimate] = useState(false);
 
     useEffect(() => {
@@ -268,7 +266,12 @@ function StepCard({ step, index }: { step: Step; index: number }) {
     );
 }
 
-export function HowItWorks() {
+interface HowItWorksProps {
+    sectionHeading: string;
+    steps: Step[];
+}
+
+export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
     return (
         <section className="relative py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}
@@ -354,13 +357,13 @@ export function HowItWorks() {
                             as="h2"
                             className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch]"
                         >
-                            {SECTION_HEADING}
+                            {sectionHeading}
                         </GoldUnderlineHeading>
                     </Reveal>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-[clamp(24px,4vw,64px)] border-t border-rule">
-                    {STEPS.map((step, i) => (
+                    {steps.map((step, i) => (
                         <Reveal key={step.num} delay={i * 100}>
                             <StepCard step={step} index={i} />
                         </Reveal>

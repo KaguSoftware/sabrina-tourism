@@ -1,2 +1,0 @@
-export const ABOUT_HEADING = "We do not run a booking site. We run a small atelier of guides, drivers and friends across seven regions.";
-export const ABOUT_BODY = "Meridian & Co. is a boutique agency working with a hand-picked roster of fewer than thirty private guides and chauffeurs. We do not aggregate, we do not sell rooms in bulk, and we do not take more than two parties to the same town in the same week. Every itinerary is drawn by a person who has driven the road, eaten in the kitchen, and stayed the night.";

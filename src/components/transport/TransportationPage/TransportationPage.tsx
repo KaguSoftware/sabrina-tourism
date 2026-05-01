@@ -3,12 +3,20 @@ import { useState } from "react";
 import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
-import { HERO_HEADING_TOP, HERO_HEADING_EM, HERO_SUB } from "./constants";
 import { AirportForm } from "./AirportForm";
 import { CustomForm } from "./CustomForm";
 import type { TabMode } from "./types";
+import type { Airport, Vehicle } from "@/lib/transport/types";
 
-export function TransportationPage() {
+interface TransportationPageProps {
+  heroHeadingTop: string;
+  heroHeadingEm: string;
+  heroSub: string;
+  airports: Airport[];
+  vehicles: Vehicle[];
+}
+
+export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, airports, vehicles }: TransportationPageProps) {
   const [mode, setMode] = useState<TabMode>("airport");
   const [vehicleId, setVehicleId] = useState<string | null>(null);
 
@@ -38,14 +46,14 @@ export function TransportationPage() {
           </Reveal>
           <Reveal delay={140}>
             <h1 className="font-display font-light text-[clamp(40px,7vw,96px)] leading-[0.98] tracking-[-0.025em] mt-6 mb-7 max-w-[16ch]">
-              <span className="text-teal-deep">{HERO_HEADING_TOP}</span>
+              <span className="text-teal-deep">{heroHeadingTop}</span>
               <br />
-              <em className="text-ochre font-light not-italic">{HERO_HEADING_EM}</em>
+              <em className="text-ochre font-light not-italic">{heroHeadingEm}</em>
             </h1>
           </Reveal>
           <Reveal delay={280}>
             <p className="text-navy/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
-              {HERO_SUB}
+              {heroSub}
             </p>
           </Reveal>
         </div>
@@ -66,21 +74,19 @@ export function TransportationPage() {
         </div>
         <div className="max-w-[1320px] mx-auto relative z-7">
           <div className="relative inline-flex gap-4 border-b border-rule mb-12">
-            {([["airport", "Airport Transfer"], ["custom", "Custom Chauffeur"]] as const).map(
-              ([val, label]) => (
-                <button
-                  key={val}
-                  role="tab"
-                  aria-selected={mode === val}
-                  onClick={() => setMode(val)}
-                  className={`flex items-center gap-3 px-8 py-4.5 font-mono text-[13px] tracking-[0.16em] uppercase transition-colors duration-300 ${
-                    mode === val ? "text-ink" : "text-muted hover:text-ink-soft"
-                  }`}
-                >
-                  {label}
-                </button>
-              )
-            )}
+            {([["airport", "Airport Transfer"], ["custom", "Custom Chauffeur"]] as const).map(([val, label]) => (
+              <button
+                key={val}
+                role="tab"
+                aria-selected={mode === val}
+                onClick={() => setMode(val)}
+                className={`flex items-center gap-3 px-8 py-4.5 font-mono text-[13px] tracking-[0.16em] uppercase transition-colors duration-300 ${
+                  mode === val ? "text-ink" : "text-muted hover:text-ink-soft"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
             <span
               className="absolute bottom-0 h-0.5 bg-ochre w-1/2 transition-transform duration-[420ms] ease-out"
               style={{ transform: mode === "airport" ? "translateX(0)" : "translateX(100%)" }}
@@ -89,8 +95,8 @@ export function TransportationPage() {
           </div>
 
           {mode === "airport"
-            ? <AirportForm vehicleId={vehicleId} setVehicleId={setVehicleId} />
-            : <CustomForm vehicleId={vehicleId} setVehicleId={setVehicleId} />}
+            ? <AirportForm vehicleId={vehicleId} setVehicleId={setVehicleId} airports={airports} vehicles={vehicles} />
+            : <CustomForm vehicleId={vehicleId} setVehicleId={setVehicleId} vehicles={vehicles} />}
         </div>
       </section>
     </>

@@ -3,13 +3,15 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { PackageCard } from "@/components/packages/PackageCard/PackageCard";
-import { PACKAGES } from "@/lib/packages/packages";
-import { SECTION_HEADING, FEATURED_SLUGS } from "./constants";
+import type { Package } from "@/lib/packages/types";
 
-export function FeaturedPackages() {
-    const featured = FEATURED_SLUGS.map(
-        (slug) => PACKAGES.find((p) => p.slug === slug)!
-    ).filter(Boolean);
+interface FeaturedPackagesProps {
+  sectionHeading: string;
+  packages: Package[];
+}
+
+export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesProps) {
+    const featured = packages;
 
     return (
         <section className="relative z-10  py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
@@ -66,7 +68,7 @@ export function FeaturedPackages() {
                                 as="h2"
                                 className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch]"
                             >
-                                {SECTION_HEADING}
+                                {sectionHeading}
                             </GoldUnderlineHeading>
                         </Reveal>
                     </div>

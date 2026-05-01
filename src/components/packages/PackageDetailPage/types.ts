@@ -1,5 +1,7 @@
+import type { Package } from "@/lib/packages/types";
+
 export interface PackageDetailPageProps {
-  slug: string;
+  pkg: Package;
   seedDate?: string;
   seedPeople?: string;
 }

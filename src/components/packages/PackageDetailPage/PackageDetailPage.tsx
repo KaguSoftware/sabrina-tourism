@@ -1,7 +1,5 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
-import { getPackageBySlug } from "@/lib/packages/packages";
 import { packageMessage } from "@/lib/whatsapp/whatsapp";
 import { PackageHero } from "./PackageHero";
 import { PackageOverview } from "./PackageOverview";
@@ -13,8 +11,7 @@ import { PackageCTAStrip } from "./PackageCTAStrip";
 import { PackageLightbox } from "./PackageLightbox";
 import type { PackageDetailPageProps } from "./types";
 
-export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: PackageDetailPageProps) {
-  const pkg = getPackageBySlug(slug);
+export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "" }: PackageDetailPageProps) {
   const [tier, setTier] = useState("Signature");
   const [openDay, setOpenDay] = useState(1);
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -26,22 +23,13 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeLightbox();
       if (e.key === "ArrowRight")
-        setLightbox((i) => ((i ?? 0) + 1) % (pkg?.gallery.length ?? 1));
+        setLightbox((i) => ((i ?? 0) + 1) % pkg.gallery.length);
       if (e.key === "ArrowLeft")
-        setLightbox((i) => ((i ?? 0) - 1 + (pkg?.gallery.length ?? 1)) % (pkg?.gallery.length ?? 1));
+        setLightbox((i) => ((i ?? 0) - 1 + pkg.gallery.length) % pkg.gallery.length);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [lightbox, pkg, closeLightbox]);
-
-  if (!pkg) {
-    return (
-      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-8 px-6 text-center">
-        <h1 className="font-display font-light text-[48px] tracking-tight">Itinerary not found.</h1>
-        <GoldButton href="/packages" variant="solid">Back to all itineraries</GoldButton>
-      </main>
-    );
-  }
 
   const activeTier = pkg.tiers.find((t) => t.name === tier) ?? pkg.tiers[0];
   const waHref = packageMessage({

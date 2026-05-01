@@ -1,7 +1,10 @@
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
-import { QUOTE, ATTRIBUTION } from "./constants";
+interface QuoteStripProps {
+  quote: string;
+  attribution: string;
+}
 
-export function QuoteStrip() {
+export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
     return (
         <section className="relative text-cream py-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}
@@ -59,13 +62,13 @@ export function QuoteStrip() {
                         className="font-display italic text-ochre text-[120px] leading-[0.6] mb-5"
                         aria-hidden="true"
                     >
-                        "
+                        &ldquo;
                     </p>
                     <blockquote className="font-display font-light italic text-[clamp(24px,3vw,42px)] leading-[1.35] tracking-[-0.012em] mb-8">
-                        {QUOTE}
+                        {quote}
                     </blockquote>
                     <p className="font-mono text-[12px] tracking-[0.2em] uppercase text-cream/55">
-                        {ATTRIBUTION}
+                        {attribution}
                     </p>
                 </Reveal>
             </div>

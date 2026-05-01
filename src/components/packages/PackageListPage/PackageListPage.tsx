@@ -8,12 +8,17 @@ import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { FilterBar } from "@/components/packages/FilterBar/FilterBar";
 import { PackageCard } from "@/components/packages/PackageCard/PackageCard";
-import { PACKAGES } from "@/lib/packages/packages";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
-import { PAGE_HEADING, PAGE_LEDE } from "./constants";
 import type { FilterState } from "@/components/packages/FilterBar/types";
+import type { Package } from "@/lib/packages/types";
 
-export function PackageListPage() {
+interface PackageListPageProps {
+    pageHeading: string;
+    pageLede: string;
+    packages: Package[];
+}
+
+export function PackageListPage({ pageHeading, pageLede, packages }: PackageListPageProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -43,7 +48,7 @@ export function PackageListPage() {
     }
 
     const visible = useMemo(() => {
-        return PACKAGES.filter((p) => {
+        return packages.filter((p) => {
             if (filters.people > 0) {
                 if (
                     filters.people < p.minPeople ||
@@ -90,12 +95,12 @@ export function PackageListPage() {
                             as="h1"
                             className="text-[clamp(40px,6vw,80px)] mt-6 mb-6 tracking-[-0.025em] max-w-[14ch] text-cream"
                         >
-                            {PAGE_HEADING}
+                            {pageHeading}
                         </GoldUnderlineHeading>
                     </Reveal>
                     <Reveal delay={200}>
                         <p className="text-[clamp(15px,1.3vw,18px)] text-cream/80 leading-[1.6] max-w-[52ch]">
-                            {PAGE_LEDE}
+                            {pageLede}
                         </p>
                     </Reveal>
                 </div>

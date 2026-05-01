@@ -5,14 +5,19 @@ import { FeaturedPackages } from "@/components/home/FeaturedPackages/FeaturedPac
 import { HowItWorks } from "@/components/home/HowItWorks/HowItWorks";
 import { QuoteStrip } from "@/components/home/QuoteStrip/QuoteStrip";
 export default function HomePage() {
-  return (
-    <>
-      <HeroPanorama />
-      <AboutStrip />
-      <SignatureDestinations />
-      <FeaturedPackages />
-      <HowItWorks />
-      <QuoteStrip />
-    </>
-  );
+	return (
+		<>
+			<HeroPanorama
+				headlineTop={""}
+				headlineEm={""}
+				sub={""}
+				kicker={""}
+			/>
+			<AboutStrip heading={""} body={""} />
+			<SignatureDestinations />
+			<FeaturedPackages sectionHeading={""} packages={[]} />
+			<HowItWorks sectionHeading={""} steps={[]} />
+			<QuoteStrip quote={""} attribution={""} />
+		</>
+	);
 }

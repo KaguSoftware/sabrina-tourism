@@ -1,9 +1,12 @@
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
-import { ABOUT_HEADING, ABOUT_BODY } from "./constants";
+interface AboutStripProps {
+  heading: string;
+  body: string;
+}
 
-export function AboutStrip() {
+export function AboutStrip({ heading, body }: AboutStripProps) {
     return (
         <section className="relative py-[clamp(60px,9vw,120px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background — sits below the plane */}
@@ -65,12 +68,12 @@ export function AboutStrip() {
                         as="h2"
                         className="text-[clamp(32px,4.2vw,58px)] mt-6 mb-8 max-w-[22ch]"
                     >
-                        {ABOUT_HEADING}
+                        {heading}
                     </GoldUnderlineHeading>
                 </Reveal>
                 <Reveal delay={240}>
                     <p className="text-[clamp(17px,1.5vw,21px)] leading-[1.7] text-ink-soft max-w-[65ch]">
-                        {ABOUT_BODY}
+                        {body}
                     </p>
                 </Reveal>
             </div>

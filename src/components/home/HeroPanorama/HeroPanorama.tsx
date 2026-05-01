@@ -1,9 +1,14 @@
 import Image from "next/image";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
-import { HERO_HEADLINE_TOP, HERO_HEADLINE_EM, HERO_SUB, HERO_KICKER } from "./constants";
+interface HeroPanoramaProps {
+  headlineTop: string;
+  headlineEm: string;
+  sub: string;
+  kicker: string;
+}
 
-export function HeroPanorama() {
+export function HeroPanorama({ headlineTop, headlineEm, sub, kicker }: HeroPanoramaProps) {
   return (
     <section className="relative min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
@@ -15,19 +20,19 @@ export function HeroPanorama() {
       <div className="relative z-[2] max-w-[920px] w-full">
         <Reveal>
           <span className="inline-block font-mono text-[11px] tracking-[0.3em] uppercase text-teal-deep pb-2 border-b border-teal-deep mb-7">
-            {HERO_KICKER}
+            {kicker}
           </span>
         </Reveal>
         <Reveal delay={140}>
           <h1 className="font-display font-semibold text-[clamp(72px,13vw,180px)] leading-[0.9] tracking-[-0.04em] text-navy mb-7">
-            {HERO_HEADLINE_TOP}
+            {headlineTop}
             <br />
-            <em className="text-ochre font-light not-italic">{HERO_HEADLINE_EM}</em>
+            <em className="text-ochre font-light not-italic">{headlineEm}</em>
           </h1>
         </Reveal>
         <Reveal delay={300}>
           <p className="text-[clamp(16px,1.5vw,19px)] leading-[1.6] text-teal-deep/80 max-w-130 mb-11">
-            {HERO_SUB}
+            {sub}
           </p>
         </Reveal>
         <Reveal delay={460}>
