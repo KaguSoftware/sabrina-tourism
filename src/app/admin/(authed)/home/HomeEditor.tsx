@@ -157,7 +157,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
   const heroSub = watch("hero.sub");
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form onSubmit={handleSubmit(onSubmit, (errs) => { console.error("Form validation failed", errs); toast.error("Fix validation errors before saving."); })} noValidate>
       <div className="space-y-3 mb-24">
 
         {/* Hero */}

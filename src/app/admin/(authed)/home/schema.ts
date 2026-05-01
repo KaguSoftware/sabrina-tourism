@@ -21,7 +21,7 @@ export const homeContentSchema = z.object({
   }),
   how_it_works: z.object({
     section_heading: z.string().min(1, "Section heading is required"),
-    steps: z.array(stepSchema).length(3),
+    steps: z.array(stepSchema).min(1),
   }),
   featured: z.object({
     section_heading: z.string().min(1, "Section heading is required"),
