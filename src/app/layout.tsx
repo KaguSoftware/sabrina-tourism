@@ -26,7 +26,16 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
+<<<<<<< HEAD
       <body className="relative">{children}</body>
+=======
+      <body className="relative">
+        <SiteHeader />
+        <PaperPlanePath />
+        <main className="relative">{children}</main>
+        <SiteFooter />
+      </body>
+>>>>>>> 03e9c715e0116255a896699ab6fe30368e305b63
     </html>
   );
 }

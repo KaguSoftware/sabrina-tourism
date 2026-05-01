@@ -146,7 +146,7 @@ export function PaperPlanePath() {
         top: 0,
         left: 0,
         pointerEvents: "none",
-        zIndex: 1,
+        zIndex: 6,
         overflow: "visible",
       }}
     >

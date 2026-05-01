@@ -274,7 +274,9 @@ interface HowItWorksProps {
 
 export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
     return (
-        <section className="relative z-10 bg-cream py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+            {/* Section background */}
+            <div aria-hidden="true" className="absolute inset-0 bg-cream z-5" />
             {/* Diagonal hatch — top-left */}
             <div
                 aria-hidden="true"
@@ -285,6 +287,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
                     width: 980,
                     height: 320,
                     color: "rgba(201,154,63,0.25)",
+                    zIndex: 5,
                 }}
             />
             {/* Diagonal hatch — bottom-right */}
@@ -297,12 +300,13 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
                     width: 300,
                     height: 300,
                     color: "rgba(27,77,92,0.06)",
+                    zIndex: 5,
                 }}
             />
             {/* Rings — right side (bigger, more layers) */}
             <div
                 aria-hidden="true"
-                className="absolute right-[-160px] top-1/2 -translate-y-1/2 -z-10"
+                className="absolute right-[-160px] top-1/2 -translate-y-1/2 z-5"
             >
                 {[660, 500, 340, 190, 70].map((size, i) => (
                     <div
@@ -325,7 +329,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
             {/* Rings — left side accent */}
             <div
                 aria-hidden="true"
-                className="absolute left-[-120px] top-1/2 -translate-y-1/2 -z-10"
+                className="absolute left-[-120px] top-1/2 -translate-y-1/2 z-5"
             >
                 {[420, 270, 130].map((size, i) => (
                     <div
@@ -344,7 +348,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
                 ))}
             </div>
 
-            <div className="max-w-[1320px] mx-auto relative z-10">
+            <div className="max-w-[1320px] mx-auto relative z-7">
                 <div className="mb-12">
                     <Reveal>
                         <Kicker>How it works</Kicker>

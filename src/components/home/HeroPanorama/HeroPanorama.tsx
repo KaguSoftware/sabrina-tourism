@@ -10,7 +10,7 @@ interface HeroPanoramaProps {
 
 export function HeroPanorama({ headlineTop, headlineEm, sub, kicker }: HeroPanoramaProps) {
   return (
-    <section className="relative z-10 min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
+    <section className="relative min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-0">
         <Image src="/tours.png" alt="Hero panorama" fill className="object-cover object-center" priority />
@@ -54,9 +54,9 @@ export function HeroPanorama({ headlineTop, headlineEm, sub, kicker }: HeroPanor
         ))}
       </div>
       {/* Diagonal hatch — top right */}
-      <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 320, height: 320, color: "rgba(27,77,92,0.06)" }} />
+      <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 320, height: 320, color: "rgba(27,77,92,0.06)", zIndex: 1 }} />
       {/* Diagonal hatch — bottom left */}
-      <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, left: 0, width: 260, height: 260, color: "rgba(201,154,63,0.06)" }} />
+      <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, left: 0, width: 260, height: 260, color: "rgba(201,154,63,0.06)", zIndex: 1 }} />
       {/* Rings — top left (smaller accent) */}
       <div aria-hidden="true" className="absolute left-[-80px] top-[-80px] z-[1]">
         {[380, 240, 110].map((size, i) => (
