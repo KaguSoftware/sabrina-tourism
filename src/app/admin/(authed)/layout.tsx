@@ -10,14 +10,14 @@ export default async function AuthedAdminLayout({
 }) {
   const supabase = await createServerClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/admin/login");
   }
 
-  const email = session.user.email ?? "";
+  const email = user.email ?? "";
 
   return (
     <div className="min-h-screen bg-cream flex">

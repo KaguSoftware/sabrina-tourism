@@ -31,14 +31,14 @@ export async function proxy(request: NextRequest) {
   );
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session && pathname !== "/admin/login") {
+  if (!user && pathname !== "/admin/login") {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
-  if (session && pathname === "/admin/login") {
+  if (user && pathname === "/admin/login") {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
