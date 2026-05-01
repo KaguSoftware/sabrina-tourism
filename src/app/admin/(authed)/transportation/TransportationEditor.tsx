@@ -24,14 +24,13 @@ import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
+import { saveTransportHero, saveFleet } from "./actions";
 import {
-  saveTransportHero,
-  saveFleet,
   transportHeroSchema,
   fleetSchema,
   type TransportHeroFormValues,
   type FleetFormValues,
-} from "./actions";
+} from "./schema";
 import type { TransportHeroData, TransportAirportRow, TransportVehicleRow } from "@/lib/supabase/types";
 
 // ---------------------------------------------------------------------------

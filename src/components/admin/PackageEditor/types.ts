@@ -1,4 +1,4 @@
-import type { PackageFormValues } from "@/app/admin/(authed)/packages/[slug]/actions";
+import type { PackageFormValues } from "@/app/admin/(authed)/packages/[slug]/schema";
 
 export type { PackageFormValues };
 

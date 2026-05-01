@@ -12,7 +12,8 @@ import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { Select } from "@/components/admin/Input/Select";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
-import { saveHomeContent, homeContentSchema, type HomeContentFormValues } from "./actions";
+import { saveHomeContent } from "./actions";
+import { homeContentSchema, type HomeContentFormValues } from "./schema";
 import type {
   HomeHeroData,
   HomeAboutData,
