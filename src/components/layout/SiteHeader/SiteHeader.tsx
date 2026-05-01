@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
@@ -10,12 +10,17 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
+  useLayoutEffect(() => {
+    const threshold = pathname.startsWith("/packages/")
+      ? window.innerHeight * 0.8
+      : pathname === "/packages"
+      ? window.innerHeight * 0.3
+      : SCROLL_THRESHOLD;
+    const onScroll = () => setScrolled(window.scrollY > threshold);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -27,7 +32,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   const isHeroPage =
-    pathname === "/" || pathname.startsWith("/packages/");
+    pathname === "/" || pathname.startsWith("/packages");
   const transparent = isHeroPage && !scrolled;
 
   return (
@@ -92,9 +97,8 @@ export function SiteHeader() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-ochre text-navy px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-medium transition-colors duration-300 hover:bg-gold"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M20.5 3.5A11 11 0 0 0 3.6 17.6L2 22l4.5-1.5A11 11 0 1 0 20.5 3.5zm-8.5 18a8.9 8.9 0 0 1-4.6-1.3l-.3-.2-2.7.9.9-2.6-.2-.3a8.9 8.9 0 1 1 6.9 3.5zm5-6.7c-.3-.1-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1l-.9 1c-.2.2-.3.2-.6.1a7.3 7.3 0 0 1-2.1-1.3 8 8 0 0 1-1.4-1.8c-.1-.3 0-.4.1-.5l.4-.5c.1-.1.2-.3.3-.5 0-.2 0-.3-.1-.5l-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.4 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.9 2.9 4.5 4 1.1.5 2 .8 2.7.9a3.3 3.3 0 0 0 1.5-.1c.4-.1 1.6-.7 1.8-1.3.2-.7.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z" />
-              </svg>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-whatsapp.svg" alt="" aria-hidden="true" width="14" height="14" style={{ filter: "brightness(0) saturate(100%) invert(12%) sepia(30%) saturate(900%) hue-rotate(162deg) brightness(90%)" }} />
               <span>WhatsApp</span>
             </a>
           </div>

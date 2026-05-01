@@ -7,19 +7,21 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
-import { RegionHeroSVG } from "@/components/illustrations/RegionHeroSVG/RegionHeroSVG";
-import { getPackageBySlug } from "@/lib/packages/packages";
 import { packageMessage } from "@/lib/whatsapp/whatsapp";
-import type { Region } from "@/components/illustrations/RegionHeroSVG/types";
 import { TIER_ROMAN, GALLERY_SPAN_CLASSES } from "./constants";
-import type { PackageDetailPageProps } from "./types";
+import type { Package } from "@/lib/packages/types";
+
+interface PackageDetailPageProps {
+  pkg: Package;
+  seedDate?: string;
+  seedPeople?: string;
+}
 
 function prettyMonth(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 }
 
-export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: PackageDetailPageProps) {
-  const pkg = getPackageBySlug(slug);
+export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "" }: PackageDetailPageProps) {
   const [tier, setTier] = useState("Signature");
   const [openDay, setOpenDay] = useState(1);
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -39,15 +41,6 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
     return () => window.removeEventListener("keydown", onKey);
   }, [lightbox, pkg, closeLightbox]);
 
-  if (!pkg) {
-    return (
-      <main className="min-h-[70vh] flex flex-col items-center justify-center gap-8 px-6 text-center">
-        <h1 className="font-display font-light text-[48px] tracking-tight">Itinerary not found.</h1>
-        <GoldButton href="/packages" variant="solid">Back to all itineraries</GoldButton>
-      </main>
-    );
-  }
-
   const activeTier = pkg.tiers.find((t) => t.name === tier) ?? pkg.tiers[0];
   const waHref = packageMessage({
     name: pkg.name,
@@ -57,11 +50,11 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
   });
 
   return (
-    <main>
+    <main className="bg-cream">
       {/* ── HERO ── */}
-      <section className="relative min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative z-10 min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
-          <RegionHeroSVG region={pkg.region as Region} className="w-full h-full" />
+          <Image src={pkg.heroImage} alt={pkg.region} fill priority className="object-cover" sizes="100vw" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/85" />
         <div className="relative z-10 max-w-[1320px] mx-auto w-full">
@@ -77,21 +70,23 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
               {pkg.region.toUpperCase()} · {pkg.duration.toUpperCase()}
             </Kicker>
           </Reveal>
-          <Reveal delay={260}>
-            <h1 className="font-display font-light text-[clamp(48px,8vw,120px)] leading-[0.96] tracking-[-0.03em] mb-7 max-w-[16ch]">
-              {pkg.name}
-            </h1>
-          </Reveal>
-          <Reveal delay={400}>
-            <p className="font-display italic font-light text-[clamp(18px,2vw,26px)] text-cream/88 max-w-[36ch] leading-[1.4]">
-              {pkg.shortDescription}
-            </p>
-          </Reveal>
+          <div className="inline-block backdrop-blur-[1px] bg-black/30 rounded-3xl px-[5%] py-5">
+            <Reveal delay={260}>
+              <h1 className="font-display font-light text-[clamp(48px,8vw,120px)] leading-[0.96] tracking-[-0.03em] mb-7 max-w-[16ch]">
+                {pkg.name}
+              </h1>
+            </Reveal>
+            <Reveal delay={400}>
+              <p className="font-display italic font-light text-[clamp(18px,2vw,26px)] text-cream/88 max-w-[36ch] leading-[1.4]">
+                {pkg.shortDescription}
+              </p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       {/* ── OVERVIEW ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)] grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-[clamp(40px,6vw,100px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)] grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-[clamp(40px,6vw,100px)]">
         <div>
           <Reveal>
             <Kicker>The route, in brief</Kicker>
@@ -120,19 +115,11 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
               </p>
             </Reveal>
           ))}
-          {/* Inline photo strip */}
-          <div className="grid grid-cols-3 gap-3 mt-8">
-            {pkg.gallery.slice(0, 3).map((src, i) => (
-              <div key={i} className="aspect-[4/3] overflow-hidden">
-                <Image src={src} alt="" fill className="object-cover" sizes="200px" />
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
       {/* ── ITINERARY ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="mb-14">
           <Reveal><Kicker>Day by day</Kicker></Reveal>
           <Reveal delay={120}>
@@ -173,7 +160,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       </section>
 
       {/* ── TIER SELECTOR ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="mb-14">
           <Reveal><Kicker>Choose your tier</Kicker></Reveal>
           <Reveal delay={120}>
@@ -235,42 +222,9 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
         </div>
       </section>
 
-      {/* ── GALLERY ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
-        <div className="mb-14">
-          <Reveal><Kicker>In photographs</Kicker></Reveal>
-          <Reveal delay={120}>
-            <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
-              Images from the route.
-            </GoldUnderlineHeading>
-          </Reveal>
-        </div>
-        <div className="grid grid-cols-6 auto-rows-[180px] gap-3">
-          {pkg.gallery.map((src, i) => (
-            <button
-              key={i}
-              className={`relative overflow-hidden bg-navy-soft cursor-zoom-in group ${GALLERY_SPAN_CLASSES[i % GALLERY_SPAN_CLASSES.length]}`}
-              onClick={() => setLightbox(i)}
-              aria-label={`View image ${i + 1}`}
-            >
-              <Image
-                src={src}
-                alt=""
-                fill
-                loading="lazy"
-                className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
-                sizes="(max-width: 768px) 50vw, 33vw"
-              />
-              <span className="absolute bottom-2.5 left-3 font-display italic text-cream text-[14px] drop-shadow">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </button>
-          ))}
-        </div>
-      </section>
 
       {/* ── INCLUDES ── */}
-      <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
           <div>
             <Kicker>Included</Kicker>
@@ -297,9 +251,59 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
         </div>
       </section>
 
+      {/* ── GALLERY ── */}
+      <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+        <div className="mb-14">
+          <Reveal><Kicker>In photographs</Kicker></Reveal>
+          <Reveal delay={120}>
+            <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
+              Images from the route.
+            </GoldUnderlineHeading>
+          </Reveal>
+        </div>
+        <div className="grid grid-cols-6 auto-rows-[180px] gap-3">
+          {pkg.gallery.map((src, i) => (
+            <button
+              key={i}
+              className={`relative overflow-hidden bg-navy-soft cursor-zoom-in group ${GALLERY_SPAN_CLASSES[i % GALLERY_SPAN_CLASSES.length]}`}
+              onClick={() => setLightbox(i)}
+              aria-label={`View image ${i + 1}`}
+            >
+              <Image
+                src={src}
+                alt=""
+                fill
+                loading="lazy"
+                className="object-cover transition-transform duration-1200 ease-out group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 33vw"
+              />
+              <span className="absolute bottom-2.5 left-3 font-display italic text-cream text-[14px] drop-shadow">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* ── CTA STRIP ── */}
-      <section className="bg-navy text-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)]">
-        <div className="max-w-[1320px] mx-auto">
+      <section className="bg-navy text-cream py-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative z-10 overflow-hidden">
+        {/* Rings — right (bigger, more layers) */}
+        <div aria-hidden="true" className="absolute right-[-180px] top-1/2 -translate-y-1/2 -z-10">
+          {[680, 520, 360, 210, 80].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(255,255,255,${0.04 + i * 0.012})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        {/* Rings — left accent */}
+        <div aria-hidden="true" className="absolute left-[-140px] top-1/2 -translate-y-1/2 -z-10">
+          {[440, 290, 140].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: "1px solid rgba(201,154,63,0.08)", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        {/* Diagonal hatch — top-left */}
+        <div aria-hidden="true" className="deco-hatch" style={{ top: 0, left: 0, width: 360, height: 360, color: "rgba(201,154,63,0.08)" }} />
+        {/* Diagonal hatch — bottom-right */}
+        <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, right: 0, width: 280, height: 280, color: "rgba(255,255,255,0.03)" }} />
+        <div className="max-w-[1320px] mx-auto relative z-10">
           <Reveal><Kicker className="kicker--light">Reserve</Kicker></Reveal>
           <Reveal delay={120}>
             <GoldUnderlineHeading as="h2" className="text-[clamp(40px,6vw,84px)] mt-6 mb-7 tracking-[-0.02em]">
@@ -324,7 +328,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
       {/* ── LIGHTBOX ── */}
       {lightbox !== null && (
         <div
-          className="fixed inset-0 bg-navy/96 z-[200] flex items-center justify-center p-14"
+          className="fixed inset-0 bg-navy/96 z-200 flex items-center justify-center p-14"
           role="dialog"
           aria-modal="true"
           onClick={closeLightbox}
@@ -345,14 +349,7 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
             ‹
           </button>
           <div className="relative max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={pkg.gallery[lightbox]}
-              alt=""
-              width={1200}
-              height={800}
-              className="object-contain max-h-[80vh]"
-              priority
-            />
+            <Image src={pkg.gallery[lightbox]} alt="" width={1200} height={800} className="object-contain max-h-[80vh]" priority />
           </div>
           <button
             className="absolute right-6 top-1/2 -translate-y-1/2 text-cream text-[48px] leading-none w-14 h-14 border border-cream/20 flex items-center justify-center hover:border-ochre hover:text-ochre transition-colors"
@@ -361,11 +358,12 @@ export function PackageDetailPage({ slug, seedDate = "", seedPeople = "" }: Pack
           >
             ›
           </button>
-          <span className="absolute bottom-7 left-1/2 -translate-x-1/2 font-display italic text-cream text-[14px] tracking-[0.1em]">
+          <span className="absolute bottom-7 left-1/2 -translate-x-1/2 font-display italic text-cream text-[14px] tracking-widest">
             {String(lightbox + 1).padStart(2, "0")} / {String(pkg.gallery.length).padStart(2, "0")}
           </span>
         </div>
       )}
+
     </main>
   );
 }

@@ -1,0 +1,1078 @@
+/**
+ * Seed script — run with: npm run seed
+ * Idempotently populates all static data into Supabase.
+ */
+
+import * as fs from "fs";
+import * as path from "path";
+import * as dotenv from "dotenv";
+import { createClient } from "@supabase/supabase-js";
+
+// ---------------------------------------------------------------------------
+// 0. Env
+// ---------------------------------------------------------------------------
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error(
+    "✗ Missing env vars. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env.local"
+  );
+  process.exit(1);
+}
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+  auth: { persistSession: false },
+});
+
+const PUBLIC_DIR = path.resolve(process.cwd(), "public");
+const BUCKET = "media";
+
+// ---------------------------------------------------------------------------
+// 1. Static data (inlined to avoid Next.js import resolution issues)
+// ---------------------------------------------------------------------------
+
+// --- Transport ---
+
+const AIRPORTS = [
+  { code: "IST", label: "Istanbul Airport (IST)" },
+  { code: "SAW", label: "Istanbul Sabiha Gökçen (SAW)" },
+  { code: "AYT", label: "Antalya (AYT)" },
+  { code: "ASR", label: "Cappadocia / Kayseri (ASR)" },
+  { code: "ADB", label: "Izmir (ADB)" },
+  { code: "BJV", label: "Bodrum (BJV)" },
+  { code: "DLM", label: "Dalaman (DLM)" },
+];
+
+const VEHICLES = [
+  {
+    id: "sedan",
+    label: "Sedan",
+    capacity: "1–3 guests",
+    note: "Mercedes E-Class or equivalent",
+    from: "from €70",
+  },
+  {
+    id: "suv",
+    label: "SUV",
+    capacity: "1–4 guests",
+    note: "Range Rover or equivalent",
+    from: "from €110",
+  },
+  {
+    id: "van",
+    label: "Van",
+    capacity: "1–7 guests",
+    note: "Mercedes V-Class or Vito",
+    from: "from €140",
+  },
+  {
+    id: "luxury",
+    label: "Luxury",
+    capacity: "1–3 guests",
+    note: "Mercedes S-Class with chauffeur",
+    from: "from €220",
+  },
+];
+
+// --- Tiers ---
+
+function tierEssential(overrides: Record<string, unknown> = {}) {
+  return {
+    name: "Essential",
+    vehicleClass: "Premium sedan or shared van",
+    accommodation: "3★ boutique",
+    groupSize: "Small group up to 8",
+    guideLanguages: ["English"],
+    mealsIncluded: "Daily breakfast",
+    highlights: [
+      "All transfers in air-conditioned vehicles",
+      "Curated city walks with a licensed guide",
+      "Hand-picked local restaurant recommendations",
+    ],
+    ...overrides,
+  };
+}
+
+function tierSignature(overrides: Record<string, unknown> = {}) {
+  return {
+    name: "Signature",
+    vehicleClass: "Mercedes V-Class with private driver",
+    accommodation: "4★ design hotels",
+    groupSize: "Private — up to 6",
+    guideLanguages: ["English", "French"],
+    mealsIncluded: "Breakfast + 3 curated dinners",
+    highlights: [
+      "Skip-the-line entry to all major sites",
+      "Private licensed historian & guide",
+      "Two reserved tastings at chef-led restaurants",
+    ],
+    ...overrides,
+  };
+}
+
+function tierPrivate(overrides: Record<string, unknown> = {}) {
+  return {
+    name: "Private",
+    vehicleClass: "Mercedes S-Class with chauffeur",
+    accommodation: "5★ heritage & cave suites",
+    groupSize: "Strictly private — your party only",
+    guideLanguages: ["English", "French", "Arabic", "German"],
+    mealsIncluded: "Breakfast + all dinners, hosted",
+    highlights: [
+      "Private after-hours museum & monument access",
+      "Personal concierge available 24/7 in-country",
+      "Helicopter or private boat transfers where relevant",
+    ],
+    ...overrides,
+  };
+}
+
+// --- Packages ---
+
+const FEATURED_SLUGS = [
+  "istanbul-classics",
+  "cappadocia-and-balloons",
+  "pamukkale-and-ephesus",
+];
+
+const PACKAGES = [
+  {
+    slug: "istanbul-classics",
+    name: "Istanbul, Classics",
+    region: "Istanbul",
+    duration: "5 days / 4 nights",
+    durationDays: 5,
+    shortDescription:
+      "Hagia Sophia at first light, the Bosphorus at dusk, and the bazaars between.",
+    heroImage: "/istanbul-hero1.png",
+    cardImage: "/istanbul-ifr3.png",
+    overview: [
+      "A measured, deliberate introduction to Istanbul — a city that does not reveal itself in a hurry. We move slowly through the old peninsula at the hours when the crowds are thin, then drift north along the Bosphorus to the quieter neighborhoods of Bebek and Arnavutköy.",
+      "Mornings are spent inside the great monuments. Afternoons unfold over long lunches and walks through Karaköy and Galata. Evenings are reserved — a private dinner above the strait, a hammam at the Çemberlitaş, a final raki on a wooden boat.",
+    ],
+    gallery: [
+      "/istanbul-ifr1.png",
+      "/istanbul-ifr2.png",
+      "/istanbul-ifr3.png",
+      "/istanbul-ifr4.png",
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: "Arrival & the Old City at dusk",
+        description:
+          "Private transfer from IST. Late-afternoon walk through Sultanahmet as the call to prayer crosses the rooftops. Welcome dinner at a meyhane in Karaköy.",
+      },
+      {
+        day: 2,
+        title: "Hagia Sophia, Cistern, Topkapı",
+        description:
+          "Skip-the-line morning entries with a licensed historian. Lunch at a chef-run kitchen in Eminönü. Afternoon at leisure in the Grand Bazaar.",
+      },
+      {
+        day: 3,
+        title: "The Bosphorus, properly",
+        description:
+          "Private wooden boat from Bebek to Anadolu Kavağı. Lunch on the Asian shore. Evening at a restored Ottoman mansion overlooking the strait.",
+      },
+      {
+        day: 4,
+        title: "Galata, Pera, the new Istanbul",
+        description:
+          "Coffee in Karaköy, a long walk through Galata. Afternoon at the Pera Museum and Istanbul Modern. Hammam at Çemberlitaş.",
+      },
+      {
+        day: 5,
+        title: "A long breakfast, then home",
+        description: "Slow morning. Private transfer to the airport.",
+      },
+    ],
+    tiers: [tierEssential(), tierSignature(), tierPrivate()],
+    included: [
+      "All private transfers in-country",
+      "Licensed English-speaking guide",
+      "All entry tickets to listed monuments",
+      "Daily breakfast",
+      "One welcome dinner",
+    ],
+    notIncluded: [
+      "International flights",
+      "Travel insurance",
+      "Lunches and dinners not listed",
+      "Personal expenses & gratuities",
+    ],
+    minPeople: 1,
+    maxPeople: 6,
+    availableFrom: "2026-03-01",
+    availableTo: "2026-11-30",
+  },
+  {
+    slug: "cappadocia-and-balloons",
+    name: "Cappadocia & the Hot Air Balloons",
+    region: "Cappadocia",
+    duration: "4 days / 3 nights",
+    durationDays: 4,
+    shortDescription:
+      "Sunrise above the fairy chimneys, then long afternoons in the valleys.",
+    heroImage: "/capadocia-hero.png",
+    cardImage: "/cappadocia-ifr3.png",
+    overview: [
+      "Cappadocia is best understood from above and below. We rise before dawn for the balloons, then spend the rest of the day at ground level — walking the Rose and Red valleys, lunching in stone houses in Mustafapaşa, watching the light fall on Uçhisar.",
+      "Accommodation is in restored cave suites, not hotels pretending to be caves. Each evening ends with dinner on a quiet terrace.",
+    ],
+    gallery: [
+      "/cappadocia-ifr1.png",
+      "/cappadocia-ifr2.png",
+      "/cappadocia-ifr3.png",
+      "/cappadocia-ifr4.png",
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: "Arrival in Göreme",
+        description:
+          "Private transfer from Kayseri. Settle into your cave suite. Sunset at Uçhisar Castle, dinner in a stone-walled cellar.",
+      },
+      {
+        day: 2,
+        title: "Balloons at first light",
+        description:
+          "Pre-dawn balloon flight over the valleys. Long breakfast on return. Afternoon walking tour of the Rose & Red valleys.",
+      },
+      {
+        day: 3,
+        title: "Underground cities & ceramic villages",
+        description:
+          "Morning in Derinkuyu's underground city. Lunch in Mustafapaşa. Visit to a working ceramic atelier in Avanos.",
+      },
+      {
+        day: 4,
+        title: "Slow morning, return",
+        description:
+          "Optional second balloon flight. Transfer to Kayseri or onward.",
+      },
+    ],
+    tiers: [
+      tierEssential({
+        highlights: [
+          "Group balloon flight (16 guests)",
+          "Walking tour of Göreme valleys",
+          "Cave hotel, 3★ category",
+        ],
+      }),
+      tierSignature({
+        highlights: [
+          "Smaller balloon basket (8 guests)",
+          "Private guide & vehicle throughout",
+          "Restored boutique cave suite",
+        ],
+      }),
+      tierPrivate({
+        highlights: [
+          "Private balloon for your party only",
+          "Private chef dinner in a cave cellar",
+          "5★ heritage cave suite with private terrace",
+        ],
+      }),
+    ],
+    included: [
+      "Private transfers from/to Kayseri (ASR)",
+      "One hot-air balloon flight (weather permitting)",
+      "All entries to underground cities & monasteries",
+      "Daily breakfast",
+    ],
+    notIncluded: [
+      "Flights to/from Cappadocia",
+      "Travel insurance",
+      "Lunches and dinners not listed",
+    ],
+    minPeople: 1,
+    maxPeople: 8,
+    availableFrom: "2026-03-15",
+    availableTo: "2026-11-15",
+  },
+  {
+    slug: "pamukkale-and-ephesus",
+    name: "Pamukkale & Ephesus",
+    region: "Aegean",
+    duration: "4 days / 3 nights",
+    durationDays: 4,
+    shortDescription:
+      "White travertine terraces and the marble streets of an ancient capital.",
+    heroImage: "/Pamukkale-hero.png",
+    cardImage: "/pamukkale-ifr3.png",
+    overview: [
+      "Two of Turkey's most photographed sites, walked at the right hours and read with the right voices. Ephesus is opened by a classical archaeologist; Pamukkale is timed for late afternoon, when the terraces glow.",
+      "Between the two we lunch in Şirince, a hill village of stone houses and fruit wine, and sleep above the Aegean.",
+    ],
+    gallery: [
+      "/pamukkale-ifr1.png",
+      "/pamukkale-ifr2.png",
+      "/pamukkale-ifr3.png",
+      "/pamukkale-ifr4.png",
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: "Izmir & the road to Selçuk",
+        description:
+          "Arrival at ADB. Private transfer to a country hotel near Selçuk. Welcome dinner of Aegean meze.",
+      },
+      {
+        day: 2,
+        title: "Ephesus, with an archaeologist",
+        description:
+          "Early morning entry to Ephesus before the cruise crowds. Lunch in Şirince. Afternoon at the House of the Virgin Mary.",
+      },
+      {
+        day: 3,
+        title: "On to Pamukkale",
+        description:
+          "Drive inland through olive country. Late-afternoon walk on the travertines and a swim in the Cleopatra Pool. Dinner in Karahayıt.",
+      },
+      {
+        day: 4,
+        title: "Return",
+        description:
+          "Slow morning at Hierapolis necropolis. Transfer to Denizli or Izmir.",
+      },
+    ],
+    tiers: [tierEssential(), tierSignature(), tierPrivate()],
+    included: [
+      "Private transfers throughout",
+      "Licensed archaeologist for Ephesus",
+      "All entry tickets",
+      "Daily breakfast",
+    ],
+    notIncluded: ["Flights", "Lunches and dinners not listed"],
+    minPeople: 1,
+    maxPeople: 6,
+    availableFrom: "2026-04-01",
+    availableTo: "2026-10-31",
+  },
+  {
+    slug: "antalya-coast",
+    name: "Antalya & the Lycian Coast",
+    region: "Mediterranean",
+    duration: "6 days / 5 nights",
+    durationDays: 6,
+    shortDescription:
+      "Old harbours, quiet coves, and the ruined cities of the Lycian shore.",
+    heroImage: "/Antalya-hero.png",
+    cardImage: "/antalya-ifr3.png",
+    overview: [
+      "From Kaleiçi's stone alleys we move west along the coast — to the rock tombs of Myra, the sunken city of Kekova, and the long lunches that the Mediterranean demands.",
+      "Hotels are small and well-chosen. Three of the days are spent on a private wooden gulet, anchoring in coves only locals know.",
+    ],
+    gallery: [
+      "/antalya-ifr1.png",
+      "/antalya-ifr2.png",
+      "/antalya-ifr3.png",
+      "/antalya-ifr4.png",
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: "Arrival in Antalya",
+        description:
+          "Private transfer from AYT. Settle into a Kaleiçi boutique hotel. Evening walk to the old harbour.",
+      },
+      {
+        day: 2,
+        title: "Perge & Aspendos",
+        description:
+          "Two of the great Roman sites, with a classical historian. Lunch on the river at Köprülü.",
+      },
+      {
+        day: 3,
+        title: "On to the gulet",
+        description:
+          "Drive west to Kaş. Board a private wooden gulet for three nights at sea.",
+      },
+      {
+        day: 4,
+        title: "Kekova & the sunken city",
+        description:
+          "Swimming over Lycian ruins. Lunch on board. Anchor in Üçağız for the evening.",
+      },
+      {
+        day: 5,
+        title: "Myra & the rock tombs",
+        description:
+          "Morning ashore at Myra. Afternoon at sea. Sunset anchor in a private cove.",
+      },
+      {
+        day: 6,
+        title: "Disembark & return",
+        description: "Morning swim. Transfer to Antalya or Dalaman airport.",
+      },
+    ],
+    tiers: [tierEssential(), tierSignature(), tierPrivate()],
+    included: [
+      "Private transfers",
+      "Three nights on a private gulet",
+      "All entry tickets",
+      "All meals on board",
+    ],
+    notIncluded: ["Flights", "Lunches and dinners on land days"],
+    minPeople: 2,
+    maxPeople: 8,
+    availableFrom: "2026-05-01",
+    availableTo: "2026-10-15",
+  },
+  {
+    slug: "black-sea-and-sumela",
+    name: "Black Sea & Sumela Monastery",
+    region: "Black Sea",
+    duration: "5 days / 4 nights",
+    durationDays: 5,
+    shortDescription:
+      "Cliffside monasteries, mountain plateaus, and the green of the Pontic Alps.",
+    heroImage: "/black-sea-hero.png",
+    cardImage: "/blacksea-ifr3.png",
+    overview: [
+      "The Black Sea coast is Turkey's quiet alternative — cooler, greener, and far from the cruise routes. We base in Trabzon and move inland to the Sumela Monastery and the high plateaus of Ayder.",
+      "Tea is taken seriously here. So is hospitality.",
+    ],
+    gallery: [
+      "/blacksea-ifr1.png",
+      "/blacksea-ifr2.png",
+      "/blacksea-ifr3.png",
+      "/blacksea-ifr4.png",
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: "Arrival in Trabzon",
+        description:
+          "Private transfer. Walk through the old town and Atatürk Köşkü.",
+      },
+      {
+        day: 2,
+        title: "Sumela Monastery",
+        description:
+          "Drive into the Altındere valley. Walk up to the cliff-face monastery. Lunch of trout in Maçka.",
+      },
+      {
+        day: 3,
+        title: "Uzungöl & the high country",
+        description:
+          "Morning at the lake. Afternoon at a working tea plantation in Of.",
+      },
+      {
+        day: 4,
+        title: "Ayder plateau",
+        description:
+          "High mountain villages, wooden houses, and a hot spring at sundown.",
+      },
+      {
+        day: 5,
+        title: "Return",
+        description: "Slow morning. Transfer to Trabzon airport.",
+      },
+    ],
+    tiers: [tierEssential(), tierSignature(), tierPrivate()],
+    included: [
+      "Private transfers",
+      "Licensed regional guide",
+      "All entry tickets",
+      "Daily breakfast",
+    ],
+    notIncluded: ["Flights to Trabzon", "Lunches and dinners not listed"],
+    minPeople: 2,
+    maxPeople: 6,
+    availableFrom: "2026-05-15",
+    availableTo: "2026-09-30",
+  },
+  {
+    slug: "eastern-anatolia-nemrut-van",
+    name: "Eastern Anatolia — Mount Nemrut & Lake Van",
+    region: "Eastern Anatolia",
+    duration: "7 days / 6 nights",
+    durationDays: 7,
+    shortDescription:
+      "Toppled stone heads at sunrise, an inland sea, and the deep east.",
+    heroImage: "/Eastern-hero.png",
+    cardImage: "/eastern-ifr3.png",
+    overview: [
+      "Eastern Anatolia is the Turkey few visitors see. We move from the colossal heads of Mount Nemrut to the Armenian churches on Akdamar Island, and on to the high citadel of Hoşap.",
+      "Logistics here are the hardest part of any Turkey itinerary — which is why we plan it day-by-day with our most experienced fixers.",
+    ],
+    gallery: [
+      "/eastern-ifr1.png",
+      "/eastern-ifr2.png",
+      "/eastern-ifr3.png",
+      "/eastern-ifr4.png",
+    ],
+    itinerary: [
+      {
+        day: 1,
+        title: "Arrival in Adıyaman",
+        description: "Private transfer. Evening at leisure.",
+      },
+      {
+        day: 2,
+        title: "Mount Nemrut at sunrise",
+        description:
+          "Pre-dawn ascent to the eastern terrace. Breakfast at the summit. Visit Arsameia and the Cendere Bridge.",
+      },
+      {
+        day: 3,
+        title: "On to Şanlıurfa",
+        description:
+          "The pools of Abraham, Göbekli Tepe, and the bazaar at dusk.",
+      },
+      {
+        day: 4,
+        title: "Diyarbakır",
+        description:
+          "The black basalt walls and the great mosque. Long lunch in a stone-walled courtyard.",
+      },
+      {
+        day: 5,
+        title: "On to Lake Van",
+        description:
+          "Drive east. Evening swim in the lake; dinner with a local family.",
+      },
+      {
+        day: 6,
+        title: "Akdamar Island & Hoşap Castle",
+        description:
+          "Boat to the Armenian Church of the Holy Cross. Afternoon at Hoşap.",
+      },
+      {
+        day: 7,
+        title: "Return",
+        description: "Transfer to Van airport (VAN).",
+      },
+    ],
+    tiers: [tierEssential(), tierSignature(), tierPrivate()],
+    included: [
+      "Private transfers throughout",
+      "Licensed regional guide",
+      "All entries",
+      "Daily breakfast",
+      "Two hosted dinners",
+    ],
+    notIncluded: [
+      "Domestic flights to/from Adıyaman & Van",
+      "Lunches not listed",
+    ],
+    minPeople: 2,
+    maxPeople: 6,
+    availableFrom: "2026-04-15",
+    availableTo: "2026-10-31",
+  },
+] as const;
+
+// --- Site content ---
+
+const SITE_CONTENT = [
+  {
+    id: "home_hero",
+    data: {
+      headline_top: "Turkey,",
+      headline_em: "considered.",
+      sub: "Slow itineraries through a country that rewards patience — built one guest, one driver, one road at a time.",
+      kicker: "Boutique tours · Private chauffeur · Türkiye",
+      image: "/home.png",
+    },
+  },
+  {
+    id: "home_about",
+    data: {
+      heading:
+        "We do not run a booking site. We run a small atelier of guides, drivers and friends across seven regions.",
+      body: "Meridian & Co. is a boutique agency working with a hand-picked roster of fewer than thirty private guides and chauffeurs. We do not aggregate, we do not sell rooms in bulk, and we do not take more than two parties to the same town in the same week. Every itinerary is drawn by a person who has driven the road, eaten in the kitchen, and stayed the night.",
+    },
+  },
+  {
+    id: "home_how_it_works",
+    data: {
+      heading: "Three steps. One conversation.",
+      steps: [
+        {
+          num: "01",
+          heading: "Browse",
+          body: "Read the itineraries the way you would a magazine. Filter by region, dates, group size — or simply by curiosity.",
+          icon: "compass",
+        },
+        {
+          num: "02",
+          heading: "Select",
+          body: "Pick a package and a tier — Essential, Signature, or Private. Or describe the journey you have in mind, and we will draw it.",
+          icon: "suitcase",
+        },
+        {
+          num: "03",
+          heading: "Confirm via WhatsApp",
+          body: "A real person on our team replies within the hour, in your language. We confirm dates, send a quote, and hold the booking.",
+          icon: "whatsapp",
+        },
+      ],
+    },
+  },
+  {
+    id: "home_quote",
+    data: {
+      quote:
+        "The kind of trip you remember in fragments — a particular afternoon light on the Bosphorus, the quiet of a cave at five in the morning, a fisherman's lunch you didn't expect.",
+      attribution: "— Condé Nast Traveller, on a Meridian itinerary",
+    },
+  },
+  {
+    id: "home_featured_heading",
+    data: {
+      heading: "Three to begin with.",
+    },
+  },
+  {
+    id: "tours_hero",
+    data: {
+      heading: "Six routes through Türkiye.",
+      lede: "Filter by group size, dates and region. Every itinerary runs in three tiers — Essential, Signature, Private — and every reservation is confirmed by a person, on WhatsApp.",
+      image: "/tours.png",
+    },
+  },
+  {
+    id: "transport_hero",
+    data: {
+      heading_top: "A car, a driver,",
+      heading_em: "and the road of your choosing.",
+      sub: "Mercedes E-Class, V-Class and S-Class. English-speaking, licensed, in dark suits. From an airport pickup to a multi-day cross-country drive — quoted by the hour or by the route.",
+      fleet_heading: "Four vehicle classes.",
+      image: "/chauffer.png",
+    },
+  },
+];
+
+// ---------------------------------------------------------------------------
+// 2. Image upload helpers
+// ---------------------------------------------------------------------------
+
+/** List all objects in a Storage folder to build an existence set. */
+async function listStorageFolder(prefix: string): Promise<Set<string>> {
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .list(prefix, { limit: 1000 });
+  if (error) return new Set();
+  return new Set((data ?? []).map((f) => `${prefix}/${f.name}`));
+}
+
+/** Upload a single file; skip if already present in existingPaths. */
+async function uploadImage(
+  localFilename: string, // e.g. "/istanbul-hero1.png"
+  storagePath: string,   // e.g. "packages/istanbul-classics/istanbul-hero1.png"
+  existingPaths: Set<string>
+): Promise<{ skipped: boolean }> {
+  if (existingPaths.has(storagePath)) return { skipped: true };
+
+  const absPath = path.join(PUBLIC_DIR, localFilename.replace(/^\//, ""));
+  if (!fs.existsSync(absPath)) {
+    console.warn(`  ⚠ File not found locally, skipping: ${localFilename}`);
+    return { skipped: true };
+  }
+
+  const fileBuffer = fs.readFileSync(absPath);
+  const ext = path.extname(localFilename).toLowerCase();
+  const contentType =
+    ext === ".png"
+      ? "image/png"
+      : ext === ".jpg" || ext === ".jpeg"
+      ? "image/jpeg"
+      : ext === ".svg"
+      ? "image/svg+xml"
+      : ext === ".webp"
+      ? "image/webp"
+      : "application/octet-stream";
+
+  const { error } = await supabase.storage
+    .from(BUCKET)
+    .upload(storagePath, fileBuffer, { contentType, upsert: false });
+
+  if (error && !error.message.includes("already exists")) {
+    throw new Error(`Upload failed for ${storagePath}: ${error.message}`);
+  }
+
+  existingPaths.add(storagePath);
+  return { skipped: false };
+}
+
+// ---------------------------------------------------------------------------
+// 3. Main seed
+// ---------------------------------------------------------------------------
+
+async function main() {
+  console.log("▶ Sabrina Tourism — seed starting\n");
+
+  let totalUploaded = 0;
+  let totalSkipped = 0;
+
+  // -------------------------------------------------------------------------
+  // 3a. Site content
+  // -------------------------------------------------------------------------
+
+  // Pre-fetch existing Storage paths for page-level images
+  const pageStorageExisting = await listStorageFolder("pages");
+
+  // Collect page images that need uploading
+  const pageImages: { local: string; storagePath: string }[] = [
+    { local: "/home.png", storagePath: "pages/home/home.png" },
+    { local: "/tours.png", storagePath: "pages/tours/tours.png" },
+    { local: "/chauffer.png", storagePath: "pages/transport/chauffer.png" },
+  ];
+
+  for (const img of pageImages) {
+    const { skipped } = await uploadImage(
+      img.local,
+      img.storagePath,
+      pageStorageExisting
+    );
+    skipped ? totalSkipped++ : totalUploaded++;
+  }
+
+  // Rewrite image paths in site_content data to Storage paths
+  const siteContentRows = SITE_CONTENT.map((row) => {
+    const data = { ...row.data } as Record<string, unknown>;
+    if (row.id === "home_hero") data.image = "pages/home/home.png";
+    if (row.id === "tours_hero") data.image = "pages/tours/tours.png";
+    if (row.id === "transport_hero") data.image = "pages/transport/chauffer.png";
+    return { id: row.id, data };
+  });
+
+  const { error: scError } = await supabase
+    .from("site_content")
+    .upsert(siteContentRows, { onConflict: "id" });
+  if (scError) throw new Error(`site_content upsert failed: ${scError.message}`);
+  console.log(`✓ Seeded site_content (${siteContentRows.length})`);
+
+  // -------------------------------------------------------------------------
+  // 3b. Transport: airports & vehicles
+  // -------------------------------------------------------------------------
+
+  const { error: airportError } = await supabase
+    .from("transport_airports")
+    .upsert(
+      AIRPORTS.map((a, i) => ({
+        code: a.code,
+        label: a.label,
+        sort_order: i,
+      })),
+      { onConflict: "code" }
+    );
+  if (airportError)
+    throw new Error(`transport_airports upsert failed: ${airportError.message}`);
+  console.log(`✓ Seeded transport_airports (${AIRPORTS.length})`);
+
+  const { error: vehicleError } = await supabase
+    .from("transport_vehicles")
+    .upsert(
+      VEHICLES.map((v, i) => ({
+        vehicle_id: v.id,
+        label: v.label,
+        capacity: v.capacity,
+        note: v.note,
+        from_price: v.from,
+        sort_order: i,
+      })),
+      { onConflict: "vehicle_id" }
+    );
+  if (vehicleError)
+    throw new Error(
+      `transport_vehicles upsert failed: ${vehicleError.message}`
+    );
+  console.log(`✓ Seeded transport_vehicles (${VEHICLES.length})`);
+
+  // -------------------------------------------------------------------------
+  // 3c. Packages (core row)
+  // -------------------------------------------------------------------------
+
+  // Pre-fetch existing Storage paths per package
+  const packageStorageExisting: Record<string, Set<string>> = {};
+  for (const pkg of PACKAGES) {
+    packageStorageExisting[pkg.slug] = await listStorageFolder(
+      `packages/${pkg.slug}`
+    );
+  }
+
+  // Upload all package images first, collecting storage paths
+  const heroStoragePaths: Record<string, string> = {};
+  const cardStoragePaths: Record<string, string> = {};
+  const galleryStoragePaths: Record<string, string[]> = {};
+
+  for (const pkg of PACKAGES) {
+    const existing = packageStorageExisting[pkg.slug];
+
+    // hero
+    const heroFilename = path.basename(pkg.heroImage);
+    const heroPath = `packages/${pkg.slug}/${heroFilename}`;
+    const { skipped: heroSkipped } = await uploadImage(
+      pkg.heroImage,
+      heroPath,
+      existing
+    );
+    heroSkipped ? totalSkipped++ : totalUploaded++;
+    heroStoragePaths[pkg.slug] = heroPath;
+
+    // card
+    const cardFilename = path.basename(pkg.cardImage);
+    const cardPath = `packages/${pkg.slug}/${cardFilename}`;
+    const { skipped: cardSkipped } = await uploadImage(
+      pkg.cardImage,
+      cardPath,
+      existing
+    );
+    cardSkipped ? totalSkipped++ : totalUploaded++;
+    cardStoragePaths[pkg.slug] = cardPath;
+
+    // gallery
+    const galleryPaths: string[] = [];
+    for (const img of pkg.gallery) {
+      const filename = path.basename(img);
+      const storagePath = `packages/${pkg.slug}/${filename}`;
+      const { skipped: gallerySkipped } = await uploadImage(
+        img,
+        storagePath,
+        existing
+      );
+      gallerySkipped ? totalSkipped++ : totalUploaded++;
+      galleryPaths.push(storagePath);
+    }
+    galleryStoragePaths[pkg.slug] = galleryPaths;
+  }
+
+  console.log(
+    `✓ Uploaded ${totalUploaded} images (${totalSkipped} already existed, skipped)`
+  );
+
+  // Upsert package core rows
+  const packageRows = PACKAGES.map((pkg, i) => ({
+    slug: pkg.slug,
+    name: pkg.name,
+    region: pkg.region,
+    duration: pkg.duration,
+    duration_days: pkg.durationDays,
+    short_description: pkg.shortDescription,
+    overview: pkg.overview.join("\n\n"),
+    hero_image: heroStoragePaths[pkg.slug],
+    card_image: cardStoragePaths[pkg.slug],
+    min_people: pkg.minPeople,
+    max_people: pkg.maxPeople,
+    available_from: pkg.availableFrom,
+    available_to: pkg.availableTo,
+    is_published: true,
+    is_featured: FEATURED_SLUGS.includes(pkg.slug),
+    sort_order: i,
+  }));
+
+  const { error: pkgError } = await supabase
+    .from("packages")
+    .upsert(packageRows, { onConflict: "slug" });
+  if (pkgError) throw new Error(`packages upsert failed: ${pkgError.message}`);
+  console.log(`✓ Seeded packages (${packageRows.length})`);
+
+  // Fetch the inserted package IDs by slug
+  const { data: pkgIdRows, error: pkgIdError } = await supabase
+    .from("packages")
+    .select("id, slug");
+  if (pkgIdError)
+    throw new Error(`packages select failed: ${pkgIdError.message}`);
+  const pkgIdMap: Record<string, string> = {};
+  for (const row of pkgIdRows ?? []) pkgIdMap[row.slug] = row.id;
+
+  // -------------------------------------------------------------------------
+  // 3d. Itinerary days
+  // -------------------------------------------------------------------------
+
+  const itineraryRows: {
+    package_id: string;
+    day_number: number;
+    title: string;
+    description: string;
+    sort_order: number;
+  }[] = [];
+
+  for (const pkg of PACKAGES) {
+    const packageId = pkgIdMap[pkg.slug];
+    if (!packageId) continue;
+
+    // Delete existing days for this package before re-inserting
+    // (no natural unique key other than package_id + day_number — use delete+insert)
+    await supabase
+      .from("package_itinerary_days")
+      .delete()
+      .eq("package_id", packageId);
+
+    for (const day of pkg.itinerary) {
+      itineraryRows.push({
+        package_id: packageId,
+        day_number: day.day,
+        title: day.title,
+        description: day.description,
+        sort_order: day.day - 1,
+      });
+    }
+  }
+
+  const { error: iterError } = await supabase
+    .from("package_itinerary_days")
+    .insert(itineraryRows);
+  if (iterError)
+    throw new Error(
+      `package_itinerary_days insert failed: ${iterError.message}`
+    );
+  console.log(`✓ Seeded package_itinerary_days (${itineraryRows.length})`);
+
+  // -------------------------------------------------------------------------
+  // 3e. Tiers
+  // -------------------------------------------------------------------------
+
+  const tierRows: {
+    package_id: string;
+    tier_name: string;
+    vehicle_class: string;
+    accommodation: string;
+    group_size: string;
+    guide_languages: string[];
+    meals_included: string;
+    highlights: string[];
+  }[] = [];
+
+  for (const pkg of PACKAGES) {
+    const packageId = pkgIdMap[pkg.slug];
+    if (!packageId) continue;
+    for (const tier of pkg.tiers) {
+      tierRows.push({
+        package_id: packageId,
+        tier_name: tier.name,
+        vehicle_class: tier.vehicleClass,
+        accommodation: tier.accommodation,
+        group_size: tier.groupSize,
+        guide_languages: tier.guideLanguages,
+        meals_included: tier.mealsIncluded,
+        highlights: tier.highlights,
+      });
+    }
+  }
+
+  // package_tiers has UNIQUE (package_id, tier_name)
+  const { error: tierError } = await supabase
+    .from("package_tiers")
+    .upsert(tierRows, { onConflict: "package_id,tier_name" });
+  if (tierError)
+    throw new Error(`package_tiers upsert failed: ${tierError.message}`);
+  console.log(`✓ Seeded package_tiers (${tierRows.length})`);
+
+  // -------------------------------------------------------------------------
+  // 3f. Gallery
+  // -------------------------------------------------------------------------
+
+  for (const pkg of PACKAGES) {
+    const packageId = pkgIdMap[pkg.slug];
+    if (!packageId) continue;
+    await supabase
+      .from("package_gallery")
+      .delete()
+      .eq("package_id", packageId);
+  }
+
+  const galleryRows: {
+    package_id: string;
+    image_path: string;
+    sort_order: number;
+  }[] = [];
+
+  for (const pkg of PACKAGES) {
+    const packageId = pkgIdMap[pkg.slug];
+    if (!packageId) continue;
+    for (let i = 0; i < galleryStoragePaths[pkg.slug].length; i++) {
+      galleryRows.push({
+        package_id: packageId,
+        image_path: galleryStoragePaths[pkg.slug][i],
+        sort_order: i,
+      });
+    }
+  }
+
+  const { error: galleryError } = await supabase
+    .from("package_gallery")
+    .insert(galleryRows);
+  if (galleryError)
+    throw new Error(`package_gallery insert failed: ${galleryError.message}`);
+  console.log(`✓ Seeded package_gallery (${galleryRows.length})`);
+
+  // -------------------------------------------------------------------------
+  // 3g. Inclusions
+  // -------------------------------------------------------------------------
+
+  for (const pkg of PACKAGES) {
+    const packageId = pkgIdMap[pkg.slug];
+    if (!packageId) continue;
+    await supabase
+      .from("package_inclusions")
+      .delete()
+      .eq("package_id", packageId);
+  }
+
+  const inclusionRows: {
+    package_id: string;
+    kind: "included" | "not_included";
+    text: string;
+    sort_order: number;
+  }[] = [];
+
+  for (const pkg of PACKAGES) {
+    const packageId = pkgIdMap[pkg.slug];
+    if (!packageId) continue;
+    for (let i = 0; i < pkg.included.length; i++) {
+      inclusionRows.push({
+        package_id: packageId,
+        kind: "included",
+        text: pkg.included[i],
+        sort_order: i,
+      });
+    }
+    for (let i = 0; i < pkg.notIncluded.length; i++) {
+      inclusionRows.push({
+        package_id: packageId,
+        kind: "not_included",
+        text: pkg.notIncluded[i],
+        sort_order: i,
+      });
+    }
+  }
+
+  const { error: inclError } = await supabase
+    .from("package_inclusions")
+    .insert(inclusionRows);
+  if (inclError)
+    throw new Error(`package_inclusions insert failed: ${inclError.message}`);
+  console.log(`✓ Seeded package_inclusions (${inclusionRows.length})`);
+
+  // -------------------------------------------------------------------------
+  // Summary
+  // -------------------------------------------------------------------------
+
+  console.log("\n═══════════════════════════════════════");
+  console.log("  Seed complete");
+  console.log("  Packages:            " + packageRows.length);
+  console.log("  Itinerary days:      " + itineraryRows.length);
+  console.log("  Tiers:               " + tierRows.length);
+  console.log("  Gallery entries:     " + galleryRows.length);
+  console.log("  Inclusion entries:   " + inclusionRows.length);
+  console.log("  Site content rows:   " + siteContentRows.length);
+  console.log("  Airports:            " + AIRPORTS.length);
+  console.log("  Vehicles:            " + VEHICLES.length);
+  console.log("  Images uploaded:     " + totalUploaded);
+  console.log("  Images skipped:      " + totalSkipped);
+  console.log("═══════════════════════════════════════\n");
+}
+
+main().catch((err) => {
+  console.error("✗ Seed failed:", err.message ?? err);
+  process.exit(1);
+});

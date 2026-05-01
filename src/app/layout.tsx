@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
 import { fraunces, inter, jetbrainsMono } from "./fonts";
-import { SiteHeader } from "@/components/layout/SiteHeader/SiteHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter/SiteFooter";
-import { PaperPlanePath } from "@/components/primitives/PaperPlanePath/PaperPlanePath";
 
 export const metadata: Metadata = {
   title: "Meridian & Co. — Turkey, considered.",
@@ -29,12 +26,7 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="relative">
-        <SiteHeader />
-        <PaperPlanePath />
-        <main>{children}</main>
-        <SiteFooter />
-      </body>
+      <body className="relative">{children}</body>
     </html>
   );
 }

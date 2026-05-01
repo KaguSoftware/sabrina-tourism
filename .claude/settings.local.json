@@ -8,7 +8,17 @@
       "Bash(git stash *)",
       "Bash(git add *)",
       "Bash(git rm *)",
-      "Bash(awk '{print $2}')"
+      "Bash(awk '{print $2}')",
+      "Read(//Users/saitaydin/Pictures/turizm/**)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/saitaydin/Pictures/turizm/chauffer.png)",
+      "Bash(npx vercel *)",
+      "Bash(git checkout *)",
+      "Bash(rm src/app/page.tsx src/app/packages/page.tsx \"src/app/packages/[slug]/page.tsx\" src/app/transportation/page.tsx)",
+      "Bash(rmdir src/app/packages/[slug] src/app/packages src/app/transportation)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")"
+    ],
+    "additionalDirectories": [
+      "/Users/saitaydin/Pictures/turizm"
     ]
   }
 }

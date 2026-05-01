@@ -1,20 +1,13 @@
 "use client";
 import { useState } from "react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
-import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
-import { TransportHeroSVG } from "@/components/illustrations/TransportHeroSVG/TransportHeroSVG";
+import Image from "next/image";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
-import { AIRPORTS, VEHICLES } from "@/lib/transport/transport";
 import { transferMessage, chauffeurMessage } from "@/lib/whatsapp/whatsapp";
-import {
-  HERO_HEADING_TOP,
-  HERO_HEADING_EM,
-  HERO_SUB,
-  FLEET_HEADING,
-} from "./constants";
 import type { TabMode } from "./types";
+import type { Airport, Vehicle } from "@/lib/transport/types";
 
 function FormField({
   label,
@@ -43,22 +36,22 @@ const fieldCls =
 const selectCls =
   "bg-cream border-0 border-b border-rule text-ink font-sans text-[16px] px-0 py-2.5 focus:outline-none focus:border-ochre transition-colors duration-200";
 
-function AirportForm() {
-  const [airport, setAirport] = useState(AIRPORTS[0].label);
+function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: { vehicleId: string | null; setVehicleId: (id: string | null) => void; airports: Airport[]; vehicles: Vehicle[] }) {
+  const [airport, setAirport] = useState(airports[0]?.label ?? "");
   const [direction, setDirection] = useState<"pickup" | "dropoff">("pickup");
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [passengers, setPassengers] = useState("2");
-  const [vehicleId, setVehicleId] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const vClass = VEHICLES.find((v) => v.id === vehicleId);
+  const vClass = vehicles.find((v) => v.id === vehicleId);
   const vehicleMissing = submitted && !vehicleId;
 
   const href = vehicleId ? transferMessage({
     airport,
     direction,
+    destination: destination || "—",
     date: date || "—",
     time: time || "—",
     passengers,
@@ -70,7 +63,7 @@ function AirportForm() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 gap-y-8">
         <FormField label="Airport">
           <select value={airport} onChange={(e) => setAirport(e.target.value)} className={selectCls}>
-            {AIRPORTS.map((a) => (
+            {airports.map((a) => (
               <option key={a.code} value={a.label}>{a.label}</option>
             ))}
           </select>
@@ -83,11 +76,12 @@ function AirportForm() {
                 key={d}
                 type="button"
                 onClick={() => setDirection(d)}
-                className={`flex-1 font-mono text-[12px] tracking-[0.1em] uppercase py-2.5 border transition-all duration-200 ${
+                style={
                   direction === d
-                    ? "bg-teal-deep text-cream border-teal-deep"
-                    : "border-rule text-ink-soft hover:border-ochre"
-                }`}
+                    ? { backgroundColor: "#0b1a2e", color: "#c99a3f", border: "1.5px solid #0b1a2e", fontWeight: 600, padding: "10px 20px", borderRadius: "16px" }
+                    : { backgroundColor: "#f5ede0", color: "#1f1a14", border: "1.5px solid #c99a3f", fontWeight: 400, padding: "10px 20px", borderRadius: "16px" }
+                }
+                className="flex-1 font-mono text-[12px] tracking-[0.1em] uppercase transition-all duration-200"
               >
                 {d === "pickup" ? "Pick-up" : "Drop-off"}
               </button>
@@ -113,27 +107,31 @@ function AirportForm() {
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </FormField>
 
-        <FormField label="Vehicle class *" hint={vClass ? `${vClass.capacity} · ${vClass.from}` : ""} span>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {VEHICLES.map((v) => (
+        <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start">
+          <div className="flex flex-col gap-1.5 min-w-[160px]">
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Vehicle class *</span>
+            {vClass && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}
+            {vehicleMissing && <p className="text-[12px] text-terracotta">Please select a vehicle class.</p>}
+          </div>
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {vehicles.map((v) => (
               <button
                 key={v.id}
                 type="button"
                 onClick={() => setVehicleId(v.id)}
-                className={`font-mono text-[12px] tracking-[0.1em] uppercase px-4 py-2.5 border transition-all duration-200 ${
-                  vehicleId === v.id
-                    ? "bg-teal-deep text-cream border-teal-deep"
-                    : "border-rule text-ink-soft hover:border-ochre"
-                }`}
+                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${vehicleId === v.id
+                    ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
+                    : "bg-cream-warm border-rule text-ink hover:border-ochre"
+                  }`}
               >
-                {v.label}
+                <FleetIllustration vehicleId={v.id as "sedan" | "suv" | "van" | "luxury"} className="w-full h-[52px]" />
+                <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
+                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
+                <span className="text-[11px] text-muted">{v.capacity}</span>
               </button>
             ))}
           </div>
-          {vehicleMissing && (
-            <p className="text-[12px] text-terracotta mt-1">Please select a vehicle class.</p>
-          )}
-        </FormField>
+        </div>
       </div>
 
       <Hairline className="my-12" />
@@ -142,7 +140,7 @@ function AirportForm() {
         <div className="flex-1">
           <Kicker>Message preview</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hello Meridian — I'd like a ${direction === "pickup" ? "pickup from" : "drop-off to"} ${airport} on ${date || "—"} at ${time || "—"} for ${passengers} passenger(s), ${vClass ? vClass.label : "no vehicle selected"}. Could you quote?`}
+            {`Hello Meridian — I'd like a ${direction === "pickup" ? "pickup from" : "drop-off to"} ${airport} on ${date || "—"} at ${time || "—"} for ${passengers} passenger(s), ${vClass ? vClass.label : "no vehicle selected"}. Area / Hotel: ${destination || "—"}. Could you quote?`}
           </pre>
         </div>
         <button
@@ -162,16 +160,15 @@ function AirportForm() {
   );
 }
 
-function CustomForm() {
+function CustomForm({ vehicleId, setVehicleId, vehicles }: { vehicleId: string | null; setVehicleId: (id: string | null) => void; vehicles: Vehicle[] }) {
   const [pickup, setPickup] = useState("");
   const [destinations, setDestinations] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [passengers, setPassengers] = useState("2");
-  const [vehicleId, setVehicleId] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const vClass = VEHICLES.find((v) => v.id === vehicleId);
+  const vClass = vehicles.find((v) => v.id === vehicleId);
   const vehicleMissing = submitted && !vehicleId;
   const href = vehicleId ? chauffeurMessage({
     pickup: pickup || "—",
@@ -203,27 +200,31 @@ function CustomForm() {
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </FormField>
 
-        <FormField label="Vehicle class *" hint={vClass ? `${vClass.capacity} · ${vClass.from}` : ""} span>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {VEHICLES.map((v) => (
+        <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start">
+          <div className="flex flex-col gap-1.5 min-w-[160px]">
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Vehicle class *</span>
+            {vClass && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}
+            {vehicleMissing && <p className="text-[12px] text-terracotta">Please select a vehicle class.</p>}
+          </div>
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {vehicles.map((v) => (
               <button
                 key={v.id}
                 type="button"
                 onClick={() => setVehicleId(v.id)}
-                className={`font-mono text-[12px] tracking-[0.1em] uppercase px-4 py-2.5 border transition-all duration-200 ${
-                  vehicleId === v.id
-                    ? "bg-teal-deep text-cream border-teal-deep"
-                    : "border-rule text-ink-soft hover:border-ochre"
-                }`}
+                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${vehicleId === v.id
+                    ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
+                    : "bg-cream-warm border-rule text-ink hover:border-ochre"
+                  }`}
               >
-                {v.label}
+                <FleetIllustration vehicleId={v.id as "sedan" | "suv" | "van" | "luxury"} className="w-full h-[52px]" />
+                <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
+                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
+                <span className="text-[11px] text-muted">{v.capacity}</span>
               </button>
             ))}
           </div>
-          {vehicleMissing && (
-            <p className="text-[12px] text-terracotta mt-1">Please select a vehicle class.</p>
-          )}
-        </FormField>
+        </div>
 
         <FormField label="Destinations & stops" span>
           <textarea
@@ -262,51 +263,87 @@ function CustomForm() {
   );
 }
 
-export function TransportationPage() {
+interface TransportationPageProps {
+  heroHeadingTop: string;
+  heroHeadingEm: string;
+  heroSub: string;
+  airports: Airport[];
+  vehicles: Vehicle[];
+}
+
+export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, airports, vehicles }: TransportationPageProps) {
   const [mode, setMode] = useState<TabMode>("airport");
+  const [vehicleId, setVehicleId] = useState<string | null>(null);
 
   return (
     <main>
       {/* HERO */}
-      <section className="relative z-30 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative z-10 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
-          <TransportHeroSVG className="w-full h-full" />
+          <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/20 to-navy/85" />
+        <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
+        {/* Diagonal hatch — top-right */}
+        <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)" }} />
+        {/* Diagonal hatch — bottom-left */}
+        <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, left: 0, width: 300, height: 300, color: "rgba(255,255,255,0.04)" }} />
+        {/* Rings — bottom-right (bigger, more layers) */}
+        <div aria-hidden="true" className="absolute right-[-160px] bottom-[-160px] -z-10">
+          {[640, 480, 320, 170, 60].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(255,255,255,${0.04 + i * 0.012})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        {/* Rings — top-left accent */}
+        <div aria-hidden="true" className="absolute left-[-100px] top-[-100px] -z-10">
+          {[420, 270, 130].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: "1px solid rgba(201,154,63,0.08)", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
         <div className="relative z-10 max-w-[1320px] mx-auto w-full">
           <Reveal>
-            <Kicker className="kicker--light">Private chauffeur</Kicker>
+            <Kicker className="kicker--dark">Private chauffeur</Kicker>
           </Reveal>
           <Reveal delay={140}>
             <h1 className="font-display font-light text-[clamp(40px,7vw,96px)] leading-[0.98] tracking-[-0.025em] mt-6 mb-7 max-w-[16ch]">
-              {HERO_HEADING_TOP}
+              <span className="text-teal-deep">{heroHeadingTop}</span>
               <br />
-              <em className="text-ochre font-light not-italic">{HERO_HEADING_EM}</em>
+              <em className="text-ochre font-light not-italic">{heroHeadingEm}</em>
             </h1>
           </Reveal>
           <Reveal delay={280}>
-            <p className="text-cream/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
-              {HERO_SUB}
+            <p className="text-navy/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
+              {heroSub}
             </p>
           </Reveal>
         </div>
       </section>
 
       {/* TABBED FORM */}
-      <section className="relative z-30 px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)]">
-        <div className="max-w-[1320px] mx-auto bg-cream">
+      <section className="relative z-10 bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
+        {/* Rings — right side */}
+        <div aria-hidden="true" className="absolute right-[-160px] top-1/2 -translate-y-1/2 -z-10">
+          {[920, 700, 500, 300, 110].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(201,154,63,${0.12 + i * 0.025})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        {/* Rings — left side accent */}
+        <div aria-hidden="true" className="absolute left-[-120px] bottom-[-80px] -z-10">
+          {[640, 440, 240].map((size, i) => (
+            <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(27,77,92,${0.13 + i * 0.03})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
+          ))}
+        </div>
+        <div className="max-w-[1320px] mx-auto relative z-10">
           {/* Tabs */}
-          <div className="relative inline-flex border-b border-rule mb-12">
-            {([["airport", "A · Airport transfer"], ["custom", "B · Custom chauffeur"]] as const).map(
+          <div className="relative inline-flex gap-4 border-b border-rule mb-12">
+            {([["airport", "Airport Transfer"], ["custom", "Custom Chauffeur"]] as const).map(
               ([val, label]) => (
                 <button
                   key={val}
                   role="tab"
                   aria-selected={mode === val}
                   onClick={() => setMode(val)}
-                  className={`flex items-center gap-3 px-8 py-4.5 font-mono text-[13px] tracking-[0.16em] uppercase transition-colors duration-300 ${
-                    mode === val ? "text-ink" : "text-muted hover:text-ink-soft"
-                  }`}
+                  className={`flex items-center gap-3 px-8 py-4.5 font-mono text-[13px] tracking-[0.16em] uppercase transition-colors duration-300 ${mode === val ? "text-ink" : "text-muted hover:text-ink-soft"
+                    }`}
                 >
                   {label}
                 </button>
@@ -320,44 +357,12 @@ export function TransportationPage() {
             />
           </div>
 
-          {mode === "airport" ? <AirportForm /> : <CustomForm />}
+          {mode === "airport"
+            ? <AirportForm vehicleId={vehicleId} setVehicleId={setVehicleId} airports={airports} vehicles={vehicles} />
+            : <CustomForm vehicleId={vehicleId} setVehicleId={setVehicleId} vehicles={vehicles} />}
         </div>
       </section>
 
-      {/* FLEET */}
-      <section className="relative z-30 px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)]">
-        <div className="max-w-[1320px] mx-auto">
-          <div className="mb-14 bg-cream">
-            <Reveal><Kicker>The fleet</Kicker></Reveal>
-            <Reveal delay={120}>
-              <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
-                {FLEET_HEADING}
-              </GoldUnderlineHeading>
-            </Reveal>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-rule bg-cream">
-            {VEHICLES.map((v, i) => (
-              <Reveal
-                key={v.id}
-                delay={i * 80}
-                className="px-7 py-8 border-b border-r border-rule last:border-r-0 even:lg:border-r-0 [&:nth-child(4)]:border-r-0 group hover:bg-cream-warm transition-colors duration-200"
-              >
-                <FleetIllustration vehicleId={v.id as "sedan"|"suv"|"van"|"luxury"} className="w-full h-[100px] mb-5" />
-                <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ochre mb-2.5">
-                  {v.from}
-                </p>
-                <h3 className="font-display font-normal text-[28px] tracking-tight mb-4">
-                  {v.label}
-                </h3>
-                <Hairline className="w-8 h-px bg-ochre mb-4 opacity-100" />
-                <p className="text-[14px] text-ink mb-1">{v.capacity}</p>
-                <p className="text-[13px] text-muted">{v.note}</p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
