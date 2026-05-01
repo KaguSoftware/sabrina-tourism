@@ -9,7 +9,15 @@
       "Bash(git add *)",
       "Bash(git rm *)",
       "Bash(awk '{print $2}')",
+<<<<<<< HEAD
+      "Read(//Users/saitaydin/Pictures/turizm/**)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/saitaydin/Pictures/turizm/chauffer.png)"
+    ],
+    "additionalDirectories": [
+      "/Users/saitaydin/Pictures/turizm"
+=======
       "Bash(npx vercel *)"
+>>>>>>> 0a0664792b7e3d6c8c4b4bc9482e7afa5b550eed
     ]
   }
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
-import { TransportHeroSVG } from "@/components/illustrations/TransportHeroSVG/TransportHeroSVG";
+import Image from "next/image";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
 import { AIRPORTS, VEHICLES } from "@/lib/transport/transport";
 import { transferMessage, chauffeurMessage } from "@/lib/whatsapp/whatsapp";
@@ -124,13 +124,12 @@ function AirportForm({ vehicleId, setVehicleId }: { vehicleId: string | null; se
                 key={v.id}
                 type="button"
                 onClick={() => setVehicleId(v.id)}
-                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${
-                  vehicleId === v.id
+                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${vehicleId === v.id
                     ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
                     : "bg-cream-warm border-rule text-ink hover:border-ochre"
-                }`}
+                  }`}
               >
-                <FleetIllustration vehicleId={v.id as "sedan"|"suv"|"van"|"luxury"} className="w-full h-[52px]" />
+                <FleetIllustration vehicleId={v.id as "sedan" | "suv" | "van" | "luxury"} className="w-full h-[52px]" />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
                 <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
                 <span className="text-[11px] text-muted">{v.capacity}</span>
@@ -218,13 +217,12 @@ function CustomForm({ vehicleId, setVehicleId }: { vehicleId: string | null; set
                 key={v.id}
                 type="button"
                 onClick={() => setVehicleId(v.id)}
-                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${
-                  vehicleId === v.id
+                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${vehicleId === v.id
                     ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
                     : "bg-cream-warm border-rule text-ink hover:border-ochre"
-                }`}
+                  }`}
               >
-                <FleetIllustration vehicleId={v.id as "sedan"|"suv"|"van"|"luxury"} className="w-full h-[52px]" />
+                <FleetIllustration vehicleId={v.id as "sedan" | "suv" | "van" | "luxury"} className="w-full h-[52px]" />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
                 <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
                 <span className="text-[11px] text-muted">{v.capacity}</span>
@@ -279,9 +277,9 @@ export function TransportationPage() {
       {/* HERO */}
       <section className="relative z-10 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
-          <TransportHeroSVG className="w-full h-full" />
+          <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-navy/20 to-navy/85" />
+        <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
         {/* Diagonal hatch — top-right */}
         <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)" }} />
         {/* Diagonal hatch — bottom-left */}
@@ -300,17 +298,17 @@ export function TransportationPage() {
         </div>
         <div className="relative z-10 max-w-[1320px] mx-auto w-full">
           <Reveal>
-            <Kicker className="kicker--light">Private chauffeur</Kicker>
+            <Kicker className="kicker--dark">Private chauffeur</Kicker>
           </Reveal>
           <Reveal delay={140}>
             <h1 className="font-display font-light text-[clamp(40px,7vw,96px)] leading-[0.98] tracking-[-0.025em] mt-6 mb-7 max-w-[16ch]">
-              {HERO_HEADING_TOP}
+              <span className="text-teal-deep">{HERO_HEADING_TOP}</span>
               <br />
               <em className="text-ochre font-light not-italic">{HERO_HEADING_EM}</em>
             </h1>
           </Reveal>
           <Reveal delay={280}>
-            <p className="text-cream/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
+            <p className="text-navy/78 max-w-[56ch] text-[clamp(15px,1.4vw,18px)] leading-[1.6]">
               {HERO_SUB}
             </p>
           </Reveal>
@@ -341,9 +339,8 @@ export function TransportationPage() {
                   role="tab"
                   aria-selected={mode === val}
                   onClick={() => setMode(val)}
-                  className={`flex items-center gap-3 px-8 py-4.5 font-mono text-[13px] tracking-[0.16em] uppercase transition-colors duration-300 ${
-                    mode === val ? "text-ink" : "text-muted hover:text-ink-soft"
-                  }`}
+                  className={`flex items-center gap-3 px-8 py-4.5 font-mono text-[13px] tracking-[0.16em] uppercase transition-colors duration-300 ${mode === val ? "text-ink" : "text-muted hover:text-ink-soft"
+                    }`}
                 >
                   {label}
                 </button>
