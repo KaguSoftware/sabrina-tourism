@@ -8,13 +8,10 @@ export function HeroPanorama() {
     <section className="relative z-10 min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-0">
-        <Image src="/homepage.png" alt="Hero panorama" fill className="object-cover object-center" priority />
+        <Image src="/tours.png" alt="Hero panorama" fill className="object-cover object-center" priority />
       </div>
 
-      {/* Veil — subtle cream fade so text stays readable */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-cream/55 via-cream/15 to-transparent" />
-
-      {/* Content */}
+{/* Content */}
       <div className="relative z-[2] max-w-[920px] w-full">
         <Reveal>
           <span className="inline-block font-mono text-[11px] tracking-[0.3em] uppercase text-teal-deep pb-2 border-b border-teal-deep mb-7">

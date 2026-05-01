@@ -302,7 +302,7 @@ export function TransportationPage() {
           </Reveal>
           <Reveal delay={140}>
             <h1 className="font-display font-light text-[clamp(40px,7vw,96px)] leading-[0.98] tracking-[-0.025em] mt-6 mb-7 max-w-[16ch]">
-              {HERO_HEADING_TOP}
+              <span className="text-teal-deep">{HERO_HEADING_TOP}</span>
               <br />
               <em className="text-ochre font-light not-italic">{HERO_HEADING_EM}</em>
             </h1>
