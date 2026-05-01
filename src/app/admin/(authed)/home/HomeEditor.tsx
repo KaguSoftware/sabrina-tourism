@@ -95,7 +95,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
     },
     how_it_works: {
       section_heading: howItWorks.section_heading,
-      steps: howItWorks.steps.map((s) => ({
+      steps: (howItWorks.steps ?? []).map((s) => ({
         num: s.num,
         heading: s.heading,
         body: s.body,
@@ -104,7 +104,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
     },
     featured: {
       section_heading: featured.section_heading,
-      featured_slugs: featured.featured_slugs,
+      featured_slugs: featured.featured_slugs ?? [],
     },
     quote: {
       quote: quote.quote,
