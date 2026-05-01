@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className="relative">
         <SiteHeader />
         <PaperPlanePath />
-        <main className="relative z-10">{children}</main>
+        <main className="relative">{children}</main>
         <SiteFooter />
       </body>
     </html>

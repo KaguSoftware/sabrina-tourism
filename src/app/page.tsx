@@ -4,7 +4,6 @@ import { SignatureDestinations } from "@/components/home/SignatureDestinations/S
 import { FeaturedPackages } from "@/components/home/FeaturedPackages/FeaturedPackages";
 import { HowItWorks } from "@/components/home/HowItWorks/HowItWorks";
 import { QuoteStrip } from "@/components/home/QuoteStrip/QuoteStrip";
-
 export default function HomePage() {
   return (
     <>

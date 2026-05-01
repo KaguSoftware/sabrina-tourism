@@ -5,11 +5,14 @@ import { ABOUT_HEADING, ABOUT_BODY } from "./constants";
 
 export function AboutStrip() {
     return (
-        <section className="relative z-10 bg-cream py-[clamp(60px,9vw,120px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative py-[clamp(60px,9vw,120px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+            {/* Section background — sits below the plane */}
+            <div aria-hidden="true" className="absolute inset-0 bg-cream z-5" />
+
             {/* Concentric rings — bottom-left */}
             <div
                 aria-hidden="true"
-                className="absolute left-[30px] bottom-[-160px] -z-10"
+                className="absolute left-[30px] bottom-[-160px] z-5"
             >
                 {[980, 760, 540, 320, 130].map((size, i) => (
                     <div
@@ -32,7 +35,7 @@ export function AboutStrip() {
             {/* Rings — top-right accent */}
             <div
                 aria-hidden="true"
-                className="absolute right-[80px] top-[50px] -z-10"
+                className="absolute right-[80px] top-[50px] z-5"
             >
                 {[680, 480, 280, 110].map((size, i) => (
                     <div
@@ -53,7 +56,7 @@ export function AboutStrip() {
                 ))}
             </div>
 
-            <div className="max-w-[920px] mx-auto relative z-10">
+            <div className="max-w-[920px] mx-auto relative z-7">
                 <Reveal>
                     <Kicker>About — Est. 2014</Kicker>
                 </Reveal>
