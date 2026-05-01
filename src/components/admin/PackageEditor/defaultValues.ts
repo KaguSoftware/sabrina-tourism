@@ -1,5 +1,5 @@
 import type { PackageRaw } from "@/lib/db/packages";
-import type { PackageFormValues } from "@/app/admin/packages/[slug]/actions";
+import type { PackageFormValues } from "@/app/admin/(authed)/packages/[slug]/actions";
 import { TIER_NAMES } from "./types";
 
 export function defaultValues(pkg?: PackageRaw): PackageFormValues {

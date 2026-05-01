@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { ExternalLink } from "lucide-react";
 
-import { PackageSchema, savePackage } from "@/app/admin/packages/[slug]/actions";
+import { PackageSchema, savePackage } from "@/app/admin/(authed)/packages/[slug]/actions";
 import { slugify } from "@/lib/utils/slug";
 import type { PackageRaw } from "@/lib/db/packages";
 
