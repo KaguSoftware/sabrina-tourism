@@ -84,15 +84,15 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
 
   const defaultValues: HomeContentFormValues = {
     hero: {
-      kicker: hero.kicker,
-      headline_top: hero.headline_top,
-      headline_em: hero.headline_em,
-      sub: hero.sub,
+      kicker: hero.kicker ?? "",
+      headline_top: hero.headline_top ?? "",
+      headline_em: hero.headline_em ?? "",
+      sub: hero.sub ?? "",
       hero_image: hero.hero_image ?? null,
     },
     about: {
-      heading: about.heading,
-      body: about.body,
+      heading: about.heading ?? "",
+      body: about.body ?? "",
     },
     how_it_works: {
       section_heading: howItWorks.section_heading ?? "",
@@ -108,12 +108,12 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
       })),
     },
     featured: {
-      section_heading: featured.section_heading,
+      section_heading: featured.section_heading ?? "",
       featured_slugs: featured.featured_slugs ?? [],
     },
     quote: {
-      quote: quote.quote,
-      attribution: quote.attribution,
+      quote: quote.quote ?? "",
+      attribution: quote.attribution ?? "",
     },
   };
 
