@@ -6,11 +6,19 @@ import { createServerClient } from "@/lib/supabase/server";
 function revalidateAll() {
   revalidatePath("/packages");
   revalidatePath("/");
-  revalidateTag("packages");
+  revalidateTag("packages", "max");
+}
+
+// Supabase v2.105 requires index signatures on Row types for mutation generics.
+// Our hand-written types don't have them, so we cast to any for write operations.
+// Read operations remain typed via the Database generic.
+async function db() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (await createServerClient()) as any;
 }
 
 export async function reorderPackages(orderedIds: string[]): Promise<{ error?: string }> {
-  const supabase = await createServerClient();
+  const supabase = await db();
 
   for (let i = 0; i < orderedIds.length; i++) {
     const { error } = await supabase
@@ -29,7 +37,7 @@ export async function setFeatured(
   packageId: string,
   isFeatured: boolean,
 ): Promise<{ error?: string }> {
-  const supabase = await createServerClient();
+  const supabase = await db();
 
   const { error } = await supabase
     .from("packages")
@@ -51,7 +59,7 @@ export async function setPublished(
   packageId: string,
   isPublished: boolean,
 ): Promise<{ error?: string }> {
-  const supabase = await createServerClient();
+  const supabase = await db();
 
   const update: Record<string, boolean> = { is_published: isPublished };
   if (!isPublished) {
@@ -70,7 +78,7 @@ export async function setPublished(
 }
 
 export async function deletePackage(packageId: string): Promise<{ error?: string }> {
-  const supabase = await createServerClient();
+  const supabase = await db();
 
   const { error } = await supabase.from("packages").delete().eq("id", packageId);
 
@@ -83,9 +91,8 @@ export async function deletePackage(packageId: string): Promise<{ error?: string
 export async function duplicatePackage(
   packageId: string,
 ): Promise<{ error?: string; newSlug?: string }> {
-  const supabase = await createServerClient();
+  const supabase = await db();
 
-  // Fetch source package with all relations
   const { data: pkg, error: pkgErr } = await supabase
     .from("packages")
     .select(`*, package_itinerary_days(*), package_tiers(*), package_gallery(*), package_inclusions(*)`)
@@ -94,7 +101,6 @@ export async function duplicatePackage(
 
   if (pkgErr || !pkg) return { error: pkgErr?.message ?? "Package not found" };
 
-  // Generate new slug
   const baseSlug = `${pkg.slug}-copy`;
   let newSlug = baseSlug;
   let attempt = 0;
@@ -109,7 +115,6 @@ export async function duplicatePackage(
     newSlug = `${baseSlug}-${attempt}`;
   }
 
-  // Insert new package
   const { data: newPkg, error: insertErr } = await supabase
     .from("packages")
     .insert({
@@ -137,7 +142,6 @@ export async function duplicatePackage(
 
   const newId = newPkg.id;
 
-  // Copy itinerary
   if (pkg.package_itinerary_days?.length) {
     await supabase.from("package_itinerary_days").insert(
       pkg.package_itinerary_days.map(({ id: _id, package_id: _pid, created_at: _ca, updated_at: _ua, ...rest }: Record<string, unknown>) => ({
@@ -147,7 +151,6 @@ export async function duplicatePackage(
     );
   }
 
-  // Copy tiers
   if (pkg.package_tiers?.length) {
     await supabase.from("package_tiers").insert(
       pkg.package_tiers.map(({ id: _id, package_id: _pid, created_at: _ca, updated_at: _ua, ...rest }: Record<string, unknown>) => ({
@@ -157,7 +160,6 @@ export async function duplicatePackage(
     );
   }
 
-  // Copy gallery
   if (pkg.package_gallery?.length) {
     await supabase.from("package_gallery").insert(
       pkg.package_gallery.map(({ id: _id, package_id: _pid, created_at: _ca, updated_at: _ua, ...rest }: Record<string, unknown>) => ({
@@ -167,7 +169,6 @@ export async function duplicatePackage(
     );
   }
 
-  // Copy inclusions
   if (pkg.package_inclusions?.length) {
     await supabase.from("package_inclusions").insert(
       pkg.package_inclusions.map(({ id: _id, package_id: _pid, created_at: _ca, updated_at: _ua, ...rest }: Record<string, unknown>) => ({

@@ -2,24 +2,28 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   DndContext,
   closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
+  type DragEndEvent,
 } from "@dnd-kit/core";
 import {
   SortableContext,
-  useSortable,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Pencil, Copy, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+
 import { reorderPackages, setFeatured, setPublished, deletePackage, duplicatePackage } from "./actions";
+import { SortableRow } from "./PackagesTableRow";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 export interface AdminPackageRow {
   id: string;
@@ -81,174 +85,6 @@ function ConfirmDialog({
 }
 
 // ---------------------------------------------------------------------------
-// Thumbnail
-// ---------------------------------------------------------------------------
-
-function Thumbnail({ src, region }: { src?: string; region: string }) {
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={region}
-        className="w-10 h-10 rounded object-cover flex-shrink-0"
-      />
-    );
-  }
-  return (
-    <div className="w-10 h-10 rounded flex-shrink-0 bg-cream-warm flex items-center justify-center">
-      <span className="font-mono text-[8px] tracking-[0.12em] uppercase text-ink-soft leading-none text-center px-1">
-        {region}
-      </span>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Sortable row
-// ---------------------------------------------------------------------------
-
-function SortableRow({
-  pkg,
-  onTogglePublished,
-  onToggleFeatured,
-  onDelete,
-  onDuplicate,
-}: {
-  pkg: AdminPackageRow;
-  onTogglePublished: (id: string, current: boolean) => void;
-  onToggleFeatured: (id: string, current: boolean) => void;
-  onDelete: (id: string) => void;
-  onDuplicate: (id: string) => void;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: pkg.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
-  return (
-    <tr
-      ref={setNodeRef}
-      style={style}
-      className="border-b border-rule hover:bg-cream-warm/40 transition-colors"
-    >
-      {/* Drag handle */}
-      <td className="pl-3 pr-2 py-3 w-8">
-        <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink transition-colors touch-none"
-          aria-label="Drag to reorder"
-        >
-          <GripVertical size={16} />
-        </button>
-      </td>
-
-      {/* Thumbnail */}
-      <td className="px-2 py-3 w-12">
-        <Thumbnail src={pkg.cardImage} region={pkg.region} />
-      </td>
-
-      {/* Name + region */}
-      <td className="px-3 py-3">
-        <div className="font-serif text-[15px] text-ink leading-snug" style={{ fontFamily: "var(--font-fraunces)" }}>
-          {pkg.name}
-        </div>
-        <div className="font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft mt-0.5">
-          {pkg.region}
-        </div>
-      </td>
-
-      {/* Slug */}
-      <td className="px-3 py-3 hidden md:table-cell">
-        <span className="font-mono text-[11px] text-ink-soft">
-          /packages/{pkg.slug}
-        </span>
-      </td>
-
-      {/* Status pill — clickable to toggle publish */}
-      <td className="px-3 py-3 w-28">
-        <button
-          onClick={() => onTogglePublished(pkg.id, pkg.isPublished)}
-          className="group"
-          title={pkg.isPublished ? "Click to unpublish" : "Click to publish"}
-        >
-          {pkg.isPublished ? (
-            <span className="inline-block px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] uppercase bg-navy text-ochre rounded-sm group-hover:opacity-80 transition-opacity">
-              Published
-            </span>
-          ) : (
-            <span className="inline-block px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] uppercase bg-cream-warm text-ink-soft rounded-sm group-hover:opacity-80 transition-opacity">
-              Draft
-            </span>
-          )}
-        </button>
-      </td>
-
-      {/* Featured toggle */}
-      <td className="px-3 py-3 w-20">
-        <button
-          onClick={() => {
-            if (!pkg.isPublished && !pkg.isFeatured) return;
-            onToggleFeatured(pkg.id, pkg.isFeatured);
-          }}
-          disabled={!pkg.isPublished}
-          title={
-            !pkg.isPublished
-              ? "Publish first to feature"
-              : pkg.isFeatured
-              ? "Remove from featured"
-              : "Add to featured"
-          }
-          className={`w-5 h-5 rounded-sm border transition-all duration-200 ${
-            pkg.isFeatured
-              ? "bg-ochre border-ochre"
-              : "bg-transparent border-rule hover:border-ochre"
-          } ${!pkg.isPublished ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}`}
-          aria-label={pkg.isFeatured ? "Remove from featured" : "Feature this tour"}
-        >
-          {pkg.isFeatured && (
-            <svg viewBox="0 0 12 12" fill="none" className="w-full h-full p-0.5">
-              <path d="M2 6l3 3 5-5" stroke="#1f1a14" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          )}
-        </button>
-      </td>
-
-      {/* Actions */}
-      <td className="px-3 py-3 w-28">
-        <div className="flex items-center gap-1">
-          <a
-            href={`/admin/packages/${pkg.slug}`}
-            title="Edit"
-            className="p-1.5 text-ink-soft hover:text-ink transition-colors rounded"
-          >
-            <Pencil size={14} />
-          </a>
-          <button
-            onClick={() => onDuplicate(pkg.id)}
-            title="Duplicate"
-            className="p-1.5 text-ink-soft hover:text-ink transition-colors rounded"
-          >
-            <Copy size={14} />
-          </button>
-          <button
-            onClick={() => onDelete(pkg.id)}
-            title="Delete"
-            className="p-1.5 text-ink-soft hover:text-terracotta transition-colors rounded"
-          >
-            <Trash2 size={14} />
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Main table
 // ---------------------------------------------------------------------------
 
@@ -259,124 +95,69 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
-  const handleDragEnd = useCallback(
-    async (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = packages.findIndex((p) => p.id === active.id);
+    const newIndex = packages.findIndex((p) => p.id === over.id);
+    const reordered = arrayMove(packages, oldIndex, newIndex);
+    setPackages(reordered);
+    const result = await reorderPackages(reordered.map((p) => p.id));
+    if (result.error) { setPackages(packages); toast.error(result.error); }
+  }, [packages]);
 
-      const oldIndex = packages.findIndex((p) => p.id === active.id);
-      const newIndex = packages.findIndex((p) => p.id === over.id);
-      const reordered = arrayMove(packages, oldIndex, newIndex);
+  const handleTogglePublished = useCallback(async (id: string, current: boolean) => {
+    const next = !current;
+    setPackages((prev) => prev.map((p) => p.id === id ? { ...p, isPublished: next, isFeatured: next ? p.isFeatured : false } : p));
+    const result = await setPublished(id, next);
+    if (result.error) { setPackages(packages); toast.error(result.error); }
+    else toast.success(next ? "Published." : "Moved to draft.");
+  }, [packages]);
 
-      setPackages(reordered); // optimistic
-
-      const result = await reorderPackages(reordered.map((p) => p.id));
-      if (result.error) {
-        setPackages(packages); // rollback
+  const handleToggleFeatured = useCallback(async (id: string, current: boolean) => {
+    const next = !current;
+    setPackages((prev) => prev.map((p) => (p.id === id ? { ...p, isFeatured: next } : p)));
+    const result = await setFeatured(id, next);
+    if (result.error) {
+      setPackages(packages);
+      if (result.error.includes("Maximum 3")) {
+        toast.error(result.error, { style: { background: "#c05a3a", color: "#f5ede0", border: "1px solid #c05a3a" } });
+      } else {
         toast.error(result.error);
       }
-    },
-    [packages],
-  );
-
-  const handleTogglePublished = useCallback(
-    async (id: string, current: boolean) => {
-      const next = !current;
-      setPackages((prev) =>
-        prev.map((p) =>
-          p.id === id
-            ? { ...p, isPublished: next, isFeatured: next ? p.isFeatured : false }
-            : p,
-        ),
-      );
-
-      const result = await setPublished(id, next);
-      if (result.error) {
-        setPackages(packages); // rollback
-        toast.error(result.error);
-      } else {
-        toast.success(next ? "Published." : "Moved to draft.");
-      }
-    },
-    [packages],
-  );
-
-  const handleToggleFeatured = useCallback(
-    async (id: string, current: boolean) => {
-      const next = !current;
-      setPackages((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isFeatured: next } : p)),
-      );
-
-      const result = await setFeatured(id, next);
-      if (result.error) {
-        setPackages(packages); // rollback
-        if (result.error.includes("Maximum 3")) {
-          toast.error(result.error, {
-            style: {
-              background: "#c05a3a",
-              color: "#f5ede0",
-              border: "1px solid #c05a3a",
-            },
-          });
-        } else {
-          toast.error(result.error);
-        }
-      } else {
-        toast.success(next ? "Now featured." : "Removed from featured.");
-      }
-    },
-    [packages],
-  );
-
-  const handleDelete = useCallback((id: string) => {
-    setDeleteTarget(id);
-  }, []);
+    } else {
+      toast.success(next ? "Now featured." : "Removed from featured.");
+    }
+  }, [packages]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
     const id = deleteTarget;
     setDeleteTarget(null);
-
     setPackages((prev) => prev.filter((p) => p.id !== id));
-
     const result = await deletePackage(id);
-    if (result.error) {
-      setPackages(packages); // rollback
-      toast.error(result.error);
-    } else {
-      toast.success("Tour deleted.");
-    }
+    if (result.error) { setPackages(packages); toast.error(result.error); }
+    else toast.success("Tour deleted.");
   }, [deleteTarget, packages]);
 
-  const handleDuplicate = useCallback(
-    async (id: string) => {
-      const result = await duplicatePackage(id);
-      if (result.error) {
-        toast.error(result.error);
-      } else {
-        toast.success("Duplicated. Edit the copy.");
-        router.push(`/admin/packages/${result.newSlug}`);
-      }
-    },
-    [router],
-  );
+  const handleDuplicate = useCallback(async (id: string) => {
+    const result = await duplicatePackage(id);
+    if (result.error) toast.error(result.error);
+    else { toast.success("Duplicated. Edit the copy."); router.push(`/admin/packages/${result.newSlug}`); }
+  }, [router]);
 
   if (packages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-6">
-        <p
-          className="text-[24px] text-ink-soft italic"
-          style={{ fontFamily: "var(--font-fraunces)" }}
-        >
+        <p className="text-[24px] text-ink-soft italic" style={{ fontFamily: "var(--font-fraunces)" }}>
           No tours yet.
         </p>
-        <a
+        <Link
           href="/admin/packages/new"
           className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:scale-[0.97]"
         >
           + New tour
-        </a>
+        </Link>
       </div>
     );
   }
@@ -394,18 +175,10 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
             <tr className="border-b border-rule">
               <th className="pl-3 pr-2 py-2 w-8" />
               <th className="px-2 py-2 w-12" />
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft">
-                Name
-              </th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft hidden md:table-cell">
-                Slug
-              </th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft w-28">
-                Status
-              </th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft w-20">
-                Featured
-              </th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft">Name</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft hidden md:table-cell">Slug</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft w-28">Status</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft w-20">Featured</th>
               <th className="px-3 py-2 w-28" />
             </tr>
           </thead>
@@ -418,7 +191,7 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
                     pkg={pkg}
                     onTogglePublished={handleTogglePublished}
                     onToggleFeatured={handleToggleFeatured}
-                    onDelete={handleDelete}
+                    onDelete={(id) => setDeleteTarget(id)}
                     onDuplicate={handleDuplicate}
                   />
                 ))}

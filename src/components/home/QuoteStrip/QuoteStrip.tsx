@@ -62,7 +62,7 @@ export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
                         className="font-display italic text-ochre text-[120px] leading-[0.6] mb-5"
                         aria-hidden="true"
                     >
-                        "
+                        &ldquo;
                     </p>
                     <blockquote className="font-display font-light italic text-[clamp(24px,3vw,42px)] leading-[1.35] tracking-[-0.012em] mb-8">
                         {quote}

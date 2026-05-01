@@ -15,7 +15,18 @@
       "Bash(git checkout *)",
       "Bash(rm src/app/page.tsx src/app/packages/page.tsx \"src/app/packages/[slug]/page.tsx\" src/app/transportation/page.tsx)",
       "Bash(rmdir src/app/packages/[slug] src/app/packages src/app/transportation)",
-      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next/package.json'\\).version\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(p.dependencies['@supabase/supabase-js'], p.dependencies['@supabase/ssr']\\)\")",
+      "Bash(xargs grep *)",
+      "Bash(grep -r \"from.*home.*constants\\\\|from.*HeroPanorama/constants\\\\|from.*AboutStrip/constants\\\\|from.*HowItWorks/constants\\\\|from.*QuoteStrip/constants\\\\|from.*FeaturedPackages/constants\\\\|from.*SignatureDestinations/constants\" src/ --include=\"*.ts\" --include=\"*.tsx\")",
+      "Bash(grep -r \"from.*transport/transport\\\\b\\\\|from.*transport/constants\" src/ --include=\"*.ts\" --include=\"*.tsx\")",
+      "Bash(cat src/lib/packages/constants.ts)",
+      "Bash(rm src/components/home/HeroPanorama/constants.ts src/components/home/AboutStrip/constants.ts src/components/home/HowItWorks/constants.ts src/components/home/QuoteStrip/constants.ts src/components/home/FeaturedPackages/constants.ts)",
+      "Bash(rm src/components/transport/TransportationPage/constants.ts)",
+      "Bash(grep -v \"^$\")",
+      "Bash(grep \"C:\\\\\\\\\")",
+      "Bash(grep -E \"\\\\.tsx?$\")",
+      "Bash(xargs wc *)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm"

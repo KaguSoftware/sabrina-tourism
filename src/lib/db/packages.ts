@@ -194,6 +194,121 @@ export async function getFeaturedPackages(): Promise<Package[]> {
   );
 }
 
+// Raw shape for the admin editor — includes id, DB-native field names, and relations
+export interface PackageRaw {
+  id: string;
+  slug: string;
+  name: string;
+  region: string;
+  duration: string;
+  duration_days: number;
+  short_description: string;
+  overview: string; // raw string, split by \n\n on display
+  hero_image: string;
+  card_image: string | null;
+  min_people: number;
+  max_people: number;
+  available_from: string;
+  available_to: string;
+  is_published: boolean;
+  is_featured: boolean;
+  sort_order: number;
+  updated_at: string;
+  itinerary: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
+  tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[] }>;
+  gallery: Array<{ id: string; image_path: string; sort_order: number }>;
+  included: Array<{ id: string; text: string; sort_order: number }>;
+  not_included: Array<{ id: string; text: string; sort_order: number }>;
+}
+
+export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | null> {
+  const supabase = await createServerClient();
+
+  const { data, error } = await supabase
+    .from('packages')
+    .select(`
+      *,
+      package_itinerary_days(*),
+      package_tiers(*),
+      package_gallery(*),
+      package_inclusions(*)
+    `)
+    .eq('slug', slug)
+    .maybeSingle() as unknown as { data: any; error: any };
+
+  if (error || !data) return null;
+
+  const sorted = <T extends { sort_order: number }>(arr: T[]) =>
+    [...arr].sort((a, b) => a.sort_order - b.sort_order);
+
+  const inclusions: any[] = data.package_inclusions ?? [];
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    name: data.name,
+    region: data.region,
+    duration: data.duration,
+    duration_days: data.duration_days,
+    short_description: data.short_description,
+    overview: data.overview,
+    hero_image: data.hero_image,
+    card_image: data.card_image,
+    min_people: data.min_people,
+    max_people: data.max_people,
+    available_from: data.available_from,
+    available_to: data.available_to,
+    is_published: data.is_published,
+    is_featured: data.is_featured,
+    sort_order: data.sort_order,
+    updated_at: data.updated_at,
+    itinerary: sorted(data.package_itinerary_days ?? []).map((d: any) => ({
+      id: d.id,
+      day_number: d.day_number,
+      title: d.title,
+      description: d.description,
+      sort_order: d.sort_order,
+    })),
+    tiers: (['Essential', 'Signature', 'Private'] as const).map((name) => {
+      const t = (data.package_tiers ?? []).find((r: any) => r.tier_name === name) ?? {
+        id: '',
+        tier_name: name,
+        vehicle_class: '',
+        accommodation: '',
+        group_size: '',
+        guide_languages: [],
+        meals_included: '',
+        highlights: [],
+      };
+      return {
+        id: t.id,
+        tier_name: t.tier_name,
+        vehicle_class: t.vehicle_class,
+        accommodation: t.accommodation,
+        group_size: t.group_size,
+        guide_languages: t.guide_languages ?? [],
+        meals_included: t.meals_included,
+        highlights: t.highlights ?? [],
+      };
+    }),
+    gallery: sorted(data.package_gallery ?? []).map((g: any) => ({
+      id: g.id,
+      image_path: g.image_path,
+      sort_order: g.sort_order,
+    })),
+    included: sorted(inclusions.filter((i: any) => i.kind === 'included')).map((i: any) => ({
+      id: i.id,
+      text: i.text,
+      sort_order: i.sort_order,
+    })),
+    not_included: sorted(inclusions.filter((i: any) => i.kind === 'not_included')).map((i: any) => ({
+      id: i.id,
+      text: i.text,
+      sort_order: i.sort_order,
+    })),
+  };
+}
+
 export async function getAllSlugs(): Promise<string[]> {
   const supabase = await createServerClient();
 

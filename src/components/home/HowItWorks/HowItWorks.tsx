@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
@@ -226,7 +226,6 @@ function WhatsAppIcon({ animate }: { animate: boolean }) {
 function StepCard({ step, index }: { step: Step; index: number }) {
     const ref = useRef<HTMLDivElement>(null);
     const hasAnimated = useRef(false);
-    const { useState } = require("react");
     const [animate, setAnimate] = useState(false);
 
     useEffect(() => {

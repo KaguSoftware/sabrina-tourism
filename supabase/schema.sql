@@ -303,5 +303,174 @@ CREATE POLICY "auth_delete_media"
 
 
 -- -------------------------------------------------------------
+-- 5. save_package — atomic upsert of a package and all children
+-- -------------------------------------------------------------
+-- Call via: SELECT save_package($1::jsonb)
+-- The JSON shape mirrors PackageEditorPayload in actions.ts.
+-- Returns the (possibly new) slug.
+
+CREATE OR REPLACE FUNCTION save_package(p_data jsonb)
+RETURNS text
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_id            uuid;
+  v_old_slug      text;
+  v_new_slug      text;
+  v_existing_id   uuid;
+  v_tier          jsonb;
+  v_day           jsonb;
+  v_img           jsonb;
+  v_inc           jsonb;
+  v_i             int;
+BEGIN
+  v_new_slug := p_data->>'slug';
+
+  -- ── Determine if this is an INSERT or UPDATE ──────────────────────────
+  IF p_data->>'id' IS NOT NULL THEN
+    -- UPDATE path
+    v_id := (p_data->>'id')::uuid;
+
+    SELECT slug INTO v_old_slug FROM packages WHERE id = v_id;
+    IF NOT FOUND THEN
+      RAISE EXCEPTION 'Package not found: %', v_id;
+    END IF;
+
+    -- Check slug uniqueness against OTHER packages
+    IF v_new_slug <> v_old_slug THEN
+      SELECT id INTO v_existing_id FROM packages WHERE slug = v_new_slug AND id <> v_id;
+      IF FOUND THEN
+        RAISE EXCEPTION 'SLUG_CONFLICT: Another tour already uses this name. Pick a different name.';
+      END IF;
+
+      -- Remove any history row for THIS package that matches the new slug
+      -- (rename-back case — prevents redirect loop)
+      DELETE FROM package_slug_history
+        WHERE package_id = v_id AND old_slug = v_new_slug;
+
+      -- Record the old slug in history
+      INSERT INTO package_slug_history (package_id, old_slug)
+        VALUES (v_id, v_old_slug)
+        ON CONFLICT (old_slug) DO NOTHING;
+    END IF;
+
+    UPDATE packages SET
+      slug              = v_new_slug,
+      name              = p_data->>'name',
+      region            = p_data->>'region',
+      duration          = p_data->>'duration',
+      duration_days     = (p_data->>'duration_days')::int,
+      short_description = p_data->>'short_description',
+      overview          = p_data->>'overview',
+      hero_image        = p_data->>'hero_image',
+      card_image        = p_data->>'card_image',
+      min_people        = (p_data->>'min_people')::int,
+      max_people        = (p_data->>'max_people')::int,
+      available_from    = (p_data->>'available_from')::date,
+      available_to      = (p_data->>'available_to')::date,
+      is_published      = (p_data->>'is_published')::boolean,
+      is_featured       = (p_data->>'is_featured')::boolean
+    WHERE id = v_id;
+
+  ELSE
+    -- INSERT path
+    SELECT id INTO v_existing_id FROM packages WHERE slug = v_new_slug;
+    IF FOUND THEN
+      RAISE EXCEPTION 'SLUG_CONFLICT: Another tour already uses this name. Pick a different name.';
+    END IF;
+
+    INSERT INTO packages (
+      slug, name, region, duration, duration_days,
+      short_description, overview, hero_image, card_image,
+      min_people, max_people, available_from, available_to,
+      is_published, is_featured, sort_order
+    ) VALUES (
+      v_new_slug,
+      p_data->>'name',
+      p_data->>'region',
+      p_data->>'duration',
+      (p_data->>'duration_days')::int,
+      p_data->>'short_description',
+      p_data->>'overview',
+      p_data->>'hero_image',
+      p_data->>'card_image',
+      (p_data->>'min_people')::int,
+      (p_data->>'max_people')::int,
+      (p_data->>'available_from')::date,
+      (p_data->>'available_to')::date,
+      (p_data->>'is_published')::boolean,
+      (p_data->>'is_featured')::boolean,
+      COALESCE((SELECT MAX(sort_order) + 1 FROM packages), 0)
+    )
+    RETURNING id INTO v_id;
+  END IF;
+
+  -- ── Itinerary ─────────────────────────────────────────────────────────
+  DELETE FROM package_itinerary_days WHERE package_id = v_id;
+  v_i := 0;
+  FOR v_day IN SELECT * FROM jsonb_array_elements(p_data->'itinerary') LOOP
+    INSERT INTO package_itinerary_days (package_id, day_number, title, description, sort_order)
+    VALUES (v_id, v_i + 1, v_day->>'title', v_day->>'description', v_i);
+    v_i := v_i + 1;
+  END LOOP;
+
+  -- ── Tiers ─────────────────────────────────────────────────────────────
+  FOR v_tier IN SELECT * FROM jsonb_array_elements(p_data->'tiers') LOOP
+    INSERT INTO package_tiers (
+      package_id, tier_name, vehicle_class, accommodation,
+      group_size, guide_languages, meals_included, highlights
+    ) VALUES (
+      v_id,
+      v_tier->>'tier_name',
+      v_tier->>'vehicle_class',
+      v_tier->>'accommodation',
+      v_tier->>'group_size',
+      ARRAY(SELECT jsonb_array_elements_text(v_tier->'guide_languages')),
+      v_tier->>'meals_included',
+      ARRAY(SELECT jsonb_array_elements_text(v_tier->'highlights'))
+    )
+    ON CONFLICT (package_id, tier_name) DO UPDATE SET
+      vehicle_class   = EXCLUDED.vehicle_class,
+      accommodation   = EXCLUDED.accommodation,
+      group_size      = EXCLUDED.group_size,
+      guide_languages = EXCLUDED.guide_languages,
+      meals_included  = EXCLUDED.meals_included,
+      highlights      = EXCLUDED.highlights;
+  END LOOP;
+
+  -- ── Gallery ───────────────────────────────────────────────────────────
+  DELETE FROM package_gallery WHERE package_id = v_id;
+  v_i := 0;
+  FOR v_img IN SELECT * FROM jsonb_array_elements(p_data->'gallery') LOOP
+    INSERT INTO package_gallery (package_id, image_path, sort_order)
+    VALUES (v_id, v_img->>'path', v_i);
+    v_i := v_i + 1;
+  END LOOP;
+
+  -- ── Inclusions ────────────────────────────────────────────────────────
+  DELETE FROM package_inclusions WHERE package_id = v_id;
+  v_i := 0;
+  FOR v_inc IN SELECT * FROM jsonb_array_elements(p_data->'included') LOOP
+    INSERT INTO package_inclusions (package_id, kind, text, sort_order)
+    VALUES (v_id, 'included', v_inc->>'text', v_i);
+    v_i := v_i + 1;
+  END LOOP;
+  v_i := 0;
+  FOR v_inc IN SELECT * FROM jsonb_array_elements(p_data->'not_included') LOOP
+    INSERT INTO package_inclusions (package_id, kind, text, sort_order)
+    VALUES (v_id, 'not_included', v_inc->>'text', v_i);
+    v_i := v_i + 1;
+  END LOOP;
+
+  RETURN v_new_slug;
+END;
+$$;
+
+-- Grant execute to authenticated role so it can be called via RPC
+GRANT EXECUTE ON FUNCTION save_package(jsonb) TO authenticated;
+
+
+-- -------------------------------------------------------------
 -- SEED DATA — populated by the seed script in /scripts/seed.ts
 -- -------------------------------------------------------------
