@@ -59,7 +59,7 @@ export async function savePackage(
   revalidatePath(`/packages/${slug}`);
   revalidatePath(`/packages`);
   revalidatePath(`/`);
-  revalidateTag("packages", "max");
+  revalidateTag("packages");
 
   // If slug changed, also revalidate old path
   if (data.id && data.id !== slug) {

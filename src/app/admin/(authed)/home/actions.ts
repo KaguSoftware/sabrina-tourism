@@ -37,7 +37,7 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
     }
   }
 
-  revalidateTag("home", "max");
+  revalidateTag("home");
   revalidatePath("/", "page");
 
   return {};

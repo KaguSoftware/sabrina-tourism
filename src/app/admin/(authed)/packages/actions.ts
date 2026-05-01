@@ -6,7 +6,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 function revalidateAll() {
   revalidatePath("/packages");
   revalidatePath("/");
-  revalidateTag("packages", "max");
+  revalidateTag("packages");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
