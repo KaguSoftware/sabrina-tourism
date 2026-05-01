@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidateTag, revalidatePath } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { homeContentSchema, type HomeContentFormValues } from "./schema";
 
 export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ error?: string }> {
@@ -12,7 +12,7 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
 
   const { hero, about, how_it_works, featured, quote } = parsed.data;
 
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const upserts = [
     { id: "home_hero", data: hero },
@@ -37,7 +37,7 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
     }
   }
 
-  revalidateTag("home");
+  revalidateTag("home", "max");
   revalidatePath("/", "page");
 
   return {};

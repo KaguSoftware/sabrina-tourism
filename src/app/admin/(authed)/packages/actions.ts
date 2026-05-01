@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 
 function revalidateAll() {
   revalidatePath("/packages");
@@ -9,16 +9,13 @@ function revalidateAll() {
   revalidateTag("packages", "max");
 }
 
-// Supabase v2.105 requires index signatures on Row types for mutation generics.
-// Our hand-written types don't have them, so we cast to any for write operations.
-// Read operations remain typed via the Database generic.
-async function db() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (await createServerClient()) as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function db(): any {
+  return createServiceClient();
 }
 
 export async function reorderPackages(orderedIds: string[]): Promise<{ error?: string }> {
-  const supabase = await db();
+  const supabase = db();
 
   for (let i = 0; i < orderedIds.length; i++) {
     const { error } = await supabase
@@ -37,7 +34,7 @@ export async function setFeatured(
   packageId: string,
   isFeatured: boolean,
 ): Promise<{ error?: string }> {
-  const supabase = await db();
+  const supabase = db();
 
   const { error } = await supabase
     .from("packages")
@@ -59,7 +56,7 @@ export async function setPublished(
   packageId: string,
   isPublished: boolean,
 ): Promise<{ error?: string }> {
-  const supabase = await db();
+  const supabase = db();
 
   const update: Record<string, boolean> = { is_published: isPublished };
   if (!isPublished) {
@@ -78,7 +75,7 @@ export async function setPublished(
 }
 
 export async function deletePackage(packageId: string): Promise<{ error?: string }> {
-  const supabase = await db();
+  const supabase = db();
 
   const { error } = await supabase.from("packages").delete().eq("id", packageId);
 
@@ -91,7 +88,7 @@ export async function deletePackage(packageId: string): Promise<{ error?: string
 export async function duplicatePackage(
   packageId: string,
 ): Promise<{ error?: string; newSlug?: string }> {
-  const supabase = await db();
+  const supabase = db();
 
   const { data: pkg, error: pkgErr } = await supabase
     .from("packages")

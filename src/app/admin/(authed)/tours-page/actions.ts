@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { toursPageSchema, type ToursPageFormValues } from "./schema";
 
 export async function saveToursPage(raw: ToursPageFormValues): Promise<{ error?: string }> {
@@ -10,7 +10,7 @@ export async function saveToursPage(raw: ToursPageFormValues): Promise<{ error?:
     return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
   }
 
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const { error } = await (supabase
     .from("site_content") as any)

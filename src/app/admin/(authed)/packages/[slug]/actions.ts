@@ -2,7 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils/slug";
 import { PackageSchema, type PackageFormValues } from "./schema";
 
@@ -32,7 +32,7 @@ export async function savePackage(
     finalSlug = await resolveUniqueSlug(newSlug);
   }
 
-  const supabase = (await createServerClient()) as any;
+  const supabase = createServiceClient() as any;
 
   const rpcPayload = {
     ...data,
@@ -70,7 +70,7 @@ export async function savePackage(
 }
 
 async function resolveUniqueSlug(base: string): Promise<string> {
-  const supabase = (await createServerClient()) as any;
+  const supabase = createServiceClient() as any;
 
   let candidate = base;
   let n = 2;

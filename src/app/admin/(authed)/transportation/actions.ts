@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/server";
 import {
   transportHeroSchema,
   fleetSchema,
@@ -13,7 +13,7 @@ export async function saveTransportHero(raw: TransportHeroFormValues): Promise<{
   const parsed = transportHeroSchema.safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
 
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   const { error } = await (supabase.from("site_content") as any)
     .upsert({ id: "transport_hero", data: parsed.data }, { onConflict: "id" });
@@ -29,7 +29,7 @@ export async function saveFleet(raw: FleetFormValues): Promise<{ error?: string 
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
 
   const { airports, vehicles } = parsed.data;
-  const supabase = (await createServerClient()) as any;
+  const supabase = (createServiceClient()) as any;
 
   // ── Airports ─────────────────────────────────────────────────────────────
   // Fetch current IDs
