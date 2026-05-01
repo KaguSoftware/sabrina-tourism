@@ -29,8 +29,10 @@ import { InclusionsTab } from "./tabs/InclusionsTab";
 function formatRelativeTime(date: Date): string {
   const diff = Math.floor((Date.now() - date.getTime()) / 1000);
   if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) === 1 ? "" : "s"} ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) === 1 ? "" : "s"} ago`;
+  if (diff < 3600)
+    return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) === 1 ? "" : "s"} ago`;
+  if (diff < 86400)
+    return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) === 1 ? "" : "s"} ago`;
   return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) === 1 ? "" : "s"} ago`;
 }
 
@@ -38,7 +40,10 @@ function collectErrors(errs: Record<string, any>): string[] {
   const msgs: string[] = [];
   function walk(obj: any) {
     if (!obj) return;
-    if (typeof obj.message === "string") { msgs.push(obj.message); return; }
+    if (typeof obj.message === "string") {
+      msgs.push(obj.message);
+      return;
+    }
     for (const key of Object.keys(obj)) walk(obj[key]);
   }
   walk(errs);
@@ -64,11 +69,18 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
     mode: "onBlur",
   });
 
-  const { handleSubmit, watch, formState: { isDirty, errors } } = methods;
+  const {
+    handleSubmit,
+    watch,
+    formState: { isDirty, errors },
+  } = methods;
 
   useEffect(() => {
     function handler(e: BeforeUnloadEvent) {
-      if (isDirty) { e.preventDefault(); e.returnValue = ""; }
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
     }
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
@@ -78,7 +90,9 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
   const name = watch("name");
   const isPublished = watch("is_published");
   const computedSlug = slugify(name || "");
-  const lastSaved = pkg?.updated_at ? formatRelativeTime(new Date(pkg.updated_at)) : null;
+  const lastSaved = pkg?.updated_at
+    ? formatRelativeTime(new Date(pkg.updated_at))
+    : null;
 
   const onSubmit = handleSubmit(async (data) => {
     setSaving(true);
@@ -87,7 +101,11 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
       if (result.error) {
         if (result.error.includes("Maximum 3 featured")) {
           toast.error(result.error, {
-            style: { background: "#c05a3a", color: "#f5ede0", border: "1px solid #c05a3a" },
+            style: {
+              background: "#c05a3a",
+              color: "#f5ede0",
+              border: "1px solid #c05a3a",
+            },
           });
         } else {
           toast.error(result.error);
@@ -123,7 +141,9 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
         {/* Page header */}
         <div className="flex items-start justify-between gap-6 pb-6 border-b border-rule mb-0">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">Tour</p>
+            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">
+              Tour
+            </p>
             <h1
               className="text-[28px] text-ink leading-tight"
               style={{ fontFamily: "var(--font-fraunces)" }}
@@ -131,7 +151,9 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
               {name || "New tour"}
             </h1>
             {lastSaved && (
-              <p className="font-mono text-[10px] tracking-[0.14em] text-muted">Saved {lastSaved}</p>
+              <p className="font-mono text-[10px] tracking-[0.14em] text-muted">
+                Saved {lastSaved}
+              </p>
             )}
           </div>
           <div className="flex items-center gap-3 flex-shrink-0 pt-1">
@@ -150,7 +172,10 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
         </div>
 
         {/* Sticky tab bar */}
-        <div className="sticky top-0 z-20 flex gap-4 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
+        <div
+          className="sticky top-0 z-20 flex gap-4 px-4 py-4 overflow-x-auto"
+          style={{ background: "#f5ede0" }}
+        >
           {TABS.map((tab) => (
             <button
               key={tab}
@@ -159,21 +184,35 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
               className="px-7 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
               style={
                 activeTab === tab
-                  ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" }
-                  : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }
+                  ? {
+                      background: "#1b4d5c",
+                      border: "1px solid #1b4d5c",
+                      color: "#f5ede0",
+                    }
+                  : {
+                      background: "#efe4d2",
+                      border: "1px solid #c5b99e",
+                      color: "#4a4036",
+                    }
               }
-              onMouseEnter={e => {
+              onMouseEnter={(e) => {
                 if (activeTab !== tab) {
-                  (e.currentTarget as HTMLButtonElement).style.background = "#e8dac8";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#4a4036";
-                  (e.currentTarget as HTMLButtonElement).style.color = "#1f1a14";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "#e8dac8";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor =
+                    "#4a4036";
+                  (e.currentTarget as HTMLButtonElement).style.color =
+                    "#1f1a14";
                 }
               }}
-              onMouseLeave={e => {
+              onMouseLeave={(e) => {
                 if (activeTab !== tab) {
-                  (e.currentTarget as HTMLButtonElement).style.background = "#efe4d2";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#c5b99e";
-                  (e.currentTarget as HTMLButtonElement).style.color = "#4a4036";
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    "#efe4d2";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor =
+                    "#c5b99e";
+                  (e.currentTarget as HTMLButtonElement).style.color =
+                    "#4a4036";
                 }
               }}
             >
