@@ -32,7 +32,9 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   const isHeroPage =
-    pathname === "/" || pathname.startsWith("/packages");
+    pathname === "/" ||
+    pathname.startsWith("/packages") ||
+    pathname.startsWith("/transportation");
   const transparent = isHeroPage && !scrolled;
 
   return (
