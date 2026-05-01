@@ -68,7 +68,7 @@ export function PackageListPage() {
     return (
         <>
             {/* Header — flat illustrated mosaic */}
-            <section className="relative overflow-hidden bg-cream pt-[140px] min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
+            <section className="relative z-10 overflow-hidden bg-cream min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
                 <div className="absolute inset-0">
                     <Image
                         src="/homepage.png"
@@ -81,7 +81,7 @@ export function PackageListPage() {
                 <div className="absolute inset-0 bg-black/40" />
 
                 {/* Text */}
-                <div className="max-w-[1320px] mx-auto relative z-7">
+                <div className="relative z-10 max-w-[1320px] mx-auto w-full">
                     <Reveal>
                         <Kicker light>Itineraries</Kicker>
                     </Reveal>
