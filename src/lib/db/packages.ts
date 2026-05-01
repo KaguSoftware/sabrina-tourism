@@ -1,4 +1,6 @@
 import { createServerClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
+import type { Database } from '@/lib/supabase/types';
 import { getPublicUrl } from '@/lib/supabase/storage';
 import type { Package } from '@/lib/packages/types';
 import type {
@@ -310,7 +312,9 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
 }
 
 export async function getAllSlugs(): Promise<string[]> {
-  const supabase = await createServerClient();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+  const supabase = createClient<Database>(url, key);
 
   const { data, error } = await supabase
     .from('packages')
