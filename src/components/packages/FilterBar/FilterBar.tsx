@@ -6,7 +6,7 @@ import type { FilterBarProps } from "./types";
 export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarProps) {
 
   return (
-    <div className="relative z-20 sm:sticky sm:top-18 sm:z-40 bg-cream/95 backdrop-blur-md border-y border-rule">
+    <div className="relative z-7 sm:sticky sm:top-18 sm:z-40 bg-cream/95 backdrop-blur-md border-y border-rule">
       {/* Mobile layout */}
       <div className="sm:hidden max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-3 flex flex-col gap-5">
         {/* Group */}

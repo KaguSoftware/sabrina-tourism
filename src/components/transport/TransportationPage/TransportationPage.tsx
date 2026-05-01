@@ -273,30 +273,30 @@ export function TransportationPage() {
   const [vehicleId, setVehicleId] = useState<string | null>(null);
 
   return (
-    <main>
+    <>
       {/* HERO */}
-      <section className="relative z-10 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative min-h-screen flex items-end pb-20 pt-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
           <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
         </div>
         <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
         {/* Diagonal hatch — top-right */}
-        <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)" }} />
+        <div aria-hidden="true" className="deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)", zIndex: 1 }} />
         {/* Diagonal hatch — bottom-left */}
-        <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, left: 0, width: 300, height: 300, color: "rgba(255,255,255,0.04)" }} />
+        <div aria-hidden="true" className="deco-hatch" style={{ bottom: 0, left: 0, width: 300, height: 300, color: "rgba(255,255,255,0.04)", zIndex: 1 }} />
         {/* Rings — bottom-right (bigger, more layers) */}
-        <div aria-hidden="true" className="absolute right-[-160px] bottom-[-160px] -z-10">
+        <div aria-hidden="true" className="absolute right-[-160px] bottom-[-160px] z-1">
           {[640, 480, 320, 170, 60].map((size, i) => (
             <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(255,255,255,${0.04 + i * 0.012})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           ))}
         </div>
         {/* Rings — top-left accent */}
-        <div aria-hidden="true" className="absolute left-[-100px] top-[-100px] -z-10">
+        <div aria-hidden="true" className="absolute left-[-100px] top-[-100px] z-1">
           {[420, 270, 130].map((size, i) => (
             <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: "1px solid rgba(201,154,63,0.08)", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           ))}
         </div>
-        <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+        <div className="relative z-7 max-w-[1320px] mx-auto w-full">
           <Reveal>
             <Kicker className="kicker--dark">Private chauffeur</Kicker>
           </Reveal>
@@ -316,20 +316,22 @@ export function TransportationPage() {
       </section>
 
       {/* TABBED FORM */}
-      <section className="relative z-10 bg-cream px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
+      <section className="relative px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
+        {/* Section background */}
+        <div aria-hidden="true" className="absolute inset-0 bg-cream z-5" />
         {/* Rings — right side */}
-        <div aria-hidden="true" className="absolute right-[-160px] top-1/2 -translate-y-1/2 -z-10">
+        <div aria-hidden="true" className="absolute right-[-160px] top-1/2 -translate-y-1/2 z-5">
           {[920, 700, 500, 300, 110].map((size, i) => (
             <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(201,154,63,${0.12 + i * 0.025})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           ))}
         </div>
         {/* Rings — left side accent */}
-        <div aria-hidden="true" className="absolute left-[-120px] bottom-[-80px] -z-10">
+        <div aria-hidden="true" className="absolute left-[-120px] bottom-[-80px] z-5">
           {[640, 440, 240].map((size, i) => (
             <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(27,77,92,${0.13 + i * 0.03})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />
           ))}
         </div>
-        <div className="max-w-[1320px] mx-auto relative z-10">
+        <div className="max-w-[1320px] mx-auto relative z-7">
           {/* Tabs */}
           <div className="relative inline-flex gap-4 border-b border-rule mb-12">
             {([["airport", "Airport Transfer"], ["custom", "Custom Chauffeur"]] as const).map(
@@ -360,6 +362,6 @@ export function TransportationPage() {
         </div>
       </section>
 
-    </main>
+    </>
   );
 }

@@ -3,11 +3,13 @@ import { QUOTE, ATTRIBUTION } from "./constants";
 
 export function QuoteStrip() {
     return (
-        <section className="relative z-10 bg-navy text-cream py-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative text-cream py-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+            {/* Section background */}
+            <div aria-hidden="true" className="absolute inset-0 bg-navy z-5" />
             {/* Rings — left */}
             <div
                 aria-hidden="true"
-                className="absolute left-[-120px] top-3/4 -translate-y-1/2 -z-10"
+                className="absolute left-[-120px] top-3/4 -translate-y-1/2 z-5"
             >
                 {[570, 440, 260, 90].map((size, i) => (
                     <div
@@ -30,7 +32,7 @@ export function QuoteStrip() {
             {/* Rings — right */}
             <div
                 aria-hidden="true"
-                className="absolute right-[-180px] top-1/4 -translate-y-1/2 -z-10"
+                className="absolute right-[-180px] top-1/4 -translate-y-1/2 z-5"
             >
                 {[760, 560, 360, 160].map((size, i) => (
                     <div
@@ -51,7 +53,7 @@ export function QuoteStrip() {
                 ))}
             </div>
 
-            <div className="max-w-[880px] mx-auto text-center relative z-10">
+            <div className="max-w-[880px] mx-auto text-center relative z-7">
                 <Reveal>
                     <p
                         className="font-display italic text-ochre text-[120px] leading-[0.6] mb-5"
