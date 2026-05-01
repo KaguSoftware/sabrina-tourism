@@ -16,7 +16,7 @@ export function SiteHeader() {
             : pathname === "/packages"
             ? window.innerHeight * 0.3
             : pathname === "/transportation"
-            ? window.innerHeight * 0.6
+            ? window.innerHeight * 0.3
             : SCROLL_THRESHOLD;
         const onScroll = () => setScrolled(window.scrollY > threshold);
         onScroll();

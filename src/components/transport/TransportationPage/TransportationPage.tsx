@@ -275,7 +275,7 @@ export function TransportationPage() {
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-end pb-20 pt-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0">
           <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
         </div>
