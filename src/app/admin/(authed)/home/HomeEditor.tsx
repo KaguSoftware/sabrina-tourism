@@ -137,12 +137,17 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
 
   async function onSubmit(values: HomeContentFormValues) {
     setSaving(true);
-    const result = await saveHomeContent(values);
-    setSaving(false);
-    if (result.error) {
-      toast.error(result.error);
-    } else {
-      toast.success("Home page saved.");
+    try {
+      const result = await saveHomeContent(values);
+      if (result.error) {
+        toast.error(result.error);
+      } else {
+        toast.success("Home page saved.");
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setSaving(false);
     }
   }
 
