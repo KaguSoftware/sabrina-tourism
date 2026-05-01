@@ -34,14 +34,18 @@ export function ToursPageEditor({ data }: ToursPageEditorProps) {
 
   const heroImage = watch("hero_image");
 
-  const onSubmit = handleSubmit(async (values) => {
-    const result = await saveToursPage(values);
-    if (result.error) {
-      toast.error(result.error);
-    } else {
-      toast.success("Saved.");
-    }
-  });
+  const onSubmit = handleSubmit(
+    async (values) => {
+      const result = await saveToursPage(values);
+      if (result.error) toast.error(result.error);
+      else toast.success("Saved.");
+    },
+    (errs) => {
+      const first = Object.values(errs)[0];
+      const msg = (first as any)?.message ?? "Please fix the errors above.";
+      toast.error(msg);
+    },
+  );
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-8">

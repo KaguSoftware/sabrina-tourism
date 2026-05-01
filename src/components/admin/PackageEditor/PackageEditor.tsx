@@ -150,16 +150,16 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
         </div>
 
         {/* Sticky tab bar */}
-        <div className="sticky top-0 z-20 bg-cream border-b border-rule flex overflow-x-auto">
+        <div className="sticky top-0 z-20 bg-cream border-b border-rule flex gap-1 px-1 pt-2 overflow-x-auto">
           {TABS.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className={`px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-colors border ${
                 activeTab === tab
-                  ? "text-ink border-b-2 border-ochre -mb-px"
-                  : "text-muted hover:text-ink"
+                  ? "text-ink bg-cream border-rule border-b-2 border-b-ochre -mb-px rounded-t"
+                  : "text-muted border-transparent hover:text-ink hover:bg-cream-warm hover:border-rule rounded-t"
               }`}
             >
               {tab}

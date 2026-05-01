@@ -67,11 +67,17 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
 
   const heroImage = watch("hero_image");
 
-  const onSubmit = handleSubmit(async (values) => {
-    const result = await saveTransportHero(values);
-    if (result.error) toast.error(result.error);
-    else toast.success("Saved.");
-  });
+  const onSubmit = handleSubmit(
+    async (values) => {
+      const result = await saveTransportHero(values);
+      if (result.error) toast.error(result.error);
+      else toast.success("Saved.");
+    },
+    (errs) => {
+      const first = Object.values(errs)[0];
+      toast.error((first as any)?.message ?? "Please fix the errors above.");
+    },
+  );
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-8 pt-8">
@@ -310,16 +316,22 @@ function FleetTab({
     if (from !== -1 && to !== -1) moveVehicle(from, to);
   }
 
-  const onSubmit = handleSubmit(async (values) => {
-    // Re-assign sort_order from current array position
-    const withOrder = {
-      airports: values.airports.map((a, i) => ({ ...a, sort_order: i })),
-      vehicles: values.vehicles.map((v, i) => ({ ...v, sort_order: i })),
-    };
-    const result = await saveFleet(withOrder);
-    if (result.error) toast.error(result.error);
-    else toast.success("Saved.");
-  });
+  const onSubmit = handleSubmit(
+    async (values) => {
+      const withOrder = {
+        airports: values.airports.map((a, i) => ({ ...a, sort_order: i })),
+        vehicles: values.vehicles.map((v, i) => ({ ...v, sort_order: i })),
+      };
+      const result = await saveFleet(withOrder);
+      if (result.error) toast.error(result.error);
+      else toast.success("Saved.");
+    },
+    (errs) => {
+      const flat = Object.values(errs.airports ?? {}).concat(Object.values(errs.vehicles ?? {}));
+      const first = flat[0] as any;
+      toast.error(first?.message ?? "Please fix the errors above.");
+    },
+  );
 
   return (
     <form onSubmit={onSubmit} noValidate className="pt-8 space-y-10">
