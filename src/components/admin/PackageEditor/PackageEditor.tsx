@@ -173,7 +173,7 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
 
         {/* Sticky tab bar */}
         <div
-          className="sticky top-0 z-20 flex gap-4 px-4 py-4 overflow-x-auto"
+          className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto"
           style={{ background: "#f5ede0" }}
         >
           {TABS.map((tab) => (
@@ -181,7 +181,7 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className="px-7 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
+              className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
               style={
                 activeTab === tab
                   ? {
