@@ -150,22 +150,22 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
         </div>
 
         {/* Sticky tab bar */}
-        <div className="sticky top-0 z-20 flex gap-6 px-2 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
+        <div className="sticky top-0 z-20 flex gap-4 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
           {TABS.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className="px-6 py-2.5 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150"
+              className="px-7 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
               style={
                 activeTab === tab
-                  ? { background: "#ffffff", border: "1px solid #1f1a14", color: "#1f1a14" }
+                  ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" }
                   : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }
               }
               onMouseEnter={e => {
                 if (activeTab !== tab) {
                   (e.currentTarget as HTMLButtonElement).style.background = "#e8dac8";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#1f1a14";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#4a4036";
                   (e.currentTarget as HTMLButtonElement).style.color = "#1f1a14";
                 }
               }}
