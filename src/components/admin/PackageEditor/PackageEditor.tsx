@@ -150,17 +150,32 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
         </div>
 
         {/* Sticky tab bar */}
-        <div className="sticky top-0 z-20 bg-cream flex gap-6 px-2 py-3 overflow-x-auto">
+        <div className="sticky top-0 z-20 flex gap-6 px-2 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
           {TABS.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2.5 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-colors border ${
+              className="px-6 py-2.5 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150"
+              style={
                 activeTab === tab
-                  ? "text-ink bg-cream-deep border-ink"
-                  : "text-muted bg-cream-deep border-muted hover:text-ink hover:border-ink"
-              }`}
+                  ? { background: "#ffffff", border: "1px solid #1f1a14", color: "#1f1a14" }
+                  : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }
+              }
+              onMouseEnter={e => {
+                if (activeTab !== tab) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "#e8dac8";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#1f1a14";
+                  (e.currentTarget as HTMLButtonElement).style.color = "#1f1a14";
+                }
+              }}
+              onMouseLeave={e => {
+                if (activeTab !== tab) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "#efe4d2";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#c5b99e";
+                  (e.currentTarget as HTMLButtonElement).style.color = "#4a4036";
+                }
+              }}
             >
               {tab}
             </button>
