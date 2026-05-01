@@ -12,7 +12,8 @@ async function fetchSiteContent<K extends SiteContentKey>(key: K): Promise<SiteC
     .single() as unknown as { data: { data: Record<string, unknown> } | null; error: unknown };
 
   if (error || !data) {
-    throw new Error(`[db/site-content] Missing site_content row for key: ${key}`);
+    console.warn(`[db/site-content] Missing site_content row for key: ${key}`);
+    return {} as SiteContentDataMap[K];
   }
 
   return data.data as unknown as SiteContentDataMap[K];
