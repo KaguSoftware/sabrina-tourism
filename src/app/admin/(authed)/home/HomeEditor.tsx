@@ -44,15 +44,15 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border border-rule bg-cream-warm">
+    <div className={`border bg-cream-warm ${open ? "border-rule border-l-2 border-l-ochre" : "border-rule"}`}>
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-cream-deep/40 transition-colors duration-150"
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-cream-deep transition-colors duration-150"
       >
         <div className="space-y-1">
           <Kicker>{kicker}</Kicker>
-          <p className="font-display text-[18px] tracking-tight text-ink">{title}</p>
+          <p className="font-display text-[18px] font-semibold tracking-tight text-ink">{title}</p>
         </div>
         {open ? (
           <ChevronUp size={16} className="text-ochre flex-shrink-0" />

@@ -175,10 +175,10 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
             <tr className="border-b border-rule">
               <th className="pl-3 pr-2 py-2 w-8" />
               <th className="px-2 py-2 w-12" />
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft">Name</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft hidden md:table-cell">Slug</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft w-28">Status</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft w-20">Featured</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold">Name</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold hidden md:table-cell">Slug</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold w-28">Status</th>
+              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold w-20">Featured</th>
               <th className="px-3 py-2 w-28" />
             </tr>
           </thead>

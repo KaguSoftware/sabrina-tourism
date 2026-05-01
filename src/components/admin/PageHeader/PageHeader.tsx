@@ -16,13 +16,13 @@ export function PageHeader({ kicker, title, description, actions }: PageHeaderPr
         <Kicker>{kicker}</Kicker>
         <GoldUnderlineHeading as="h1">{title}</GoldUnderlineHeading>
         {description && (
-          <p className="font-sans text-[15px] text-muted max-w-prose mt-2">
+          <p className="font-sans text-[15px] text-ink-soft max-w-prose mt-2">
             {description}
           </p>
         )}
       </div>
       {actions && (
-        <div className="flex items-center gap-3 flex-shrink-0 pt-1">
+        <div className="flex items-center gap-3 shrink-0 pt-1">
           {actions}
         </div>
       )}

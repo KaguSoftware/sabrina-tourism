@@ -43,7 +43,7 @@ export function SortableRow({
     <tr
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
-      className="border-b border-rule hover:bg-cream-warm/40 transition-colors"
+      className="border-b border-rule hover:bg-cream-warm transition-colors"
     >
       <td className="pl-3 pr-2 py-3 w-8">
         <button
@@ -84,7 +84,7 @@ export function SortableRow({
               Published
             </span>
           ) : (
-            <span className="inline-block px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] uppercase bg-cream-warm text-ink-soft rounded-sm group-hover:opacity-80 transition-opacity">
+            <span className="inline-block px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] uppercase bg-cream-warm text-ink-soft border border-rule rounded-sm group-hover:opacity-80 transition-opacity">
               Draft
             </span>
           )}
@@ -111,13 +111,13 @@ export function SortableRow({
 
       <td className="px-3 py-3 w-28">
         <div className="flex items-center gap-1">
-          <a href={`/admin/packages/${pkg.slug}`} title="Edit" className="p-1.5 text-ink-soft hover:text-ink transition-colors rounded">
+          <a href={`/admin/packages/${pkg.slug}`} title="Edit" className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
             <Pencil size={14} />
           </a>
-          <button onClick={() => onDuplicate(pkg.id)} title="Duplicate" className="p-1.5 text-ink-soft hover:text-ink transition-colors rounded">
+          <button onClick={() => onDuplicate(pkg.id)} title="Duplicate" className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
             <Copy size={14} />
           </button>
-          <button onClick={() => onDelete(pkg.id)} title="Delete" className="p-1.5 text-ink-soft hover:text-terracotta transition-colors rounded">
+          <button onClick={() => onDelete(pkg.id)} title="Delete" className="p-1.5 text-ink/70 hover:text-terracotta transition-colors rounded">
             <Trash2 size={14} />
           </button>
         </div>
