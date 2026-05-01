@@ -15,6 +15,8 @@ export function SiteHeader() {
       ? window.innerHeight * 0.8
       : pathname === "/packages"
       ? window.innerHeight * 0.3
+      : pathname === "/transportation"
+      ? window.innerHeight * 0.6
       : SCROLL_THRESHOLD;
     const onScroll = () => setScrolled(window.scrollY > threshold);
     onScroll();
@@ -32,7 +34,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   const isHeroPage =
-    pathname === "/" || pathname.startsWith("/packages");
+    pathname === "/" || pathname.startsWith("/packages") || pathname === "/transportation";
   const transparent = isHeroPage && !scrolled;
 
   return (
