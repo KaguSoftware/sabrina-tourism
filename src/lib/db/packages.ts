@@ -1,6 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server';
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/lib/supabase/types';
+import { createAnonClient } from '@/lib/supabase/server';
 import { getPublicUrl } from '@/lib/supabase/storage';
 import type { Package } from '@/lib/packages/types';
 import type {
@@ -67,7 +65,7 @@ function assemblePackage(
 }
 
 export async function getAllPackages({ publishedOnly = true } = {}): Promise<Package[]> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   let query = supabase
     .from('packages')
@@ -105,7 +103,7 @@ export async function getAllPackages({ publishedOnly = true } = {}): Promise<Pac
 export async function getPackageBySlug(
   slug: string,
 ): Promise<Package | { redirectTo: string } | null> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('packages')
@@ -164,7 +162,7 @@ export async function getPackageBySlug(
 }
 
 export async function getFeaturedPackages(): Promise<Package[]> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('packages')
@@ -224,7 +222,7 @@ export interface PackageRaw {
 }
 
 export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | null> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('packages')
@@ -312,9 +310,7 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
 }
 
 export async function getAllSlugs(): Promise<string[]> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-  const supabase = createClient<Database>(url, key);
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('packages')

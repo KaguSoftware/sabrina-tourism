@@ -1,9 +1,9 @@
 import { unstable_cache } from 'next/cache';
-import { createServerClient } from '@/lib/supabase/server';
+import { createAnonClient } from '@/lib/supabase/server';
 import type { SiteContentKey, SiteContentDataMap } from '@/lib/supabase/types';
 
 async function fetchSiteContent<K extends SiteContentKey>(key: K): Promise<SiteContentDataMap[K]> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('site_content')

@@ -1,8 +1,8 @@
-import { createServerClient } from '@/lib/supabase/server';
+import { createAnonClient } from '@/lib/supabase/server';
 import type { TransportAirportRow, TransportVehicleRow } from '@/lib/supabase/types';
 
 export async function getAirports(): Promise<TransportAirportRow[]> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('transport_airports')
@@ -18,7 +18,7 @@ export async function getAirports(): Promise<TransportAirportRow[]> {
 }
 
 export async function getVehicles(): Promise<TransportVehicleRow[]> {
-  const supabase = await createServerClient();
+  const supabase = createAnonClient();
 
   const { data, error } = await supabase
     .from('transport_vehicles')

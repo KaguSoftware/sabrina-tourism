@@ -25,6 +25,14 @@ export async function createServerClient() {
   });
 }
 
+export function createAnonClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url) throw new Error('Missing env: NEXT_PUBLIC_SUPABASE_URL');
+  if (!anonKey) throw new Error('Missing env: NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
+  return createClient<Database>(url, anonKey, { auth: { persistSession: false } });
+}
+
 export function createServiceClient() {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceKey) throw new Error('Missing env: SUPABASE_SERVICE_ROLE_KEY');
