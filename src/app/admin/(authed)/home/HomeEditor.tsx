@@ -95,8 +95,12 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
       body: about.body,
     },
     how_it_works: {
-      section_heading: howItWorks.section_heading,
-      steps: (howItWorks.steps ?? []).map((s) => ({
+      section_heading: howItWorks.section_heading ?? "",
+      steps: (howItWorks.steps?.length ? howItWorks.steps : [
+        { num: "01", heading: "", body: "", icon: "compass" as const },
+        { num: "02", heading: "", body: "", icon: "suitcase" as const },
+        { num: "03", heading: "", body: "", icon: "whatsapp" as const },
+      ]).map((s) => ({
         num: s.num,
         heading: s.heading,
         body: s.body,
