@@ -15,7 +15,7 @@ export function AboutStrip({ heading, body }: AboutStripProps) {
             {/* Concentric rings — bottom-left */}
             <div
                 aria-hidden="true"
-                className="absolute left-[30px] bottom-[-160px] z-5"
+                className="hidden sm:block absolute left-[30px] bottom-[-160px] z-5"
             >
                 {[980, 760, 540, 320, 130].map((size, i) => (
                     <div
@@ -38,7 +38,7 @@ export function AboutStrip({ heading, body }: AboutStripProps) {
             {/* Rings — top-right accent */}
             <div
                 aria-hidden="true"
-                className="absolute right-[80px] top-[50px] z-5"
+                className="hidden sm:block absolute right-[80px] top-[50px] z-5"
             >
                 {[680, 480, 280, 110].map((size, i) => (
                     <div

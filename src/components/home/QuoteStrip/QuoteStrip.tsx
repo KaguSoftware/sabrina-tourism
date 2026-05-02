@@ -12,7 +12,7 @@ export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
             {/* Rings — left */}
             <div
                 aria-hidden="true"
-                className="absolute left-[-120px] top-3/4 -translate-y-1/2 z-5"
+                className="hidden sm:block absolute left-[-120px] top-3/4 -translate-y-1/2 z-5"
             >
                 {[570, 440, 260, 90].map((size, i) => (
                     <div
@@ -35,7 +35,7 @@ export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
             {/* Rings — right */}
             <div
                 aria-hidden="true"
-                className="absolute right-[-180px] top-1/4 -translate-y-1/2 z-5"
+                className="hidden sm:block absolute right-[-180px] top-1/4 -translate-y-1/2 z-5"
             >
                 {[760, 560, 360, 160].map((size, i) => (
                     <div

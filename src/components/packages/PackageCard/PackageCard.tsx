@@ -8,7 +8,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
     <Link href={`/packages/${pkg.slug}`} className="block group">
       {/* 3-D tilt card on hover */}
       <div
-        className="bg-[#fcf5ec] transition-all duration-380 ease-out group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c] border border-rule"
+        className="bg-[#fcf5ec] transition-all duration-380 ease-out shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c] border border-rule"
       >
         {/* Image */}
         <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">

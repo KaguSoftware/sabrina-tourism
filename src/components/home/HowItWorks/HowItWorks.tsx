@@ -279,7 +279,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
             {/* Diagonal hatch — top-left */}
             <div
                 aria-hidden="true"
-                className="deco-hatch"
+                className="hidden sm:block deco-hatch"
                 style={{
                     top: 0,
                     left: 0,
@@ -292,7 +292,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
             {/* Diagonal hatch — bottom-right */}
             <div
                 aria-hidden="true"
-                className="deco-hatch"
+                className="hidden sm:block deco-hatch"
                 style={{
                     bottom: 0,
                     right: 0,
@@ -305,7 +305,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
             {/* Rings — right side (bigger, more layers) */}
             <div
                 aria-hidden="true"
-                className="absolute right-[-160px] top-1/2 -translate-y-1/2 z-5"
+                className="hidden sm:block absolute right-[-160px] top-1/2 -translate-y-1/2 z-5"
             >
                 {[660, 500, 340, 190, 70].map((size, i) => (
                     <div

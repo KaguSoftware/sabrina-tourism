@@ -20,7 +20,7 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
             {/* Diagonal hatch — top-right */}
             <div
                 aria-hidden="true"
-                className="deco-hatch"
+                className="hidden sm:block deco-hatch"
                 style={{
                     top: 0,
                     right: 0,
@@ -34,7 +34,7 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
             {/* Rings — bottom-right */}
             <div
                 aria-hidden="true"
-                className="absolute right-[-140px] bottom-[-140px] -z-10"
+                className="hidden sm:block absolute right-[-140px] bottom-[-140px] -z-10"
             >
                 {[960, 720, 500, 290, 110].map((size, i) => (
                     <div

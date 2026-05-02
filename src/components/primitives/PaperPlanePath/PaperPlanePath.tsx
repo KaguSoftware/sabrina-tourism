@@ -31,6 +31,7 @@ export function PaperPlanePath() {
   const trailRef = useRef<SVGPathElement>(null);
   const planeRef = useRef<SVGGElement>(null);
   const pathLengthRef = useRef(0);
+  const planeSizeRef = useRef(PLANE_SIZE);
   const rafRef = useRef(0);
 
   const buildPath = useCallback(() => {
@@ -40,6 +41,7 @@ export function PaperPlanePath() {
     if (!svg || !pathEl || !trailEl) return;
 
     const w = document.documentElement.clientWidth;
+    planeSizeRef.current = w < 640 ? 28 : PLANE_SIZE;
     // Measure content height excluding the SVG itself
     svg.style.display = "none";
     const h = document.documentElement.scrollHeight;
@@ -49,24 +51,39 @@ export function PaperPlanePath() {
     svg.setAttribute("height", String(h));
     svg.style.height = `${h}px`;
 
-    const margin = Math.min(120, w * PATH_MARGIN_FRACTION);
-    const lx = margin + 40;
-    const rx = w - margin - 40;
+    const isMobile = w < 640;
     const mid = w / 2;
+    // on mobile push edges beyond margin so the path swings wide
+    const lx = isMobile ? w * 0.06 : Math.min(120, w * PATH_MARGIN_FRACTION) + 40;
+    const rx = isMobile ? w * 0.94 : w - Math.min(120, w * PATH_MARGIN_FRACTION) - 40;
 
-    const rawPts = [
-      { x: mid - 40, y: 180 },
-      { x: rx, y: 480 },
-      { x: mid + 20, y: 860 },
-      { x: lx, y: 1260 },
+    const rawPts = isMobile ? [
+      { x: mid,        y: 160  },
+      { x: rx,         y: 380  },
+      { x: lx,         y: 620  },
+      { x: rx,         y: 900  },
+      { x: mid * 0.4,  y: 1180 },
+      { x: rx,         y: 1480 },
+      { x: lx,         y: 1780 },
+      { x: mid * 1.6,  y: 2080 },
+      { x: lx,         y: 2400 },
+      { x: rx,         y: 2720 },
+      { x: lx,         y: 3060 },
+      { x: mid,        y: h - 160 },
+    ] : [
+      { x: mid - 40, y: 180  },
+      { x: rx,       y: 480  },
+      { x: mid + 20, y: 860  },
+      { x: lx,       y: 1260 },
       { x: mid + 60, y: 1700 },
-      { x: lx, y: 2150 },
-      { x: rx - 40, y: 2600 },
-      { x: lx + 80, y: 3100 },
-      { x: mid, y: h - 200 },
+      { x: lx,       y: 2150 },
+      { x: rx - 40,  y: 2600 },
+      { x: lx + 80,  y: 3100 },
+      { x: mid,      y: h - 200 },
     ];
 
-    const scale = h / 3500;
+    const refH = isMobile ? 3200 : 3500;
+    const scale = h / refH;
     const pts = rawPts.map((p, i) =>
       i === rawPts.length - 1 ? p : { x: p.x, y: p.y * scale }
     );
@@ -97,9 +114,10 @@ export function PaperPlanePath() {
     // reveal trail behind the plane
     trailEl.setAttribute("stroke-dashoffset", String(total - dist));
 
+    const ps = planeSizeRef.current;
     planeEl.setAttribute(
       "transform",
-      `translate(${(pt.x - PLANE_SIZE / 2).toFixed(2)} ${(pt.y - PLANE_SIZE / 2).toFixed(2)}) rotate(${angle.toFixed(2)} ${PLANE_SIZE / 2} ${PLANE_SIZE / 2})`
+      `translate(${(pt.x - ps / 2).toFixed(2)} ${(pt.y - ps / 2).toFixed(2)}) rotate(${angle.toFixed(2)} ${ps / 2} ${ps / 2}) scale(${ps / PLANE_SIZE})`
     );
   }, []);
 
