@@ -64,7 +64,7 @@ export function SiteHeader() {
               alt="Sabrina Turizm"
               width="140"
               height="48"
-              className={`h-12 w-auto object-contain transition-opacity duration-300 ${
+              className={`h-8 md:h-12 w-auto object-contain transition-opacity duration-300 ${
                 transparent ? "brightness-0 invert" : ""
               }`}
               style={transparent ? { filter: "brightness(0) invert(1)" } : {}}

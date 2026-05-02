@@ -13,7 +13,7 @@ export function HeroPanorama({ headlineTop, headlineEm, sub, kicker }: HeroPanor
     <section className="relative min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-[-1]">
-        <Image src="/tours.png" alt="Hero panorama" fill className="object-cover object-center" priority />
+        <Image src="/tours.png" alt="Hero panorama" fill className="object-cover object-right md:object-center" priority />
       </div>
 
 {/* Content */}
