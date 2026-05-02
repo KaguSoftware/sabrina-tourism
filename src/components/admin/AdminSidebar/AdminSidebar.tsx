@@ -13,13 +13,29 @@ import {
   X,
 } from "lucide-react";
 import { signOut } from "@/lib/auth/actions";
+import Image from "next/image";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: Home, exact: true },
-  { href: "/admin/home", label: "Home page", icon: LayoutTemplate, exact: false },
+  {
+    href: "/admin/home",
+    label: "Home page",
+    icon: LayoutTemplate,
+    exact: false,
+  },
   { href: "/admin/packages", label: "Tours", icon: Map, exact: false },
-  { href: "/admin/tours-page", label: "Tours page", icon: FileText, exact: false },
-  { href: "/admin/transportation", label: "Transportation", icon: Car, exact: false },
+  {
+    href: "/admin/tours-page",
+    label: "Tours page",
+    icon: FileText,
+    exact: false,
+  },
+  {
+    href: "/admin/transportation",
+    label: "Transportation",
+    icon: Car,
+    exact: false,
+  },
 ];
 
 interface AdminSidebarProps {
@@ -36,10 +52,12 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
 
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [drawerOpen]);
 
-  function isActive(item: typeof NAV_ITEMS[number]) {
+  function isActive(item: (typeof NAV_ITEMS)[number]) {
     return item.exact ? pathname === item.href : pathname.startsWith(item.href);
   }
 
@@ -59,7 +77,11 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
             }`}
           >
             <Icon size={16} className="text-ochre flex-shrink-0" />
-            <span className={`font-mono text-[11px] tracking-[0.16em] uppercase ${active ? "font-bold" : "font-medium"}`}>
+            <span
+              className={`font-mono text-[11px] tracking-[0.16em] uppercase ${
+                active ? "font-bold" : "font-medium"
+              }`}
+            >
               {item.label}
             </span>
           </Link>
@@ -72,7 +94,13 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
     <div className="flex items-center gap-3">
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo-sabrina.png" alt="Sabrina Turizm" width="120" height="40" className="h-8 w-auto object-contain" />
+        <Image
+          src="/logo-sabrina.png"
+          alt="Sabrina Turizm"
+          width="120"
+          height="40"
+          className="h-8 w-auto object-contain"
+        />
         <p className="font-mono text-[9px] tracking-[0.22em] uppercase text-muted mt-0.5">
           Concierge
         </p>
@@ -100,12 +128,8 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-[280px] flex-shrink-0 bg-cream-warm border-r border-rule h-screen sticky top-0">
-        <div className="px-5 py-6 pb-8 border-b border-rule">
-          {brand}
-        </div>
-        <div className="flex-1 overflow-y-auto py-4">
-          {navContent}
-        </div>
+        <div className="px-5 py-6 pb-8 border-b border-rule">{brand}</div>
+        <div className="flex-1 overflow-y-auto py-4">{navContent}</div>
         {footer}
       </aside>
 
@@ -149,9 +173,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
             <X size={18} />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto py-4">
-          {navContent}
-        </div>
+        <div className="flex-1 overflow-y-auto py-4">{navContent}</div>
         {footer}
       </div>
     </>

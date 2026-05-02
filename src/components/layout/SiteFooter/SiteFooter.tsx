@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FOOTER_GROUPS } from "./constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
+import Image from "next/image";
 
 export function SiteFooter() {
   return (
@@ -20,7 +21,9 @@ export function SiteFooter() {
           className="inline-flex items-center gap-3 border border-ochre text-cream px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-medium transition-all duration-300 hover:bg-ochre hover:text-navy group"
         >
           <span>Open WhatsApp</span>
-          <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          <span className="transition-transform duration-300 group-hover:translate-x-1">
+            →
+          </span>
         </a>
       </div>
 
@@ -33,7 +36,13 @@ export function SiteFooter() {
         {/* Brand col */}
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-sabrina.png" alt="Sabrina Turizm" width="140" height="48" className="h-10 w-auto object-contain brightness-0 invert mb-3" />
+          <Image
+            src="/logo-sabrina.png"
+            alt="Sabrina Turizm"
+            width="140"
+            height="48"
+            className="h-10 w-auto object-contain brightness-0 invert mb-3"
+          />
           <p className="text-cream/60 text-sm leading-relaxed">
             Boutique tourism &amp; private chauffeur
             <br />
