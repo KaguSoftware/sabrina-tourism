@@ -60,11 +60,11 @@ export function SiteHeader() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <Image
-              src="/logo-sabrina.png"
+              src="/sabrina_logo_cropped.png"
               alt="Sabrina Turizm"
               width="140"
               height="48"
-              className={`h-20 w-auto object-contain transition-opacity duration-300 ${
+              className={`h-12 w-auto object-contain transition-opacity duration-300 ${
                 transparent ? "brightness-0 invert" : ""
               }`}
               style={transparent ? { filter: "brightness(0) invert(1)" } : {}}
@@ -137,11 +137,11 @@ export function SiteHeader() {
         <div className="flex justify-between items-center pb-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <Image
-            src="/logo-sabrina.png"
+            src="/sabrina_logo_cropped.png"
             alt="Sabrina Turizm"
             width="140"
             height="48"
-            className="h-10 w-auto object-contain brightness-0 invert"
+            className="h-7 w-auto object-contain brightness-0 invert"
           />
           <button
             className="text-3xl leading-none"

@@ -24,7 +24,7 @@ export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, air
     <>
       {/* HERO */}
       <section className="relative min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-[-1]">
           <Image src="/chauffer.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
         </div>
         <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
@@ -61,7 +61,7 @@ export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, air
 
       {/* TABBED FORM */}
       <section className="relative px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)] overflow-hidden">
-        <div aria-hidden="true" className="absolute inset-0 bg-cream z-5" />
+        <div aria-hidden="true" className="absolute inset-0 z-5" />
         <div aria-hidden="true" className="absolute right-[-160px] top-1/2 -translate-y-1/2 z-5">
           {[920, 700, 500, 300, 110].map((size, i) => (
             <div key={i} style={{ position: "absolute", width: size, height: size, borderRadius: "50%", border: `1px solid rgba(201,154,63,${0.12 + i * 0.025})`, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }} />

@@ -40,7 +40,7 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "" }: Packa
   });
 
   return (
-    <main className="bg-cream">
+    <main>
       <PackageHero pkg={pkg} />
       <PackageOverview pkg={pkg} />
       <PackageItinerary

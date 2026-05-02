@@ -71,7 +71,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={fieldCls} />
         </TransportFormField>
 
-        <TransportFormField label="Time">
+        <TransportFormField label="Time" above>
           <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className={fieldCls} />
         </TransportFormField>
 
@@ -80,7 +80,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </TransportFormField>
 
-        <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start">
+        <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start relative z-8">
           <div className="flex flex-col gap-1.5 min-w-[160px]">
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Vehicle class *</span>
             {vClass && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}

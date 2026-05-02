@@ -6,7 +6,7 @@ import type { FilterBarProps } from "./types";
 export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarProps) {
 
   return (
-    <div className="relative z-7 sm:sticky sm:top-18 sm:z-40 bg-cream/95 backdrop-blur-md border-y border-rule">
+    <div className="relative z-7 sm:sticky sm:top-18 sm:z-40 border-y border-rule">
       {/* Mobile layout */}
       <div className="sm:hidden max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-3 flex flex-col gap-5">
         {/* Group */}
@@ -27,7 +27,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
                     cursor: "pointer",
                     whiteSpace: "nowrap",
                     transition: "background 0.2s, color 0.2s",
-                    backgroundColor: active ? "#0b1a2e" : "#f5ede0",
+                    backgroundColor: active ? "#0b1a2e" : "transparent",
                     color: active ? "#c99a3f" : "#1f1a14",
                     fontWeight: active ? 600 : 400,
                     border: active ? "none" : "1.5px solid #c99a3f",
@@ -78,7 +78,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
                     cursor: "pointer",
                     whiteSpace: "nowrap",
                     transition: "background 0.2s, color 0.2s",
-                    backgroundColor: active ? "#0b1a2e" : "#f5ede0",
+                    backgroundColor: active ? "#0b1a2e" : "transparent",
                     color: active ? "#c99a3f" : "#1f1a14",
                     fontWeight: active ? 600 : 400,
                     border: active ? "none" : "1.5px solid #c99a3f",
@@ -113,7 +113,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
                       cursor: "pointer",
                       whiteSpace: "nowrap",
                       transition: "background 0.2s, color 0.2s",
-                      backgroundColor: active ? "#0b1a2e" : "#f5ede0",
+                      backgroundColor: active ? "#0b1a2e" : "transparent",
                       color: active ? "#c99a3f" : "#1f1a14",
                       fontWeight: active ? 600 : 400,
                       border: active ? "none" : "1.5px solid #c99a3f",
@@ -165,7 +165,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
                     cursor: "pointer",
                     whiteSpace: "nowrap",
                     transition: "background 0.2s, color 0.2s",
-                    backgroundColor: active ? "#0b1a2e" : "#f5ede0",
+                    backgroundColor: active ? "#0b1a2e" : "transparent",
                     color: active ? "#c99a3f" : "#1f1a14",
                     fontWeight: active ? 600 : 400,
                     border: active ? "none" : "1.5px solid #c99a3f",

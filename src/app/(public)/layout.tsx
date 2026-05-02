@@ -8,11 +8,11 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="relative overflow-x-hidden overflow-y-clip">
       <SiteHeader />
       <PaperPlanePath />
-      <main className="relative z-10">{children}</main>
+      <main className="relative">{children}</main>
       <SiteFooter />
-    </>
+    </div>
   );
 }

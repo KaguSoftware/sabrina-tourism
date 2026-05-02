@@ -28,6 +28,7 @@ function catmullRomPath(points: { x: number; y: number }[]): string {
 export function PaperPlanePath() {
   const svgRef = useRef<SVGSVGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const trailRef = useRef<SVGPathElement>(null);
   const planeRef = useRef<SVGGElement>(null);
   const pathLengthRef = useRef(0);
   const rafRef = useRef(0);
@@ -35,10 +36,14 @@ export function PaperPlanePath() {
   const buildPath = useCallback(() => {
     const svg = svgRef.current;
     const pathEl = pathRef.current;
-    if (!svg || !pathEl) return;
+    const trailEl = trailRef.current;
+    if (!svg || !pathEl || !trailEl) return;
 
-    const w = window.innerWidth;
+    const w = document.documentElement.clientWidth;
+    // Measure content height excluding the SVG itself
+    svg.style.display = "none";
     const h = document.documentElement.scrollHeight;
+    svg.style.display = "";
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     svg.setAttribute("width", String(w));
     svg.setAttribute("height", String(h));
@@ -68,21 +73,29 @@ export function PaperPlanePath() {
 
     const d = catmullRomPath(pts);
     pathEl.setAttribute("d", d);
-    pathLengthRef.current = pathEl.getTotalLength();
+    trailEl.setAttribute("d", d);
+    const total = pathEl.getTotalLength();
+    pathLengthRef.current = total;
+    // trail: starts fully hidden, revealed as plane moves
+    trailEl.setAttribute("stroke-dasharray", String(total));
+    trailEl.setAttribute("stroke-dashoffset", String(total));
   }, []);
 
   const updatePlane = useCallback((progress: number) => {
     const pathEl = pathRef.current;
+    const trailEl = trailRef.current;
     const planeEl = planeRef.current;
-    if (!pathEl || !planeEl || !pathLengthRef.current) return;
+    if (!pathEl || !trailEl || !planeEl || !pathLengthRef.current) return;
 
     const total = pathLengthRef.current;
     const dist = progress * total;
     const pt = pathEl.getPointAtLength(dist);
     const ahead = pathEl.getPointAtLength(Math.min(total, dist + 4));
-    // nose points left (toward origin), so no +180 flip needed
     const angle =
       (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
+
+    // reveal trail behind the plane
+    trailEl.setAttribute("stroke-dashoffset", String(total - dist));
 
     planeEl.setAttribute(
       "transform",
@@ -147,11 +160,22 @@ export function PaperPlanePath() {
         left: 0,
         pointerEvents: "none",
         zIndex: 6,
-        overflow: "visible",
+        overflow: "hidden",
       }}
     >
+      {/* ghost track — full path, very faint */}
       <path
         ref={pathRef}
+        fill="none"
+        stroke={PATH_STROKE_COLOR}
+        strokeWidth={PATH_STROKE_WIDTH}
+        strokeDasharray={PATH_DASH_ARRAY}
+        strokeLinecap="round"
+        opacity="0.18"
+      />
+      {/* revealed trail — follows the plane */}
+      <path
+        ref={trailRef}
         fill="none"
         stroke={PATH_STROKE_COLOR}
         strokeWidth={PATH_STROKE_WIDTH}

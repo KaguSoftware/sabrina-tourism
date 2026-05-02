@@ -6,8 +6,8 @@ import type { Package } from "@/lib/packages/types";
 
 export function PackageHero({ pkg }: { pkg: Package }) {
   return (
-    <section className="relative z-10 min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
-      <div className="absolute inset-0">
+    <section className="relative min-h-[86vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
+      <div className="absolute inset-0 z-[-1]">
         <Image src={pkg.heroImage} alt={pkg.region} fill priority className="object-cover" sizes="100vw" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/85" />

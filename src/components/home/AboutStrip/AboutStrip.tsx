@@ -10,7 +10,7 @@ export function AboutStrip({ heading, body }: AboutStripProps) {
     return (
         <section className="relative py-[clamp(60px,9vw,120px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background — sits below the plane */}
-            <div aria-hidden="true" className="absolute inset-0 bg-cream z-5" />
+            <div aria-hidden="true" className="absolute inset-0 z-5" />
 
             {/* Concentric rings — bottom-left */}
             <div

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-navy text-cream relative z-30">
+    <footer className="bg-navy text-cream relative">
       {/* CTA pitch */}
       <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-[clamp(80px,10vw,130px)] pb-14">
         <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ochre mb-5">
@@ -37,11 +37,11 @@ export function SiteFooter() {
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <Image
-            src="/logo-sabrina.png"
+            src="/sabrina_logo_cropped.png"
             alt="Sabrina Turizm"
             width="140"
             height="48"
-            className="h-10 w-auto object-contain brightness-0 invert mb-3"
+            className="h-7 w-auto object-contain brightness-0 invert mb-3"
           />
           <p className="text-cream/60 text-sm leading-relaxed">
             Boutique tourism &amp; private chauffeur
