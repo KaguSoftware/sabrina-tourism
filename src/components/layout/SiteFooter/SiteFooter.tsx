@@ -102,9 +102,14 @@ export function SiteFooter() {
 
       {/* Base */}
       <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-7 border-t border-cream/10 pt-7 flex flex-col sm:flex-row justify-between gap-3">
-        <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-cream/40">
-          © 2026 Sabrina Turizm. Licensed TÜRSAB operator.
-        </span>
+        <div className="flex flex-col gap-1">
+          <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-cream/40">
+            © 2026 Sabrina Turizm. All rights reserved.
+          </span>
+          <span className="font-mono text-[11px] tracking-[0.14em] text-cream/30">
+            Registered in Türkiye &nbsp;·&nbsp; TÜRSAB licence no. XXXXXXX &nbsp;·&nbsp; Tax no. XXXXXXX
+          </span>
+        </div>
         <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-cream/40">
           Made in Istanbul.
         </span>

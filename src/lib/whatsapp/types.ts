@@ -13,6 +13,10 @@ export interface TransferMessageContext {
   time: string;
   passengers: string | number;
   vehicleClass: string;
+  flightNumber?: string;
+  luggage?: string | number;
+  childSeat?: boolean;
+  meetAndGreet?: boolean;
   notes?: string;
 }
 
@@ -21,7 +25,9 @@ export interface ChauffeurMessageContext {
   destinations: string;
   startDate: string;
   endDate?: string;
+  pickupTime?: string;
   passengers: string | number;
+  luggage?: string | number;
   vehicleClass: string;
   notes?: string;
 }

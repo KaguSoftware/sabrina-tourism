@@ -1,6 +1,7 @@
 "use client";
 import { REGIONS, PEOPLE_OPTIONS } from "./constants";
 import type { FilterBarProps } from "./types";
+import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 
 
 export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarProps) {
@@ -42,15 +43,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
         {/* Date */}
         <div className="flex flex-col gap-2">
           <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Date</span>
-          <div className={`relative border-b transition-colors duration-200 ${filters.date ? "border-ochre" : "border-rule"}`}>
-            <input
-              type="date"
-              value={filters.date}
-              onChange={(e) => onChange({ date: e.target.value })}
-              className={`bg-transparent border-0 font-sans text-[14px] px-0 py-1.5 focus:outline-none transition-colors duration-200 ${filters.date ? "text-ochre font-medium" : "text-ink"}`}
-            />
-            {filters.date && <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-ochre" />}
-          </div>
+          <DatePicker value={filters.date} onChange={(v) => onChange({ date: v })} placeholder="Any date" />
         </div>
         {/* Region — wrapping pills */}
         <div className="flex flex-col gap-2">
@@ -128,15 +121,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
           <span className="w-px h-6 bg-rule" aria-hidden="true" />
           <div className="flex items-center gap-3">
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Date</span>
-            <div className={`relative border-b transition-colors duration-200 ${filters.date ? "border-ochre" : "border-rule"}`}>
-              <input
-                type="date"
-                value={filters.date}
-                onChange={(e) => onChange({ date: e.target.value })}
-                className={`bg-transparent border-0 font-sans text-[14px] px-0 py-1.5 focus:outline-none transition-colors duration-200 ${filters.date ? "text-ochre font-medium" : "text-ink"}`}
-              />
-              {filters.date && <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-ochre" />}
-            </div>
+            <DatePicker value={filters.date} onChange={(v) => onChange({ date: v })} placeholder="Any date" />
           </div>
         </div>
         {/* Row 2: Region centered */}

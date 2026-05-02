@@ -2,17 +2,22 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import { fraunces, inter, jetbrainsMono } from "./fonts";
 
+const BASE_URL = "https://sabrina-tourism.vercel.app";
+
 export const metadata: Metadata = {
   title: "Sabrina Turizm — Turkey, considered.",
   description:
     "Boutique tours and private chauffeur service across Türkiye. Slow itineraries built one guest, one driver, one road at a time.",
   keywords: ["Turkey tours", "Türkiye travel", "boutique tourism", "private chauffeur", "Istanbul", "Cappadocia"],
+  metadataBase: new URL(BASE_URL),
+  alternates: { canonical: "/" },
   openGraph: {
     title: "Sabrina Turizm — Turkey, considered.",
     description: "Boutique tours and private chauffeur across Türkiye.",
     siteName: "Sabrina Turizm",
     locale: "en_US",
     type: "website",
+    images: [{ url: "/tours.png", width: 1200, height: 630, alt: "Sabrina Turizm — Turkey, considered." }],
   },
 };
 

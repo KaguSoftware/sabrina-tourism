@@ -20,4 +20,12 @@ export const FOOTER_GROUPS: FooterLinkGroup[] = [
       { label: "All packages", href: "/packages" },
     ],
   },
+  {
+    heading: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Cancellation Policy", href: "/cancellation" },
+    ],
+  },
 ];

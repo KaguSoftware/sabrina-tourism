@@ -22,9 +22,16 @@ export function useReveal(options: UseRevealOptions = {}) {
 
     el.setAttribute("data-reveal", "true");
 
+    // Fallback: reveal after 1.2 s regardless, so fast-scroll can't leave
+    // content permanently faint if IntersectionObserver never fires.
+    const fallback = window.setTimeout(() => {
+      el.setAttribute("data-revealed", "true");
+    }, 1200);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          clearTimeout(fallback);
           entry.target.setAttribute("data-revealed", "true");
           observer.disconnect();
         }
@@ -33,7 +40,10 @@ export function useReveal(options: UseRevealOptions = {}) {
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      clearTimeout(fallback);
+      observer.disconnect();
+    };
   }, [threshold, rootMargin]);
 
   return ref;

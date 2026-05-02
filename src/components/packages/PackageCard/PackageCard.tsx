@@ -3,9 +3,10 @@ import Link from "next/link";
 import type { PackageCardProps } from "./types";
 import { CARD_IMAGE_SIZES } from "./constants";
 
-export function PackageCard({ pkg }: PackageCardProps) {
+export function PackageCard({ pkg, filterParams }: PackageCardProps) {
+  const href = filterParams ? `/packages/${pkg.slug}?${filterParams}` : `/packages/${pkg.slug}`;
   return (
-    <Link href={`/packages/${pkg.slug}`} className="block group">
+    <Link href={href} className="block group">
       {/* 3-D tilt card on hover */}
       <div
         className="bg-[#fcf5ec] transition-all duration-380 ease-out shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c] border border-rule"

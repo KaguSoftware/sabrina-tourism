@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import {
   PATH_MARGIN_FRACTION,
   PATH_STROKE_COLOR,
@@ -33,6 +34,8 @@ export function PaperPlanePath() {
   const pathLengthRef = useRef(0);
   const planeSizeRef = useRef(PLANE_SIZE);
   const rafRef = useRef(0);
+  const rebuildTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const pathname = usePathname();
 
   const buildPath = useCallback(() => {
     const svg = svgRef.current;
@@ -121,40 +124,31 @@ export function PaperPlanePath() {
     );
   }, []);
 
+  const getProgress = useCallback(() => {
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const rawProgress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
+    const viewportBias = window.scrollY / document.documentElement.scrollHeight;
+    return Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
+  }, []);
+
+  // Initial mount: set up scroll + resize listeners.
   useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     buildPath();
     updatePlane(0);
-    // Re-measure after layout settles
-    setTimeout(() => { buildPath(); updatePlane(0); }, 100);
-    setTimeout(() => { buildPath(); updatePlane(window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)); }, 1000);
 
-    if (prefersReduced) {
-      updatePlane(0);
-      return;
-    }
+    if (prefersReduced) return;
 
     const onScroll = () => {
       if (rafRef.current) return;
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = 0;
-        const docH =
-          document.documentElement.scrollHeight - window.innerHeight;
-        const rawProgress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
-        // keep plane roughly in viewport by biasing progress toward scroll position
-        const viewportBias = window.scrollY / document.documentElement.scrollHeight;
-        const progress = Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
-        updatePlane(progress);
+        updatePlane(getProgress());
       });
     };
 
-    const onResize = () => {
-      buildPath();
-      onScroll();
-    };
+    const onResize = () => { buildPath(); onScroll(); };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -165,7 +159,34 @@ export function PaperPlanePath() {
       window.removeEventListener("resize", onResize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [buildPath, updatePlane]);
+  }, [buildPath, updatePlane, getProgress]);
+
+  // On every page navigation: snap plane to top, then rebuild once new page has rendered.
+  useEffect(() => {
+    // Cancel any pending rebuild timers from a previous navigation.
+    rebuildTimersRef.current.forEach(clearTimeout);
+    rebuildTimersRef.current = [];
+
+    // Cancel any in-flight RAF so stale progress isn't applied after rebuild.
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+    }
+
+    // Immediately snap to position 0 — scroll resets to 0 on navigation.
+    updatePlane(0);
+
+    // Rebuild after the new page's content has painted (two passes for safety).
+    rebuildTimersRef.current.push(
+      setTimeout(() => { buildPath(); updatePlane(getProgress()); }, 80),
+      setTimeout(() => { buildPath(); updatePlane(getProgress()); }, 400),
+    );
+
+    return () => {
+      rebuildTimersRef.current.forEach(clearTimeout);
+      rebuildTimersRef.current = [];
+    };
+  }, [pathname, buildPath, updatePlane, getProgress]);
 
 
   return (

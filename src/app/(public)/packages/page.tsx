@@ -9,6 +9,12 @@ export const metadata = {
   title: "Itineraries — Sabrina Turizm",
   description:
     "Six curated routes through Türkiye. Filter by region, dates, and group size.",
+  alternates: { canonical: "/packages" },
+  openGraph: {
+    title: "Itineraries — Sabrina Turizm",
+    description: "Six curated routes through Türkiye. Filter by region, dates, and group size.",
+    images: [{ url: "/homepage.png", width: 1200, height: 630, alt: "Sabrina Turizm itineraries" }],
+  },
 };
 
 export default async function PackagesPage() {

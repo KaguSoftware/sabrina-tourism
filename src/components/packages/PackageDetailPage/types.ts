@@ -4,4 +4,5 @@ export interface PackageDetailPageProps {
   pkg: Package;
   seedDate?: string;
   seedPeople?: string;
+  seedTier?: string;
 }

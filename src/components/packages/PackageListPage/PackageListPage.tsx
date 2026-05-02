@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -22,6 +22,7 @@ export function PackageListPage({ pageHeading, pageLede, packages }: PackageList
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const resultsRef = useRef<HTMLElement>(null);
 
     const [filters, setFilters] = useState<FilterState>({
         region: searchParams.get("region")
@@ -40,6 +41,9 @@ export function PackageListPage({ pageHeading, pageLede, packages }: PackageList
         if (next.date) params.set("date", next.date);
         const qs = params.toString();
         router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+        if (window.innerWidth < 768) {
+            resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
     }
 
     function clearFilters() {
@@ -114,7 +118,7 @@ export function PackageListPage({ pageHeading, pageLede, packages }: PackageList
             />
 
             {/* Results */}
-            <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
+            <section ref={resultsRef} className="relative z-10 max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
                 <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
                     <span className="text-ochre font-display italic text-[18px] mr-1">
                         {visible.length}
@@ -130,11 +134,17 @@ export function PackageListPage({ pageHeading, pageLede, packages }: PackageList
 
                 {visible.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-                        {visible.map((pkg, i) => (
-                            <Reveal key={pkg.slug} delay={i * 70}>
-                                <PackageCard pkg={pkg} />
-                            </Reveal>
-                        ))}
+                        {visible.map((pkg, i) => {
+                            const fp = new URLSearchParams();
+                            if (filters.date) fp.set("date", filters.date);
+                            if (filters.people) fp.set("people", String(filters.people));
+                            const filterParams = fp.toString();
+                            return (
+                                <Reveal key={pkg.slug} delay={i * 70}>
+                                    <PackageCard pkg={pkg} filterParams={filterParams || undefined} />
+                                </Reveal>
+                            );
+                        })}
                     </div>
                 ) : (
                     <Reveal>
@@ -144,18 +154,26 @@ export function PackageListPage({ pageHeading, pageLede, packages }: PackageList
                                 No itinerary fits those filters — yet.
                             </h3>
                             <p className="text-ink-soft mb-8">
-                                Tell us what you&#39;re imagining and we&#39;ll
-                                draw it from scratch. Most of our private
-                                journeys start this way.
+                                Try adjusting your filters, or tell us what
+                                you&#39;re imagining and we&#39;ll draw it from
+                                scratch.
                             </p>
-                            <GoldButton
-                                href={genericMessage()}
-                                variant="solid"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Contact us via WhatsApp
-                            </GoldButton>
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                                <button
+                                    onClick={clearFilters}
+                                    className="font-mono text-[12px] tracking-[0.16em] uppercase border border-ochre text-ochre px-6 py-3 transition-colors duration-200 hover:bg-ochre hover:text-navy"
+                                >
+                                    Clear filters
+                                </button>
+                                <GoldButton
+                                    href={genericMessage()}
+                                    variant="solid"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Contact us via WhatsApp
+                                </GoldButton>
+                            </div>
                         </div>
                     </Reveal>
                 )}

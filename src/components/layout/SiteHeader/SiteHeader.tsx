@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
@@ -10,7 +10,6 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     const threshold = pathname.startsWith("/packages/")
@@ -42,11 +41,6 @@ export function SiteHeader() {
     pathname.startsWith("/packages") ||
     pathname === "/transportation";
   const transparent = isHeroPage && !scrolled;
-
-  const closeMenu = () => {
-    menuButtonRef.current?.focus();
-    setMenuOpen(false);
-  };
 
   return (
     <>
@@ -123,7 +117,6 @@ export function SiteHeader() {
 
           {/* Burger */}
           <button
-            ref={menuButtonRef}
             className={`md:hidden flex flex-col gap-[6px] p-3 ${
               transparent ? "text-cream" : "text-ink"
             }`}
@@ -152,13 +145,11 @@ export function SiteHeader() {
       {/* Mobile overlay */}
       <div
         className={`fixed inset-0 bg-navy text-cream z-[60] flex flex-col p-6 transition-transform duration-[460ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-          menuOpen
-            ? "translate-y-0 pointer-events-auto"
-            : "-translate-y-full pointer-events-none"
+          menuOpen ? "translate-y-0 visible" : "-translate-y-full"
         }`}
         role="dialog"
-        aria-modal={menuOpen}
-        inert={!menuOpen}
+        aria-modal="true"
+        aria-hidden={!menuOpen}
       >
         <div className="flex justify-between items-center pb-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -171,7 +162,7 @@ export function SiteHeader() {
           />
           <button
             className="text-3xl leading-none"
-            onClick={closeMenu}
+            onClick={() => setMenuOpen(false)}
             aria-label="Close menu"
           >
             ×
@@ -182,7 +173,6 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              onClick={closeMenu}
               className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
               style={{
                 opacity: menuOpen ? 1 : 0,

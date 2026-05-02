@@ -25,8 +25,15 @@ export function packageMessage(ctx: PackageMessageContext): string {
 export function transferMessage(ctx: TransferMessageContext): string {
   const direction =
     ctx.direction === "pickup" ? "pickup from" : "drop-off to";
+  const extras = [
+    ctx.flightNumber ? `Flight: ${ctx.flightNumber}` : "",
+    ctx.luggage ? `Luggage: ${ctx.luggage} bag(s)` : "",
+    ctx.childSeat ? "Child seat required" : "",
+    ctx.meetAndGreet ? "Meet & greet requested" : "",
+    ctx.notes ? `Note: ${ctx.notes}` : "",
+  ].filter(Boolean).join(". ");
   return waLink(
-    `Hey Sabrina — I'd like a ${direction} ${ctx.airport} on ${ctx.date} at ${ctx.time} for ${ctx.passengers} passenger(s), ${ctx.vehicleClass}. Area / Hotel: ${ctx.destination || "—"}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
+    `Hey Sabrina — I'd like a ${direction} ${ctx.airport} on ${ctx.date} at ${ctx.time} for ${ctx.passengers} passenger(s), ${ctx.vehicleClass}. Area / Hotel: ${ctx.destination || "—"}.${extras ? ` ${extras}.` : ""} Could you quote?`
   );
 }
 
@@ -35,6 +42,6 @@ export function chauffeurMessage(ctx: ChauffeurMessageContext): string {
     ? `${ctx.startDate} to ${ctx.endDate}`
     : ctx.startDate;
   return waLink(
-    `Hey Sabrina — I'd like a private chauffeur. Pickup: ${ctx.pickup}. Destinations: ${ctx.destinations}. Dates: ${dates}. Passengers: ${ctx.passengers}. Vehicle: ${ctx.vehicleClass}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
+    `Hey Sabrina — I'd like a private chauffeur. Pickup: ${ctx.pickup}.${ctx.pickupTime ? ` Pickup time: ${ctx.pickupTime}.` : ""} Destinations: ${ctx.destinations}. Dates: ${dates}. Passengers: ${ctx.passengers}.${ctx.luggage ? ` Luggage: ${ctx.luggage} bag(s).` : ""} Vehicle: ${ctx.vehicleClass}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
   );
 }

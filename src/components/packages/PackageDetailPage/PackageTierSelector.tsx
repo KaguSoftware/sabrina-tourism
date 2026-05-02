@@ -1,4 +1,5 @@
 "use client";
+import { Fragment } from "react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -25,6 +26,18 @@ export function PackageTierSelector({
           </GoldUnderlineHeading>
         </Reveal>
       </div>
+      <Reveal delay={60}>
+        <div className="mb-10 flex flex-col sm:flex-row gap-4 sm:gap-10 text-[13px] text-ink-soft leading-relaxed border-l-2 border-ochre pl-5">
+          <p>
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre block mb-1">Essential &amp; Signature</span>
+            Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.
+          </p>
+          <p>
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre block mb-1">Private</span>
+            Exclusively yours. Dates, pace, and add-ons set around your group. No shared vehicles, no shared guides — just your party and our team.
+          </p>
+        </div>
+      </Reveal>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {tiers.map((t, i) => {
           const active = t.name === activeTierName;
@@ -57,16 +70,16 @@ export function PackageTierSelector({
                     ["Guide", t.guideLanguages.join(", ")],
                     ["Meals", t.mealsIncluded],
                   ].map(([dt, dd]) => (
-                    <>
-                      <dt key={`dt-${dt}`} className="font-mono text-[10px] tracking-[0.14em] uppercase text-muted pt-0.5">{dt}</dt>
-                      <dd key={`dd-${dt}`} className="text-ink m-0">{dd}</dd>
-                    </>
+                    <Fragment key={`${t.name}-${dt}`}>
+                      <dt className="font-mono text-[10px] tracking-[0.14em] uppercase text-muted pt-0.5">{dt}</dt>
+                      <dd className="text-ink m-0">{dd}</dd>
+                    </Fragment>
                   ))}
                 </dl>
                 <ul className="list-none p-0 border-t border-rule pt-4 space-y-1.5">
                   {t.highlights.map((h, j) => (
                     <li key={j} className="text-[13px] text-ink-soft pl-4 relative">
-                      <span className="absolute left-0 top-[9px] w-2 h-px bg-ochre" />
+                      <span className="absolute left-0 top-2.25 w-2 h-px bg-ochre" />
                       {h}
                     </li>
                   ))}

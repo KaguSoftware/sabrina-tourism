@@ -58,7 +58,7 @@ export function HeroPanorama({
               Browse tours
             </GoldButton>
             <GoldButton href="/transportation" variant="ghost-navy">
-              <h1 className="text-gold">Book a chauffeur →</h1>
+              Book a chauffeur →
             </GoldButton>
           </div>
         </Reveal>
