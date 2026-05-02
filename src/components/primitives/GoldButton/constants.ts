@@ -6,6 +6,8 @@ export const BTN_VARIANTS = {
     "bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold active:scale-[0.97]",
   ghost:
     "bg-transparent text-cream border border-cream/40 hover:text-ochre hover:border-ochre active:scale-[0.97]",
+  "ghost-navy":
+    "bg-navy text-ochre border border-cream/40 hover:border-ochre active:scale-[0.97]",
   "ghost-light":
     "bg-transparent text-cream border border-ochre hover:bg-ochre hover:text-navy active:scale-[0.97]",
 };

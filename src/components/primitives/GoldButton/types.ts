@@ -1,4 +1,4 @@
-export type GoldButtonVariant = "solid" | "ghost" | "ghost-light";
+export type GoldButtonVariant = "solid" | "ghost" | "ghost-light" | "ghost-navy";
 
 export interface GoldButtonProps {
   href?: string;

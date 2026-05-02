@@ -20,9 +20,7 @@ export function GoldButton({
       <span
         className="relative z-10 transition-transform duration-300 group-hover:translate-x-1 text-base leading-none"
         aria-hidden="true"
-      >
-        →
-      </span>
+      ></span>
     </>
   );
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
@@ -10,6 +10,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     const threshold = pathname.startsWith("/packages/")
@@ -42,6 +43,11 @@ export function SiteHeader() {
     pathname === "/transportation";
   const transparent = isHeroPage && !scrolled;
 
+  const closeMenu = () => {
+    menuButtonRef.current?.focus();
+    setMenuOpen(false);
+  };
+
   return (
     <>
       <header
@@ -51,7 +57,7 @@ export function SiteHeader() {
             : "bg-cream/95 backdrop-blur-sm border-b border-rule"
         }`}
       >
-        <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-4 flex items-center justify-between gap-6">
+        <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-6 md:py-4 flex items-center justify-between gap-6">
           {/* Brand */}
           <Link
             href="/"
@@ -64,10 +70,15 @@ export function SiteHeader() {
               alt="Sabrina Turizm"
               width="140"
               height="48"
-              className={`h-8 md:h-12 w-auto object-contain transition-opacity duration-300 ${
-                transparent ? "brightness-0 invert" : ""
-              }`}
-              style={transparent ? { filter: "brightness(0) invert(1)" } : {}}
+              className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
+              style={
+                transparent
+                  ? {}
+                  : {
+                      filter:
+                        "brightness(0) saturate(100%) invert(18%) sepia(40%) saturate(800%) hue-rotate(162deg) brightness(85%)",
+                    }
+              }
             />
           </Link>
 
@@ -112,15 +123,28 @@ export function SiteHeader() {
 
           {/* Burger */}
           <button
-            className={`md:hidden flex flex-col gap-[5px] p-2 ${
+            ref={menuButtonRef}
+            className={`md:hidden flex flex-col gap-[6px] p-3 ${
               transparent ? "text-cream" : "text-ink"
             }`}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((o) => !o)}
           >
-            <span className="w-[22px] h-px bg-current block transition-all duration-300" />
-            <span className="w-[22px] h-px bg-current block transition-all duration-300" />
-            <span className="w-[22px] h-px bg-current block transition-all duration-300" />
+            <span
+              className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
+                menuOpen ? "translate-y-[7px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`w-[26px] h-px bg-current block transition-all duration-300 ${
+                menuOpen ? "opacity-0 scale-x-0" : ""
+              }`}
+            />
+            <span
+              className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
+                menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+              }`}
+            />
           </button>
         </div>
       </header>
@@ -128,11 +152,13 @@ export function SiteHeader() {
       {/* Mobile overlay */}
       <div
         className={`fixed inset-0 bg-navy text-cream z-[60] flex flex-col p-6 transition-transform duration-[460ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-          menuOpen ? "translate-y-0 visible" : "-translate-y-full invisible"
+          menuOpen
+            ? "translate-y-0 pointer-events-auto"
+            : "-translate-y-full pointer-events-none"
         }`}
         role="dialog"
-        aria-modal="true"
-        aria-hidden={!menuOpen}
+        aria-modal={menuOpen}
+        inert={!menuOpen}
       >
         <div className="flex justify-between items-center pb-10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -145,7 +171,7 @@ export function SiteHeader() {
           />
           <button
             className="text-3xl leading-none"
-            onClick={() => setMenuOpen(false)}
+            onClick={closeMenu}
             aria-label="Close menu"
           >
             ×
@@ -156,6 +182,7 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={closeMenu}
               className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
               style={{
                 opacity: menuOpen ? 1 : 0,
