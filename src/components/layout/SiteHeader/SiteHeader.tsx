@@ -162,11 +162,14 @@ export function SiteHeader() {
             className="h-7 w-auto object-contain brightness-0 invert"
           />
           <button
-            className="text-3xl leading-none"
+            className="w-12 h-12 flex items-center justify-center"
             onClick={() => setMenuOpen(false)}
             aria-label="Close menu"
           >
-            ×
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
         <nav className="flex flex-col gap-2 flex-1">
