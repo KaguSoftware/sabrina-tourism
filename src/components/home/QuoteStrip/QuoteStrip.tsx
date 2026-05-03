@@ -56,7 +56,7 @@ export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
                 ))}
             </div>
 
-            <div className="max-w-[880px] mx-auto text-center relative z-7">
+            <div className="max-w-[880px] mx-auto text-center relative z-10">
                 <Reveal>
                     <p
                         className="font-display italic text-ochre text-[120px] leading-[0.6] mb-5"

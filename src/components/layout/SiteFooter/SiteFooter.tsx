@@ -5,9 +5,10 @@ import Image from "next/image";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-navy text-cream relative">
+    <footer className="text-cream relative">
+      <div aria-hidden="true" className="absolute inset-0 bg-navy z-5" />
       {/* CTA pitch */}
-      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-[clamp(80px,10vw,130px)] pb-14">
+      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-[clamp(80px,10vw,130px)] pb-14 relative z-10">
         <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ochre mb-5">
           Reservations
         </p>
@@ -27,12 +28,12 @@ export function SiteFooter() {
         </a>
       </div>
 
-      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)]">
+      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] relative z-10">
         <div className="w-full h-px bg-cream/20" />
       </div>
 
       {/* Columns */}
-      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 relative z-10">
         {/* Brand col */}
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -101,7 +102,7 @@ export function SiteFooter() {
       </div>
 
       {/* Base */}
-      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-7 border-t border-cream/10 pt-7 flex flex-col sm:flex-row justify-between gap-3">
+      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-7 border-t border-cream/10 pt-7 flex flex-col sm:flex-row justify-between gap-3 relative z-10">
         <div className="flex flex-col gap-1">
           <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-cream/40">
             © 2026 Sabrina Turizm. All rights reserved.
