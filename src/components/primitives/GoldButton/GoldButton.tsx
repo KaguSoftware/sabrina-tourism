@@ -13,6 +13,11 @@ export function GoldButton({
   "aria-label": ariaLabel,
 }: GoldButtonProps) {
   const classes = `${BTN_BASE} ${BTN_VARIANTS[variant]} ${className}`;
+  const inlineStyle = variant === "solid"
+    ? { backgroundColor: "#c99a3f", color: "#0b1a2e", borderColor: "#c99a3f" }
+    : variant === "ghost-navy"
+    ? { backgroundColor: "#0b1a2e", color: "#c99a3f" }
+    : undefined;
 
   const inner = (
     <>
@@ -29,6 +34,7 @@ export function GoldButton({
       <a
         href={href}
         className={classes}
+        style={inlineStyle}
         target={target}
         rel={rel}
         aria-label={ariaLabel}
@@ -43,6 +49,7 @@ export function GoldButton({
       type={type}
       onClick={onClick}
       className={classes}
+      style={inlineStyle}
       aria-label={ariaLabel}
     >
       {inner}

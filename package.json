@@ -37,7 +37,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "description": "Boutique tourism website for Meridian & Co. — a concierge agency offering private tours and chauffeur services across Türkiye. Built as a full-stack Next.js application with a CMS-backed admin panel, dynamic package catalogue, and a Supabase database.",
+  "description": "Boutique tourism website for Sabrina Turizm — a concierge agency offering private tours and chauffeur services across Türkiye. Built as a full-stack Next.js application with a CMS-backed admin panel, dynamic package catalogue, and a Supabase database.",
   "main": "index.js",
   "repository": {
     "type": "git",

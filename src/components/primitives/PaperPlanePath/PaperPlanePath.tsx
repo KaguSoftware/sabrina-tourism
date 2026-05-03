@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import {
   PATH_MARGIN_FRACTION,
@@ -36,6 +36,7 @@ export function PaperPlanePath() {
   const rafRef = useRef(0);
   const rebuildTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const pathname = usePathname();
+  const [visible, setVisible] = useState(true);
 
   const buildPath = useCallback(() => {
     const svg = svgRef.current;
@@ -161,25 +162,23 @@ export function PaperPlanePath() {
     };
   }, [buildPath, updatePlane, getProgress]);
 
-  // On every page navigation: snap plane to top, then rebuild once new page has rendered.
+  // On every page navigation: hide plane, rebuild, then fade back in.
   useEffect(() => {
-    // Cancel any pending rebuild timers from a previous navigation.
     rebuildTimersRef.current.forEach(clearTimeout);
     rebuildTimersRef.current = [];
 
-    // Cancel any in-flight RAF so stale progress isn't applied after rebuild.
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = 0;
     }
 
-    // Immediately snap to position 0 — scroll resets to 0 on navigation.
+    // Hide immediately so the stale position is never visible.
+    setVisible(false);
     updatePlane(0);
 
-    // Rebuild after the new page's content has painted (two passes for safety).
     rebuildTimersRef.current.push(
       setTimeout(() => { buildPath(); updatePlane(getProgress()); }, 80),
-      setTimeout(() => { buildPath(); updatePlane(getProgress()); }, 400),
+      setTimeout(() => { buildPath(); updatePlane(getProgress()); setVisible(true); }, 400),
     );
 
     return () => {
@@ -200,6 +199,8 @@ export function PaperPlanePath() {
         pointerEvents: "none",
         zIndex: 6,
         overflow: "hidden",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 300ms ease",
       }}
     >
       {/* ghost track — full path, very faint */}

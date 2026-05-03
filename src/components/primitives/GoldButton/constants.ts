@@ -3,7 +3,7 @@ export const BTN_BASE =
 
 export const BTN_VARIANTS = {
   solid:
-    "bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold active:scale-[0.97]",
+    "border active:scale-[0.97] shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02]",
   ghost:
     "bg-transparent text-cream border border-cream/40 hover:text-ochre hover:border-ochre active:scale-[0.97]",
   "ghost-navy":

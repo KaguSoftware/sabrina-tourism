@@ -97,7 +97,8 @@ export function SiteHeader() {
               href={genericMessage()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-ochre text-navy px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-medium transition-colors duration-300 hover:bg-gold"
+              style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-semibold transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-6px_rgba(11,26,46,0.4)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -108,7 +109,7 @@ export function SiteHeader() {
                 height="14"
                 style={{
                   filter:
-                    "brightness(0) saturate(100%) invert(12%) sepia(30%) saturate(900%) hue-rotate(162deg) brightness(90%)",
+                    "brightness(0) saturate(100%) invert(68%) sepia(50%) saturate(500%) hue-rotate(5deg) brightness(95%)",
                 }}
               />
               <span>WhatsApp</span>
@@ -193,7 +194,8 @@ export function SiteHeader() {
             href={genericMessage()}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-ochre text-navy px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-medium w-fit"
+            style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
+            className="inline-flex items-center gap-3 px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-semibold w-fit shadow-[0_4px_24px_-6px_rgba(11,26,46,0.45)]"
           >
             Reserve via WhatsApp
           </a>
