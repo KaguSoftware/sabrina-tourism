@@ -78,7 +78,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
                 type="button"
                 onClick={() => setDirection(d)}
                 style={direction === d
-                  ? { backgroundColor: "#0b1a2e", color: "#c99a3f", border: "1.5px solid #0b1a2e", fontWeight: 600, padding: "10px 20px", borderRadius: "16px" }
+                  ? { backgroundColor: "#8B9A5B", color: "#c99a3f", border: "1.5px solid #8B9A5B", fontWeight: 600, padding: "10px 20px", borderRadius: "16px" }
                   : { backgroundColor: "#f5ede0", color: "#1f1a14", border: "1.5px solid #c99a3f", fontWeight: 400, padding: "10px 20px", borderRadius: "16px" }}
                 className="flex-1 font-mono text-[12px] tracking-[0.1em] uppercase transition-all duration-200"
               >
@@ -185,7 +185,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
         <button
           type="button"
           onClick={() => { setSubmitted(true); if (!canSubmit) return; window.open(href, "_blank", "noopener,noreferrer"); }}
-          style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
+          style={{ backgroundColor: "#8B9A5B", color: "#c99a3f" }}
           className="inline-flex items-center gap-3.5 px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] whitespace-nowrap group"
         >
           <span>Reserve via WhatsApp</span>

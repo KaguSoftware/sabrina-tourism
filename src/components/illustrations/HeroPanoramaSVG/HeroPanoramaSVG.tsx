@@ -1,7 +1,7 @@
 import type { HeroPanoramaSVGProps } from "./types";
 
 // Palette used: cream #f5ede0 | cream-warm #efe4d2 | cream-deep #e8dac8
-//               navy #0b1a2e | navy-soft #162b47 | teal-deep #1b4d5c
+//               navy #8B9A5B | navy-soft #7a8a4e | teal-deep #1b4d5c
 //               ochre #c99a3f | terracotta #c46b4f
 
 export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
@@ -43,15 +43,15 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
 
       {/* Balloon 1 — navy body, ochre band */}
       <g style={{ animation: "float-y 8s ease-in-out infinite" }}>
-        <ellipse cx="240" cy="180" rx="44" ry="56" fill="#0b1a2e" />
+        <ellipse cx="240" cy="180" rx="44" ry="56" fill="#8B9A5B" />
         <path d="M240 124 L266 180 L240 236 L214 180Z" fill="#efe4d2" opacity="0.12" />
         <path d="M196 180 L240 158 L284 180 L240 202Z" fill="#efe4d2" opacity="0.08" />
         <path d="M196 172 Q196 182 240 186 Q284 182 284 172 Q284 162 240 158 Q196 162 196 172Z" fill="#c99a3f" opacity="0.75" />
-        <line x1="222" y1="234" x2="228" y2="248" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="258" y1="234" x2="252" y2="248" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="232" y1="234" x2="240" y2="250" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="248" y1="234" x2="240" y2="250" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <rect x="230" y="248" width="20" height="14" rx="3" fill="#1b4d5c" stroke="#0b1a2e" strokeWidth="1.5" />
+        <line x1="222" y1="234" x2="228" y2="248" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <line x1="258" y1="234" x2="252" y2="248" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <line x1="232" y1="234" x2="240" y2="250" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <line x1="248" y1="234" x2="240" y2="250" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <rect x="230" y="248" width="20" height="14" rx="3" fill="#1b4d5c" stroke="#8B9A5B" strokeWidth="1.5" />
       </g>
 
       {/* Balloon 2 — terracotta body, cream panels */}
@@ -59,50 +59,50 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
         <ellipse cx="610" cy="140" rx="50" ry="62" fill="#c46b4f" />
         <path d="M560 140 Q560 110 610 102 L610 140Z" fill="#efe4d2" opacity="0.45" />
         <path d="M560 140 Q560 170 610 178 L610 140Z" fill="#efe4d2" opacity="0.45" />
-        <line x1="610" y1="78" x2="610" y2="202" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.2" />
-        <line x1="560" y1="140" x2="660" y2="140" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.2" />
-        <line x1="590" y1="200" x2="595" y2="215" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="630" y1="200" x2="625" y2="215" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="600" y1="202" x2="610" y2="218" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <line x1="620" y1="202" x2="610" y2="218" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.5" />
-        <rect x="598" y="216" width="24" height="16" rx="3" fill="#0b1a2e" stroke="#0b1a2e" strokeWidth="1.5" />
+        <line x1="610" y1="78" x2="610" y2="202" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.2" />
+        <line x1="560" y1="140" x2="660" y2="140" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.2" />
+        <line x1="590" y1="200" x2="595" y2="215" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <line x1="630" y1="200" x2="625" y2="215" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <line x1="600" y1="202" x2="610" y2="218" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <line x1="620" y1="202" x2="610" y2="218" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.5" />
+        <rect x="598" y="216" width="24" height="16" rx="3" fill="#8B9A5B" stroke="#8B9A5B" strokeWidth="1.5" />
       </g>
 
       {/* Balloon 3 — ochre body, navy stripes */}
       <g style={{ animation: "float-y 12s ease-in-out infinite 3s" }}>
         <ellipse cx="960" cy="160" rx="46" ry="58" fill="#c99a3f" />
-        <line x1="932" y1="102" x2="932" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
-        <line x1="946" y1="102" x2="946" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
-        <line x1="960" y1="102" x2="960" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
-        <line x1="974" y1="102" x2="974" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
-        <line x1="988" y1="102" x2="988" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
-        <line x1="940" y1="216" x2="944" y2="230" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <line x1="980" y1="216" x2="976" y2="230" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <line x1="950" y1="218" x2="960" y2="232" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <line x1="970" y1="218" x2="960" y2="232" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <rect x="949" y="230" width="22" height="15" rx="3" fill="#1b4d5c" stroke="#0b1a2e" strokeWidth="1.5" />
+        <line x1="932" y1="102" x2="932" y2="218" stroke="#8B9A5B" strokeWidth="6" opacity="0.18" />
+        <line x1="946" y1="102" x2="946" y2="218" stroke="#8B9A5B" strokeWidth="6" opacity="0.18" />
+        <line x1="960" y1="102" x2="960" y2="218" stroke="#8B9A5B" strokeWidth="6" opacity="0.18" />
+        <line x1="974" y1="102" x2="974" y2="218" stroke="#8B9A5B" strokeWidth="6" opacity="0.18" />
+        <line x1="988" y1="102" x2="988" y2="218" stroke="#8B9A5B" strokeWidth="6" opacity="0.18" />
+        <line x1="940" y1="216" x2="944" y2="230" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="980" y1="216" x2="976" y2="230" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="950" y1="218" x2="960" y2="232" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="970" y1="218" x2="960" y2="232" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <rect x="949" y="230" width="22" height="15" rx="3" fill="#1b4d5c" stroke="#8B9A5B" strokeWidth="1.5" />
       </g>
 
       {/* Balloon 4 — cream-warm body, navy detail */}
       <g style={{ animation: "float-y 9s ease-in-out infinite 0.8s" }}>
         <ellipse cx="1260" cy="190" rx="40" ry="52" fill="#efe4d2" />
-        <path d="M1220 190 Q1220 160 1260 152 L1260 190Z" fill="#0b1a2e" opacity="0.12" />
-        <path d="M1300 190 Q1300 160 1260 152 L1260 190Z" fill="#0b1a2e" opacity="0.08" />
+        <path d="M1220 190 Q1220 160 1260 152 L1260 190Z" fill="#8B9A5B" opacity="0.12" />
+        <path d="M1300 190 Q1300 160 1260 152 L1260 190Z" fill="#8B9A5B" opacity="0.08" />
         <path d="M1220 190 Q1220 220 1260 228 L1260 190Z" fill="#c99a3f" opacity="0.5" />
         <path d="M1300 190 Q1300 220 1260 228 L1260 190Z" fill="#c99a3f" opacity="0.35" />
-        <line x1="1242" y1="240" x2="1246" y2="253" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <line x1="1278" y1="240" x2="1274" y2="253" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <line x1="1252" y1="242" x2="1260" y2="256" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <line x1="1268" y1="242" x2="1260" y2="256" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
-        <rect x="1248" y="254" width="24" height="15" rx="3" fill="#0b1a2e" stroke="#0b1a2e" strokeWidth="1.5" />
+        <line x1="1242" y1="240" x2="1246" y2="253" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="1278" y1="240" x2="1274" y2="253" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="1252" y1="242" x2="1260" y2="256" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="1268" y1="242" x2="1260" y2="256" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <rect x="1248" y="254" width="24" height="15" rx="3" fill="#8B9A5B" stroke="#8B9A5B" strokeWidth="1.5" />
       </g>
 
       {/* Balloon 5 — navy body, terracotta stripe */}
       <g style={{ animation: "float-y 11s ease-in-out infinite 2.2s" }}>
-        <ellipse cx="60" cy="310" rx="38" ry="50" fill="#162b47" />
+        <ellipse cx="60" cy="310" rx="38" ry="50" fill="#7a8a4e" />
         <path d="M22 310 Q22 280 60 272 L60 310Z" fill="#c46b4f" opacity="0.6" />
         <path d="M98 310 Q98 280 60 272 L60 310Z" fill="#c46b4f" opacity="0.4" />
-        <rect x="49" y="358" width="22" height="14" rx="3" fill="#0b1a2e" stroke="#0b1a2e" strokeWidth="1.5" />
+        <rect x="49" y="358" width="22" height="14" rx="3" fill="#8B9A5B" stroke="#8B9A5B" strokeWidth="1.5" />
         <line x1="53" y1="358" x2="49" y2="348" stroke="#efe4d2" strokeWidth="1.5" opacity="0.5" />
         <line x1="71" y1="358" x2="75" y2="348" stroke="#efe4d2" strokeWidth="1.5" opacity="0.5" />
       </g>

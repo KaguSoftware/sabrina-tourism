@@ -97,7 +97,7 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
         <button
           type="button"
           onClick={scrollToReserveInputs}
-          style={{ backgroundColor: "#c99a3f", color: "#0b1a2e" }}
+          style={{ backgroundColor: "#c99a3f", color: "#8B9A5B" }}
           className="shrink-0 bg-ochre text-navy px-5 py-3 font-mono text-[12px] tracking-[0.14em] uppercase font-medium transition-colors duration-200 hover:bg-gold"
         >
           Reserve →

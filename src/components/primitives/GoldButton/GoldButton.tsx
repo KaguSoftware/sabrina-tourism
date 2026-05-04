@@ -14,9 +14,9 @@ export function GoldButton({
 }: GoldButtonProps) {
   const classes = `${BTN_BASE} ${BTN_VARIANTS[variant]} ${className}`;
   const inlineStyle = variant === "solid"
-    ? { backgroundColor: "#c99a3f", color: "#0b1a2e", borderColor: "#c99a3f" }
+    ? { backgroundColor: "#c99a3f", color: "#8B9A5B", borderColor: "#c99a3f" }
     : variant === "ghost-navy"
-    ? { backgroundColor: "#0b1a2e", color: "#c99a3f" }
+    ? { backgroundColor: "#8B9A5B", color: "#c99a3f" }
     : undefined;
 
   const inner = (

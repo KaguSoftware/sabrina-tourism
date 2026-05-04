@@ -80,7 +80,7 @@ export function PackageCTAStrip({
                       onClick={() => onPeopleChange(active ? "" : opt.value)}
                       className="font-sans text-[13px] px-4 py-1.5 rounded-full border transition-all duration-200"
                       style={{
-                        backgroundColor: active ? "#0b1a2e" : "transparent",
+                        backgroundColor: active ? "#8B9A5B" : "transparent",
                         color: active ? "#c99a3f" : "#1f1a14",
                         borderColor: active ? "transparent" : "#c99a3f",
                         fontWeight: active ? 600 : 400,
@@ -109,7 +109,7 @@ export function PackageCTAStrip({
                     onClick={() => onTierChange(t)}
                     className="font-sans text-[13px] px-4 py-1.5 rounded-full border transition-all duration-200"
                     style={{
-                      backgroundColor: active ? "#0b1a2e" : "transparent",
+                      backgroundColor: active ? "#8B9A5B" : "transparent",
                       color: active ? "#c99a3f" : "#1f1a14",
                       borderColor: active ? "transparent" : "#c99a3f",
                       fontWeight: active ? 600 : 400,
@@ -141,7 +141,7 @@ export function PackageCTAStrip({
               if (!date) return;
               window.open(waHref, "_blank", "noopener,noreferrer");
             }}
-            style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
+            style={{ backgroundColor: "#8B9A5B", color: "#c99a3f" }}
             className="inline-flex items-center gap-4 px-10 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] group"
           >
             <span>Reserve via WhatsApp</span>
