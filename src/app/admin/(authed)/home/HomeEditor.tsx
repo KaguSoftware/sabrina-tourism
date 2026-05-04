@@ -104,7 +104,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
         num: s.num,
         heading: s.heading,
         body: s.body,
-        icon: s.icon as "compass" | "suitcase" | "whatsapp",
+        icon: (["compass", "suitcase", "whatsapp"].includes(s.icon) ? s.icon : "compass") as "compass" | "suitcase" | "whatsapp",
       })),
     },
     featured: {

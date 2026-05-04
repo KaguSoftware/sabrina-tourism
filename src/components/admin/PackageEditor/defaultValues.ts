@@ -1,13 +1,13 @@
 import type { PackageRaw } from "@/lib/db/packages";
 import type { PackageFormValues } from "@/app/admin/(authed)/packages/[slug]/schema";
-import { TIER_NAMES } from "./types";
+import { REGIONS, TIER_NAMES } from "./types";
 
 export function defaultValues(pkg?: PackageRaw): PackageFormValues {
   if (pkg) {
     return {
       id: pkg.id,
       name: pkg.name,
-      region: pkg.region as PackageFormValues["region"],
+      region: (REGIONS.includes(pkg.region as PackageFormValues["region"]) ? pkg.region : "Istanbul") as PackageFormValues["region"],
       duration: pkg.duration,
       duration_days: pkg.duration_days,
       short_description: pkg.short_description,

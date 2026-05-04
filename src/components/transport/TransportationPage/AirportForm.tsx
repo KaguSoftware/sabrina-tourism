@@ -155,7 +155,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
                     : "bg-cream-warm border-rule text-ink hover:border-ochre"
                 }`}
               >
-                <FleetIllustration vehicleId={v.id as "sedan" | "suv" | "van" | "luxury"} className="w-full h-[52px]" />
+                <FleetIllustration vehicleId={v.id} className="w-full h-13" />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
                 <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
                 <span className="text-[11px] text-muted">{v.capacity}</span>

@@ -37,7 +37,10 @@ export default async function HomePage() {
       />
       <HowItWorks
         sectionHeading={howItWorks.section_heading}
-        steps={howItWorks.steps as Step[]}
+        steps={howItWorks.steps.map((s) => ({
+          ...s,
+          icon: (["compass", "suitcase", "whatsapp"].includes(s.icon) ? s.icon : "compass") as Step["icon"],
+        }))}
       />
       <QuoteStrip quote={quote.quote} attribution={quote.attribution} />
     </>

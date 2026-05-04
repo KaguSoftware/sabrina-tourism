@@ -3,8 +3,10 @@ export interface Airport {
   label: string;
 }
 
+import type { VehicleId } from "@/lib/supabase/types";
+
 export interface Vehicle {
-  id: string;
+  id: VehicleId;
   label: string;
   capacity: string;
   note: string;
