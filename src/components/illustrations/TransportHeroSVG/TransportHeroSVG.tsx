@@ -37,7 +37,7 @@ export function TransportHeroSVG({ className = "" }: TransportHeroSVGProps) {
       <circle cx="1274" cy="73" r="23" fill="#1b4d5c" />
 
       {/* Distant hill silhouette */}
-      <path d="M0 310 Q120 270 260 285 Q400 300 520 278 Q660 256 800 272 Q940 288 1080 262 Q1220 236 1360 255 Q1400 260 1440 252 L1440 420 L0 420Z" fill="#7a8a4e" />
+      <path d="M0 310 Q120 270 260 285 Q400 300 520 278 Q660 256 800 272 Q940 288 1080 262 Q1220 236 1360 255 Q1400 260 1440 252 L1440 420 L0 420Z" fill="#162b47" />
       <path d="M0 340 Q200 318 400 330 Q600 342 800 322 Q1000 302 1200 318 Q1340 330 1440 318 L1440 440 L0 440Z" fill="#0f2030" />
 
       {/* Road — perspective trapezoid */}
@@ -57,7 +57,7 @@ export function TransportHeroSVG({ className = "" }: TransportHeroSVGProps) {
       })}
 
       {/* Foreground ground */}
-      <path d="M0 430 Q300 415 600 425 Q900 435 1200 420 Q1360 412 1440 416 L1440 560 L0 560Z" fill="#8B9A5B" />
+      <path d="M0 430 Q300 415 600 425 Q900 435 1200 420 Q1360 412 1440 416 L1440 560 L0 560Z" fill="#0b1a2e" />
 
       {/* Mercedes E-Class — flat side view, facing right */}
       <g transform="translate(530 390)">
@@ -66,10 +66,10 @@ export function TransportHeroSVG({ className = "" }: TransportHeroSVGProps) {
         {/* Body */}
         <path d="M0 32 Q2 18 18 14 L52 8 Q80 2 110 6 L158 14 Q170 18 172 30 L172 44 Q120 48 84 48 Q50 48 0 44Z" fill="#0f2030" />
         {/* Roof */}
-        <path d="M36 14 Q48 2 78 0 Q108 -2 130 6 L152 14Z" fill="#7a8a4e" />
+        <path d="M36 14 Q48 2 78 0 Q108 -2 130 6 L152 14Z" fill="#162b47" />
         {/* Windows */}
         <path d="M40 13 Q52 3 78 1 Q104 -1 126 7 L146 13Z" fill="#a8c8e1" opacity="0.4" />
-        <line x1="85" y1="0" x2="82" y2="14" stroke="#8B9A5B" strokeWidth="1.5" opacity="0.6" />
+        <line x1="85" y1="0" x2="82" y2="14" stroke="#0b1a2e" strokeWidth="1.5" opacity="0.6" />
         {/* Ochre trim line */}
         <line x1="2" y1="36" x2="170" y2="36" stroke="#c99a3f" strokeWidth="1.2" opacity="0.55" />
         {/* Headlight */}
@@ -85,7 +85,7 @@ export function TransportHeroSVG({ className = "" }: TransportHeroSVGProps) {
         <circle cx="136" cy="46" r="8" fill="#1a2030" />
         <circle cx="136" cy="46" r="3" fill="#c99a3f" />
         {/* Chauffeur silhouette */}
-        <ellipse cx="62" cy="8" rx="9" ry="10" fill="#8B9A5B" />
+        <ellipse cx="62" cy="8" rx="9" ry="10" fill="#0b1a2e" />
         <rect x="55" y="7" width="18" height="7" rx="3" fill="#1b4d5c" />
       </g>
 

@@ -25,13 +25,13 @@ function IstanbulScene() {
       ))}
       {/* Hagia Sophia */}
       <g>
-        <rect x="380" y="290" width="120" height="110" fill="#7a8a4e" />
+        <rect x="380" y="290" width="120" height="110" fill="#162b47" />
         <ellipse cx="440" cy="290" rx="62" ry="48" fill="#1b4d5c" />
         <ellipse cx="380" cy="326" rx="32" ry="26" fill="#0f2238" />
         <ellipse cx="500" cy="326" rx="32" ry="26" fill="#0f2238" />
-        <rect x="356" y="230" width="14" height="100" fill="#7a8a4e" />
+        <rect x="356" y="230" width="14" height="100" fill="#162b47" />
         <path d="M356 230 L363 210 L370 230Z" fill="#c99a3f" />
-        <rect x="490" y="230" width="14" height="100" fill="#7a8a4e" />
+        <rect x="490" y="230" width="14" height="100" fill="#162b47" />
         <path d="M490 230 L497 210 L504 230Z" fill="#c99a3f" />
         <ellipse cx="440" cy="288" rx="20" ry="9" fill="#0d4a50" opacity="0.7" />
         <circle cx="440" cy="242" r="9" fill="#c99a3f" />
@@ -40,18 +40,18 @@ function IstanbulScene() {
       {/* Blue Mosque */}
       <g>
         <rect x="560" y="310" width="100" height="90" fill="#0f2238" />
-        <ellipse cx="610" cy="310" rx="52" ry="40" fill="#7a8a4e" />
-        <rect x="536" y="258" width="12" height="92" fill="#8B9A5B" />
+        <ellipse cx="610" cy="310" rx="52" ry="40" fill="#162b47" />
+        <rect x="536" y="258" width="12" height="92" fill="#0b1a2e" />
         <path d="M536 258 L542 240 L548 258Z" fill="#c99a3f" />
-        <rect x="662" y="258" width="12" height="92" fill="#8B9A5B" />
+        <rect x="662" y="258" width="12" height="92" fill="#0b1a2e" />
         <path d="M662 258 L668 240 L674 258Z" fill="#c99a3f" />
-        <rect x="548" y="270" width="12" height="80" fill="#8B9A5B" />
-        <rect x="650" y="270" width="12" height="80" fill="#8B9A5B" />
+        <rect x="548" y="270" width="12" height="80" fill="#0b1a2e" />
+        <rect x="650" y="270" width="12" height="80" fill="#0b1a2e" />
       </g>
       {/* Galata Tower */}
       <g>
         <rect x="820" y="255" width="34" height="135" fill="#0d2535" />
-        <ellipse cx="837" cy="255" rx="17" ry="12" fill="#7a8a4e" />
+        <ellipse cx="837" cy="255" rx="17" ry="12" fill="#162b47" />
         <path d="M824 247 L837 226 L850 247Z" fill="#c99a3f" />
         <rect x="830" y="288" width="16" height="20" rx="8" fill="#1a6b66" opacity="0.5" />
       </g>
@@ -63,7 +63,7 @@ function IstanbulScene() {
         <rect x="980" y="401" width="42" height="20" rx="3" fill="#1b4d5c" />
       </g>
       {/* Cityscape silhouette */}
-      <path d="M0 400 Q300 382 600 392 Q900 402 1200 388 Q1320 383 1440 390 L1440 420 L0 420Z" fill="#8B9A5B" opacity="0.8" />
+      <path d="M0 400 Q300 382 600 392 Q900 402 1200 388 Q1320 383 1440 390 L1440 420 L0 420Z" fill="#0b1a2e" opacity="0.8" />
       {/* Foreground */}
       <path d="M0 430 Q360 420 720 432 Q1080 444 1440 428 L1440 560 L0 560Z" fill="#08131f" />
     </>

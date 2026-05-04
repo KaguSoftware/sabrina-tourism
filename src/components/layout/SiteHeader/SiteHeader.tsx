@@ -83,9 +83,8 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-                  transparent ? "text-cream" : ""
+                  transparent ? "text-cream" : "text-ink"
                 } ${pathname === item.href ? "after:scale-x-100" : ""}`}
-                style={transparent ? {} : { color: "#8B9A5B" }}
               >
                 {item.label}
               </Link>
@@ -98,7 +97,7 @@ export function SiteHeader() {
               href={genericMessage()}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ backgroundColor: "#8B9A5B", color: "#c99a3f" }}
+              style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
               className="inline-flex items-center gap-2 px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-semibold transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-6px_rgba(11,26,46,0.4)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -120,9 +119,8 @@ export function SiteHeader() {
           {/* Burger */}
           <button
             className={`md:hidden flex flex-col gap-[6px] p-3 ${
-              transparent ? "text-cream" : ""
+              transparent ? "text-cream" : "text-ink"
             }`}
-            style={transparent ? {} : { color: "#8B9A5B" }}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((o) => !o)}
           >
@@ -199,7 +197,7 @@ export function SiteHeader() {
             href={genericMessage()}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ backgroundColor: "#8B9A5B", color: "#c99a3f" }}
+            style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
             className="inline-flex items-center gap-3 px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-semibold w-fit shadow-[0_4px_24px_-6px_rgba(11,26,46,0.45)]"
           >
             Reserve via WhatsApp

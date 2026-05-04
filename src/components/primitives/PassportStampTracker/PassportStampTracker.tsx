@@ -110,8 +110,8 @@ export function PassportStampTracker({ sections = DEFAULT_SECTIONS }: PassportSt
       >
         {/* Passport book icon */}
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
-          <rect x="4" y="3" width="13" height="18" rx="1.5" fill="#7a8a4e" stroke="#c99a3f" strokeWidth="1.2" />
-          <rect x="4" y="3" width="4" height="18" rx="1" fill="#8B9A5B" />
+          <rect x="4" y="3" width="13" height="18" rx="1.5" fill="#162b47" stroke="#c99a3f" strokeWidth="1.2" />
+          <rect x="4" y="3" width="4" height="18" rx="1" fill="#0b1a2e" />
           <circle cx="13.5" cy="12" r="3" stroke="#c99a3f" strokeWidth="0.9" fill="none" />
           <circle cx="13.5" cy="12" r="1" fill="#c99a3f" />
         </svg>
