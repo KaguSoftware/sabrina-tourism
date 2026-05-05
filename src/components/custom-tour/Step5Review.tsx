@@ -1,7 +1,9 @@
 "use client";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
-import { DESTINATIONS, SAMPLE_HOTELS } from "./types";
+import { REGIONS } from "@/lib/packages/constants";
+import { HOTELS } from "@/lib/regions/hotels";
+import { DESTINATIONS } from "./types";
 import type { CustomTourState } from "./types";
 import type { Vehicle } from "@/lib/transport/types";
 
@@ -35,12 +37,67 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
+function ordinal(n: number) {
+  const suffix =
+    n % 100 >= 11 && n % 100 <= 13
+      ? "th"
+      : n % 10 === 1
+      ? "st"
+      : n % 10 === 2
+      ? "nd"
+      : n % 10 === 3
+      ? "rd"
+      : "th";
+
+  return `${n}${suffix}`;
+}
+
+function findHotel(id: string | null) {
+  if (!id) return null;
+
+  for (const region of REGIONS) {
+    const hotel = HOTELS[region].find((item) => item.id === id);
+    if (hotel) return { ...hotel, region };
+  }
+
+  return null;
+}
+
+function getSelectedRegions(destinations: string[]) {
+  return destinations.filter((destination): destination is (typeof REGIONS)[number] =>
+    REGIONS.includes(destination as (typeof REGIONS)[number])
+  );
+}
+
 export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
+  const selectedRegions = getSelectedRegions(state.destinations);
   const destLabels = state.destinations
     .map((id) => DESTINATIONS.find((d) => d.id === id)?.label ?? id)
     .join(", ");
+  const destinationBreakdown =
+    state.destinations.length > 1
+      ? state.destinations
+          .map((id, i) => {
+            const destination = DESTINATIONS.find((d) => d.id === id);
+            const days = (state.destinationDays ?? {})[id];
+            return `${ordinal(i + 1)} ${destination?.label ?? id}${
+              days ? `: ${days} day${days === "1" ? "" : "s"}` : ""
+            }`;
+          })
+          .join("; ")
+      : "";
 
-  const hotel = SAMPLE_HOTELS.find((h) => h.id === state.hotelId);
+  const hotelBreakdown = selectedRegions
+    .map((region, i) => {
+      const hotelId = (state.hotelIds ?? {})[region] ?? (i === 0 ? state.hotelId : null);
+      const hotel = findHotel(hotelId);
+      const regionLabel =
+        selectedRegions.length > 1 ? `${ordinal(i + 1)} ${region}` : region;
+      return `${regionLabel}: ${
+        hotel ? `${hotel.name} (${hotel.location})` : "—"
+      }`;
+    })
+    .join("; ");
   const vehicle = vehicles.find((v) => v.id === state.vehicleId);
   const guideType = state.guideType ?? "assistant";
   const guideLanguage = state.guideLanguage ?? "English";
@@ -59,9 +116,10 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
   const whatsappMessage = [
     "Hey Sabrina — I'd like to book a custom tour package.",
     `Destinations: ${destLabels}.`,
+    destinationBreakdown ? `Destination order: ${destinationBreakdown}.` : "",
     `Dates: ${formatDate(state.startDate)} to ${formatDate(state.endDate)} (${duration}).`,
     `Guests: ${state.people}.`,
-    `Hotel: ${hotel?.name ?? "—"} (${hotel?.location ?? "—"}).`,
+    `Hotels: ${hotelBreakdown || "—"}.`,
     `Vehicle: ${
       state.noDriverNeeded
         ? "No driver needed"
@@ -73,7 +131,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         : "Not needed"
     }.`,
     "Could you confirm availability and provide a quote?",
-  ].join(" ");
+  ].filter(Boolean).join(" ");
 
   const waNum = process.env.NEXT_PUBLIC_WA_PHONE?.replace(/[^\d+]/g, "") ?? "";
   const waHref = `https://wa.me/${waNum}?text=${encodeURIComponent(whatsappMessage)}`;
@@ -93,11 +151,14 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           Booking Summary
         </h3>
         <Row label="Destinations" value={destLabels || "—"} />
+        {destinationBreakdown && (
+          <Row label="Destination Days" value={destinationBreakdown} />
+        )}
         <Row label="Start Date" value={formatDate(state.startDate)} />
         <Row label="Finish Date" value={formatDate(state.endDate)} />
         <Row label="Duration" value={duration} />
         <Row label="Guests" value={`${state.people} ${state.people === 1 ? "person" : "people"}`} />
-        <Row label="Hotel" value={hotel ? `${hotel.name}, ${hotel.location}` : "—"} />
+        <Row label="Hotels" value={hotelBreakdown || "—"} />
         <Row
           label="Vehicle"
           value={

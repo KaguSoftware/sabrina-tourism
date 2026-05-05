@@ -5,6 +5,7 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
+import { HotelBackButton } from "@/components/regions/HotelBackButton/HotelBackButton";
 import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
 
@@ -43,10 +44,13 @@ export async function generateMetadata({
 
 export default async function HotelDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string; hotelSlug: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { slug, hotelSlug } = await params;
+  const { from } = await searchParams;
   const region = slugToRegion(slug);
   if (!region) notFound();
 
@@ -96,6 +100,7 @@ export default async function HotelDetailPage({
 
       {/* Content */}
       <section className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-16 pb-28">
+        {from === "custom-tour" && <HotelBackButton />}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-[clamp(40px,6vw,80px)]">
 
           {/* Left — description + illustration */}

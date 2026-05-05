@@ -12,17 +12,97 @@ interface Props {
   onNext: () => void;
 }
 
+function ordinal(n: number) {
+  const suffix =
+    n % 100 >= 11 && n % 100 <= 13
+      ? "th"
+      : n % 10 === 1
+      ? "st"
+      : n % 10 === 2
+      ? "nd"
+      : n % 10 === 3
+      ? "rd"
+      : "th";
+
+  return `${n}${suffix}`;
+}
+
+function getSelectedTripDays(startDate: string, endDate: string) {
+  if (!startDate || !endDate) return null;
+
+  const [startYear, startMonth, startDay] = startDate.split("-").map(Number);
+  const [endYear, endMonth, endDay] = endDate.split("-").map(Number);
+  const start = new Date(startYear, startMonth - 1, startDay);
+  const end = new Date(endYear, endMonth - 1, endDay);
+  const diff = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+  return diff >= 0 ? diff + 1 : null;
+}
+
 export function Step1Destination({ state, onChange, onNext }: Props) {
   const today = new Date().toISOString().split("T")[0];
+  const needsDestinationDays = state.destinations.length > 1;
+  const selectedTripDays = getSelectedTripDays(state.startDate, state.endDate);
+  const destinationDayTotal = state.destinations.reduce((sum, id) => {
+    const days = parseInt((state.destinationDays ?? {})[id] ?? "", 10);
+    return sum + (Number.isFinite(days) ? days : 0);
+  }, 0);
+  const destinationDaysOver =
+    needsDestinationDays &&
+    selectedTripDays !== null &&
+    destinationDayTotal > selectedTripDays;
+  const destinationDaysUnder =
+    needsDestinationDays &&
+    selectedTripDays !== null &&
+    destinationDayTotal > 0 &&
+    destinationDayTotal < selectedTripDays;
 
   function toggleDestination(id: string) {
     const next = state.destinations.includes(id)
       ? state.destinations.filter((d) => d !== id)
       : [...state.destinations, id];
-    onChange({ destinations: next });
+    const destinationDays = Object.fromEntries(
+      Object.entries(state.destinationDays ?? {}).filter(([key]) => next.includes(key))
+    );
+    const hotelIds = Object.fromEntries(
+      Object.entries(state.hotelIds ?? {}).filter(([key]) => next.includes(key))
+    );
+
+    onChange({ destinations: next, destinationDays, hotelIds });
   }
 
-  const canProceed = state.startDate && state.endDate && state.destinations.length > 0;
+  function moveDestination(index: number, direction: -1 | 1) {
+    const target = index + direction;
+    if (target < 0 || target >= state.destinations.length) return;
+
+    const destinations = [...state.destinations];
+    [destinations[index], destinations[target]] = [destinations[target], destinations[index]];
+    onChange({ destinations });
+  }
+
+  function setDestinationDays(id: string, days: string) {
+    onChange({
+      destinationDays: {
+        ...(state.destinationDays ?? {}),
+        [id]: days,
+      },
+    });
+  }
+
+  const hasDestinationDays =
+    !needsDestinationDays ||
+    (state.destinations.every((id) => {
+      const days = parseInt((state.destinationDays ?? {})[id] ?? "", 10);
+      return Number.isFinite(days) && days > 0;
+    }) &&
+      selectedTripDays !== null &&
+      destinationDayTotal === selectedTripDays);
+
+  const canProceed =
+    state.startDate &&
+    state.endDate &&
+    state.destinations.length > 0 &&
+    hasDestinationDays;
 
   return (
     <div>
@@ -106,6 +186,87 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
         })}
       </div>
 
+      {needsDestinationDays && (
+        <div className="w-full bg-cream-warm border border-rule p-5 mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
+            <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
+              Days by destination <span className="text-terracotta">*</span>
+            </h3>
+            <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
+              {selectedTripDays === null
+                ? "Select dates first"
+                : `${destinationDayTotal}/${selectedTripDays} days assigned`}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            {state.destinations.map((id, i) => {
+              const destination = DESTINATIONS.find((dest) => dest.id === id);
+              return (
+                <div
+                  key={id}
+                  className="grid grid-cols-[auto_minmax(0,1fr)_96px] gap-4 items-center border-b border-rule last:border-0 pb-3 last:pb-0"
+                >
+                  <div className="flex flex-col gap-1">
+                    <button
+                      type="button"
+                      onClick={() => moveDestination(i, -1)}
+                      disabled={i === 0}
+                      className="w-8 h-8 border border-ochre text-ink hover:bg-navy hover:text-ochre transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label={`Move ${destination?.label ?? id} earlier`}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveDestination(i, 1)}
+                      disabled={i === state.destinations.length - 1}
+                      className="w-8 h-8 border border-ochre text-ink hover:bg-navy hover:text-ochre transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label={`Move ${destination?.label ?? id} later`}
+                    >
+                      ↓
+                    </button>
+                  </div>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre">
+                      {ordinal(i + 1)} area
+                    </span>
+                    <span className="font-display text-[20px] tracking-tight text-ink">
+                      {destination?.label ?? id}
+                    </span>
+                  </span>
+                  <label className="flex flex-col gap-1">
+                    <span className="sr-only">Days in {destination?.label ?? id}</span>
+                    <input
+                      type="number"
+                      min={1}
+                      value={(state.destinationDays ?? {})[id] ?? ""}
+                      onChange={(e) => setDestinationDays(id, e.target.value)}
+                      placeholder="Days"
+                      className="h-11 border border-rule bg-cream px-3 text-center font-mono text-[13px] tracking-[0.12em] uppercase text-ink focus:outline-none focus:border-ochre transition-colors duration-200"
+                    />
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+          {(destinationDaysOver || destinationDaysUnder) && (
+            <p
+              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase ${
+                destinationDaysOver
+                  ? "border-terracotta bg-terracotta/10 text-terracotta"
+                  : "border-ochre bg-ochre/12 text-ink"
+              }`}
+            >
+              {destinationDaysOver
+                ? "You've selected fewer travel days than that. Reduce the area days or extend your finish date."
+                : `${selectedTripDays - destinationDayTotal} day${
+                    selectedTripDays - destinationDayTotal === 1 ? "" : "s"
+                  } left to assign.`}
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center justify-center gap-4">
         <button
           type="button"
@@ -128,7 +289,15 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
         </button>
         {!canProceed && (
           <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
-            {!state.startDate || !state.endDate ? "Select both dates" : "Select at least one destination"}
+            {!state.startDate || !state.endDate
+              ? "Select both dates"
+              : state.destinations.length === 0
+              ? "Select at least one destination"
+              : selectedTripDays === null
+              ? "Select a valid date range"
+              : destinationDaysOver
+              ? "You've selected fewer travel days than that"
+              : `Assign exactly ${selectedTripDays} travel days`}
           </p>
         )}
       </div>

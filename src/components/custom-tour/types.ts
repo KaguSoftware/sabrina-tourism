@@ -2,8 +2,10 @@ export interface CustomTourState {
   startDate: string;
   endDate: string;
   destinations: string[];
+  destinationDays: Record<string, string>;
   people: number;
   hotelId: string | null;
+  hotelIds: Record<string, string>;
   vehicleId: string | null;
   noDriverNeeded: boolean;
   guideNeeded: boolean;
@@ -15,8 +17,10 @@ export const INITIAL_STATE: CustomTourState = {
   startDate: "",
   endDate: "",
   destinations: [],
+  destinationDays: {},
   people: 2,
   hotelId: null,
+  hotelIds: {},
   vehicleId: null,
   noDriverNeeded: false,
   guideNeeded: false,
@@ -24,33 +28,7 @@ export const INITIAL_STATE: CustomTourState = {
   guideLanguage: "English",
 };
 
-export interface Hotel {
-  id: string;
-  name: string;
-  location: string;
-  stars: number;
-  image: string;
-  description: string;
-}
-
-export const SAMPLE_HOTELS: Hotel[] = [
-  {
-    id: "museum-hotel",
-    name: "Museum Hotel",
-    location: "Cappadocia",
-    stars: 5,
-    image: "/cappadocia-ifr1.png",
-    description: "Cave-carved luxury with panoramic valley views and Michelin-recognised cuisine.",
-  },
-  {
-    id: "four-seasons-bosphorus",
-    name: "Four Seasons Bosphorus",
-    location: "Istanbul",
-    stars: 5,
-    image: "/istanbul-hero1.png",
-    description: "Former Ottoman palace on the Bosphorus waterfront in the heart of the city.",
-  },
-];
+export const CUSTOM_TOUR_DRAFT_KEY = "sabrina-custom-tour-draft";
 
 export const DESTINATIONS = [
   { id: "Istanbul", label: "Istanbul", image: "/istanbul-hero1.png" },
