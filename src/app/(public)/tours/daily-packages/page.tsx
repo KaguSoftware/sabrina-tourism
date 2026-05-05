@@ -1,8 +1,26 @@
+import { DailyListPage } from "@/components/daily/DailyListPage/DailyListPage";
+import { DAILY_PACKAGES } from "@/lib/daily/data";
+
+export const metadata = {
+  title: "Daily Packages — Sabrina Turizm",
+  description:
+    "Fixed single-day tours from sunrise to starlight. Pre-selected destinations, private chauffeur, and every detail handled.",
+  alternates: { canonical: "/tours/daily-packages" },
+  openGraph: {
+    title: "Daily Packages — Sabrina Turizm",
+    description:
+      "Fixed single-day tours from sunrise to starlight. Pre-selected destinations, private chauffeur, and every detail handled.",
+    images: [
+      {
+        url: "/homepage.png",
+        width: 1200,
+        height: 630,
+        alt: "Sabrina Turizm daily packages",
+      },
+    ],
+  },
+};
+
 export default function DailyPackagesPage() {
-  return (
-    <main className="min-h-screen pt-32 px-6 max-w-[1320px] mx-auto">
-      <h1 className="font-display text-4xl text-ink">Daily Packages</h1>
-      <p className="text-muted mt-4">Single-day excursions and city tours — no overnight stay required.</p>
-    </main>
-  );
+  return <DailyListPage packages={DAILY_PACKAGES} />;
 }
