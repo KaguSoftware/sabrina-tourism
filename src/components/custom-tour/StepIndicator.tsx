@@ -2,7 +2,7 @@
 
 const STEPS = [
   "Destination & Dates",
-  "Group Size",
+  "No. of Guests",
   "Accommodation",
   "Chauffeur",
   "Review",
@@ -14,20 +14,20 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ current }: StepIndicatorProps) {
   return (
-    <div className="flex items-center gap-0 mb-14 overflow-x-auto pb-2">
+    <div className="flex items-center gap-0 mb-14 overflow-x-visible pb-2 px-1">
       {STEPS.map((label, i) => {
         const done = i < current;
         const active = i === current;
         return (
           <div key={i} className="flex items-center flex-shrink-0">
-            <div className="flex flex-col items-center gap-1.5">
+            <div className="flex flex-col items-center gap-1.5 pt-1">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-mono text-[12px] tracking-[0.12em] transition-all duration-300 ${
                   done
                     ? "bg-ochre text-navy"
                     : active
-                    ? "bg-navy text-ochre ring-2 ring-ochre ring-offset-2"
-                    : "bg-cream-warm border border-rule text-muted"
+                    ? "bg-navy text-ochre outline-2 outline-offset-2 outline-ochre"
+                    : "bg-transparent border-2 border-ink/25 text-muted"
                 }`}
               >
                 {done ? "✓" : i + 1}

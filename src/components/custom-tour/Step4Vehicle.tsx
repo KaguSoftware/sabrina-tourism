@@ -77,11 +77,11 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex justify-center gap-3">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-6 py-4 font-mono text-[13px] tracking-[0.16em] uppercase border border-rule text-ink-soft hover:border-ink transition-colors duration-200"
+          style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "transparent", color: "#1f1a14", fontWeight: 400, border: "1.5px solid #c99a3f" }}
         >
           ← Back
         </button>
@@ -89,14 +89,9 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
           type="button"
           onClick={onNext}
           disabled={!canProceed}
-          className={`inline-flex items-center gap-3 px-8 py-4 font-mono text-[13px] tracking-[0.16em] uppercase transition-all duration-200 group ${
-            canProceed
-              ? "bg-navy text-ochre hover:scale-[1.02] active:scale-[0.99] cursor-pointer"
-              : "bg-cream-warm text-muted border border-rule cursor-not-allowed"
-          }`}
+          style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: canProceed ? "pointer" : "not-allowed", transition: "background 0.2s, color 0.2s", backgroundColor: canProceed ? "#0b1a2e" : "transparent", color: canProceed ? "#c99a3f" : "#999", fontWeight: 600, border: canProceed ? "none" : "1.5px solid #c99a3f" }}
         >
-          <span>Review</span>
-          <span className={`transition-transform duration-200 ${canProceed ? "group-hover:translate-x-1" : ""}`}>→</span>
+          Review →
         </button>
       </div>
     </div>

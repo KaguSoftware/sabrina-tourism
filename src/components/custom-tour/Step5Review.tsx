@@ -93,11 +93,11 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row justify-center gap-3">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 px-6 py-4 font-mono text-[13px] tracking-[0.16em] uppercase border border-rule text-ink-soft hover:border-ink transition-colors duration-200"
+          style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "transparent", color: "#1f1a14", fontWeight: 400, border: "1.5px solid #c99a3f" }}
         >
           ← Back
         </button>
@@ -105,12 +105,10 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 px-8 py-4 font-mono text-[13px] tracking-[0.16em] uppercase transition-all duration-200 hover:scale-[1.02] active:scale-[0.99] group"
-          style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
           onClick={onConfirm}
+          style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "#0b1a2e", color: "#c99a3f", fontWeight: 600, border: "none", textDecoration: "none" }}
         >
-          <span>Confirm via WhatsApp</span>
-          <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          Confirm via WhatsApp →
         </a>
       </div>
     </div>

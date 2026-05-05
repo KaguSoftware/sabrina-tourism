@@ -104,19 +104,25 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
         })}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-center gap-4">
         <button
           type="button"
           onClick={onNext}
           disabled={!canProceed}
-          className={`inline-flex items-center gap-3 px-8 py-4 font-mono text-[13px] tracking-[0.16em] uppercase transition-all duration-200 group ${
-            canProceed
-              ? "bg-navy text-ochre hover:scale-[1.02] active:scale-[0.99] cursor-pointer"
-              : "bg-cream-warm text-muted border border-rule cursor-not-allowed"
-          }`}
+          style={{
+            fontFamily: "inherit",
+            fontSize: "14px",
+            padding: "10px 28px",
+            borderRadius: "16px",
+            cursor: canProceed ? "pointer" : "not-allowed",
+            transition: "background 0.2s, color 0.2s",
+            backgroundColor: canProceed ? "#0b1a2e" : "transparent",
+            color: canProceed ? "#c99a3f" : "#999",
+            fontWeight: 600,
+            border: canProceed ? "none" : "1.5px solid #c99a3f",
+          }}
         >
-          <span>Next</span>
-          <span className={`transition-transform duration-200 ${canProceed ? "group-hover:translate-x-1" : ""}`}>→</span>
+          Next →
         </button>
         {!canProceed && (
           <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">

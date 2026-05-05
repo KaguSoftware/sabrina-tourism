@@ -29,26 +29,28 @@ function DropdownNavItem({
   }, []);
 
   return (
-    <div ref={ref} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        className={`flex items-center gap-1 relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
+    <div ref={ref} className="relative inline-flex items-center" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <Link
+        href={item.href}
+        className={`inline-flex items-center gap-1 relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
       >
         {item.label}
         <svg
           width="10" height="10" viewBox="0 0 10 10" fill="none"
-          className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`transition-transform duration-200 opacity-60 ${open ? "rotate-180" : ""}`}
           aria-hidden="true"
         >
           <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-      </button>
+      </Link>
+
+      {/* Zero-height bridge fills the gap so onMouseLeave doesn't fire mid-travel */}
+      <div className="absolute top-full left-0 right-0 h-3" />
 
       <div
-        className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
+        className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
           open ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
         }`}
       >
