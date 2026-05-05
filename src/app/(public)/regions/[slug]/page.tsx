@@ -124,7 +124,7 @@ export default async function RegionPage({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
           {hotels.map((hotel, i) => (
             <Reveal key={hotel.id} delay={i * 70}>
-              <HotelCard hotel={hotel} />
+              <HotelCard hotel={hotel} regionSlug={slug} />
             </Reveal>
           ))}
         </div>

@@ -6,11 +6,10 @@ import { HOTELS } from "@/lib/regions/hotels";
 import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
 
 interface NavHotelProps {
-  transparent: boolean;
   currentPath: string;
 }
 
-export function NavHotel({ transparent, currentPath }: NavHotelProps) {
+export function NavHotel({ currentPath }: NavHotelProps) {
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -32,9 +31,7 @@ export function NavHotel({ transparent, currentPath }: NavHotelProps) {
       onMouseLeave={handleMouseLeave}
     >
       <span
-        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 cursor-pointer select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-          transparent ? "text-cream" : "text-ink"
-        } ${isActive || open ? "after:scale-x-100" : ""}`}
+        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 cursor-pointer select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${isActive || open ? "after:scale-x-100" : ""}`}
         role="button"
         aria-haspopup="true"
         aria-expanded={open}
@@ -44,7 +41,7 @@ export function NavHotel({ transparent, currentPath }: NavHotelProps) {
 
       {open && (
         <div
-          className="absolute top-full right-0 mt-3 bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] z-50 w-[680px]"
+          className="absolute top-full right-0 mt-3 bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] z-50 w-170"
           role="menu"
         >
           {/* pointer bridge */}
@@ -71,7 +68,7 @@ export function NavHotel({ transparent, currentPath }: NavHotelProps) {
                   {/* First hotel preview */}
                   <div className="flex items-center gap-3">
                     {/* SVG thumbnail */}
-                    <div className="w-[72px] h-[52px] flex-shrink-0 overflow-hidden border border-rule">
+                    <div className="w-18 h-13 shrink-0 overflow-hidden border border-rule">
                       <HotelSVG variant={first.svgVariant} />
                     </div>
 
@@ -93,13 +90,10 @@ export function NavHotel({ transparent, currentPath }: NavHotelProps) {
           </div>
 
           {/* Footer bar */}
-          <div className="border-t border-rule px-4 py-2.5 flex items-center justify-between">
+          <div className="border-t border-rule px-4 py-2.5">
             <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">
               {REGIONS.reduce((sum, r) => sum + HOTELS[r].length, 0)} partnered properties across Türkiye
             </p>
-            <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-ochre">
-              View all →
-            </span>
           </div>
         </div>
       )}

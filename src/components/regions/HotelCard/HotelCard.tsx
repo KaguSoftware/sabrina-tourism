@@ -1,16 +1,15 @@
-import { HotelSVG, type HotelSVGVariant } from "@/components/illustrations/HotelSVG/HotelSVG";
+import Link from "next/link";
+import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
+import type { HotelCardData } from "@/lib/regions/hotels";
 
-export interface HotelCardData {
-  id: string;
-  name: string;
-  description: string;
-  tags: [string, string];
-  svgVariant: HotelSVGVariant;
-}
+export type { HotelCardData };
 
-export function HotelCard({ hotel }: { hotel: HotelCardData }) {
+export function HotelCard({ hotel, regionSlug }: { hotel: HotelCardData; regionSlug: string }) {
   return (
-    <div className="group bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none transition-all duration-380 ease-out hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]">
+    <Link
+      href={`/regions/${regionSlug}/${hotel.slug}`}
+      className="group block bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none transition-all duration-380 ease-out hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]"
+    >
       {/* Illustration */}
       <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">
         <HotelSVG variant={hotel.svgVariant} className="absolute inset-0" />
@@ -37,12 +36,12 @@ export function HotelCard({ hotel }: { hotel: HotelCardData }) {
           {hotel.description}
         </p>
         <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre">
-          Enquire via WhatsApp{" "}
+          View hotel{" "}
           <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
             →
           </em>
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
