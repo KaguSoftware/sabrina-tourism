@@ -16,9 +16,10 @@ interface PackageListPageProps {
     pageHeading: string;
     pageLede: string;
     packages: Package[];
+    hideFilters?: boolean;
 }
 
-export function PackageListPage({ pageHeading, pageLede, packages }: PackageListPageProps) {
+export function PackageListPage({ pageHeading, pageLede, packages, hideFilters = false }: PackageListPageProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -111,11 +112,13 @@ export function PackageListPage({ pageHeading, pageLede, packages }: PackageList
             </section>
 
             {/* Filter bar */}
-            <FilterBar
-                filters={filters}
-                onChange={updateFilters}
-                onClear={clearFilters}
-            />
+            {!hideFilters && (
+                <FilterBar
+                    filters={filters}
+                    onChange={updateFilters}
+                    onClear={clearFilters}
+                />
+            )}
 
             {/* Results */}
             <section ref={resultsRef} className="relative z-10 max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">

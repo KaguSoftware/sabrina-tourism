@@ -3,6 +3,8 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
+import { NavHotel } from "./NavHotel";
+import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import Image from "next/image";
 
@@ -17,6 +19,8 @@ export function SiteHeader() {
       : pathname === "/packages"
       ? window.innerHeight * 0.3
       : pathname === "/transportation"
+      ? window.innerHeight * 0.3
+      : pathname.startsWith("/regions/")
       ? window.innerHeight * 0.3
       : SCROLL_THRESHOLD;
     const onScroll = () => setScrolled(window.scrollY > threshold);
@@ -39,7 +43,8 @@ export function SiteHeader() {
   const isHeroPage =
     pathname === "/" ||
     pathname.startsWith("/packages") ||
-    pathname === "/transportation";
+    pathname === "/transportation" ||
+    pathname.startsWith("/regions/");
   const transparent = isHeroPage && !scrolled;
 
   return (
@@ -89,6 +94,7 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <NavHotel transparent={transparent} currentPath={pathname} />
           </nav>
 
           {/* Desktop CTA */}
@@ -172,7 +178,7 @@ export function SiteHeader() {
             </svg>
           </button>
         </div>
-        <nav className="flex flex-col gap-2 flex-1">
+        <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
           {NAV_ITEMS.map((item, i) => (
             <Link
               key={item.href}
@@ -191,6 +197,33 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          {/* Hotel / Regions */}
+          <div
+            style={{
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms`,
+            }}
+          >
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+              Hotels
+            </p>
+            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+              {REGIONS.map((region) => (
+                <Link
+                  key={region}
+                  href={`/regions/${REGION_SLUGS[region]}`}
+                  className="text-[13px] tracking-[0.14em] uppercase font-medium text-cream/70 hover:text-ochre transition-colors duration-200 py-0.5"
+                >
+                  {region}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
         <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
           <a
