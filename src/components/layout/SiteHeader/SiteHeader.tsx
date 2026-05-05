@@ -118,10 +118,7 @@ export function SiteHeader() {
   const isHeroPage =
     pathname === "/" ||
     pathname.startsWith("/packages") ||
-    pathname.startsWith("/tours/premade") ||
-    pathname.startsWith("/tours/daily") ||
-    pathname.startsWith("/tours/custom-packages") ||
-    pathname.startsWith("/tours/fixed-dates") ||
+    pathname.startsWith("/tours") ||
     pathname === "/transportation" ||
     pathname.startsWith("/regions/");
   const transparent = isHeroPage && !scrolled;
@@ -261,50 +258,55 @@ export function SiteHeader() {
           </button>
         </div>
         <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
-          {NAV_ITEMS.flatMap((item, i) => {
-            const delay = 100 + i * 60;
-            const linkStyle = {
+          {NAV_ITEMS.filter((item) => item.label !== "Tours").map((item, i) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+              style={{
+                opacity: menuOpen ? 1 : 0,
+                transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                  100 + i * 60
+                }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                  100 + i * 60
+                }ms`,
+              }}
+            >
+              {item.label}
+            </Link>
+          ))}
+          {/* Tours */}
+          <div
+            style={{
               opacity: menuOpen ? 1 : 0,
               transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay}ms`,
-            };
-            if (item.children) {
-              return [
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms`,
+            }}
+          >
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+              Tours
+            </p>
+            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+              {[
+                { href: "/tours/fixed-dates", label: "Fixed-Date Tours" },
+                { href: "/tours/daily-packages", label: "Daily Packages" },
+                { href: "/tours/custom-packages", label: "Custom Packages" },
+              ].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
-                  style={linkStyle}
+                  className="text-[13px] tracking-[0.14em] uppercase font-medium text-cream/70 hover:text-ochre transition-colors duration-200 py-0.5"
                 >
                   {item.label}
-                </Link>,
-                ...item.children.map((child, j) => (
-                  <Link
-                    key={`${item.href}:child:${child.href}`}
-                    href={child.href}
-                    className="font-mono text-[13px] tracking-[0.18em] uppercase text-cream/60 hover:text-ochre transition-colors duration-200 pl-4 border-l border-cream/20"
-                    style={{
-                      opacity: menuOpen ? 1 : 0,
-                      transform: menuOpen ? "translateY(0)" : "translateY(12px)",
-                      transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay + 40 + j * 40}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay + 40 + j * 40}ms`,
-                    }}
-                  >
-                    {child.label}
-                  </Link>
-                )),
-              ];
-            }
-            return [
-              <Link
-                key={item.href}
-                href={item.href}
-                className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
-                style={linkStyle}
-              >
-                {item.label}
-              </Link>,
-            ];
-          })}
+                </Link>
+              ))}
+            </div>
+          </div>
           {/* Hotel / Regions */}
           <div
             style={{
