@@ -1,10 +1,75 @@
 "use client";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import Image from "next/image";
+
+function DropdownNavItem({
+  item,
+  transparent,
+  isActive,
+  pathname,
+}: {
+  item: { href: string; label: string; children?: { href: string; label: string }[] };
+  transparent: boolean;
+  isActive: boolean;
+  pathname: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`flex items-center gap-1 relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
+          transparent ? "text-cream" : "text-ink"
+        } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
+      >
+        {item.label}
+        <svg
+          width="10" height="10" viewBox="0 0 10 10" fill="none"
+          className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        >
+          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div
+        className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
+          open ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
+        }`}
+      >
+        {item.children?.map((child) => (
+          <Link
+            key={child.href}
+            href={child.href}
+            onClick={() => setOpen(false)}
+            className={`block px-5 py-3 font-mono text-[12px] tracking-[0.14em] uppercase transition-colors duration-150 border-b border-rule last:border-0 ${
+              pathname === child.href
+                ? "text-ochre bg-cream-warm"
+                : "text-ink hover:text-ochre hover:bg-cream-warm"
+            }`}
+          >
+            {child.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -78,17 +143,31 @@ export function SiteHeader() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex gap-8" aria-label="Primary navigation">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-                  transparent ? "text-cream" : "text-ink"
-                } ${pathname === item.href ? "after:scale-x-100" : ""}`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              if (item.children) {
+                const isActive = pathname === item.href || item.children.some((c) => pathname === c.href);
+                return (
+                  <DropdownNavItem
+                    key={item.href}
+                    item={item}
+                    transparent={transparent}
+                    isActive={isActive}
+                    pathname={pathname}
+                  />
+                );
+              }
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+                    transparent ? "text-cream" : "text-ink"
+                  } ${pathname === item.href ? "after:scale-x-100" : ""}`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Desktop CTA */}
@@ -173,24 +252,49 @@ export function SiteHeader() {
           </button>
         </div>
         <nav className="flex flex-col gap-2 flex-1">
-          {NAV_ITEMS.map((item, i) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-                transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms`,
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_ITEMS.flatMap((item, i) => {
+            const baseStyle = {
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${100 + i * 60}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${100 + i * 60}ms`,
+            };
+            if (item.children) {
+              return [
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+                  style={baseStyle}
+                >
+                  {item.label}
+                </Link>,
+                ...item.children.map((child, ci) => (
+                  <Link
+                    key={`child-${child.href}`}
+                    href={child.href}
+                    className="font-mono text-[13px] tracking-[0.16em] uppercase text-cream/60 hover:text-ochre pl-2 transition-colors duration-200"
+                    style={{
+                      opacity: menuOpen ? 1 : 0,
+                      transform: menuOpen ? "translateY(0)" : "translateY(12px)",
+                      transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${160 + i * 60 + ci * 40}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${160 + i * 60 + ci * 40}ms`,
+                    }}
+                  >
+                    — {child.label}
+                  </Link>
+                )),
+              ];
+            }
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+                style={baseStyle}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
           <a
