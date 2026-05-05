@@ -87,14 +87,12 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-                  transparent ? "text-cream" : "text-ink"
-                } ${pathname === item.href ? "after:scale-x-100" : ""}`}
+                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === item.href ? "after:scale-x-100" : ""}`}
               >
                 {item.label}
               </Link>
             ))}
-            <NavHotel transparent={transparent} currentPath={pathname} />
+            <NavHotel currentPath={pathname} />
           </nav>
 
           {/* Desktop CTA */}
@@ -124,9 +122,7 @@ export function SiteHeader() {
 
           {/* Burger */}
           <button
-            className={`md:hidden flex flex-col gap-[6px] p-3 ${
-              transparent ? "text-cream" : "text-ink"
-            }`}
+            className="md:hidden flex flex-col gap-[6px] p-3 text-black"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((o) => !o)}
           >
