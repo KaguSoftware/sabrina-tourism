@@ -2,7 +2,14 @@ import type { NavItem } from "./types";
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home" },
-  { href: "/packages", label: "Tours" },
+  {
+    href: "/packages",
+    label: "Tours",
+    children: [
+      { href: "/packages", label: "All Itineraries" },
+      { href: "/tours/premade", label: "Premade Packages" },
+    ],
+  },
   { href: "/transportation", label: "Chauffeur" },
 ];
 

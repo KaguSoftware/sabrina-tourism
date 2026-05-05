@@ -18,6 +18,10 @@ export function SiteHeader() {
       ? window.innerHeight * 0.3
       : pathname === "/transportation"
       ? window.innerHeight * 0.3
+      : pathname.startsWith("/tours/premade/")
+      ? window.innerHeight * 0.75
+      : pathname === "/tours/premade"
+      ? window.innerHeight * 0.3
       : SCROLL_THRESHOLD;
     const onScroll = () => setScrolled(window.scrollY > threshold);
     onScroll();
@@ -39,6 +43,7 @@ export function SiteHeader() {
   const isHeroPage =
     pathname === "/" ||
     pathname.startsWith("/packages") ||
+    pathname.startsWith("/tours/premade") ||
     pathname === "/transportation";
   const transparent = isHeroPage && !scrolled;
 
@@ -78,17 +83,62 @@ export function SiteHeader() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex gap-8" aria-label="Primary navigation">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-                  transparent ? "text-cream" : "text-ink"
-                } ${pathname === item.href ? "after:scale-x-100" : ""}`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV_ITEMS.map((item) =>
+              item.children ? (
+                <div key={item.href} className="relative group/nav">
+                  <Link
+                    href={item.href}
+                    className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover/nav:after:scale-x-100 inline-flex items-center gap-1 ${
+                      transparent ? "text-cream" : "text-ink"
+                    } ${pathname.startsWith(item.href) || item.children.some((c) => pathname === c.href || pathname.startsWith(c.href)) ? "after:scale-x-100" : ""}`}
+                  >
+                    {item.label}
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="transition-transform duration-200 group-hover/nav:rotate-180"
+                      aria-hidden="true"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </Link>
+                  {/* Dropdown */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 pointer-events-none group-hover/nav:opacity-100 group-hover/nav:pointer-events-auto transition-all duration-200 translate-y-1 group-hover/nav:translate-y-0 z-50">
+                    <div className="bg-cream/97 backdrop-blur-sm border border-rule shadow-[4px_8px_24px_-4px_rgba(11,26,46,0.18)] min-w-50 py-2">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={`block px-5 py-2.5 text-[12px] tracking-[0.14em] uppercase font-medium transition-colors duration-150 hover:text-ochre hover:bg-cream-warm ${
+                            pathname === child.href || pathname.startsWith(child.href + "/")
+                              ? "text-ochre"
+                              : "text-ink"
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+                    transparent ? "text-cream" : "text-ink"
+                  } ${pathname === item.href ? "after:scale-x-100" : ""}`}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* Desktop CTA */}
@@ -173,24 +223,50 @@ export function SiteHeader() {
           </button>
         </div>
         <nav className="flex flex-col gap-2 flex-1">
-          {NAV_ITEMS.map((item, i) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-                transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms`,
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_ITEMS.flatMap((item, i) => {
+            const delay = 100 + i * 60;
+            const linkStyle = {
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay}ms`,
+            };
+            if (item.children) {
+              return [
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+                  style={linkStyle}
+                >
+                  {item.label}
+                </Link>,
+                ...item.children.map((child, j) => (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    className="font-mono text-[13px] tracking-[0.18em] uppercase text-cream/60 hover:text-ochre transition-colors duration-200 pl-4 border-l border-cream/20"
+                    style={{
+                      opacity: menuOpen ? 1 : 0,
+                      transform: menuOpen ? "translateY(0)" : "translateY(12px)",
+                      transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay + 40 + j * 40}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay + 40 + j * 40}ms`,
+                    }}
+                  >
+                    {child.label}
+                  </Link>
+                )),
+              ];
+            }
+            return [
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+                style={linkStyle}
+              >
+                {item.label}
+              </Link>,
+            ];
+          })}
         </nav>
         <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
           <a
