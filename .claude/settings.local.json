@@ -32,11 +32,13 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\" -Depth 1)",
       "Bash(Select-Object Name, PSIsContainer)",
       "Bash(git revert *)",
-      "Bash(mkdir -p /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/\\\\\\(public\\\\\\)/tours/premade/\\\\[id\\\\])"
+      "Bash(mkdir -p /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/\\\\\\(public\\\\\\)/tours/premade/\\\\[id\\\\])",
+      "Bash(mkdir -p /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/\\\\\\(public\\\\\\)/tours/daily/\\\\[id\\\\])"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
-      "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/(public)/tours/premade"
+      "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/(public)/tours/premade",
+      "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/(public)/tours/daily"
     ]
   }
 }

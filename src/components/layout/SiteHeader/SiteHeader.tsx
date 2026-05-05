@@ -12,11 +12,9 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
-    const threshold = pathname.startsWith("/packages/")
+    const threshold = pathname.startsWith("/packages/") || pathname.startsWith("/tours/daily/")
       ? window.innerHeight * 0.8
-      : pathname === "/packages"
-      ? window.innerHeight * 0.3
-      : pathname === "/transportation"
+      : pathname === "/packages" || pathname === "/tours/daily" || pathname === "/transportation"
       ? window.innerHeight * 0.3
       : pathname.startsWith("/tours/premade/")
       ? window.innerHeight * 0.75
@@ -44,6 +42,7 @@ export function SiteHeader() {
     pathname === "/" ||
     pathname.startsWith("/packages") ||
     pathname.startsWith("/tours/premade") ||
+    pathname.startsWith("/tours/daily") ||
     pathname === "/transportation";
   const transparent = isHeroPage && !scrolled;
 
