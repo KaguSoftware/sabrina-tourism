@@ -12,11 +12,9 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
-    const threshold = pathname.startsWith("/packages/")
+    const threshold = pathname.startsWith("/packages/") || pathname.startsWith("/tours/daily/")
       ? window.innerHeight * 0.8
-      : pathname === "/packages"
-      ? window.innerHeight * 0.3
-      : pathname === "/transportation"
+      : pathname === "/packages" || pathname === "/tours/daily" || pathname === "/transportation"
       ? window.innerHeight * 0.3
       : SCROLL_THRESHOLD;
     const onScroll = () => setScrolled(window.scrollY > threshold);
@@ -39,6 +37,7 @@ export function SiteHeader() {
   const isHeroPage =
     pathname === "/" ||
     pathname.startsWith("/packages") ||
+    pathname.startsWith("/tours/daily") ||
     pathname === "/transportation";
   const transparent = isHeroPage && !scrolled;
 
