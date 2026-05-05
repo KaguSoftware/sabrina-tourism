@@ -1,15 +1,16 @@
 "use client";
 import { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
-import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
 
 interface NavHotelProps {
   currentPath: string;
+  transparent: boolean;
 }
 
-export function NavHotel({ currentPath }: NavHotelProps) {
+export function NavHotel({ currentPath, transparent }: NavHotelProps) {
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -31,7 +32,9 @@ export function NavHotel({ currentPath }: NavHotelProps) {
       onMouseLeave={handleMouseLeave}
     >
       <span
-        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 cursor-pointer select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${isActive || open ? "after:scale-x-100" : ""}`}
+        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 cursor-pointer select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+          transparent ? "text-cream" : "text-ink"
+        } ${isActive || open ? "after:scale-x-100" : ""}`}
         role="button"
         aria-haspopup="true"
         aria-expanded={open}
@@ -67,9 +70,15 @@ export function NavHotel({ currentPath }: NavHotelProps) {
 
                   {/* First hotel preview */}
                   <div className="flex items-center gap-3">
-                    {/* SVG thumbnail */}
-                    <div className="w-18 h-13 shrink-0 overflow-hidden border border-rule">
-                      <HotelSVG variant={first.svgVariant} />
+                    {/* Photo thumbnail */}
+                    <div className="relative w-18 h-13 shrink-0 overflow-hidden border border-rule">
+                      <Image
+                        src={first.images[0]}
+                        alt={first.name}
+                        fill
+                        className="object-cover"
+                        sizes="72px"
+                      />
                     </div>
 
                     {/* Hotel name + remaining count */}
