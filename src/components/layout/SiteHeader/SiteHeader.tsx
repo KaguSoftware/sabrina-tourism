@@ -1,10 +1,80 @@
 "use client";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
+import { NavHotel } from "./NavHotel";
+import { NavTours } from "./NavTours";
+import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import Image from "next/image";
+
+function DropdownNavItem({
+  item,
+  transparent,
+  isActive,
+  pathname,
+}: {
+  item: { href: string; label: string; children?: { href: string; label: string }[] };
+  transparent: boolean;
+  isActive: boolean;
+  pathname: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative inline-flex items-center" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <Link
+        href={item.href}
+        className={`inline-flex items-center gap-1 relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
+          transparent ? "text-cream" : "text-ink"
+        } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
+      >
+        {item.label}
+        <svg
+          width="10" height="10" viewBox="0 0 10 10" fill="none"
+          className={`transition-transform duration-200 opacity-60 ${open ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        >
+          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Link>
+
+      {/* Zero-height bridge fills the gap so onMouseLeave doesn't fire mid-travel */}
+      <div className="absolute top-full left-0 right-0 h-3" />
+
+      <div
+        className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
+          open ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
+        }`}
+      >
+        {item.children?.map((child) => (
+          <Link
+            key={child.href}
+            href={child.href}
+            onClick={() => setOpen(false)}
+            className={`block px-5 py-3 font-mono text-[12px] tracking-[0.14em] uppercase transition-colors duration-150 border-b border-rule last:border-0 ${
+              pathname === child.href
+                ? "text-ochre bg-cream-warm"
+                : "text-ink hover:text-ochre hover:bg-cream-warm"
+            }`}
+          >
+            {child.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -12,11 +82,15 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
-    const threshold = pathname.startsWith("/packages/")
+    const threshold = pathname.startsWith("/packages/") || pathname.startsWith("/tours/daily/")
       ? window.innerHeight * 0.8
-      : pathname === "/packages"
+      : pathname === "/packages" || pathname === "/tours/daily" || pathname === "/transportation"
       ? window.innerHeight * 0.3
-      : pathname === "/transportation"
+      : pathname.startsWith("/tours/premade/")
+      ? window.innerHeight * 0.75
+      : pathname === "/tours/premade"
+      ? window.innerHeight * 0.3
+      : pathname.startsWith("/regions/")
       ? window.innerHeight * 0.3
       : SCROLL_THRESHOLD;
     const onScroll = () => setScrolled(window.scrollY > threshold);
@@ -39,7 +113,10 @@ export function SiteHeader() {
   const isHeroPage =
     pathname === "/" ||
     pathname.startsWith("/packages") ||
-    pathname === "/transportation";
+    pathname.startsWith("/tours/premade") ||
+    pathname.startsWith("/tours/daily") ||
+    pathname === "/transportation" ||
+    pathname.startsWith("/regions/");
   const transparent = isHeroPage && !scrolled;
 
   return (
@@ -76,19 +153,25 @@ export function SiteHeader() {
             />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex gap-8" aria-label="Primary navigation">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-                  transparent ? "text-cream" : "text-ink"
-                } ${pathname === item.href ? "after:scale-x-100" : ""}`}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <nav className="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+            <Link
+              href="/"
+              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+                transparent ? "text-cream" : "text-ink"
+              } ${pathname === "/" ? "after:scale-x-100" : ""}`}
+            >
+              Home
+            </Link>
+            <NavTours currentPath={pathname} transparent={transparent} />
+            <Link
+              href="/transportation"
+              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+                transparent ? "text-cream" : "text-ink"
+              } ${pathname === "/transportation" ? "after:scale-x-100" : ""}`}
+            >
+              Chauffeur
+            </Link>
+            <NavHotel currentPath={pathname} transparent={transparent} />
           </nav>
 
           {/* Desktop CTA */}
@@ -118,9 +201,7 @@ export function SiteHeader() {
 
           {/* Burger */}
           <button
-            className={`md:hidden flex flex-col gap-[6px] p-3 ${
-              transparent ? "text-cream" : "text-ink"
-            }`}
+            className="md:hidden flex flex-col gap-[6px] p-3 text-black"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((o) => !o)}
           >
@@ -172,25 +253,78 @@ export function SiteHeader() {
             </svg>
           </button>
         </div>
-        <nav className="flex flex-col gap-2 flex-1">
-          {NAV_ITEMS.map((item, i) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-                transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms`,
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
+          {NAV_ITEMS.flatMap((item, i) => {
+            const delay = 100 + i * 60;
+            const linkStyle = {
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay}ms`,
+            };
+            if (item.children) {
+              return [
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+                  style={linkStyle}
+                >
+                  {item.label}
+                </Link>,
+                ...item.children.map((child, j) => (
+                  <Link
+                    key={`${item.href}:child:${child.href}`}
+                    href={child.href}
+                    className="font-mono text-[13px] tracking-[0.18em] uppercase text-cream/60 hover:text-ochre transition-colors duration-200 pl-4 border-l border-cream/20"
+                    style={{
+                      opacity: menuOpen ? 1 : 0,
+                      transform: menuOpen ? "translateY(0)" : "translateY(12px)",
+                      transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay + 40 + j * 40}ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${delay + 40 + j * 40}ms`,
+                    }}
+                  >
+                    {child.label}
+                  </Link>
+                )),
+              ];
+            }
+            return [
+              <Link
+                key={item.href}
+                href={item.href}
+                className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
+                style={linkStyle}
+              >
+                {item.label}
+              </Link>,
+            ];
+          })}
+          {/* Hotel / Regions */}
+          <div
+            style={{
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms`,
+            }}
+          >
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+              Hotels
+            </p>
+            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+              {REGIONS.map((region) => (
+                <Link
+                  key={region}
+                  href={`/regions/${REGION_SLUGS[region]}`}
+                  className="text-[13px] tracking-[0.14em] uppercase font-medium text-cream/70 hover:text-ochre transition-colors duration-200 py-0.5"
+                >
+                  {region}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
         <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
           <a

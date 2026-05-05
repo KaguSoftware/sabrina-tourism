@@ -6,6 +6,8 @@ import { FleetIllustration } from "@/components/illustrations/FleetIllustration/
 import { transferMessage } from "@/lib/whatsapp/whatsapp";
 import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { GUIDE_LANGUAGES } from "./guideOptions";
+import type { GuideType } from "./guideOptions";
 import type { Airport, Vehicle } from "@/lib/transport/types";
 
 interface AirportFormProps {
@@ -26,6 +28,9 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
   const [luggage, setLuggage] = useState("");
   const [childSeat, setChildSeat] = useState(false);
   const [meetAndGreet, setMeetAndGreet] = useState(false);
+  const [guideNeeded, setGuideNeeded] = useState(false);
+  const [guideType, setGuideType] = useState<GuideType>("assistant");
+  const [guideLanguage, setGuideLanguage] = useState("English");
   const [submitted, setSubmitted] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
@@ -59,6 +64,9 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
     luggage: luggage || undefined,
     childSeat: childSeat || undefined,
     meetAndGreet: meetAndGreet || undefined,
+    guideNeeded,
+    guideType,
+    guideLanguage,
   }) : "#";
 
   return (
@@ -130,6 +138,47 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
           </label>
         </div>
 
+        <div className="col-span-full grid grid-cols-1 sm:grid-cols-[auto_minmax(180px,260px)_minmax(180px,260px)] gap-6 items-end justify-start">
+          <label className="flex items-center gap-3 cursor-pointer pb-2.5 sm:whitespace-nowrap">
+            <input
+              type="checkbox"
+              checked={guideNeeded}
+              onChange={(e) => setGuideNeeded(e.target.checked)}
+              className="w-4 h-4 accent-ochre"
+            />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">
+              Travel guide needed
+            </span>
+          </label>
+
+          <TransportFormField label="Guide type">
+            <select
+              value={guideType}
+              onChange={(e) => setGuideType(e.target.value as GuideType)}
+              disabled={!guideNeeded}
+              className={`${selectCls} ${guideNeeded ? "" : "opacity-45 cursor-not-allowed"}`}
+            >
+              <option value="assistant">Assistant</option>
+              <option value="certified guide">Certified guide</option>
+            </select>
+          </TransportFormField>
+
+          <TransportFormField label="Guide language">
+            <select
+              value={guideLanguage}
+              onChange={(e) => setGuideLanguage(e.target.value)}
+              disabled={!guideNeeded}
+              className={`${selectCls} ${guideNeeded ? "" : "opacity-45 cursor-not-allowed"}`}
+            >
+              {GUIDE_LANGUAGES.map((language) => (
+                <option key={language} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
+          </TransportFormField>
+        </div>
+
         <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start relative z-8">
           <div className="flex flex-col gap-1.5 min-w-[160px]">
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Vehicle class *</span>
@@ -178,6 +227,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
               luggage ? `Luggage: ${luggage} bag(s).` : "",
               childSeat ? "Child seat required." : "",
               meetAndGreet ? "Meet & greet requested." : "",
+              guideNeeded ? `Travel guide: ${guideType} in ${guideLanguage}.` : "",
               "Could you quote?",
             ].filter(Boolean).join(" ")}
           </pre>

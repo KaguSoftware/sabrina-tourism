@@ -17,6 +17,9 @@ export interface TransferMessageContext {
   luggage?: string | number;
   childSeat?: boolean;
   meetAndGreet?: boolean;
+  guideNeeded?: boolean;
+  guideType?: "assistant" | "certified guide";
+  guideLanguage?: string;
   notes?: string;
 }
 
@@ -29,5 +32,8 @@ export interface ChauffeurMessageContext {
   passengers: string | number;
   luggage?: string | number;
   vehicleClass: string;
+  guideNeeded?: boolean;
+  guideType?: "assistant" | "certified guide";
+  guideLanguage?: string;
   notes?: string;
 }
