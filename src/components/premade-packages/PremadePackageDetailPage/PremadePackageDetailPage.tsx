@@ -255,10 +255,10 @@ export function PremadePackageDetailPage({ pkg }: Props) {
         <Reveal>
           <div className="mt-16 pt-10 border-t border-rule">
             <Link
-              href="/tours/premade"
+              href="/tours/fixed-dates"
               className="inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.16em] uppercase text-ink-soft hover:text-ochre transition-colors duration-200"
             >
-              <span>←</span> All premade packages
+              <span>←</span> All fixed-date packages
             </Link>
           </div>
         </Reveal>

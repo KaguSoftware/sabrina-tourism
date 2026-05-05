@@ -45,7 +45,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
         <div className="relative z-10 max-w-[1320px] mx-auto w-full">
           <Reveal>
             <span className="block font-mono text-[12px] tracking-[0.18em] uppercase text-cream/70 mb-7">
-              <Link href="/tours/daily" className="text-ochre hover:underline">
+              <Link href="/tours/daily-packages" className="text-ochre hover:underline">
                 Daily Packages
               </Link>
               <span className="mx-2 opacity-50">/</span>

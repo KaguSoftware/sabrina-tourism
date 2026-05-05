@@ -84,7 +84,12 @@ export function SiteHeader() {
   useLayoutEffect(() => {
     const threshold = pathname.startsWith("/packages/") || pathname.startsWith("/tours/daily/")
       ? window.innerHeight * 0.8
-      : pathname === "/packages" || pathname === "/tours/daily" || pathname === "/transportation"
+      : pathname === "/packages" ||
+        pathname === "/tours/custom-packages" ||
+        pathname === "/tours/daily-packages" ||
+        pathname === "/tours/fixed-dates" ||
+        pathname === "/tours/daily" ||
+        pathname === "/transportation"
       ? window.innerHeight * 0.3
       : pathname.startsWith("/tours/premade/")
       ? window.innerHeight * 0.75
@@ -115,6 +120,8 @@ export function SiteHeader() {
     pathname.startsWith("/packages") ||
     pathname.startsWith("/tours/premade") ||
     pathname.startsWith("/tours/daily") ||
+    pathname.startsWith("/tours/custom-packages") ||
+    pathname.startsWith("/tours/fixed-dates") ||
     pathname === "/transportation" ||
     pathname.startsWith("/regions/");
   const transparent = isHeroPage && !scrolled;
