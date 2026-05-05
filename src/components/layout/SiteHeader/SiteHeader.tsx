@@ -44,6 +44,7 @@ export function SiteHeader() {
   const isHeroPage =
     pathname === "/" ||
     pathname.startsWith("/packages") ||
+    pathname.startsWith("/tours") ||
     pathname === "/transportation" ||
     pathname.startsWith("/regions/");
   const transparent = isHeroPage && !scrolled;
@@ -83,20 +84,17 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Primary navigation">
-            <Link
-              href="/"
-              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === "/" ? "after:scale-x-100" : ""}`}
-            >
-              Home
-            </Link>
+          <nav className="hidden md:flex gap-8" aria-label="Primary navigation">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === item.href ? "after:scale-x-100" : ""}`}
+              >
+                {item.label}
+              </Link>
+            ))}
             <NavTours currentPath={pathname} />
-            <Link
-              href="/transportation"
-              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === "/transportation" ? "after:scale-x-100" : ""}`}
-            >
-              Chauffeur
-            </Link>
             <NavHotel currentPath={pathname} />
           </nav>
 
@@ -198,6 +196,38 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          {/* Tours */}
+          <div
+            style={{
+              opacity: menuOpen ? 1 : 0,
+              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
+              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                100 + NAV_ITEMS.length * 60
+              }ms`,
+            }}
+          >
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+              Tours
+            </p>
+            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+              {[
+                { href: "/tours/fixed-dates", label: "Fixed-Date Tours" },
+                { href: "/tours/daily-packages", label: "Daily Packages" },
+                { href: "/tours/custom-packages", label: "Custom Packages" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-[13px] tracking-[0.14em] uppercase font-medium text-cream/70 hover:text-ochre transition-colors duration-200 py-0.5"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* Hotel / Regions */}
           <div
             style={{

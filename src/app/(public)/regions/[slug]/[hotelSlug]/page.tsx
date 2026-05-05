@@ -6,6 +6,7 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import Image from "next/image";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
+import { HotelAvailabilityCalendar } from "@/components/primitives/HotelAvailabilityCalendar/HotelAvailabilityCalendar";
 import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
 
@@ -226,35 +227,11 @@ export default async function HotelDetailPage({
             </Reveal>
 
             <Reveal delay={80}>
-              <div className="border border-rule p-6">
-                <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-muted mb-3">
-                  Partnered property
-                </p>
-                <p className="text-[14px] text-ink-soft leading-[1.6] mb-5">
-                  This hotel is part of our curated portfolio. Reach out via WhatsApp for availability, rates, and to arrange your stay.
-                </p>
-                <a
-                  href={`https://wa.me/${process.env.NEXT_PUBLIC_WA_PHONE ?? ""}?text=${encodeURIComponent(`Hi, I'd like to enquire about staying at ${hotel.name} in ${region}.`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
-                  className="inline-flex items-center gap-2 w-full px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-semibold transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-6px_rgba(11,26,46,0.4)]"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/logo-whatsapp.svg"
-                    alt=""
-                    aria-hidden="true"
-                    width="14"
-                    height="14"
-                    style={{
-                      filter:
-                        "brightness(0) saturate(100%) invert(68%) sepia(50%) saturate(500%) hue-rotate(5deg) brightness(95%)",
-                    }}
-                  />
-                  <span>Enquire via WhatsApp</span>
-                </a>
-              </div>
+              <HotelAvailabilityCalendar
+                hotelName={hotel.name}
+                region={region}
+                waPhone={process.env.NEXT_PUBLIC_WA_PHONE}
+              />
             </Reveal>
 
             <Reveal delay={140}>
