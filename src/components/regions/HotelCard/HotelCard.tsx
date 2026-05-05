@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
+import Image from "next/image";
 import type { HotelCardData } from "@/lib/regions/hotels";
 
 export type { HotelCardData };
@@ -10,9 +10,15 @@ export function HotelCard({ hotel, regionSlug }: { hotel: HotelCardData; regionS
       href={`/regions/${regionSlug}/${hotel.slug}`}
       className="group block bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none transition-all duration-380 ease-out hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]"
     >
-      {/* Illustration */}
+      {/* Photo */}
       <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">
-        <HotelSVG variant={hotel.svgVariant} className="absolute inset-0" />
+        <Image
+          src={hotel.images[0]}
+          alt={hotel.name}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
         {/* Tags badge */}
         <span className="absolute top-4 left-4 bg-navy/78 text-cream font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 backdrop-blur-sm">
           {hotel.tags[0]}

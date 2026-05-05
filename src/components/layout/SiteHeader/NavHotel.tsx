@@ -1,9 +1,9 @@
 "use client";
 import { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
-import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
 
 interface NavHotelProps {
   currentPath: string;
@@ -67,9 +67,15 @@ export function NavHotel({ currentPath }: NavHotelProps) {
 
                   {/* First hotel preview */}
                   <div className="flex items-center gap-3">
-                    {/* SVG thumbnail */}
-                    <div className="w-18 h-13 shrink-0 overflow-hidden border border-rule">
-                      <HotelSVG variant={first.svgVariant} />
+                    {/* Photo thumbnail */}
+                    <div className="relative w-18 h-13 shrink-0 overflow-hidden border border-rule">
+                      <Image
+                        src={first.images[0]}
+                        alt={first.name}
+                        fill
+                        className="object-cover"
+                        sizes="72px"
+                      />
                     </div>
 
                     {/* Hotel name + remaining count */}

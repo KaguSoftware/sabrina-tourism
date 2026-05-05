@@ -1,6 +1,21 @@
 import type { HotelSVGVariant } from "@/components/illustrations/HotelSVG/HotelSVG";
 import type { REGIONS } from "@/lib/packages/constants";
 
+export interface HotelProperties {
+  freeWifi: boolean;
+  bedrooms: number;
+  bathrooms: number;
+  distanceKm: number;
+  freeCancellation: boolean;
+  freeParking: boolean;
+  bedBreakfast: boolean;
+  balcony: boolean;
+  washer: boolean;
+  ac: boolean;
+  tv: boolean;
+  bookingUrl: string;
+}
+
 export interface HotelCardData {
   id: string;
   slug: string;
@@ -11,6 +26,9 @@ export interface HotelCardData {
   svgVariant: HotelSVGVariant;
   amenities: string[];
   location: string;
+  bedroomImage: string;
+  images: string[];
+  properties: HotelProperties;
 }
 
 export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
@@ -27,6 +45,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "ottoman",
       amenities: ["Private Hammam", "Terrace Suites", "Bosphorus Views", "Butler Service", "Airport Transfer"],
       location: "Beşiktaş, Istanbul",
+      bedroomImage: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80",
+      images: [
+        // Exterior — Bosphorus waterfront hotel facade
+        "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80",
+        // Bedroom — Ottoman-styled luxury room
+        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80",
+        // Bathroom — marble luxury bathroom
+        "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=1200&q=80",
+        // View — Bosphorus strait at dusk
+        "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 6,
+        freeCancellation: true, freeParking: false, bedBreakfast: true,
+        balcony: true, washer: false, ac: true, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
     {
       id: "ist-2",
@@ -40,6 +75,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "mansion",
       amenities: ["Rooftop Terrace", "Heritage Architecture", "Walking Distance to Monuments", "Concierge", "Hammam Access"],
       location: "Sultanahmet, Istanbul",
+      bedroomImage: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80",
+      images: [
+        // Exterior — Sultanahmet historic townhouse
+        "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=1200&q=80",
+        // Bedroom — stone-walled heritage room
+        "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80",
+        // Bathroom — boutique stone bathroom
+        "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1200&q=80",
+        // View — Blue Mosque rooftop view
+        "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 2, bathrooms: 1, distanceKm: 1,
+        freeCancellation: false, freeParking: false, bedBreakfast: false,
+        balcony: false, washer: true, ac: true, tv: false,
+        bookingUrl: "https://www.booking.com",
+      },
     },
   ],
   Cappadocia: [
@@ -55,6 +107,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "cave",
       amenities: ["Private Terraces", "Balloon Views", "Rock-Cut Dining", "Sunrise Breakfast", "Hot Tub"],
       location: "Göreme, Cappadocia",
+      bedroomImage: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&q=80",
+      images: [
+        // Exterior — Cappadocia cave hotel carved into tuff
+        "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=1200&q=80",
+        // Bedroom — cave suite interior
+        "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&q=80",
+        // Bathroom — stone cave bathroom
+        "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1200&q=80",
+        // View — hot air balloons over Göreme valley
+        "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 3,
+        freeCancellation: true, freeParking: true, bedBreakfast: true,
+        balcony: true, washer: false, ac: false, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
     {
       id: "cap-2",
@@ -68,6 +137,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "cave",
       amenities: ["Cliff-Edge Pool", "360° Panorama", "Heated Suites", "Guided Valley Walks", "Wine Cellar"],
       location: "Uçhisar, Cappadocia",
+      bedroomImage: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80",
+      images: [
+        // Exterior — Uçhisar rock castle and cliff hotel
+        "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=1200&q=80",
+        // Bedroom — panoramic glass-fronted suite
+        "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80",
+        // Bathroom — cliff-side luxury bathroom
+        "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=1200&q=80",
+        // View — Cappadocia fairy chimneys at sunset
+        "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: false, bedrooms: 2, bathrooms: 2, distanceKm: 7,
+        freeCancellation: true, freeParking: true, bedBreakfast: false,
+        balcony: true, washer: true, ac: true, tv: false,
+        bookingUrl: "https://www.booking.com",
+      },
     },
   ],
   Aegean: [
@@ -83,6 +169,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "aegean",
       amenities: ["Courtyard Pool", "Lavender Garden", "Stone Architecture", "Village Location", "Bicycle Hire"],
       location: "Alaçatı, İzmir",
+      bedroomImage: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80",
+      images: [
+        // Exterior — Aegean stone house courtyard
+        "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1200&q=80",
+        // Bedroom — whitewashed Aegean room
+        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80",
+        // Bathroom — Mediterranean stone bathroom
+        "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
+        // View — Alaçatı windmills and village
+        "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 12,
+        freeCancellation: true, freeParking: true, bedBreakfast: true,
+        balcony: false, washer: true, ac: true, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
     {
       id: "aeg-2",
@@ -96,6 +199,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "coastal",
       amenities: ["Marina Views", "Private Boat Hire", "Sea-Facing Terraces", "Beach Club Access", "Castle Views"],
       location: "Bodrum, Muğla",
+      bedroomImage: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80",
+      images: [
+        // Exterior — Bodrum whitewashed hotel with marina
+        "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=80",
+        // Bedroom — sea-view suite
+        "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80",
+        // Bathroom — coastal luxury bathroom
+        "https://images.unsplash.com/photo-1600566752447-5f6cd58e9f89?w=1200&q=80",
+        // View — Bodrum Castle and marina at sunset
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 2, bathrooms: 1, distanceKm: 4,
+        freeCancellation: false, freeParking: false, bedBreakfast: false,
+        balcony: true, washer: false, ac: true, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
   ],
   Mediterranean: [
@@ -111,6 +231,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "coastal",
       amenities: ["Private Plunge Pool", "Sea-View Suites", "Clifftop Location", "Daily Boat Trips", "Gourmet Dining"],
       location: "Kalkan, Antalya",
+      bedroomImage: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1200&q=80",
+      images: [
+        // Exterior — clifftop infinity pool overlooking Mediterranean
+        "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1200&q=80",
+        // Bedroom — white Mediterranean suite
+        "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=1200&q=80",
+        // Bathroom — open-air luxury bathroom with sea view
+        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80",
+        // View — Kalkan bay turquoise water
+        "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 9,
+        freeCancellation: true, freeParking: true, bedBreakfast: true,
+        balcony: true, washer: true, ac: true, tv: false,
+        bookingUrl: "https://www.booking.com",
+      },
     },
     {
       id: "med-2",
@@ -124,6 +261,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "aegean",
       amenities: ["Dive Centre", "Roman Ruins On-Site", "Sea Terrace", "Snorkelling Trips", "Rooftop Bar"],
       location: "Kaş, Antalya",
+      bedroomImage: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&q=80",
+      images: [
+        // Exterior — Kaş harbour boutique hotel terrace
+        "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=1200&q=80",
+        // Bedroom — boutique coastal room
+        "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&q=80",
+        // Bathroom — boutique tiled bathroom
+        "https://images.unsplash.com/photo-1604709177225-055f99402ea3?w=1200&q=80",
+        // View — Kaş harbour and Greek island of Meis
+        "https://images.unsplash.com/photo-1548013146-72479768bada?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: false, bedrooms: 1, bathrooms: 1, distanceKm: 2,
+        freeCancellation: true, freeParking: false, bedBreakfast: false,
+        balcony: true, washer: false, ac: true, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
   ],
   "Black Sea": [
@@ -139,6 +293,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "chalet",
       amenities: ["Wood Fireplace", "Highland Views", "Tea Terrace Walks", "Farm Breakfast", "Black Sea Panorama"],
       location: "Rize Highlands",
+      bedroomImage: "https://images.unsplash.com/photo-1464146072230-91cabc968266?w=1200&q=80",
+      images: [
+        // Exterior — Black Sea highland wooden farmhouse
+        "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=1200&q=80",
+        // Bedroom — cosy timber chalet room
+        "https://images.unsplash.com/photo-1464146072230-91cabc968266?w=1200&q=80",
+        // Bathroom — rustic chalet bathroom
+        "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=1200&q=80",
+        // View — Rize tea terraces and Black Sea
+        "https://images.unsplash.com/photo-1586105251261-72a756497a11?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 2, bathrooms: 1, distanceKm: 18,
+        freeCancellation: true, freeParking: true, bedBreakfast: true,
+        balcony: false, washer: true, ac: false, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
     {
       id: "bs-2",
@@ -152,6 +323,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "mansion",
       amenities: ["Byzantine Architecture", "Sea Views", "Stone-Walled Rooms", "Harbour Access", "Historic Town"],
       location: "Sinop",
+      bedroomImage: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80",
+      images: [
+        // Exterior — Black Sea fortress harbour
+        "https://images.unsplash.com/photo-1611048267451-e6ed903d4a38?w=1200&q=80",
+        // Bedroom — stone-walled fortress room
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80",
+        // Bathroom — stone heritage bathroom
+        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&q=80",
+        // View — Black Sea horizon from fortress walls
+        "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: false, bedrooms: 1, bathrooms: 1, distanceKm: 5,
+        freeCancellation: false, freeParking: true, bedBreakfast: true,
+        balcony: true, washer: false, ac: false, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
   ],
   "Eastern Anatolia": [
@@ -167,6 +355,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "mansion",
       amenities: ["Lake Terrace", "Boat to Akdamar", "Armenian Architecture", "Sunrise Views", "Regional Cuisine"],
       location: "Van, Eastern Anatolia",
+      bedroomImage: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=1200&q=80",
+      images: [
+        // Exterior — lakeside mansion Eastern Anatolia
+        "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200&q=80",
+        // Bedroom — heritage mansion room
+        "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=1200&q=80",
+        // Bathroom — ornate heritage bathroom
+        "https://images.unsplash.com/photo-1600607686527-6fb886090705?w=1200&q=80",
+        // View — Lake Van turquoise water
+        "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 2, bathrooms: 2, distanceKm: 11,
+        freeCancellation: true, freeParking: true, bedBreakfast: false,
+        balcony: true, washer: true, ac: true, tv: true,
+        bookingUrl: "https://www.booking.com",
+      },
     },
     {
       id: "ea-2",
@@ -180,6 +385,23 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
       svgVariant: "ottoman",
       amenities: ["Rooftop Terrace", "Hand-Carved Stone", "Mesopotamian Views", "Old City Location", "Syriac Heritage"],
       location: "Mardin, Eastern Anatolia",
+      bedroomImage: "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=1200&q=80",
+      images: [
+        // Exterior — Mardin honey limestone old city
+        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80",
+        // Bedroom — carved stone boutique room
+        "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=1200&q=80",
+        // Bathroom — stone carved ornate bathroom
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&q=80",
+        // View — Mesopotamian plain from Mardin rooftop
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
+      ],
+      properties: {
+        freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 8,
+        freeCancellation: false, freeParking: false, bedBreakfast: true,
+        balcony: true, washer: true, ac: true, tv: false,
+        bookingUrl: "https://www.booking.com",
+      },
     },
   ],
 };
