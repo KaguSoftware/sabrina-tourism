@@ -30,6 +30,9 @@ export function transferMessage(ctx: TransferMessageContext): string {
     ctx.luggage ? `Luggage: ${ctx.luggage} bag(s)` : "",
     ctx.childSeat ? "Child seat required" : "",
     ctx.meetAndGreet ? "Meet & greet requested" : "",
+    ctx.guideNeeded
+      ? `Travel guide: ${ctx.guideType ?? "assistant"} in ${ctx.guideLanguage ?? "English"}`
+      : "",
     ctx.notes ? `Note: ${ctx.notes}` : "",
   ].filter(Boolean).join(". ");
   return waLink(
@@ -41,7 +44,10 @@ export function chauffeurMessage(ctx: ChauffeurMessageContext): string {
   const dates = ctx.endDate
     ? `${ctx.startDate} to ${ctx.endDate}`
     : ctx.startDate;
+  const guide = ctx.guideNeeded
+    ? ` Travel guide: ${ctx.guideType ?? "assistant"} in ${ctx.guideLanguage ?? "English"}.`
+    : "";
   return waLink(
-    `Hey Sabrina — I'd like a private chauffeur. Pickup: ${ctx.pickup}.${ctx.pickupTime ? ` Pickup time: ${ctx.pickupTime}.` : ""} Destinations: ${ctx.destinations}. Dates: ${dates}. Passengers: ${ctx.passengers}.${ctx.luggage ? ` Luggage: ${ctx.luggage} bag(s).` : ""} Vehicle: ${ctx.vehicleClass}.${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
+    `Hey Sabrina — I'd like a private chauffeur. Pickup: ${ctx.pickup}.${ctx.pickupTime ? ` Pickup time: ${ctx.pickupTime}.` : ""} Destinations: ${ctx.destinations}. Dates: ${dates}. Passengers: ${ctx.passengers}.${ctx.luggage ? ` Luggage: ${ctx.luggage} bag(s).` : ""} Vehicle: ${ctx.vehicleClass}.${guide}${ctx.notes ? ` Note: ${ctx.notes}` : ""} Could you quote?`
   );
 }

@@ -4,8 +4,10 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
 import { chauffeurMessage } from "@/lib/whatsapp/whatsapp";
-import { TransportFormField, fieldCls } from "./TransportFormField";
+import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { GUIDE_LANGUAGES } from "./guideOptions";
+import type { GuideType } from "./guideOptions";
 import type { Vehicle } from "@/lib/transport/types";
 
 interface CustomFormProps {
@@ -22,6 +24,9 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
   const [endDate, setEndDate] = useState("");
   const [passengers, setPassengers] = useState("2");
   const [luggage, setLuggage] = useState("");
+  const [guideNeeded, setGuideNeeded] = useState(false);
+  const [guideType, setGuideType] = useState<GuideType>("assistant");
+  const [guideLanguage, setGuideLanguage] = useState("English");
   const [submitted, setSubmitted] = useState(false);
 
   const today = new Date().toISOString().split("T")[0];
@@ -52,6 +57,9 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
     passengers,
     luggage: luggage || undefined,
     vehicleClass: vClass ? `${vClass.label} (${vClass.capacity})` : vehicleId,
+    guideNeeded,
+    guideType,
+    guideLanguage,
   }) : "#";
 
   return (
@@ -129,6 +137,47 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
             className="bg-transparent border border-rule text-ink font-sans text-[16px] px-3 py-2.5 focus:outline-none focus:border-ochre transition-colors duration-200 resize-none"
           />
         </TransportFormField>
+
+        <div className="col-span-full grid grid-cols-1 sm:grid-cols-[auto_minmax(180px,260px)_minmax(180px,260px)] gap-6 items-end justify-start">
+          <label className="flex items-center gap-3 cursor-pointer pb-2.5 sm:whitespace-nowrap">
+            <input
+              type="checkbox"
+              checked={guideNeeded}
+              onChange={(e) => setGuideNeeded(e.target.checked)}
+              className="w-4 h-4 accent-ochre"
+            />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">
+              Travel guide needed
+            </span>
+          </label>
+
+          <TransportFormField label="Guide type">
+            <select
+              value={guideType}
+              onChange={(e) => setGuideType(e.target.value as GuideType)}
+              disabled={!guideNeeded}
+              className={`${selectCls} ${guideNeeded ? "" : "opacity-45 cursor-not-allowed"}`}
+            >
+              <option value="assistant">Assistant</option>
+              <option value="certified guide">Certified guide</option>
+            </select>
+          </TransportFormField>
+
+          <TransportFormField label="Guide language">
+            <select
+              value={guideLanguage}
+              onChange={(e) => setGuideLanguage(e.target.value)}
+              disabled={!guideNeeded}
+              className={`${selectCls} ${guideNeeded ? "" : "opacity-45 cursor-not-allowed"}`}
+            >
+              {GUIDE_LANGUAGES.map((language) => (
+                <option key={language} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
+          </TransportFormField>
+        </div>
       </div>
 
       <Hairline className="my-12" />
@@ -137,7 +186,7 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
         <div className="flex-1">
           <Kicker>Message preview</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hey Sabrina — I'd like a private chauffeur. Pickup: ${pickup || "—"}.${pickupTime ? ` Pickup time: ${pickupTime}.` : ""} Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}.${luggage ? ` Luggage: ${luggage} bag(s).` : ""} Vehicle: ${vClass ? vClass.label : "no vehicle selected"}. Could you quote?`}
+            {`Hey Sabrina — I'd like a private chauffeur. Pickup: ${pickup || "—"}.${pickupTime ? ` Pickup time: ${pickupTime}.` : ""} Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}.${luggage ? ` Luggage: ${luggage} bag(s).` : ""} Vehicle: ${vClass ? vClass.label : "no vehicle selected"}.${guideNeeded ? ` Travel guide: ${guideType} in ${guideLanguage}.` : ""} Could you quote?`}
           </pre>
         </div>
         <button

@@ -1,10 +1,77 @@
 "use client";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import Image from "next/image";
+
+function DropdownNavItem({
+  item,
+  transparent,
+  isActive,
+  pathname,
+}: {
+  item: { href: string; label: string; children?: { href: string; label: string }[] };
+  transparent: boolean;
+  isActive: boolean;
+  pathname: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative inline-flex items-center" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <Link
+        href={item.href}
+        className={`inline-flex items-center gap-1 relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
+          transparent ? "text-cream" : "text-ink"
+        } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
+      >
+        {item.label}
+        <svg
+          width="10" height="10" viewBox="0 0 10 10" fill="none"
+          className={`transition-transform duration-200 opacity-60 ${open ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        >
+          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Link>
+
+      {/* Zero-height bridge fills the gap so onMouseLeave doesn't fire mid-travel */}
+      <div className="absolute top-full left-0 right-0 h-3" />
+
+      <div
+        className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
+          open ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
+        }`}
+      >
+        {item.children?.map((child) => (
+          <Link
+            key={child.href}
+            href={child.href}
+            onClick={() => setOpen(false)}
+            className={`block px-5 py-3 font-mono text-[12px] tracking-[0.14em] uppercase transition-colors duration-150 border-b border-rule last:border-0 ${
+              pathname === child.href
+                ? "text-ochre bg-cream-warm"
+                : "text-ink hover:text-ochre hover:bg-cream-warm"
+            }`}
+          >
+            {child.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -82,51 +149,24 @@ export function SiteHeader() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex gap-8" aria-label="Primary navigation">
-            {NAV_ITEMS.map((item) =>
-              item.children ? (
-                <div key={item.href} className="relative group/nav">
-                  <Link
-                    href={item.href}
-                    className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover/nav:after:scale-x-100 inline-flex items-center gap-1 ${
-                      transparent ? "text-cream" : "text-ink"
-                    } ${pathname.startsWith(item.href) || item.children.some((c) => pathname === c.href || pathname.startsWith(c.href)) ? "after:scale-x-100" : ""}`}
-                  >
-                    {item.label}
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="transition-transform duration-200 group-hover/nav:rotate-180"
-                      aria-hidden="true"
-                    >
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </Link>
-                  {/* Dropdown */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 pointer-events-none group-hover/nav:opacity-100 group-hover/nav:pointer-events-auto transition-all duration-200 translate-y-1 group-hover/nav:translate-y-0 z-50">
-                    <div className="bg-cream/97 backdrop-blur-sm border border-rule shadow-[4px_8px_24px_-4px_rgba(11,26,46,0.18)] min-w-50 py-2">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          className={`block px-5 py-2.5 text-[12px] tracking-[0.14em] uppercase font-medium transition-colors duration-150 hover:text-ochre hover:bg-cream-warm ${
-                            pathname === child.href || pathname.startsWith(child.href + "/")
-                              ? "text-ochre"
-                              : "text-ink"
-                          }`}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
+            {NAV_ITEMS.map((item) => {
+              if (item.children) {
+                const isActive =
+                  pathname === item.href ||
+                  item.children.some(
+                    (child) => pathname === child.href || pathname.startsWith(child.href + "/")
+                  );
+                return (
+                  <DropdownNavItem
+                    key={item.href}
+                    item={item}
+                    transparent={transparent}
+                    isActive={isActive}
+                    pathname={pathname}
+                  />
+                );
+              }
+              return (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -136,8 +176,8 @@ export function SiteHeader() {
                 >
                   {item.label}
                 </Link>
-              )
-            )}
+              );
+            })}
           </nav>
 
           {/* Desktop CTA */}
@@ -241,7 +281,7 @@ export function SiteHeader() {
                 </Link>,
                 ...item.children.map((child, j) => (
                   <Link
-                    key={child.href}
+                    key={`${item.href}:child:${child.href}`}
                     href={child.href}
                     className="font-mono text-[13px] tracking-[0.18em] uppercase text-cream/60 hover:text-ochre transition-colors duration-200 pl-4 border-l border-cream/20"
                     style={{
