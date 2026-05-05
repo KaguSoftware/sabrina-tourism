@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
 import { NavHotel } from "./NavHotel";
+import { NavTours } from "./NavTours";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import Image from "next/image";
@@ -82,16 +83,20 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex gap-8" aria-label="Primary navigation">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === item.href ? "after:scale-x-100" : ""}`}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <nav className="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+            <Link
+              href="/"
+              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === "/" ? "after:scale-x-100" : ""}`}
+            >
+              Home
+            </Link>
+            <NavTours currentPath={pathname} />
+            <Link
+              href="/transportation"
+              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 text-black ${pathname === "/transportation" ? "after:scale-x-100" : ""}`}
+            >
+              Chauffeur
+            </Link>
             <NavHotel currentPath={pathname} />
           </nav>
 
