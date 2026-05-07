@@ -123,7 +123,7 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
       {/* Date range picker */}
       <div
         ref={dateWrapperRef}
-        className="mb-12 w-fit border border-ochre px-3 pt-2 pb-3 animate-gold-shine cursor-pointer"
+        className="mb-12 w-fit border border-rule hover:border-ochre focus-within:border-ochre transition-colors duration-200 px-3 pt-2 pb-3 cursor-pointer"
         onClick={() => datePickerRef.current?.toggle()}
       >
         <div className="flex flex-col gap-2">
@@ -139,7 +139,6 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
             min={today}
             placeholder={`${t("arrivalDate")} → ${t("departureDate")}`}
             clearLabel={t("clear")}
-            applyLabel={t("apply")}
             startDateLabel={t("startDate")}
             endDateLabel={t("finishDate")}
             selectStartLabel={t("selectStart")}

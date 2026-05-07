@@ -37,13 +37,12 @@ export interface DateRangePickerProps {
   className?: string;
   containerRef?: React.RefObject<HTMLElement | null>;
   clearLabel?: string;
-  applyLabel?: string;
   startDateLabel?: string;
   endDateLabel?: string;
   selectStartLabel?: string;
 }
 
-export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePickerProps>(function DateRangePicker({ start, end, onChange, min, placeholder = "Select dates", error, className, containerRef, clearLabel = "Clear", applyLabel = "Apply", startDateLabel = "Start date", endDateLabel = "End date", selectStartLabel = "Select a starting date" }: DateRangePickerProps, ref) {
+export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePickerProps>(function DateRangePicker({ start, end, onChange, min, placeholder = "Select dates", error, className, containerRef, clearLabel = "Clear", startDateLabel = "Start date", endDateLabel = "End date", selectStartLabel = "Select a starting date" }: DateRangePickerProps, ref) {
   const todayYMD = toYMD(new Date());
   const minYMD = min ?? todayYMD;
 
@@ -69,12 +68,11 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
-      if (modeRef.current === "end") return;
-      if (
-        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
-        panelRef.current && !panelRef.current.contains(e.target as Node) &&
-        !(containerRef?.current && containerRef.current.contains(e.target as Node))
-      ) closePicker();
+      const target = e.target as Node;
+      const insideTrigger = triggerRef.current?.contains(target);
+      const insidePanel = panelRef.current?.contains(target);
+      const insideContainer = containerRef?.current?.contains(target);
+      if (!insideTrigger && !insidePanel && !insideContainer) closePicker();
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -144,49 +142,41 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
       className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.2)] p-4 w-72 select-none ${closing ? "datepicker-exit" : "datepicker-enter"}`}
     >
-      <style>{`
-        @keyframes goldPulse {
-          0%, 100% { box-shadow: 0 0 6px 1px rgba(201,154,63,0.25); border-color: #c99a3f; }
-          50% { box-shadow: 0 0 18px 5px rgba(201,154,63,0.75), 0 0 36px 10px rgba(201,154,63,0.3); border-color: #c99a3f; }
-        }
-        .drp-gold-pulse { animation: goldPulse 1.6s ease-in-out infinite; border-color: #c99a3f !important; }
-      `}</style>
       {/* start / end toggle buttons */}
       <div className="flex mb-4 gap-1.5">
         {!start ? (
-          <div className="drp-gold-pulse flex-1 flex items-center px-2.5 py-2 border">
-            <span className="font-sans text-[15px] font-medium text-muted">
+          <div className="flex-1 flex items-center px-2.5 py-2 border border-ochre">
+            <span className="font-sans text-[15px] font-medium text-ink">
               {selectStartLabel}
             </span>
           </div>
         ) : (
           <>
-            <button
-              type="button"
-              onClick={() => setMode("start")}
-              style={start ? { backgroundColor: "#0b1a2e", borderColor: "#c99a3f" } : { borderColor: "#c99a3f" }}
-              className="flex-1 text-left px-2.5 py-1.5 border transition-all duration-150"
-            >
-              <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${start ? "text-ochre/60" : "text-muted"}`}>
-                {startDateLabel}
-              </span>
-              <span className={`font-sans text-[12px] font-medium ${start ? "text-ochre" : "text-muted"}`}>
-                {formatShort(start)}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("end")}
-              style={end ? { backgroundColor: "#0b1a2e", borderColor: "#c99a3f" } : { borderColor: "#c99a3f" }}
-              className={`flex-1 text-left px-2.5 py-1.5 border transition-all duration-150${mode === "end" && !end ? " drp-gold-pulse" : ""}`}
-            >
-              <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${end ? "text-ochre/60" : "text-muted"}`}>
-                {endDateLabel}
-              </span>
-              <span className={`font-sans text-[12px] font-medium ${end ? "text-ochre" : "text-muted"}`}>
-                {end ? formatShort(end) : "—"}
-              </span>
-            </button>
+            {(["start", "end"] as const).map((tab) => {
+              const isActive = mode === tab;
+              const value = tab === "start" ? start : end;
+              const labelText = tab === "start" ? startDateLabel : endDateLabel;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setMode(tab)}
+                  aria-pressed={isActive}
+                  className={`relative flex-1 text-left px-2.5 py-1.5 border transition-all duration-200 ease-[cubic-bezier(0.22,0.61,0.36,1)] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.5 before:transition-opacity before:duration-200 ${
+                    isActive
+                      ? "bg-navy border-ochre before:bg-ochre before:opacity-100"
+                      : "bg-transparent border-rule hover:border-ochre/60 before:opacity-0"
+                  }`}
+                >
+                  <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${isActive ? "text-ochre/70" : "text-muted"}`}>
+                    {labelText}
+                  </span>
+                  <span className={`font-sans text-[12px] font-medium ${isActive ? "text-ochre" : value ? "text-ink" : "text-muted"}`}>
+                    {value ? formatShort(value) : "—"}
+                  </span>
+                </button>
+              );
+            })}
           </>
         )}
       </div>
@@ -268,20 +258,15 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
         <span className="font-mono text-[10px] tracking-widest uppercase text-muted">
           {start && end ? `${nights} night${nights !== 1 ? "s" : ""}` : ""}
         </span>
-        <div className="flex items-center gap-3">
-          {(start || end) && (
-            <button type="button" onClick={() => { modeRef.current = "start"; onChange("", ""); setHovered(""); setMode("start"); }}
-              className="font-mono text-[10px] tracking-widest uppercase text-muted hover:text-terracotta transition-colors">
-              {clearLabel}
-            </button>
-          )}
-          {start && end && (
-            <button type="button" onClick={() => { modeRef.current = "start"; setMode("start"); closePicker(); }}
-              className="font-mono text-[10px] tracking-widest uppercase text-ochre hover:text-ochre/70 transition-colors">
-              {applyLabel}
-            </button>
-          )}
-        </div>
+        {(start || end) && (
+          <button
+            type="button"
+            onClick={() => { modeRef.current = "start"; onChange("", ""); setHovered(""); setMode("start"); }}
+            className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink border border-rule hover:border-terracotta hover:text-terracotta transition-colors duration-200 px-3 py-1.5"
+          >
+            {clearLabel}
+          </button>
+        )}
       </div>
     </div>
   ) : null;
