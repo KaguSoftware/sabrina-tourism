@@ -25,6 +25,8 @@
     "privatePackagesCadence": "Plusieurs jours · Privé",
     "groupPackagesCadence": "Départs planifiés",
     "dailyPackagesCadence": "Excursions à la journée",
+    "hotelsMenuKicker": "Séjournez en Türkiye",
+    "hotelsMenuHeading": "Des hébergements choisis dans chaque région.",
     "otherHotel": "& {count} autre hôtel",
     "otherHotels": "& {count} autres hôtels",
     "partneredPropertiesAcrossTurkey": "{count} établissements partenaires en Türkiye"

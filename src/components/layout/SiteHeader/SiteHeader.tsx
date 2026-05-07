@@ -140,7 +140,7 @@ export function SiteHeader() {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8" aria-label={t("primaryNavigation")}>
+          <nav className="hidden md:flex items-center gap-8 relative" aria-label={t("primaryNavigation")}>
             <Link
               href={`${localePfx}/`}
               className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${

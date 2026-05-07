@@ -25,6 +25,8 @@
     "privatePackagesCadence": "Çok günlü · Özel",
     "groupPackagesCadence": "Planlı kalkışlar",
     "dailyPackagesCadence": "Günlük turlar",
+    "hotelsMenuKicker": "Türkiye'de Konaklama",
+    "hotelsMenuHeading": "Her bölgede özenle seçilmiş konaklamalar.",
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
     "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye"

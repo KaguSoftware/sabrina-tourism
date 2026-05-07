@@ -25,6 +25,8 @@
     "privatePackagesCadence": "Multi-day · Private",
     "groupPackagesCadence": "Scheduled departures",
     "dailyPackagesCadence": "Day trips",
+    "hotelsMenuKicker": "Stay Across Türkiye",
+    "hotelsMenuHeading": "Curated stays in every region.",
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
     "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye"

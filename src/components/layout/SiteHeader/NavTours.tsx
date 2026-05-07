@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 
 interface NavToursProps {
@@ -14,41 +15,21 @@ const TOUR_TYPES = [
     labelKey: "privatePackages",
     cadenceKey: "privatePackagesCadence",
     descriptionKey: "privatePackagesDescription",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 26h20" />
-        <path d="M21 5.5a2.5 2.5 0 0 1 3.5 3.5L11 22.5l-5 1.5 1.5-5L21 5.5z" />
-        <path d="M19.5 7l3.5 3.5" />
-      </svg>
-    ),
+    image: "/capadocia-hero.png",
   },
   {
     href: "/tours/fixed-dates",
     labelKey: "groupPackages",
     cadenceKey: "groupPackagesCadence",
     descriptionKey: "groupPackagesDescription",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="5" y="7" width="22" height="20" rx="1" />
-        <path d="M5 13h22" />
-        <path d="M11 4v6M21 4v6" />
-        <circle cx="11" cy="19" r="0.75" fill="currentColor" />
-        <circle cx="16" cy="19" r="0.75" fill="currentColor" />
-        <circle cx="21" cy="19" r="0.75" fill="currentColor" />
-      </svg>
-    ),
+    image: "/istanbul-hero1.png",
   },
   {
     href: "/tours/daily-packages",
     labelKey: "dailyPackages",
     cadenceKey: "dailyPackagesCadence",
     descriptionKey: "dailyPackagesDescription",
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="16" cy="16" r="5" />
-        <path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.5 6.5l2.1 2.1M23.4 23.4l2.1 2.1M6.5 25.5l2.1-2.1M23.4 8.6l2.1-2.1" />
-      </svg>
-    ),
+    image: "/Antalya-hero.png",
   },
 ] as const;
 
@@ -75,7 +56,6 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
   return (
     <div
-      className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -92,7 +72,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
       <div
         data-open={open}
-        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] pointer-events-none opacity-0 -translate-y-1 transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,0.61,0.36,1)] data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 data-[open=true]:translate-y-0 motion-reduce:transition-none motion-reduce:translate-y-0"
+        className="absolute top-full right-0 mt-3 z-50 w-[840px] pointer-events-none opacity-0 -translate-y-1 transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,0.61,0.36,1)] data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 data-[open=true]:translate-y-0 motion-reduce:transition-none motion-reduce:translate-y-0"
         role="menu"
         aria-hidden={!open}
       >
@@ -129,34 +109,46 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
             </svg>
           </div>
 
-          {/* Three cards */}
+          {/* Three photo-led cards */}
           <div className="grid grid-cols-3 divide-x divide-rule">
             {TOUR_TYPES.map((item) => (
               <Link
                 key={item.href}
                 href={`${pfx}${item.href}`}
-                className="group relative flex flex-col gap-4 p-7 pb-8 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                className="group relative flex flex-col p-4 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
                 role="menuitem"
               >
-                <span className="text-navy/70 group-hover:text-ochre transition-colors duration-300">
-                  {item.icon}
-                </span>
-
-                <div>
-                  <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted group-hover:text-ochre transition-colors duration-300">
+                {/* Photo */}
+                <div className="relative w-full aspect-4/3 overflow-hidden border border-rule">
+                  <Image
+                    src={item.image}
+                    alt=""
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                    sizes="280px"
+                  />
+                  {/* Subtle navy gradient at bottom for cadence label legibility */}
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-navy/75 via-navy/15 to-transparent transition-opacity duration-300 group-hover:from-navy/85" />
+                  {/* Cadence label sits on the photo */}
+                  <p className="absolute bottom-3 left-3 right-3 font-mono text-[10px] tracking-[0.18em] uppercase text-cream/95">
                     {t(item.cadenceKey)}
                   </p>
-                  <p className="relative inline-block mt-2 font-display font-normal text-[17px] leading-[1.15] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                </div>
+
+                {/* Body */}
+                <div className="mt-4 flex-1">
+                  <p className="relative inline-block font-display font-normal text-[18px] leading-[1.15] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
                     {t(item.labelKey)}
                   </p>
-                  <p className="mt-3 text-[12.5px] leading-[1.55] text-ink-soft">
+                  <p className="mt-2.5 text-[12.5px] leading-[1.55] text-ink-soft pr-5">
                     {t(item.descriptionKey)}
                   </p>
                 </div>
 
+                {/* Chevron */}
                 <span
                   aria-hidden
-                  className="absolute bottom-4 right-5 font-mono text-[14px] text-muted group-hover:text-ochre group-hover:translate-x-0.5 transition-[color,transform] duration-300"
+                  className="mt-3 self-end font-mono text-[14px] text-muted group-hover:text-ochre group-hover:translate-x-0.5 transition-[color,transform] duration-300"
                 >
                   →
                 </span>
