@@ -20,7 +20,11 @@
     "groupPackages": "Forfaits en groupe",
     "groupPackagesDescription": "Départs planifiés d'une date fixe à une autre — rejoignez un groupe ou réservez toutes les places.",
     "dailyPackagesDescription": "Excursions à la journée et visites — sans nuit sur place.",
-    "browseAllPackages": "Voir tous les forfaits →",
+    "toursMenuKicker": "Découvrez la Türkiye",
+    "toursMenuHeading": "Choisissez votre façon de voyager.",
+    "privatePackagesCadence": "Plusieurs jours · Privé",
+    "groupPackagesCadence": "Départs planifiés",
+    "dailyPackagesCadence": "Excursions à la journée",
     "otherHotel": "& {count} autre hôtel",
     "otherHotels": "& {count} autres hôtels",
     "partneredPropertiesAcrossTurkey": "{count} établissements partenaires en Türkiye"
@@ -263,7 +267,8 @@
     "next": "Suivant →",
     "reserveWhatsapp": "Réserver via WhatsApp",
     "days": "Jours",
-    "day": "Jour"
+    "day": "Jour",
+    "selected": "Sélectionné"
   },
   "languageSwitcher": {
     "label": "Langue",

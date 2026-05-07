@@ -208,19 +208,23 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
                 key={v.id}
                 type="button"
                 onClick={() => { setVehicleId(v.id); if (!overCapacity) setVehicleQty({}); }}
+                aria-pressed={vehicleId === v.id}
                 title={overCapacity ? t("fitsUpToUseMulti", { n: cap }) : undefined}
-                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${
+                className={`relative flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] rounded-xl before:absolute before:top-0 before:left-0 before:right-0 before:h-0.75 before:rounded-t-xl before:transition-opacity before:duration-300 ${
                   vehicleId === v.id
-                    ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
+                    ? "bg-navy border-navy text-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_28px_-6px_rgba(201,154,63,0.5)] motion-safe:scale-[1.02] before:bg-ochre before:opacity-100"
                     : overCapacity
-                    ? "opacity-50 border-rule bg-cream-warm text-muted hover:opacity-80 hover:border-ochre/40"
-                    : "bg-cream-warm border-rule text-ink hover:border-ochre"
+                    ? "opacity-50 border-rule bg-cream-warm text-muted hover:opacity-80 hover:border-ochre/40 before:opacity-0"
+                    : "bg-cream-warm border-rule text-ink hover:border-ochre before:opacity-0"
                 }`}
               >
+                {vehicleId === v.id && (
+                  <span aria-hidden className="absolute top-2 right-2 w-2 h-2 rounded-full bg-ochre motion-safe:animate-pulse" />
+                )}
                 <FleetIllustration vehicleId={v.id} className="w-full h-13" />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
-                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
-                <span className="text-[11px] text-muted">{v.capacity}</span>
+                <span className={`font-mono text-[10px] tracking-[0.18em] uppercase ${vehicleId === v.id ? "text-cream" : "text-ochre"}`}>{v.from}</span>
+                <span className={`text-[11px] ${vehicleId === v.id ? "text-cream/70" : "text-muted"}`}>{v.capacity}</span>
               </button>
             );
           })}

@@ -81,6 +81,7 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
               type="button"
               onClick={() => !unavailable && onChange({ vehicleId: v.id })}
               disabled={unavailable}
+              aria-pressed={selected}
               title={
                 state.noDriverNeeded
                   ? t("noDriverNeeded")
@@ -88,18 +89,24 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
                   ? t("fitsUpTo", { n: maxCapacity(v) })
                   : undefined
               }
-              className={`flex flex-col items-center gap-2 px-3 py-4 border rounded-xl transition-all duration-200 ${
+              className={`relative flex flex-col items-center gap-2 px-3 py-4 border rounded-xl transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] before:absolute before:top-0 before:left-0 before:right-0 before:h-0.75 before:rounded-t-xl before:transition-opacity before:duration-300 ${
                 unavailable
-                  ? "opacity-45 cursor-not-allowed border-rule bg-cream/55 text-muted"
+                  ? "opacity-45 cursor-not-allowed border-rule bg-cream/55 text-muted before:opacity-0"
                   : selected
-                  ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
-                  : "bg-cream-warm border-rule text-ink hover:border-ochre"
+                  ? "bg-navy border-navy text-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_28px_-6px_rgba(201,154,63,0.5)] motion-safe:scale-[1.02] before:bg-ochre before:opacity-100"
+                  : "bg-cream-warm border-rule text-ink hover:border-ochre before:opacity-0"
               }`}
             >
+              {selected && (
+                <span
+                  aria-hidden
+                  className="absolute top-2 right-2 w-2 h-2 rounded-full bg-ochre motion-safe:animate-pulse"
+                />
+              )}
               <FleetIllustration vehicleId={v.id} className="w-full h-14" />
               <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
-              <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{t("from", { price: v.from })}</span>
-              <span className="text-[11px] text-muted text-center leading-tight">{v.capacity}</span>
+              <span className={`font-mono text-[10px] tracking-[0.18em] uppercase ${selected ? "text-cream" : "text-ochre"}`}>{t("from", { price: v.from })}</span>
+              <span className={`text-[11px] text-center leading-tight ${selected ? "text-cream/70" : "text-muted"}`}>{v.capacity}</span>
               {overCapacity && (
                 <span className="font-mono text-[9px] tracking-[0.12em] uppercase text-terracotta">
                   {t("tooSmall")}

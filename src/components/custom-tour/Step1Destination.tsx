@@ -19,12 +19,12 @@ function ordinal(n: number) {
     n % 100 >= 11 && n % 100 <= 13
       ? "th"
       : n % 10 === 1
-      ? "st"
-      : n % 10 === 2
-      ? "nd"
-      : n % 10 === 3
-      ? "rd"
-      : "th";
+        ? "st"
+        : n % 10 === 2
+          ? "nd"
+          : n % 10 === 3
+            ? "rd"
+            : "th";
 
   return `${n}${suffix}`;
 }
@@ -43,9 +43,10 @@ function getSelectedTripDays(startDate: string, endDate: string) {
 
 export function Step1Destination({ state, onChange, onNext }: Props) {
   const t = useTranslations("customTour.step1");
-  const datePickerRef = useRef<DateRangePickerHandle>(null);
+  const tCommon = useTranslations("common");
+  const today = new Date().toISOString().split("T")[0];
   const dateWrapperRef = useRef<HTMLDivElement>(null);
-  const today = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; })();
+  const datePickerRef = useRef<DateRangePickerHandle>(null);
   const needsDestinationDays = state.destinations.length > 1;
   const selectedTripDays = getSelectedTripDays(state.startDate, state.endDate);
   const destinationDayTotal = state.destinations.reduce((sum, id) => {
@@ -153,37 +154,54 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-12">
         {DESTINATIONS.map((dest) => {
           const selected = state.destinations.includes(dest.id);
+          const order = selected ? state.destinations.indexOf(dest.id) + 1 : null;
           return (
             <button
               key={dest.id}
               type="button"
               onClick={() => toggleDestination(dest.id)}
+              aria-pressed={selected}
               className="group relative aspect-[4/3] text-left focus:outline-none"
             >
               <div
-                className={`relative h-full overflow-hidden bg-[#fcf5ec] transition-all duration-380 ease-out shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c] border border-rule ${
-                  selected ? "ring-3 ring-ochre shadow-[0_0_0_3px_#c99a3f]" : ""
-                }`}
+                className={`relative h-full overflow-hidden bg-[#fcf5ec] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] border ${selected
+                    ? "border-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_32px_-6px_rgba(201,154,63,0.55)] motion-safe:scale-[1.02]"
+                    : "border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]"
+                  }`}
               >
                 <Image
                   src={dest.image}
                   alt={dest.label}
                   fill
-                  className={`object-cover transition-transform duration-1200 ease-out ${
-                    selected ? "scale-105" : "group-hover:scale-105"
-                  }`}
+                  className={`object-cover transition-transform duration-1200 ease-out ${selected ? "scale-105" : "group-hover:scale-105"
+                    }`}
                 />
+                {/* Bottom gradient — keeps title legible without dimming the whole photo */}
                 <div
-                  className={`absolute inset-0 transition-opacity duration-300 ${
-                    selected ? "bg-navy/50" : "bg-black/30 group-hover:bg-black/20"
-                  }`}
+                  className={`absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t transition-opacity duration-300 ${selected
+                      ? "from-navy/85 via-navy/30 to-transparent opacity-100"
+                      : "from-black/65 via-black/15 to-transparent group-hover:opacity-90"
+                    }`}
                 />
+                {/* SELECTED ribbon */}
                 {selected && (
-                  <div className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full bg-ochre flex items-center justify-center">
-                    <span className="text-navy text-[12px] font-bold leading-none">✓</span>
-                  </div>
+                  <span className="absolute top-3 left-3 bg-ochre text-navy font-mono text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 shadow-[0_2px_8px_-2px_rgba(11,26,46,0.4)]">
+                    {tCommon("selected")}
+                  </span>
                 )}
-                <span className="absolute bottom-0 left-0 right-0 p-3 font-display text-[clamp(14px,1.6vw,18px)] font-light text-cream leading-tight">
+                {/* Order chip */}
+                {selected && order !== null && (
+                  <span className="absolute top-3 right-3 w-7 h-7 rounded-full bg-navy text-ochre font-mono text-[12px] font-semibold flex items-center justify-center shadow-[0_2px_8px_-2px_rgba(11,26,46,0.4)]">
+                    {order}
+                  </span>
+                )}
+                {/* Title — flips to navy band when selected */}
+                <span
+                  className={`absolute bottom-0 left-0 right-0 font-display text-[clamp(14px,1.6vw,18px)] font-light leading-tight transition-all duration-300 ${selected
+                      ? "bg-navy/90 text-cream px-3 py-2.5"
+                      : "p-3 text-cream"
+                    }`}
+                >
                   {dest.label}
                 </span>
               </div>
@@ -259,17 +277,16 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
           </div>
           {(destinationDaysOver || destinationDaysUnder) && (
             <p
-              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase ${
-                destinationDaysOver
+              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase ${destinationDaysOver
                   ? "border-terracotta bg-terracotta/10 text-terracotta"
                   : "border-ochre bg-ochre/12 text-ink"
-              }`}
+                }`}
             >
               {destinationDaysOver
                 ? t("daysOver")
                 : selectedTripDays - destinationDayTotal === 1
-                ? t("daysLeft", { n: selectedTripDays - destinationDayTotal })
-                : t("daysLeftPlural", { n: selectedTripDays - destinationDayTotal })}
+                  ? t("daysLeft", { n: selectedTripDays - destinationDayTotal })
+                  : t("daysLeftPlural", { n: selectedTripDays - destinationDayTotal })}
             </p>
           )}
         </div>
@@ -300,12 +317,12 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
             {!state.startDate || !state.endDate
               ? t("selectBothDates")
               : state.destinations.length === 0
-              ? t("selectOneDestination")
-              : selectedTripDays === null
-              ? t("validDateRange")
-              : destinationDaysOver
-              ? t("fewerTravelDays")
-              : t("assignTravelDays", { n: selectedTripDays })}
+                ? t("selectOneDestination")
+                : selectedTripDays === null
+                  ? t("validDateRange")
+                  : destinationDaysOver
+                    ? t("fewerTravelDays")
+                    : t("assignTravelDays", { n: selectedTripDays })}
           </p>
         )}
       </div>

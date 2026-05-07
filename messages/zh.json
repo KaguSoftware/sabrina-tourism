@@ -20,7 +20,11 @@
     "groupPackages": "Group Packages",
     "groupPackagesDescription": "Scheduled departures from a set date to a set date — join a group or book all seats.",
     "dailyPackagesDescription": "Single-day excursions and city tours — no overnight stay required.",
-    "browseAllPackages": "Browse all packages →",
+    "toursMenuKicker": "Explore Türkiye",
+    "toursMenuHeading": "Choose how you'd like to travel.",
+    "privatePackagesCadence": "Multi-day · Private",
+    "groupPackagesCadence": "Scheduled departures",
+    "dailyPackagesCadence": "Day trips",
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
     "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye"
@@ -263,7 +267,8 @@
     "next": "下一步 →",
     "reserveWhatsapp": "通过WhatsApp预订",
     "days": "天",
-    "day": "天"
+    "day": "天",
+    "selected": "已选择"
   },
   "languageSwitcher": {
     "label": "语言",

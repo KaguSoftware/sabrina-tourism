@@ -20,7 +20,11 @@
     "groupPackages": "グループパッケージ",
     "groupPackagesDescription": "設定された出発日から終了日までの定期出発 — グループ参加または全席貸切。",
     "dailyPackagesDescription": "日帰り観光 — 宿泊不要。",
-    "browseAllPackages": "すべてのパッケージを見る →",
+    "toursMenuKicker": "トルコを巡る",
+    "toursMenuHeading": "旅のスタイルを選んでください。",
+    "privatePackagesCadence": "数日間 · プライベート",
+    "groupPackagesCadence": "定期出発",
+    "dailyPackagesCadence": "日帰りツアー",
     "otherHotel": "他{count}件のホテル",
     "otherHotels": "他{count}件のホテル",
     "partneredPropertiesAcrossTurkey": "トルコ全土{count}件の提携施設"
@@ -263,7 +267,8 @@
     "next": "次へ →",
     "reserveWhatsapp": "WhatsAppで予約",
     "days": "日",
-    "day": "日"
+    "day": "日",
+    "selected": "選択中"
   },
   "languageSwitcher": {
     "label": "言語",
