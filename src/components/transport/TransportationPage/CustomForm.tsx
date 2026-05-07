@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
-import { chauffeurMessage } from "@/lib/whatsapp/whatsapp";
 import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
-import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
 import type { Vehicle } from "@/lib/transport/types";
@@ -16,7 +16,11 @@ interface CustomFormProps {
   vehicles: Vehicle[];
 }
 
+// vehicle_id → quantity for multi-vehicle mode
+type VehicleQty = Record<string, number>;
+
 export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProps) {
+  const t = useTranslations("transport.form");
   const [pickup, setPickup] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [destinations, setDestinations] = useState("");
@@ -28,110 +32,243 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
   const [guideType, setGuideType] = useState<GuideType>("assistant");
   const [guideLanguage, setGuideLanguage] = useState("English");
   const [submitted, setSubmitted] = useState(false);
+  const [vehicleQty, setVehicleQty] = useState<VehicleQty>({});
 
   const today = new Date().toISOString().split("T")[0];
   const vClass = vehicles.find((v) => v.id === vehicleId);
 
   function maxCapacity(v: typeof vClass) {
     if (!v) return Infinity;
-    const m = v.capacity.match(/(\d+)\s*(?:–|-)\s*(\d+)/);
-    return m ? parseInt(m[2], 10) : Infinity;
+    const nums = v.capacity.match(/\d+/g);
+    return nums ? parseInt(nums[nums.length - 1], 10) : Infinity;
   }
 
   const pax = parseInt(passengers, 10) || 1;
+  const bags = parseInt(luggage, 10) || 0;
+
+  // total capacity from all selected vehicles
+  const totalVehicleCapacity = Object.entries(vehicleQty).reduce((sum, [id, qty]) => {
+    const v = vehicles.find((x) => x.id === id);
+    return sum + (v ? maxCapacity(v) * qty : 0);
+  }, 0);
+  const totalLuggageCapacity = Object.entries(vehicleQty).reduce((sum, [id, qty]) => {
+    const v = vehicles.find((x) => x.id === id);
+    return sum + (v ? (v.luggageCapacity ?? 0) * qty : 0);
+  }, 0);
+
+  const singleVehicleCapacity = maxCapacity(vClass);
+  const singleLuggageCapacity = vClass?.luggageCapacity ?? Infinity;
+  const needsMultiVehicle = vehicleId && (pax > singleVehicleCapacity || bags > singleLuggageCapacity);
+  const multiVehicleSelected = Object.values(vehicleQty).some((q) => q > 0);
+  const multiVehicleCoversPax = totalVehicleCapacity >= pax;
+  const multiVehicleCoversBags = totalLuggageCapacity >= bags;
+  const multiVehicleCoversAll = multiVehicleCoversPax && multiVehicleCoversBags;
+  const luggageExceedsSingle = vehicleId && bags > 0 && bags > singleLuggageCapacity && !needsMultiVehicle;
+  const luggageExceedsMulti = needsMultiVehicle && multiVehicleSelected && bags > 0 && !multiVehicleCoversBags;
+
   const vehicleMissing = submitted && !vehicleId;
   const pickupMissing = submitted && !pickup.trim();
   const dateMissing = submitted && !startDate;
-  const capacityError = vehicleId && pax > maxCapacity(vClass)
-    ? `${vClass!.label} fits up to ${maxCapacity(vClass)} passengers.`
+  const capacityError = vehicleId && pax > singleVehicleCapacity && !needsMultiVehicle
+    ? t("vehicleCapacityError", { label: vClass!.label, n: singleVehicleCapacity })
     : null;
 
-  const canSubmit = !!vehicleId && !!pickup.trim() && !!startDate && !capacityError;
+  const canSubmit = !!vehicleId && !!pickup.trim() && !!startDate && !!destinations.trim() &&
+    (!needsMultiVehicle || multiVehicleCoversAll);
 
-  const href = vehicleId ? chauffeurMessage({
-    pickup: pickup || "—",
-    destinations: destinations || "—",
-    startDate: startDate || "—",
-    endDate: endDate || undefined,
-    pickupTime: pickupTime || undefined,
-    passengers,
-    luggage: luggage || undefined,
-    vehicleClass: vClass ? `${vClass.label} (${vClass.capacity})` : vehicleId,
-    guideNeeded,
-    guideType,
-    guideLanguage,
-  }) : "#";
+  // build vehicle summary string for WA message
+  const vehicleSummary = needsMultiVehicle && multiVehicleSelected
+    ? Object.entries(vehicleQty)
+        .filter(([, q]) => q > 0)
+        .map(([id, q]) => { const v = vehicles.find((x) => x.id === id); return v ? `${q}× ${v.label}` : ""; })
+        .filter(Boolean).join(", ")
+    : vClass ? `${vClass.label} (${vClass.capacity})` : String(vehicleId);
+
+  function setQty(id: string, delta: number) {
+    setVehicleQty((prev) => {
+      const next = { ...prev, [id]: Math.max(0, (prev[id] ?? 0) + delta) };
+      return next;
+    });
+  }
+
+  const previewMessage = [
+    t("privateChauffeurIntro"),
+    t("pickupSummary", { value: pickup || "—" }),
+    pickupTime ? t("pickupTimeSummary", { value: pickupTime }) : "",
+    t("destinationsSummary", { value: destinations || "—" }),
+    t("datesSummary", {
+      start: startDate || "—",
+      end: endDate ? ` to ${endDate}` : "",
+    }),
+    t("passengersSummary", { value: passengers }),
+    luggage ? t("luggageSummary", { value: luggage }) : "",
+    t("vehicleSummary", {
+      value: vClass ? vClass.label : t("noVehicleSelected"),
+    }),
+    guideNeeded ? t("guideSummary", { type: guideType, language: guideLanguage }) : "",
+    t("couldYouQuote"),
+  ].filter(Boolean).join(" ");
+  const waNum = process.env.NEXT_PUBLIC_WA_PHONE?.replace(/[^\d+]/g, "") ?? "";
+  const href = vehicleId ? `https://wa.me/${waNum}?text=${encodeURIComponent(previewMessage)}` : "#";
 
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 gap-y-8">
-        <TransportFormField label="Pickup location *" hint={pickupMissing ? "Required" : undefined}>
-          <input type="text" value={pickup} placeholder="Hotel, address, neighbourhood"
+        {/* Row 1: Pickup, Time, Dates */}
+        <TransportFormField label={t("pickupLocation")} hint={pickupMissing ? t("requiredHint") : undefined}>
+          <input type="text" value={pickup} placeholder={t("pickupLocationPlaceholder")}
             onChange={(e) => setPickup(e.target.value)}
             className={`${fieldCls} ${pickupMissing ? "border-terracotta" : ""}`} />
         </TransportFormField>
 
-        <TransportFormField label="Pickup time" above>
+        <TransportFormField label={t("pickupTimeOptional")} above>
           <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} className={fieldCls} />
         </TransportFormField>
 
-        <TransportFormField label="Start date *" hint={dateMissing ? "Required" : undefined}>
-          <DatePicker value={startDate} onChange={setStartDate} min={today} error={dateMissing} />
+        <TransportFormField label={t("dates")} hint={dateMissing ? t("requiredHint") : undefined}>
+          <DateRangePicker start={startDate} end={endDate} onChange={(s, e) => { setStartDate(s); setEndDate(e); }} min={today} error={dateMissing} placeholder={t("dateRangePlaceholder")} />
         </TransportFormField>
 
-        <TransportFormField label="End date">
-          <DatePicker value={endDate} onChange={setEndDate} min={startDate || today} />
-        </TransportFormField>
-
-        <TransportFormField label="Passengers">
-          <input type="number" min="1" max="14" value={passengers}
+        {/* Row 2: Passengers, Luggage, Destinations */}
+        <TransportFormField label={t("passengers")}>
+          <input type="number" min="1" value={passengers}
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </TransportFormField>
 
-        <TransportFormField label="Luggage bags">
-          <input type="number" min="0" max="20" value={luggage}
-            onChange={(e) => setLuggage(e.target.value)} className={fieldCls} />
+        <TransportFormField
+          label={t("luggageBags")}
+          hint={vehicleId && !luggageExceedsSingle && !luggageExceedsMulti ? t("bagsPerVehicle", { n: singleLuggageCapacity }) : undefined}
+          hintError={
+            luggageExceedsMulti
+              ? t("exceedsMulti", { n: totalLuggageCapacity })
+              : luggageExceedsSingle
+              ? t("exceedsSingle", { label: vClass!.label, n: singleLuggageCapacity })
+              : undefined
+          }
+        >
+          <input
+            type="number" min="0" max="20" value={luggage}
+            onChange={(e) => setLuggage(e.target.value)}
+            className={`${fieldCls} ${luggageExceedsSingle || luggageExceedsMulti ? "border-terracotta" : ""}`}
+          />
+        </TransportFormField>
+
+        <TransportFormField label={t("destinationsStops")}>
+          <input
+            type="text"
+            value={destinations}
+            placeholder={t("destinationsStopsPlaceholder")}
+            onChange={(e) => setDestinations(e.target.value)}
+            className={fieldCls}
+          />
         </TransportFormField>
 
         <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start relative z-8">
           <div className="flex flex-col gap-1.5 min-w-40">
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Vehicle class *</span>
-            {vClass && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}
-            {vehicleMissing && <p className="text-[12px] text-terracotta">Please select a vehicle class.</p>}
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("vehicleClass")}</span>
+            {vClass && !needsMultiVehicle && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}
+            {vehicleMissing && <p className="text-[12px] text-terracotta">{t("vehicleMissing")}</p>}
             {capacityError && <p className="text-[12px] text-terracotta">{capacityError}</p>}
           </div>
           <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
             {vehicles.map((v) => {
-              const overCapacity = pax > maxCapacity(vehicles.find((x) => x.id === v.id));
+              const cap = maxCapacity(vehicles.find((x) => x.id === v.id));
+              const overCapacity = pax > cap;
               return (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => !overCapacity && setVehicleId(v.id)}
-                disabled={overCapacity}
-                title={overCapacity ? `Fits up to ${maxCapacity(vehicles.find((x) => x.id === v.id))} passengers` : undefined}
-                className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${
-                  overCapacity
-                    ? "opacity-40 cursor-not-allowed border-rule bg-cream-warm text-muted"
-                    : vehicleId === v.id
-                    ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
-                    : "bg-cream-warm border-rule text-ink hover:border-ochre"
-                }`}
-              >
-                <FleetIllustration vehicleId={v.id} className="w-full h-13" />
-                <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
-                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
-                <span className="text-[11px] text-muted">{v.capacity}</span>
-              </button>
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => { setVehicleId(v.id); if (!overCapacity) setVehicleQty({}); }}
+                  title={overCapacity ? t("fitsUpToUseMulti", { n: cap }) : undefined}
+                  className={`flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-200 rounded-xl ${
+                    vehicleId === v.id
+                      ? "bg-navy border-navy text-ochre ring-2 ring-ochre"
+                      : overCapacity
+                      ? "opacity-50 border-rule bg-cream-warm text-muted hover:opacity-80 hover:border-ochre/40"
+                      : "bg-cream-warm border-rule text-ink hover:border-ochre"
+                  }`}
+                >
+                  <FleetIllustration vehicleId={v.id} className="w-full h-13" />
+                  <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
+                  <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ochre">{v.from}</span>
+                  <span className="text-[11px] text-muted">{v.capacity}</span>
+                </button>
               );
             })}
           </div>
         </div>
 
-        <TransportFormField label="Destinations & stops" span>
+        {/* Multi-vehicle builder — shown when passengers or bags exceed single vehicle capacity */}
+        {needsMultiVehicle && (
+          <div className="col-span-full border border-ochre/30 bg-ochre/5 p-4 space-y-4">
+            <div>
+              <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre mb-1">
+                {t("addVehicles")}
+              </p>
+              <p className="font-sans text-[13px] text-ink-soft leading-snug">
+                {t("addVehiclesHint", { label: vClass?.label ?? "", pax: singleVehicleCapacity, bags: singleLuggageCapacity, totalPax: pax, totalBags: bags })}
+              </p>
+              {multiVehicleSelected && (
+                <div className="mt-2 flex flex-col gap-1">
+                  {!multiVehicleCoversPax ? (
+                    <p className="font-mono text-[11px] text-terracotta tracking-wide">
+                      {pax - totalVehicleCapacity > 1
+                        ? t("seatsNeededPlural", { total: totalVehicleCapacity, pax, needed: pax - totalVehicleCapacity })
+                        : t("seatsNeeded", { total: totalVehicleCapacity, pax, needed: pax - totalVehicleCapacity })}
+                    </p>
+                  ) : (
+                    <p className="font-mono text-[11px] text-ochre tracking-wide">
+                      {t("seatsCovered", { total: totalVehicleCapacity, pax })}
+                    </p>
+                  )}
+                  {bags > 0 && (!multiVehicleCoversBags ? (
+                    <p className="font-mono text-[11px] text-terracotta tracking-wide">
+                      {bags - totalLuggageCapacity > 1
+                        ? t("bagsNeededPlural", { total: totalLuggageCapacity, bags, needed: bags - totalLuggageCapacity })
+                        : t("bagsNeeded", { total: totalLuggageCapacity, bags, needed: bags - totalLuggageCapacity })}
+                    </p>
+                  ) : (
+                    <p className="font-mono text-[11px] text-ochre tracking-wide">
+                      {t("bagsCovered", { total: totalLuggageCapacity, bags })}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {vehicles.map((v) => {
+                const cap = maxCapacity(v);
+                const qty = vehicleQty[v.id] ?? 0;
+                return (
+                  <div key={v.id} className="flex flex-col items-center gap-2 p-3 border border-rule bg-cream rounded-xl">
+                    <FleetIllustration vehicleId={v.id} className="w-full h-10" />
+                    <span className="font-display text-[13px] tracking-tight text-ink">{v.label}</span>
+                    <span className="font-mono text-[10px] text-muted">{v.capacity}</span>
+                    <span className="font-mono text-[10px] text-muted">{v.luggageCapacity} {t("bags")}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <button type="button" onClick={() => setQty(v.id, -1)}
+                        className="w-7 h-7 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-base leading-none">−</button>
+                      <span className="font-mono text-[14px] text-ink min-w-[1.5ch] text-center">{qty}</span>
+                      <button type="button" onClick={() => setQty(v.id, 1)}
+                        className="w-7 h-7 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-base leading-none">+</button>
+                    </div>
+                    {qty > 0 && (
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="font-mono text-[10px] text-ochre">{qty * cap} {t("seats")}</span>
+                        <span className="font-mono text-[10px] text-ochre">{qty * v.luggageCapacity} {t("bags")}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <TransportFormField label={t("destinationsStops")} span>
           <textarea
             value={destinations}
-            placeholder="List your stops, e.g. Cappadocia → Konya → Antalya"
+            placeholder={t("destinationsStopsTextareaPlaceholder")}
             onChange={(e) => setDestinations(e.target.value)}
             rows={3}
             className="bg-transparent border border-rule text-ink font-sans text-[16px] px-3 py-2.5 focus:outline-none focus:border-ochre transition-colors duration-200 resize-none"
@@ -147,23 +284,23 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
               className="w-4 h-4 accent-ochre"
             />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">
-              Travel guide needed
+              {t("guideNeeded")}
             </span>
           </label>
 
-          <TransportFormField label="Guide type">
+          <TransportFormField label={t("guideType")}>
             <select
               value={guideType}
               onChange={(e) => setGuideType(e.target.value as GuideType)}
               disabled={!guideNeeded}
               className={`${selectCls} ${guideNeeded ? "" : "opacity-45 cursor-not-allowed"}`}
             >
-              <option value="assistant">Assistant</option>
-              <option value="certified guide">Certified guide</option>
+              <option value="assistant">{t("guideAssistant")}</option>
+              <option value="certified guide">{t("guideCertified")}</option>
             </select>
           </TransportFormField>
 
-          <TransportFormField label="Guide language">
+          <TransportFormField label={t("guideLanguage")}>
             <select
               value={guideLanguage}
               onChange={(e) => setGuideLanguage(e.target.value)}
@@ -184,18 +321,29 @@ export function CustomForm({ vehicleId, setVehicleId, vehicles }: CustomFormProp
 
       <div className="flex flex-col lg:flex-row gap-10 items-end">
         <div className="flex-1">
-          <Kicker>Message preview</Kicker>
+          <Kicker>{t("messagePreview")}</Kicker>
           <pre className="font-mono text-[13px] leading-[1.6] text-ink-soft whitespace-pre-wrap mt-3.5 p-4 bg-cream-warm border-l-2 border-ochre">
-            {`Hey Sabrina — I'd like a private chauffeur. Pickup: ${pickup || "—"}.${pickupTime ? ` Pickup time: ${pickupTime}.` : ""} Destinations: ${destinations || "—"}. Dates: ${startDate || "—"}${endDate ? ` to ${endDate}` : ""}. Passengers: ${passengers}.${luggage ? ` Luggage: ${luggage} bag(s).` : ""} Vehicle: ${vClass ? vClass.label : "no vehicle selected"}.${guideNeeded ? ` Travel guide: ${guideType} in ${guideLanguage}.` : ""} Could you quote?`}
+            {previewMessage}
           </pre>
         </div>
+        <p
+          style={{
+            backgroundColor: "#fff1f2",
+            borderColor: "#fecdd3",
+            color: "#9f1239",
+          }}
+          className="border px-4 py-3 font-mono text-[11px] tracking-[0.12em] leading-[1.6] max-w-[46ch]"
+        >
+          {t("driverHours")}
+        </p>
         <button
           type="button"
+          disabled={!canSubmit}
           onClick={() => { setSubmitted(true); if (!canSubmit) return; window.open(href, "_blank", "noopener,noreferrer"); }}
-          style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
-          className="inline-flex items-center gap-3.5 px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] whitespace-nowrap group"
+          style={canSubmit ? { backgroundColor: "#0b1a2e", color: "#c99a3f" } : { backgroundColor: "#d6cfc7", color: "#9a9087", cursor: "not-allowed" }}
+          className="inline-flex items-center gap-3.5 px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold transition-all duration-300 whitespace-nowrap group shadow-none disabled:shadow-none enabled:shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] enabled:hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] enabled:hover:scale-[1.02] enabled:active:scale-[0.99]"
         >
-          <span>Reserve via WhatsApp</span>
+          <span>{t("reserveWhatsapp")}</span>
           <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </button>
       </div>

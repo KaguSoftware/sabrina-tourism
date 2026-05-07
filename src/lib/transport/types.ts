@@ -9,6 +9,7 @@ export interface Vehicle {
   id: VehicleId;
   label: string;
   capacity: string;
+  luggageCapacity: number;
   note: string;
   from: string;
 }

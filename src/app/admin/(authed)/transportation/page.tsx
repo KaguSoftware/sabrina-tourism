@@ -1,8 +1,10 @@
 import { PageHeader } from "@/components/admin/PageHeader/PageHeader";
 import { TransportationEditor } from "./TransportationEditor";
 import { createServerClient } from "@/lib/supabase/server";
+import { getAdminT } from "@/lib/admin/i18n";
 
 export default async function AdminTransportationPage() {
+  const { t } = await getAdminT();
   const supabase = (await createServerClient()) as any;
 
   const [heroRes, airportsRes, vehiclesRes] = await Promise.all([
@@ -22,9 +24,9 @@ export default async function AdminTransportationPage() {
   return (
     <>
       <PageHeader
-        kicker="Services"
-        title="Transportation"
-        description="Edit the transportation page hero and manage fleet and airport listings."
+        kicker={t("pages.transportation.kicker")}
+        title={t("pages.transportation.title")}
+        description={t("pages.transportation.description")}
       />
       <TransportationEditor
         hero={hero}

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 
 interface NavToursProps {
   currentPath: string;
@@ -10,8 +11,8 @@ interface NavToursProps {
 const TOUR_TYPES = [
   {
     href: "/tours/custom-packages",
-    label: "Custom Packages",
-    description: "Tailor-made itineraries built around your dates, group size, and interests.",
+    labelKey: "privatePackages",
+    descriptionKey: "privatePackagesDescription",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 20h9" />
@@ -21,8 +22,8 @@ const TOUR_TYPES = [
   },
   {
     href: "/tours/fixed-dates",
-    label: "Fixed-Date Packages",
-    description: "Scheduled departures from a set date to a set date — join a group or book all seats.",
+    labelKey: "groupPackages",
+    descriptionKey: "groupPackagesDescription",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -34,8 +35,8 @@ const TOUR_TYPES = [
   },
   {
     href: "/tours/daily-packages",
-    label: "Daily Packages",
-    description: "Single-day excursions and city tours — no overnight stay required.",
+    labelKey: "dailyPackages",
+    descriptionKey: "dailyPackagesDescription",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="4" />
@@ -46,6 +47,9 @@ const TOUR_TYPES = [
 ] as const;
 
 export function NavTours({ currentPath, transparent }: NavToursProps) {
+  const locale = useLocale();
+  const t = useTranslations("nav");
+  const pfx = locale === "en" ? "" : `/${locale}`;
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -69,16 +73,16 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <span
-        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 cursor-pointer select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      <Link
+        href={`${pfx}/packages`}
+        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive || open ? "after:scale-x-100" : ""}`}
-        role="button"
         aria-haspopup="true"
         aria-expanded={open}
       >
-        Tours
-      </span>
+        {t("tours")}
+      </Link>
 
       {open && (
         <div
@@ -91,7 +95,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
             {TOUR_TYPES.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={`${pfx}${item.href}`}
                 className="group flex flex-col gap-3 p-4 hover:bg-ochre/5 transition-colors duration-150"
                 role="menuitem"
               >
@@ -100,10 +104,10 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
                 </span>
                 <div>
                   <p className="font-display font-normal text-[13px] leading-[1.2] tracking-tight text-ink group-hover:text-ochre transition-colors duration-150">
-                    {item.label}
+                    {t(item.labelKey)}
                   </p>
                   <p className="font-mono text-[10px] tracking-[0.08em] text-muted mt-1 leading-[1.4]">
-                    {item.description}
+                    {t(item.descriptionKey)}
                   </p>
                 </div>
               </Link>
@@ -112,10 +116,10 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
           <div className="border-t border-rule px-4 py-2.5">
             <Link
-              href="/packages"
+              href={`${pfx}/packages`}
               className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted hover:text-ochre transition-colors duration-150"
             >
-              Browse all packages &rarr;
+              {t("browseAllPackages")}
             </Link>
           </div>
         </div>

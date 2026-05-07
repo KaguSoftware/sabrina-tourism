@@ -12,7 +12,7 @@ export const NAV_ITEMS: NavItem[] = [
       { href: "/tours/daily-packages", label: "Daily Packages" },
     ],
   },
-  { href: "/transportation", label: "Chauffeur" },
+  { href: "/transportation", label: "Driver" },
 ];
 
 export const SCROLL_THRESHOLD = 40;

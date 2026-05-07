@@ -2,16 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { DailyPackage } from "@/lib/daily/types";
 
-function formatDate(iso: string): string {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
 export function DailyPackageCard({ pkg }: { pkg: DailyPackage }) {
   return (
     <Link href={`/tours/daily/${pkg.id}`} className="block group">
@@ -30,9 +20,9 @@ export function DailyPackageCard({ pkg }: { pkg: DailyPackage }) {
           <span className="absolute top-4 left-4 bg-navy/78 text-cream font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 backdrop-blur-sm">
             {pkg.region}
           </span>
-          {/* Date badge */}
+          {/* Timeframe badge */}
           <span className="absolute bottom-4 left-4 bg-ochre text-navy font-mono text-[11px] tracking-[0.18em] uppercase px-3 py-1.5">
-            {formatDate(pkg.date)}
+            {pkg.startTime} – {pkg.endTime}
           </span>
         </div>
 
@@ -90,7 +80,7 @@ export function DailyPackageCard({ pkg }: { pkg: DailyPackage }) {
               </span>
             </p>
             <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre">
-              View day{" "}
+              View experience{" "}
               <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
                 →
               </em>

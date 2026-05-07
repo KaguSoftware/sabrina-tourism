@@ -3,6 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Pencil, Copy, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { AdminPackageRow } from "./PackagesTable";
 
 function Thumbnail({ src, region }: { src?: string; region: string }) {
@@ -36,6 +37,7 @@ export function SortableRow({
   onDelete,
   onDuplicate,
 }: SortableRowProps) {
+  const t = useTranslations("admin.common");
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: pkg.id });
 
@@ -50,7 +52,7 @@ export function SortableRow({
           {...attributes}
           {...listeners}
           className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink transition-colors touch-none"
-          aria-label="Drag to reorder"
+          aria-label={t("dragToReorder")}
         >
           <GripVertical size={16} />
         </button>
@@ -77,15 +79,15 @@ export function SortableRow({
         <button
           onClick={() => onTogglePublished(pkg.id, pkg.isPublished)}
           className="group"
-          title={pkg.isPublished ? "Click to unpublish" : "Click to publish"}
+          title={pkg.isPublished ? t("draft") : t("published")}
         >
           {pkg.isPublished ? (
             <span className="inline-block px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] uppercase bg-navy text-ochre rounded-sm group-hover:opacity-80 transition-opacity">
-              Published
+              {t("published")}
             </span>
           ) : (
             <span className="inline-block px-2.5 py-1 font-mono text-[10px] tracking-[0.12em] uppercase bg-cream-warm text-ink-soft border border-rule rounded-sm group-hover:opacity-80 transition-opacity">
-              Draft
+              {t("draft")}
             </span>
           )}
         </button>
@@ -95,11 +97,11 @@ export function SortableRow({
         <button
           onClick={() => { if (!pkg.isPublished && !pkg.isFeatured) return; onToggleFeatured(pkg.id, pkg.isFeatured); }}
           disabled={!pkg.isPublished}
-          title={!pkg.isPublished ? "Publish first to feature" : pkg.isFeatured ? "Remove from featured" : "Add to featured"}
+          title={t("featured")}
           className={`w-5 h-5 rounded-sm border transition-all duration-200 ${
             pkg.isFeatured ? "bg-ochre border-ochre" : "bg-transparent border-rule hover:border-ochre"
           } ${!pkg.isPublished ? "opacity-30 cursor-not-allowed" : "cursor-pointer"}`}
-          aria-label={pkg.isFeatured ? "Remove from featured" : "Feature this tour"}
+          aria-label={t("featured")}
         >
           {pkg.isFeatured && (
             <svg viewBox="0 0 12 12" fill="none" className="w-full h-full p-0.5">
@@ -111,13 +113,13 @@ export function SortableRow({
 
       <td className="px-3 py-3 w-28">
         <div className="flex items-center gap-1">
-          <a href={`/admin/packages/${pkg.slug}`} title="Edit" className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
+          <a href={`/admin/packages/${pkg.slug}`} title={t("edit")} className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
             <Pencil size={14} />
           </a>
-          <button onClick={() => onDuplicate(pkg.id)} title="Duplicate" className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
+          <button onClick={() => onDuplicate(pkg.id)} title={t("duplicate")} className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
             <Copy size={14} />
           </button>
-          <button onClick={() => onDelete(pkg.id)} title="Delete" className="p-1.5 text-ink/70 hover:text-terracotta transition-colors rounded">
+          <button onClick={() => onDelete(pkg.id)} title={t("delete")} className="p-1.5 text-ink/70 hover:text-terracotta transition-colors rounded">
             <Trash2 size={14} />
           </button>
         </div>

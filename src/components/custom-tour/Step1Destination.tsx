@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -40,6 +41,7 @@ function getSelectedTripDays(startDate: string, endDate: string) {
 }
 
 export function Step1Destination({ state, onChange, onNext }: Props) {
+  const t = useTranslations("customTour.step1");
   const today = new Date().toISOString().split("T")[0];
   const needsDestinationDays = state.destinations.length > 1;
   const selectedTripDays = getSelectedTripDays(state.startDate, state.endDate);
@@ -106,43 +108,43 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
 
   return (
     <div>
-      <Kicker>Step 1 of 5</Kicker>
+      <Kicker>{t("kicker")}</Kicker>
       <GoldUnderlineHeading as="h2" className="text-[clamp(28px,3.5vw,44px)] mt-4 mb-3 tracking-tight text-ink">
-        Destination &amp; Dates
+        {t("heading")}
       </GoldUnderlineHeading>
       <p className="text-ink-soft text-[15px] leading-[1.6] mb-10 max-w-[52ch]">
-        Choose when you&apos;d like to travel and which regions you want to explore.
+        {t("sub")}
       </p>
 
       {/* Date pickers */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 max-w-[560px]">
         <div className="flex flex-col gap-2">
           <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-            Start Date
+            {t("startDate")}
           </label>
           <DatePicker
             value={state.startDate}
             onChange={(v) => onChange({ startDate: v, endDate: state.endDate && v > state.endDate ? "" : state.endDate })}
             min={today}
-            placeholder="Arrival date"
+            placeholder={t("arrivalDate")}
           />
         </div>
         <div className="flex flex-col gap-2">
           <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-            Finish Date
+            {t("finishDate")}
           </label>
           <DatePicker
             value={state.endDate}
             onChange={(v) => onChange({ endDate: v })}
             min={state.startDate || today}
-            placeholder="Departure date"
+            placeholder={t("departureDate")}
           />
         </div>
       </div>
 
       {/* Destination grid */}
       <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mb-5">
-        Select your destinations <span className="text-terracotta">*</span>
+        {t("selectDestinations")} <span className="text-terracotta">*</span>
       </h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-12">
         {DESTINATIONS.map((dest) => {
@@ -190,12 +192,12 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
         <div className="w-full bg-cream-warm border border-rule p-5 mb-12">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
             <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-              Days by destination <span className="text-terracotta">*</span>
+              {t("daysByDestination")} <span className="text-terracotta">*</span>
             </h3>
             <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
               {selectedTripDays === null
-                ? "Select dates first"
-                : `${destinationDayTotal}/${selectedTripDays} days assigned`}
+                ? t("selectDatesFirst")
+                : t("daysAssigned", { assigned: destinationDayTotal, total: selectedTripDays })}
             </p>
           </div>
           <div className="grid grid-cols-1 gap-3">
@@ -212,7 +214,7 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
                       onClick={() => moveDestination(i, -1)}
                       disabled={i === 0}
                       className="w-8 h-8 border border-ochre text-ink hover:bg-navy hover:text-ochre transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                      aria-label={`Move ${destination?.label ?? id} earlier`}
+                      aria-label={t("moveEarlier", { destination: destination?.label ?? id })}
                     >
                       ↑
                     </button>
@@ -221,27 +223,29 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
                       onClick={() => moveDestination(i, 1)}
                       disabled={i === state.destinations.length - 1}
                       className="w-8 h-8 border border-ochre text-ink hover:bg-navy hover:text-ochre transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-                      aria-label={`Move ${destination?.label ?? id} later`}
+                      aria-label={t("moveLater", { destination: destination?.label ?? id })}
                     >
                       ↓
                     </button>
                   </div>
                   <span className="flex flex-col gap-0.5">
                     <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre">
-                      {ordinal(i + 1)} area
+                      {t("ordinalArea", { ord: ordinal(i + 1) })}
                     </span>
                     <span className="font-display text-[20px] tracking-tight text-ink">
                       {destination?.label ?? id}
                     </span>
                   </span>
                   <label className="flex flex-col gap-1">
-                    <span className="sr-only">Days in {destination?.label ?? id}</span>
+                    <span className="sr-only">
+                      {t("daysInDestination", { destination: destination?.label ?? id })}
+                    </span>
                     <input
                       type="number"
                       min={1}
                       value={(state.destinationDays ?? {})[id] ?? ""}
                       onChange={(e) => setDestinationDays(id, e.target.value)}
-                      placeholder="Days"
+                      placeholder={t("daysPlaceholder")}
                       className="h-11 border border-rule bg-cream px-3 text-center font-mono text-[13px] tracking-[0.12em] uppercase text-ink focus:outline-none focus:border-ochre transition-colors duration-200"
                     />
                   </label>
@@ -258,10 +262,10 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
               }`}
             >
               {destinationDaysOver
-                ? "You've selected fewer travel days than that. Reduce the area days or extend your finish date."
-                : `${selectedTripDays - destinationDayTotal} day${
-                    selectedTripDays - destinationDayTotal === 1 ? "" : "s"
-                  } left to assign.`}
+                ? t("daysOver")
+                : selectedTripDays - destinationDayTotal === 1
+                ? t("daysLeft", { n: selectedTripDays - destinationDayTotal })
+                : t("daysLeftPlural", { n: selectedTripDays - destinationDayTotal })}
             </p>
           )}
         </div>
@@ -285,19 +289,19 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
             border: canProceed ? "none" : "1.5px solid #c99a3f",
           }}
         >
-          Next →
+          {t("next")}
         </button>
         {!canProceed && (
           <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
             {!state.startDate || !state.endDate
-              ? "Select both dates"
+              ? t("selectBothDates")
               : state.destinations.length === 0
-              ? "Select at least one destination"
+              ? t("selectOneDestination")
               : selectedTripDays === null
-              ? "Select a valid date range"
+              ? t("validDateRange")
               : destinationDaysOver
-              ? "You've selected fewer travel days than that"
-              : `Assign exactly ${selectedTripDays} travel days`}
+              ? t("fewerTravelDays")
+              : t("assignTravelDays", { n: selectedTripDays })}
           </p>
         )}
       </div>

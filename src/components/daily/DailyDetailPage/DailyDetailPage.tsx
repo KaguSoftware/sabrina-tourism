@@ -1,10 +1,17 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
+import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import type { DailyPackage } from "@/lib/daily/types";
+
+function toYMD(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 function formatDate(iso: string): string {
   const d = new Date(iso + "T00:00:00");
@@ -16,16 +23,20 @@ function formatDate(iso: string): string {
   });
 }
 
-function bookMessage(pkg: DailyPackage): string {
+function bookMessage(pkg: DailyPackage, date: string, guests: number): string {
   const phone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
   const num = phone.replace(/[^\d+]/g, "");
+  const dateStr = date ? formatDate(date) : "a date TBD";
   const text = encodeURIComponent(
-    `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(pkg.date)} (${pkg.startTime}–${pkg.endTime}). Could you confirm availability?`
+    `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`
   );
   return `https://wa.me/${num}?text=${text}`;
 }
 
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
+  const today = toYMD(new Date());
+  const [selectedDate, setSelectedDate] = useState("");
+  const [guests, setGuests] = useState(1);
   return (
     <>
       {/* Hero */}
@@ -42,7 +53,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/85" />
 
-        <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+        <div className="relative z-5 max-w-[1320px] mx-auto w-full">
           <Reveal>
             <span className="block font-mono text-[12px] tracking-[0.18em] uppercase text-cream/70 mb-7">
               <Link href="/tours/daily-packages" className="text-ochre hover:underline">
@@ -55,7 +66,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
 
           <Reveal delay={140}>
             <Kicker className="kicker--light mb-5">
-              {pkg.region.toUpperCase()} · DAY-TO-NIGHT
+              {pkg.region.toUpperCase()} · DAY EXPERIENCE
             </Kicker>
           </Reveal>
 
@@ -67,8 +78,6 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             </Reveal>
             <Reveal delay={360}>
               <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-cream/80 mb-3">
-                {formatDate(pkg.date)}
-                <span className="mx-3 opacity-40">·</span>
                 {pkg.startTime} – {pkg.endTime}
               </p>
             </Reveal>
@@ -82,12 +91,19 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
       </section>
 
       {/* Content */}
-      <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-20 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16">
+      <div className="relative max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-20 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16" style={{ zIndex: 10 }}>
         {/* Left column */}
         <div>
+          {/* Carousel — top */}
+          <Reveal>
+            <div className="mb-14" style={{ zIndex: 10 }}>
+              <HotelCarousel images={pkg.groupImages} hotelName={pkg.name} />
+            </div>
+          </Reveal>
+
           {/* Schedule timeline */}
           <Reveal>
-            <Kicker className="mb-6">Full Day Schedule</Kicker>
+            <Kicker className="mb-6">Day Itinerary</Kicker>
           </Reveal>
           <ol className="relative border-l border-rule pl-8 space-y-10 mb-20">
             {pkg.stops.map((stop, i) => (
@@ -109,29 +125,9 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             ))}
           </ol>
 
-          {/* Gallery */}
-          <Reveal>
-            <Kicker className="mb-6">Destinations</Kicker>
-          </Reveal>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-20">
-            {pkg.groupImages.map((src, i) => (
-              <Reveal key={i} delay={i * 60}>
-                <div className="relative aspect-[4/3] overflow-hidden border border-rule">
-                  <Image
-                    src={src}
-                    alt={`${pkg.name} — destination ${i + 1}`}
-                    fill
-                    className="object-cover transition-transform duration-700 ease-out hover:scale-[1.05]"
-                    sizes="(max-width:640px) 50vw, 25vw"
-                  />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
           {/* Inclusions */}
           <Reveal>
-            <Kicker className="mb-6">What's Included</Kicker>
+            <Kicker className="mb-6">What's Covered</Kicker>
           </Reveal>
           <ul className="space-y-3 mb-0">
             {pkg.included.map((item, i) => (
@@ -151,7 +147,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             <Reveal>
               <div className="bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] p-6">
                 <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted mb-1">
-                  Fixed Price
+                  Ticket Price
                 </p>
                 <p className="font-display text-[42px] leading-none tracking-[-0.02em] text-ochre mb-1">
                   {pkg.currency} {pkg.price.toLocaleString()}
@@ -162,12 +158,34 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
 
                 <div className="border-t border-rule pt-5 mb-5 space-y-3">
                   <div>
-                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
-                      Date
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
+                      Select your date
                     </p>
-                    <p className="text-[14px] text-ink font-medium">
-                      {formatDate(pkg.date)}
+                    <DatePicker
+                      value={selectedDate}
+                      onChange={setSelectedDate}
+                      min={today}
+                      placeholder="Pick a date"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
+                      Number of guests
                     </p>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                        className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                      >−</button>
+                      <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center">{guests}</span>
+                      <button
+                        type="button"
+                        onClick={() => setGuests((g) => g + 1)}
+                        className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                      >+</button>
+                      <span className="font-mono text-[11px] text-muted">guest{guests !== 1 ? "s" : ""}</span>
+                    </div>
                   </div>
                   <div>
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
@@ -177,48 +195,30 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                       {pkg.startTime} – {pkg.endTime}
                     </p>
                   </div>
-                  <div>
-                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
-                      Vehicle
-                    </p>
-                    <p className="text-[14px] text-ink font-medium">
-                      {pkg.vehicle}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
-                      Driver
-                    </p>
-                    <p className="text-[14px] text-ink font-medium">
-                      {pkg.driver}
-                    </p>
-                  </div>
                 </div>
 
-                {/* Vehicle image */}
-                <div className="relative aspect-[16/9] overflow-hidden border border-rule mb-5">
-                  <Image
-                    src="/chauffer.png"
-                    alt={pkg.vehicle}
-                    fill
-                    className="object-cover"
-                    sizes="340px"
-                  />
-                </div>
+                {selectedDate && (
+                  <div className="border-l-2 border-ochre bg-cream-deep p-3 mb-4">
+                    <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
+                    <p className="font-sans text-[12px] text-ink-soft leading-snug">
+                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate)} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`}
+                    </p>
+                  </div>
+                )}
 
                 <GoldButton
-                  href={bookMessage(pkg)}
+                  href={selectedDate ? bookMessage(pkg, selectedDate, guests) : undefined}
                   variant="solid"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full justify-center"
+                  className={`w-full justify-center ${!selectedDate ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   Book This Day
                 </GoldButton>
 
-                <p className="text-[12px] text-muted text-center mt-3 leading-[1.5]">
-                  Secure your spot via WhatsApp — we respond within the hour.
-                </p>
+                {!selectedDate && (
+                  <p className="text-[12px] text-muted text-center mt-3">Pick a date above to continue.</p>
+                )}
               </div>
             </Reveal>
           </div>

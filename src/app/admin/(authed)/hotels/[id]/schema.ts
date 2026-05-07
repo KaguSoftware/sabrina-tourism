@@ -1,0 +1,46 @@
+import { z } from "zod";
+
+export const HotelSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, "Name is required"),
+  region: z.enum(["Istanbul","Cappadocia","Aegean","Mediterranean","Black Sea","Eastern Anatolia"]),
+  description: z.string().min(1, "Short description is required").max(400),
+  long_description: z.string().min(1, "Long description is required"),
+  tag_a: z.string().min(1, "First tag is required"),
+  tag_b: z.string().min(1, "Second tag is required"),
+  svg_variant: z.string().min(1, "Style is required"),
+  location: z.string().min(1, "Location is required"),
+  check_in_time: z.string().min(1, "Check-in time is required"),
+  check_out_time: z.string().min(1, "Check-out time is required"),
+  languages: z.array(z.string()),
+  distance_km: z.number().min(0),
+  bedrooms: z.number().int().min(1),
+  bathrooms: z.number().int().min(1),
+  free_wifi: z.boolean(),
+  free_cancellation: z.boolean(),
+  free_parking: z.boolean(),
+  bed_breakfast: z.boolean(),
+  balcony: z.boolean(),
+  washer: z.boolean(),
+  ac: z.boolean(),
+  tv: z.boolean(),
+  is_published: z.boolean(),
+  amenities: z.array(z.object({ text: z.string().min(1) })),
+  room_types: z.array(z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, "Room name is required"),
+    capacity: z.number().int().min(1),
+    beds: z.string().min(1, "Bed description is required"),
+    size: z.string().min(1, "Size is required"),
+    image_index: z.number().int().min(0),
+    highlights: z.array(z.string()),
+  })),
+  images: z.array(z.object({
+    id: z.string().optional(),
+    url: z.string().min(1, "Image URL is required"),
+    label: z.string(),
+  })),
+  hero_image: z.string().optional(),
+});
+
+export type HotelFormValues = z.infer<typeof HotelSchema>;

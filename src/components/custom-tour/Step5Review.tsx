@@ -1,4 +1,5 @@
 "use client";
+import { useLocale, useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { REGIONS } from "@/lib/packages/constants";
@@ -14,10 +15,10 @@ interface Props {
   vehicles: Vehicle[];
 }
 
-function formatDate(s: string) {
+function formatDate(s: string, locale: string) {
   if (!s) return "—";
   const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString("en-GB", {
+  return new Date(y, m - 1, d).toLocaleDateString(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -70,6 +71,9 @@ function getSelectedRegions(destinations: string[]) {
 }
 
 export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
+  const locale = useLocale();
+  const t = useTranslations("customTour.step5");
+  const whatsappT = useTranslations("whatsapp");
   const selectedRegions = getSelectedRegions(state.destinations);
   const destLabels = state.destinations
     .map((id) => DESTINATIONS.find((d) => d.id === id)?.label ?? id)
@@ -110,27 +114,31 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
       (new Date(ey, em - 1, ed).getTime() - new Date(sy, sm - 1, sd).getTime()) /
         (1000 * 60 * 60 * 24)
     );
-    return `${diff} night${diff !== 1 ? "s" : ""}`;
+    return diff === 1 ? t("night", { n: diff }) : t("nights", { n: diff });
   })();
 
   const whatsappMessage = [
-    "Hey Sabrina — I'd like to book a custom tour package.",
-    `Destinations: ${destLabels}.`,
-    destinationBreakdown ? `Destination order: ${destinationBreakdown}.` : "",
-    `Dates: ${formatDate(state.startDate)} to ${formatDate(state.endDate)} (${duration}).`,
-    `Guests: ${state.people}.`,
-    `Hotels: ${hotelBreakdown || "—"}.`,
-    `Vehicle: ${
-      state.noDriverNeeded
-        ? "No driver needed"
-        : `${vehicle?.label ?? "—"} (${vehicle?.capacity ?? "—"})`
-    }.`,
-    `Travel guide: ${
-      state.guideNeeded
-        ? `${guideType} in ${guideLanguage}`
-        : "Not needed"
-    }.`,
-    "Could you confirm availability and provide a quote?",
+    whatsappT("customTourIntro"),
+    t("whatsappDestinations", { value: destLabels }),
+    destinationBreakdown ? t("whatsappDestinationOrder", { value: destinationBreakdown }) : "",
+    t("whatsappDates", {
+      start: formatDate(state.startDate, locale),
+      end: formatDate(state.endDate, locale),
+      duration,
+    }),
+    t("whatsappGuests", { value: state.people }),
+    t("whatsappHotels", { value: hotelBreakdown || "—" }),
+    t("whatsappVehicle", {
+      value: state.noDriverNeeded
+        ? t("noDriver")
+        : `${vehicle?.label ?? "—"} (${vehicle?.capacity ?? "—"})`,
+    }),
+    t("whatsappTravelGuide", {
+      value: state.guideNeeded
+        ? t("whatsappGuideValue", { type: guideType, language: guideLanguage })
+        : t("notNeeded"),
+    }),
+    t("whatsappConfirmQuote"),
   ].filter(Boolean).join(" ");
 
   const waNum = process.env.NEXT_PUBLIC_WA_PHONE?.replace(/[^\d+]/g, "") ?? "";
@@ -138,43 +146,43 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
 
   return (
     <div>
-      <Kicker>Step 5 of 5</Kicker>
+      <Kicker>{t("kicker")}</Kicker>
       <GoldUnderlineHeading as="h2" className="text-[clamp(28px,3.5vw,44px)] mt-4 mb-3 tracking-tight text-ink">
-        Review Your Itinerary
+        {t("heading")}
       </GoldUnderlineHeading>
       <p className="text-ink-soft text-[15px] leading-[1.6] mb-10 max-w-[52ch]">
-        Everything looks good? Hit confirm to send your request directly to our team via WhatsApp.
+        {t("sub")}
       </p>
 
       <div className="max-w-[600px] bg-cream-warm border border-rule rounded-xl p-6 mb-10">
         <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mb-2">
-          Booking Summary
+          {t("bookingSummary")}
         </h3>
-        <Row label="Destinations" value={destLabels || "—"} />
+        <Row label={t("destinations")} value={destLabels || "—"} />
         {destinationBreakdown && (
-          <Row label="Destination Days" value={destinationBreakdown} />
+          <Row label={t("destinationDays")} value={destinationBreakdown} />
         )}
-        <Row label="Start Date" value={formatDate(state.startDate)} />
-        <Row label="Finish Date" value={formatDate(state.endDate)} />
-        <Row label="Duration" value={duration} />
-        <Row label="Guests" value={`${state.people} ${state.people === 1 ? "person" : "people"}`} />
-        <Row label="Hotels" value={hotelBreakdown || "—"} />
+        <Row label={t("startDate")} value={formatDate(state.startDate, locale)} />
+        <Row label={t("finishDate")} value={formatDate(state.endDate, locale)} />
+        <Row label={t("duration")} value={duration} />
+        <Row label={t("guests")} value={`${state.people} ${state.people === 1 ? t("person") : t("people")}`} />
+        <Row label={t("hotels")} value={hotelBreakdown || "—"} />
         <Row
-          label="Vehicle"
+          label={t("vehicle")}
           value={
             state.noDriverNeeded
-              ? "No driver needed"
+              ? t("noDriver")
               : vehicle
               ? `${vehicle.label} · ${vehicle.capacity}`
               : "—"
           }
         />
         <Row
-          label="Travel Guide"
+          label={t("travelGuide")}
           value={
             state.guideNeeded
               ? `${guideType} · ${guideLanguage}`
-              : "Not needed"
+              : t("notNeeded")
           }
         />
       </div>
@@ -185,7 +193,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           onClick={onBack}
           style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "transparent", color: "#1f1a14", fontWeight: 400, border: "1.5px solid #c99a3f" }}
         >
-          ← Back
+          {t("back")}
         </button>
         <a
           href={waHref}
@@ -194,7 +202,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           onClick={onConfirm}
           style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "#0b1a2e", color: "#c99a3f", fontWeight: 600, border: "none", textDecoration: "none" }}
         >
-          Confirm via WhatsApp →
+          {t("confirm")}
         </a>
       </div>
     </div>

@@ -26,7 +26,7 @@ export function DailyListPage({ packages }: DailyListPageProps) {
         </div>
         <div className="absolute inset-0 bg-black/40" />
 
-        <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+        <div className="relative z-5 max-w-[1320px] mx-auto w-full">
           <Reveal>
             <Kicker light>Daily Packages</Kicker>
           </Reveal>
@@ -35,13 +35,12 @@ export function DailyListPage({ packages }: DailyListPageProps) {
               as="h1"
               className="text-[clamp(40px,6vw,80px)] mt-6 mb-6 tracking-[-0.025em] max-w-[14ch] text-cream"
             >
-              One Day, One Memory
+              One Day, One Experience
             </GoldUnderlineHeading>
           </Reveal>
           <Reveal delay={200}>
             <p className="text-[clamp(15px,1.3vw,18px)] text-cream/80 leading-[1.6] max-w-[52ch]">
-              Fixed itineraries from sunrise to starlight — curated destinations,
-              a dedicated chauffeur, and every detail handled for you.
+              Ski resorts, theme parks, cultural landmarks — curated single-day adventures with every detail handled for you.
             </p>
           </Reveal>
         </div>

@@ -1,8 +1,10 @@
 import { getSiteContent } from "@/lib/db/site-content";
 import { PageHeader } from "@/components/admin/PageHeader/PageHeader";
 import { HomeEditor } from "./HomeEditor";
+import { getAdminT } from "@/lib/admin/i18n";
 
 export default async function AdminHomePage() {
+  const { t } = await getAdminT();
   const [hero, about, howItWorks, featured, quote] = await Promise.all([
     getSiteContent("home_hero"),
     getSiteContent("home_about"),
@@ -14,9 +16,9 @@ export default async function AdminHomePage() {
   return (
     <>
       <PageHeader
-        kicker="Concierge"
-        title="Home page"
-        description="Edit every text section on the public home page."
+        kicker={t("pages.home.kicker")}
+        title={t("pages.home.title")}
+        description={t("pages.home.description")}
       />
       <HomeEditor
         hero={hero}

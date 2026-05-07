@@ -3,8 +3,10 @@ import { Button } from "@/components/admin/Button/Button";
 import { PackagesTable } from "./PackagesTable";
 import type { AdminPackageRow } from "./PackagesTable";
 import { createServerClient } from "@/lib/supabase/server";
+import { getAdminT } from "@/lib/admin/i18n";
 
 export default async function AdminPackagesPage() {
+  const { t } = await getAdminT();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = (await createServerClient()) as any;
 
@@ -31,12 +33,12 @@ export default async function AdminPackagesPage() {
   return (
     <>
       <PageHeader
-        kicker="Catalogue"
-        title="Tours"
-        description="Drag to reorder. Hard maximum of three featured at once."
+        kicker={t("pages.packages.kicker")}
+        title={t("pages.packages.title")}
+        description={t("pages.packages.description")}
         actions={
           <Button href="/admin/packages/new" variant="solid">
-            + New tour
+            {t("pages.packages.new")}
           </Button>
         }
       />

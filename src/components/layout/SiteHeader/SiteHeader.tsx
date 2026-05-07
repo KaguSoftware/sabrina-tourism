@@ -2,11 +2,13 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAV_ITEMS, SCROLL_THRESHOLD } from "./constants";
+import { useTranslations, useLocale } from "next-intl";
+import { NAV_ITEMS } from "./constants";
 import { NavHotel } from "./NavHotel";
 import { NavTours } from "./NavTours";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher/LanguageSwitcher";
 import Image from "next/image";
 
 function DropdownNavItem({
@@ -78,27 +80,13 @@ function DropdownNavItem({
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations("nav");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useLayoutEffect(() => {
-    const threshold = pathname.startsWith("/packages/") || pathname.startsWith("/tours/daily/")
-      ? window.innerHeight * 0.8
-      : pathname === "/packages" ||
-        pathname === "/tours/custom-packages" ||
-        pathname === "/tours/daily-packages" ||
-        pathname === "/tours/fixed-dates" ||
-        pathname === "/tours/daily" ||
-        pathname === "/transportation"
-      ? window.innerHeight * 0.3
-      : pathname.startsWith("/tours/premade/")
-      ? window.innerHeight * 0.75
-      : pathname === "/tours/premade"
-      ? window.innerHeight * 0.3
-      : pathname.startsWith("/regions/")
-      ? window.innerHeight * 0.3
-      : SCROLL_THRESHOLD;
-    const onScroll = () => setScrolled(window.scrollY > threshold);
+    const onScroll = () => setScrolled(window.scrollY > 1);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -115,13 +103,9 @@ export function SiteHeader() {
     };
   }, [menuOpen]);
 
-  const isHeroPage =
-    pathname === "/" ||
-    pathname.startsWith("/packages") ||
-    pathname.startsWith("/tours") ||
-    pathname === "/transportation" ||
-    pathname.startsWith("/regions/");
-  const transparent = isHeroPage && !scrolled;
+  const localePfx = locale === "en" ? "" : `/${locale}`;
+  const NO_HERO_PATHS = [`${localePfx}/tours/custom-packages`];
+  const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname);
 
   return (
     <>
@@ -135,11 +119,10 @@ export function SiteHeader() {
         <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-6 md:py-4 flex items-center justify-between gap-6">
           {/* Brand */}
           <Link
-            href="/"
+            href={`${localePfx}/`}
             className="inline-flex items-center group"
-            aria-label="Sabrina Turizm — home"
+            aria-label={t("homeAriaLabel")}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <Image
               src="/sabrina_logo_cropped.png"
               alt="Sabrina Turizm"
@@ -157,29 +140,30 @@ export function SiteHeader() {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+          <nav className="hidden md:flex items-center gap-8" aria-label={t("primaryNavigation")}>
             <Link
-              href="/"
+              href={`${localePfx}/`}
               className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
-              } ${pathname === "/" ? "after:scale-x-100" : ""}`}
+              } ${pathname === `${localePfx}/` || pathname === "/" ? "after:scale-x-100" : ""}`}
             >
-              Home
+              {t("home")}
             </Link>
             <NavTours currentPath={pathname} transparent={transparent} />
             <Link
-              href="/transportation"
+              href={`${localePfx}/transportation`}
               className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
-              } ${pathname === "/transportation" ? "after:scale-x-100" : ""}`}
+              } ${pathname.includes("/transportation") ? "after:scale-x-100" : ""}`}
             >
-              Chauffeur
+              {t("driver")}
             </Link>
             <NavHotel currentPath={pathname} transparent={transparent} />
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Desktop CTA + Language switcher */}
+          <div className="hidden md:flex items-center gap-4">
+            <LanguageSwitcher transparent={transparent} />
             <a
               href={genericMessage()}
               target="_blank"
@@ -199,32 +183,36 @@ export function SiteHeader() {
                     "brightness(0) saturate(100%) invert(68%) sepia(50%) saturate(500%) hue-rotate(5deg) brightness(95%)",
                 }}
               />
-              <span>WhatsApp</span>
+              <span>{t("whatsapp")}</span>
             </a>
           </div>
 
-          {/* Burger */}
-          <button
-            className="md:hidden flex flex-col gap-[6px] p-3 text-black"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMenuOpen((o) => !o)}
-          >
-            <span
-              className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
-                menuOpen ? "translate-y-[7px] rotate-45" : ""
+          <div className="md:hidden flex items-center gap-3">
+            <LanguageSwitcher transparent={transparent} />
+            <button
+              className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 ${
+                transparent ? "text-cream" : "text-black"
               }`}
-            />
-            <span
-              className={`w-[26px] h-px bg-current block transition-all duration-300 ${
-                menuOpen ? "opacity-0 scale-x-0" : ""
-              }`}
-            />
-            <span
-              className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
-                menuOpen ? "-translate-y-[7px] -rotate-45" : ""
-              }`}
-            />
-          </button>
+              aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              <span
+                className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
+                  menuOpen ? "translate-y-[7px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`w-[26px] h-px bg-current block transition-all duration-300 ${
+                  menuOpen ? "opacity-0 scale-x-0" : ""
+                }`}
+              />
+              <span
+                className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
+                  menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -238,7 +226,6 @@ export function SiteHeader() {
         aria-hidden={!menuOpen}
       >
         <div className="flex justify-between items-center pb-10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <Image
             src="/sabrina_logo_cropped.png"
             alt="Sabrina Turizm"
@@ -249,7 +236,7 @@ export function SiteHeader() {
           <button
             className="w-12 h-12 flex items-center justify-center"
             onClick={() => setMenuOpen(false)}
-            aria-label="Close menu"
+            aria-label={t("closeMenu")}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -258,10 +245,13 @@ export function SiteHeader() {
           </button>
         </div>
         <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
-          {NAV_ITEMS.filter((item) => item.label !== "Tours").map((item, i) => (
+          {[
+            { href: "/", label: t("home") },
+            { href: "/transportation", label: t("driver") },
+          ].map((item, i) => (
             <Link
               key={item.href}
-              href={item.href}
+              href={`${localePfx}${item.href}`}
               className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
               style={{
                 opacity: menuOpen ? 1 : 0,
@@ -289,20 +279,20 @@ export function SiteHeader() {
             }}
           >
             <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
-              Tours
+              {t("tours")}
             </p>
             <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
               {[
-                { href: "/tours/fixed-dates", label: "Fixed-Date Tours" },
-                { href: "/tours/daily-packages", label: "Daily Packages" },
-                { href: "/tours/custom-packages", label: "Custom Packages" },
+                { href: "/tours/fixed-dates", labelKey: "fixedDatePackages" as const },
+                { href: "/tours/daily-packages", labelKey: "dailyPackages" as const },
+                { href: "/tours/custom-packages", labelKey: "customDealPackages" as const },
               ].map((item) => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={`${localePfx}${item.href}`}
                   className="text-[13px] tracking-[0.14em] uppercase font-medium text-cream/70 hover:text-ochre transition-colors duration-200 py-0.5"
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               ))}
             </div>
@@ -320,13 +310,13 @@ export function SiteHeader() {
             }}
           >
             <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
-              Hotels
+              {t("hotels")}
             </p>
             <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
               {REGIONS.map((region) => (
                 <Link
                   key={region}
-                  href={`/regions/${REGION_SLUGS[region]}`}
+                  href={`${localePfx}/regions/${REGION_SLUGS[region]}`}
                   className="text-[13px] tracking-[0.14em] uppercase font-medium text-cream/70 hover:text-ochre transition-colors duration-200 py-0.5"
                 >
                   {region}
@@ -343,10 +333,10 @@ export function SiteHeader() {
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
             className="inline-flex items-center gap-3 px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-semibold w-fit shadow-[0_4px_24px_-6px_rgba(11,26,46,0.45)]"
           >
-            Reserve via WhatsApp
+            {t("reserveViaWhatsapp")}
           </a>
           <p className="text-cream/50 text-[13px] tracking-[0.12em]">
-            Istanbul
+            {t("locationCity")}
           </p>
         </div>
       </div>

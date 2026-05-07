@@ -6,36 +6,29 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   LayoutTemplate,
-  Map,
   FileText,
   Car,
   Menu,
   X,
+  Hotel,
+  CalendarRange,
+  Sun,
+  Languages,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth/actions";
 import Image from "next/image";
+import { AdminLocaleSwitcher } from "@/components/admin/AdminLocaleSwitcher/AdminLocaleSwitcher";
 
 const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard", icon: Home, exact: true },
-  {
-    href: "/admin/home",
-    label: "Home page",
-    icon: LayoutTemplate,
-    exact: false,
-  },
-  { href: "/admin/packages", label: "Tours", icon: Map, exact: false },
-  {
-    href: "/admin/tours-page",
-    label: "Tours page",
-    icon: FileText,
-    exact: false,
-  },
-  {
-    href: "/admin/transportation",
-    label: "Transportation",
-    icon: Car,
-    exact: false,
-  },
+  { href: "/admin", labelKey: "dashboard", icon: Home, exact: true },
+  { href: "/admin/home", labelKey: "homePage", icon: LayoutTemplate, exact: false },
+  { href: "/admin/fixed-dates", labelKey: "fixedDate", icon: CalendarRange, exact: false },
+  { href: "/admin/daily", labelKey: "dailyTours", icon: Sun, exact: false },
+  { href: "/admin/tours-page", labelKey: "toursMainPage", icon: FileText, exact: false },
+  { href: "/admin/hotels", labelKey: "hotels", icon: Hotel, exact: false },
+  { href: "/admin/transportation", labelKey: "transportation", icon: Car, exact: false },
+  { href: "/admin/translations", labelKey: "translations", icon: Languages, exact: false },
 ];
 
 interface AdminSidebarProps {
@@ -43,6 +36,7 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ email }: AdminSidebarProps) {
+  const t = useTranslations("admin.sidebar");
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -62,7 +56,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
   }
 
   const navContent = (
-    <nav className="flex flex-col gap-0.5" aria-label="Admin navigation">
+    <nav className="flex flex-col gap-0.5" aria-label={t("adminNavigation")}>
       {NAV_ITEMS.map((item) => {
         const active = isActive(item);
         const Icon = item.icon;
@@ -82,7 +76,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
                 active ? "font-bold" : "font-medium"
               }`}
             >
-              {item.label}
+              {t(item.labelKey)}
             </span>
           </Link>
         );
@@ -102,7 +96,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
           className="h-8 w-auto object-contain"
         />
         <p className="font-mono text-[9px] tracking-[0.22em] uppercase text-muted mt-0.5">
-          Concierge
+          {t("concierge")}
         </p>
       </div>
     </div>
@@ -118,7 +112,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
           type="submit"
           className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-terracotta transition-colors duration-200"
         >
-          Sign out
+          {t("signOut")}
         </button>
       </form>
     </div>
@@ -130,6 +124,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
       <aside className="hidden md:flex flex-col w-[280px] flex-shrink-0 bg-cream-warm border-r border-rule h-screen sticky top-0">
         <div className="px-5 py-6 pb-8 border-b border-rule">{brand}</div>
         <div className="flex-1 overflow-y-auto py-4">{navContent}</div>
+        <AdminLocaleSwitcher />
         {footer}
       </aside>
 
@@ -138,7 +133,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
         {brand}
         <button
           onClick={() => setDrawerOpen(true)}
-          aria-label="Open menu"
+          aria-label={t("openMenu")}
           className="p-1.5 text-ink-soft hover:text-ink transition-colors"
         >
           <Menu size={20} />
@@ -167,13 +162,14 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
           {brand}
           <button
             onClick={() => setDrawerOpen(false)}
-            aria-label="Close menu"
+            aria-label={t("closeMenu")}
             className="p-1.5 text-ink-soft hover:text-ink transition-colors"
           >
             <X size={18} />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto py-4">{navContent}</div>
+        <AdminLocaleSwitcher />
         {footer}
       </div>
     </>

@@ -28,7 +28,7 @@ export function HeroPanorama({
       </div>
 
       {/* Content */}
-      <div className="relative z-[7] max-w-[920px] w-full">
+      <div className="relative z-5 max-w-[920px] w-full">
         <div
           className="md:hidden absolute -inset-x-3 -inset-y-6 bg-black/20 rounded-2xl"
           aria-hidden="true"

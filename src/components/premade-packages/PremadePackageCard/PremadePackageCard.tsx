@@ -1,15 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { PremadePackage } from "@/lib/premade-packages/data";
-import { formatDate } from "@/lib/premade-packages/data";
+import type { PremadePackagePublic } from "@/lib/db/premade-packages";
+
+function formatDate(iso: string): string {
+  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
 
 interface PremadePackageCardProps {
-  pkg: PremadePackage;
+  pkg: PremadePackagePublic;
 }
 
 export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
   return (
-    <Link href={`/tours/premade/${pkg.id}`} className="block group">
+    <Link href={`/tours/premade/${pkg.slug}`} className="block group">
       <div className="bg-[#fcf5ec] transition-all duration-380 ease-out shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c] border border-rule">
         {/* Image */}
         <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">
@@ -50,12 +53,18 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
               <span className="text-ink">Vehicle:</span> {pkg.vehicle.model}
             </span>
           </div>
-          <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre">
-            View details{" "}
-            <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
-              →
-            </em>
-          </span>
+          <div className="flex items-center justify-between">
+            {pkg.price != null ? (
+              <p className="font-display italic text-[20px] text-ochre">
+                ${pkg.price.toLocaleString()}
+                <span className="font-sans not-italic text-[13px] text-muted ml-1">/ person</span>
+              </p>
+            ) : <div />}
+            <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre">
+              View details{" "}
+              <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">→</em>
+            </span>
+          </div>
         </div>
       </div>
     </Link>

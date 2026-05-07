@@ -17,6 +17,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 import { reorderPackages, setFeatured, setPublished, deletePackage, duplicatePackage } from "./actions";
 import { SortableRow } from "./PackagesTableRow";
@@ -49,6 +50,7 @@ function ConfirmDialog({
   onClose: () => void;
   onConfirm: () => void;
 }) {
+  const t = useTranslations("admin");
   if (!open) return null;
   return (
     <div
@@ -60,23 +62,23 @@ function ConfirmDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink font-semibold mb-3">
-          Delete this tour?
+          {t("confirm.deletePackageTitle")}
         </p>
         <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">
-          This cannot be undone. The tour, its itinerary, gallery, and tiers will be permanently removed.
+          {t("confirm.deletePackageBody")}
         </p>
         <div className="flex gap-3 justify-end">
           <button
             onClick={onClose}
             className="inline-flex items-center px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-ink-soft hover:text-ink transition-colors"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           <button
             onClick={onConfirm}
             className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-transparent text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 active:scale-[0.97]"
           >
-            Delete
+            {t("common.delete")}
           </button>
         </div>
       </div>
@@ -89,6 +91,7 @@ function ConfirmDialog({
 // ---------------------------------------------------------------------------
 
 export function PackagesTable({ initialPackages }: { initialPackages: AdminPackageRow[] }) {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [packages, setPackages] = useState(initialPackages);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -150,13 +153,13 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-6">
         <p className="text-[24px] text-ink-soft italic" style={{ fontFamily: "var(--font-fraunces)" }}>
-          No tours yet.
+          {t("pages.packages.title")}
         </p>
         <Link
           href="/admin/packages/new"
           className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:scale-[0.97]"
         >
-          + New tour
+          {t("pages.packages.new")}
         </Link>
       </div>
     );
@@ -169,20 +172,20 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
       />
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="border-b border-rule">
-              <th className="pl-3 pr-2 py-2 w-8" />
-              <th className="px-2 py-2 w-12" />
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold">Name</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold hidden md:table-cell">Slug</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold w-28">Status</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold w-20">Featured</th>
-              <th className="px-3 py-2 w-28" />
-            </tr>
-          </thead>
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b border-rule">
+                <th className="pl-3 pr-2 py-2 w-8" />
+                <th className="px-2 py-2 w-12" />
+                <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold">{t("common.name")}</th>
+                <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold hidden md:table-cell">{t("common.slug")}</th>
+                <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold w-28">{t("common.status")}</th>
+                <th className="px-3 py-2 text-left font-mono text-[10px] tracking-[0.14em] uppercase text-ink font-semibold w-20">{t("common.featured")}</th>
+                <th className="px-3 py-2 w-28" />
+              </tr>
+            </thead>
             <SortableContext items={packages.map((p) => p.id)} strategy={verticalListSortingStrategy}>
               <tbody>
                 {packages.map((pkg) => (
@@ -197,9 +200,9 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
                 ))}
               </tbody>
             </SortableContext>
-          </DndContext>
-        </table>
-      </div>
+          </table>
+        </div>
+      </DndContext>
     </>
   );
 }

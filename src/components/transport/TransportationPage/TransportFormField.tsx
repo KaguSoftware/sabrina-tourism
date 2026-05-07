@@ -9,12 +9,14 @@ export function TransportFormField({
   label,
   children,
   hint,
+  hintError,
   span,
   above,
 }: {
   label: string;
   children: React.ReactNode;
   hint?: string;
+  hintError?: string;
   span?: boolean;
   above?: boolean;
 }) {
@@ -22,7 +24,8 @@ export function TransportFormField({
     <label className={`flex flex-col gap-2.5 ${span ? "col-span-full" : ""} ${above ? "relative z-[8]" : ""}`}>
       <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{label}</span>
       {children}
-      {hint && <span className="text-[12px] text-muted">{hint}</span>}
+      {hintError && <span className="text-[12px] text-terracotta">{hintError}</span>}
+      {hint && !hintError && <span className="text-[12px] text-muted">{hint}</span>}
     </label>
   );
 }

@@ -16,7 +16,7 @@ export const FOOTER_GROUPS: FooterLinkGroup[] = [
     heading: "Services",
     links: [
       { label: "Airport transfer", href: "/transportation" },
-      { label: "Custom chauffeur", href: "/transportation" },
+      { label: "Private driver", href: "/transportation" },
       { label: "All packages", href: "/packages" },
     ],
   },

@@ -6,7 +6,7 @@ interface QuoteStripProps {
 
 export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
     return (
-        <section className="relative text-cream py-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative z-10 text-cream py-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}
             <div aria-hidden="true" className="absolute inset-0 bg-navy z-5" />
             {/* Rings — left */}

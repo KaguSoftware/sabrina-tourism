@@ -1,5 +1,6 @@
 import { createServerClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/admin/PageHeader/PageHeader";
+import { getAdminT } from "@/lib/admin/i18n";
 
 async function getDashboardStats() {
   const supabase = await createServerClient();
@@ -25,6 +26,7 @@ async function getDashboardStats() {
 }
 
 export default async function AdminDashboardPage() {
+  const { t } = await getAdminT();
   const { published, featured, drafts, lastUpdated } = await getDashboardStats();
 
   const lastUpdatedLabel = lastUpdated
@@ -32,18 +34,18 @@ export default async function AdminDashboardPage() {
     : "—";
 
   const stats = [
-    { value: String(published), label: "Published packages" },
-    { value: `${featured}/3`, label: "Featured slots used" },
-    { value: String(drafts), label: "Draft packages" },
-    { value: lastUpdatedLabel, label: "Last updated", small: true },
+    { value: String(published), label: t("dashboard.publishedPackages") },
+    { value: `${featured}/3`, label: t("dashboard.featuredSlotsUsed") },
+    { value: String(drafts), label: t("dashboard.draftPackages") },
+    { value: lastUpdatedLabel, label: t("dashboard.lastUpdated"), small: true },
   ];
 
   return (
     <>
       <PageHeader
-        kicker="Concierge"
-        title="Welcome back."
-        description="Pick a section from the left to begin."
+        kicker={t("dashboard.kicker")}
+        title={t("dashboard.title")}
+        description={t("dashboard.description")}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

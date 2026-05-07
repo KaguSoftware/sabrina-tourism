@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
 
@@ -11,6 +12,9 @@ interface NavHotelProps {
 }
 
 export function NavHotel({ currentPath, transparent }: NavHotelProps) {
+  const locale = useLocale();
+  const t = useTranslations("nav");
+  const pfx = locale === "en" ? "" : `/${locale}`;
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -31,16 +35,16 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <span
-        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 cursor-pointer select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+      <Link
+        href={`${pfx}/regions`}
+        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive || open ? "after:scale-x-100" : ""}`}
-        role="button"
         aria-haspopup="true"
         aria-expanded={open}
       >
-        Hotels
-      </span>
+        {t("hotels")}
+      </Link>
 
       {open && (
         <div
@@ -59,7 +63,7 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
               return (
                 <Link
                   key={region}
-                  href={`/regions/${REGION_SLUGS[region]}`}
+                  href={`${pfx}/regions/${REGION_SLUGS[region]}`}
                   className="group flex flex-col gap-3 p-4 hover:bg-ochre/5 transition-colors duration-150"
                   role="menuitem"
                 >
@@ -88,7 +92,9 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
                       </p>
                       {remaining > 0 && (
                         <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-muted mt-1">
-                          & {remaining} other {remaining === 1 ? "hotel" : "hotels"}
+                          {remaining === 1
+                            ? t("otherHotel", { count: remaining })
+                            : t("otherHotels", { count: remaining })}
                         </p>
                       )}
                     </div>
@@ -101,7 +107,9 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
           {/* Footer bar */}
           <div className="border-t border-rule px-4 py-2.5">
             <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">
-              {REGIONS.reduce((sum, r) => sum + HOTELS[r].length, 0)} partnered properties across Türkiye
+              {t("partneredPropertiesAcrossTurkey", {
+                count: REGIONS.reduce((sum, r) => sum + HOTELS[r].length, 0),
+              })}
             </p>
           </div>
         </div>

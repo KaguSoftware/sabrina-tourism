@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -21,6 +22,15 @@ import { ItineraryTab } from "./tabs/ItineraryTab";
 import { TiersTab } from "./tabs/TiersTab";
 import { GalleryTab } from "./tabs/GalleryTab";
 import { InclusionsTab } from "./tabs/InclusionsTab";
+
+const TAB_LABEL_KEYS: Record<(typeof TABS)[number], string> = {
+  Basics: "basics",
+  Overview: "overview",
+  Itinerary: "itinerary",
+  Tiers: "tiers",
+  Gallery: "gallery",
+  Inclusions: "inclusions",
+};
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -59,6 +69,7 @@ interface PackageEditorProps {
 }
 
 export function PackageEditor({ pkg }: PackageEditorProps) {
+  const tabT = useTranslations("admin.tabs");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("Basics");
   const [saving, setSaving] = useState(false);
@@ -216,7 +227,7 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
                 }
               }}
             >
-              {tab}
+              {tabT(TAB_LABEL_KEYS[tab])}
             </button>
           ))}
         </div>

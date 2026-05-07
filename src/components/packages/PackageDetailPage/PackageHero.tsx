@@ -11,7 +11,7 @@ export function PackageHero({ pkg }: { pkg: Package }) {
         <Image src={pkg.heroImage} alt={pkg.region} fill priority className="object-cover" sizes="100vw" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-navy/40 via-transparent to-navy/85" />
-      <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+      <div className="relative z-5 max-w-[1320px] mx-auto w-full">
         <Reveal>
           <span className="block font-mono text-[12px] tracking-[0.18em] uppercase text-cream/70 mb-7">
             <Link href="/packages" className="text-ochre hover:underline">Itineraries</Link>

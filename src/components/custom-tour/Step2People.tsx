@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import type { CustomTourState } from "./types";
@@ -11,18 +12,19 @@ interface Props {
 }
 
 export function Step2People({ state, onChange, onNext, onBack }: Props) {
+  const t = useTranslations("customTour.step2");
   function setPeople(next: number) {
     onChange({ people: Math.min(Math.max(next, 1), 99) });
   }
 
   return (
     <div>
-      <Kicker>Step 2 of 5</Kicker>
+      <Kicker>{t("kicker")}</Kicker>
       <GoldUnderlineHeading as="h2" className="text-[clamp(28px,3.5vw,44px)] mt-4 mb-3 tracking-tight text-ink">
-        Number of Guests
+        {t("heading")}
       </GoldUnderlineHeading>
       <p className="text-ink-soft text-[15px] leading-[1.6] mb-12 max-w-[52ch]">
-        How many guests will be joining? We&apos;ll use this to recommend the right vehicle and accommodation options.
+        {t("sub")}
       </p>
 
       <div className="flex flex-col items-center mb-14">
@@ -43,7 +45,7 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
               type="button"
               onClick={() => setPeople(state.people + 1)}
               className="w-10 h-10 border border-ochre text-ink hover:bg-navy hover:text-ochre transition-colors duration-200 flex items-center justify-center"
-              aria-label="Increase guests"
+              aria-label={t("increaseGuests")}
             >
               ↑
             </button>
@@ -51,7 +53,7 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
               type="button"
               onClick={() => setPeople(state.people - 1)}
               className="w-10 h-10 border border-ochre text-ink hover:bg-navy hover:text-ochre transition-colors duration-200 flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed"
-              aria-label="Decrease guests"
+              aria-label={t("decreaseGuests")}
               disabled={state.people <= 1}
             >
               ↓
@@ -59,7 +61,7 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
           </div>
         </div>
         <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mt-1">
-          {state.people === 1 ? "guest" : "guests"}
+          {state.people === 1 ? t("guest") : t("guests")}
         </span>
       </div>
 
@@ -69,14 +71,14 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
           onClick={onBack}
           style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "transparent", color: "#1f1a14", fontWeight: 400, border: "1.5px solid #c99a3f" }}
         >
-          ← Back
+          {t("back")}
         </button>
         <button
           type="button"
           onClick={onNext}
           style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "#0b1a2e", color: "#c99a3f", fontWeight: 600, border: "none" }}
         >
-          Next →
+          {t("next")}
         </button>
       </div>
     </div>

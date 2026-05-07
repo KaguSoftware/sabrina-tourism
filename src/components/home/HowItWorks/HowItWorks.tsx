@@ -273,7 +273,7 @@ interface HowItWorksProps {
 
 export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
     return (
-        <section className="relative py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
+        <section className="relative z-10 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}
             <div aria-hidden="true" className="absolute inset-0 z-5" />
             {/* Diagonal hatch — top-left */}

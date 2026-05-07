@@ -7,7 +7,7 @@ export interface PackageMessageContext {
 
 export interface TransferMessageContext {
   airport: string;
-  direction: "pickup" | "dropoff";
+  direction: "pickup" | "dropoff" | "both";
   destination: string;
   date: string;
   time: string;
@@ -21,6 +21,10 @@ export interface TransferMessageContext {
   guideType?: "assistant" | "certified guide";
   guideLanguage?: string;
   notes?: string;
+  // return leg (both-ways only)
+  returnDate?: string;
+  returnTime?: string;
+  returnFlightNumber?: string;
 }
 
 export interface ChauffeurMessageContext {

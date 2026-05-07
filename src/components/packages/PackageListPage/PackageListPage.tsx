@@ -91,7 +91,7 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                 <div className="absolute inset-0 bg-black/40" />
 
                 {/* Text */}
-                <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+                <div className="relative z-5 max-w-[1320px] mx-auto w-full">
                     <Reveal>
                         <Kicker light>Itineraries</Kicker>
                     </Reveal>

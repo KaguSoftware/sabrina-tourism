@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { HotelSVG } from "@/components/illustrations/HotelSVG/HotelSVG";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -39,6 +40,7 @@ function getSelectedRegions(destinations: string[]): Region[] {
 }
 
 export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
+  const t = useTranslations("customTour.step3");
   const selectedRegions = getSelectedRegions(state.destinations);
   const canProceed =
     selectedRegions.length > 0 &&
@@ -62,12 +64,12 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
 
   return (
     <div>
-      <Kicker>Step 3 of 5</Kicker>
+      <Kicker>{t("kicker")}</Kicker>
       <GoldUnderlineHeading as="h2" className="text-[clamp(28px,3.5vw,44px)] mt-4 mb-3 tracking-tight text-ink">
-        Accommodation
+        {t("heading")}
       </GoldUnderlineHeading>
       <p className="text-ink-soft text-[15px] leading-[1.6] mb-10 max-w-[52ch]">
-        Select your preferred hotel for each area in your itinerary. Our concierge team will confirm availability and arrange the booking.
+        {t("sub")}
       </p>
 
       <div className="flex flex-col gap-12 mb-12">
@@ -75,7 +77,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
           <section key={region}>
             <div className="mb-5">
               <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre">
-                {ordinal(sectionIndex + 1)} area
+                {t("ordinalArea", { ord: ordinal(sectionIndex + 1) })}
               </p>
               <h3 className="font-display text-[clamp(26px,3vw,36px)] tracking-tight text-ink">
                 {region}
@@ -98,6 +100,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
                       type="button"
                       onClick={() => selectHotel(region, hotel.id)}
                       aria-pressed={selected}
+                      aria-label={t("selectHotel", { name: hotel.name })}
                       className="block w-full text-left"
                     >
                       <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">
@@ -140,7 +143,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
                         }}
                         className="inline-flex w-full items-center justify-center gap-2 bg-navy px-4 py-3 font-mono text-[12px] font-semibold tracking-[0.16em] uppercase shadow-[3px_4px_0_-1px_#c99a3f] transition-all duration-200 hover:-translate-y-0.5 hover:bg-navy-soft hover:shadow-[5px_6px_0_-1px_#c99a3f]"
                       >
-                        View details
+                        {t("viewDetails")}
                         <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
                           &rarr;
                         </em>
@@ -155,7 +158,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
       </div>
 
       <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted mb-10">
-        More hotels available on request — our team will tailor options to your itinerary.
+        {t("moreHotels")}
       </p>
 
       <div className="flex justify-center gap-3">
@@ -164,7 +167,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
           onClick={onBack}
           style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "transparent", color: "#1f1a14", fontWeight: 400, border: "1.5px solid #c99a3f" }}
         >
-          ← Back
+          {t("back")}
         </button>
         <button
           type="button"
@@ -172,7 +175,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
           disabled={!canProceed}
           style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: canProceed ? "pointer" : "not-allowed", transition: "background 0.2s, color 0.2s", backgroundColor: canProceed ? "#0b1a2e" : "transparent", color: canProceed ? "#c99a3f" : "#999", fontWeight: 600, border: canProceed ? "none" : "1.5px solid #c99a3f" }}
         >
-          Next →
+          {t("next")}
         </button>
       </div>
     </div>

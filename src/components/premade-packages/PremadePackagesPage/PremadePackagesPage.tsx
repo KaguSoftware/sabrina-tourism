@@ -1,15 +1,16 @@
-"use client";
 import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { PremadePackageCard } from "@/components/premade-packages/PremadePackageCard/PremadePackageCard";
-import { PREMADE_PACKAGES } from "@/lib/premade-packages/data";
+import { getAllPremadePackages } from "@/lib/db/premade-packages";
 
-export function PremadePackagesPage() {
+export async function PremadePackagesPage({ locale = 'en' }: { locale?: string }) {
+  const packages = await getAllPremadePackages({ locale });
+
   return (
     <>
-      {/* Hero — identical structure to PackageListPage */}
+      {/* Hero */}
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
@@ -22,9 +23,9 @@ export function PremadePackagesPage() {
         </div>
         <div className="absolute inset-0 bg-black/40" />
 
-        <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+        <div className="relative z-5 max-w-[1320px] mx-auto w-full">
           <Reveal>
-            <Kicker light>Fixed Departures</Kicker>
+            <Kicker light>Group Packages</Kicker>
           </Reveal>
           <Reveal delay={120}>
             <GoldUnderlineHeading
@@ -36,9 +37,7 @@ export function PremadePackagesPage() {
           </Reveal>
           <Reveal delay={200}>
             <p className="text-[clamp(15px,1.3vw,18px)] text-cream/80 leading-[1.6] max-w-[52ch]">
-              Curated fixed-date itineraries with pre-selected hotels and
-              dedicated chauffeur service — everything arranged, nothing left to
-              chance.
+              Curated group itineraries with pre-selected hotels and a private driver — everything arranged, nothing left to chance.
             </p>
           </Reveal>
         </div>
@@ -49,14 +48,14 @@ export function PremadePackagesPage() {
         <Reveal>
           <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
             <span className="text-ochre font-display italic text-[18px] mr-1">
-              {PREMADE_PACKAGES.length}
+              {packages.length}
             </span>
-            {PREMADE_PACKAGES.length === 1 ? "package" : "packages"} available
+            {packages.length === 1 ? "package" : "packages"} available
           </p>
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-          {PREMADE_PACKAGES.map((pkg, i) => (
+          {packages.map((pkg, i) => (
             <Reveal key={pkg.id} delay={i * 70}>
               <PremadePackageCard pkg={pkg} />
             </Reveal>

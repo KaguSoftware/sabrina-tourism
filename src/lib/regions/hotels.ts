@@ -1,6 +1,15 @@
 import type { HotelSVGVariant } from "@/components/illustrations/HotelSVG/HotelSVG";
 import type { REGIONS } from "@/lib/packages/constants";
 
+export interface RoomType {
+  name: string;
+  capacity: number; // max guests
+  beds: string;     // e.g. "1 king bed" or "2 twin beds"
+  size: string;     // e.g. "28 m²"
+  imageIndex: number; // which index in hotel.images this room maps to
+  highlights: string[];
+}
+
 export interface HotelProperties {
   freeWifi: boolean;
   bedrooms: number;
@@ -13,7 +22,6 @@ export interface HotelProperties {
   washer: boolean;
   ac: boolean;
   tv: boolean;
-  bookingUrl: string;
 }
 
 export interface HotelCardData {
@@ -28,6 +36,10 @@ export interface HotelCardData {
   location: string;
   bedroomImage: string;
   images: string[];
+  roomTypes: RoomType[];
+  checkInTime: string;
+  checkOutTime: string;
+  languages: string[];
   properties: HotelProperties;
 }
 
@@ -56,11 +68,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Bosphorus strait at dusk
         "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Bosphorus Suite", capacity: 2, beds: "1 king bed", size: "42 m²", imageIndex: 1, highlights: ["Strait view", "Private hammam access", "Butler service"] },
+        { name: "Terrace Room", capacity: 2, beds: "1 queen bed", size: "30 m²", imageIndex: 0, highlights: ["Private terrace", "Garden view", "Breakfast included"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "12:00",
+      languages: ["English", "Turkish", "Arabic"],
       properties: {
         freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 6,
         freeCancellation: true, freeParking: false, bedBreakfast: true,
         balcony: true, washer: false, ac: true, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
     {
@@ -86,11 +104,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Blue Mosque rooftop view
         "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Heritage Double", capacity: 2, beds: "1 double bed", size: "26 m²", imageIndex: 1, highlights: ["Stone-walled room", "Rooftop terrace access", "Near Blue Mosque"] },
+        { name: "Family Suite", capacity: 4, beds: "2 double beds", size: "48 m²", imageIndex: 0, highlights: ["Two bedrooms", "Panoramic old-city view", "Washing machine"] },
+      ],
+      checkInTime: "14:00",
+      checkOutTime: "11:00",
+      languages: ["English", "Turkish", "German"],
       properties: {
         freeWifi: true, bedrooms: 2, bathrooms: 1, distanceKm: 1,
         freeCancellation: false, freeParking: false, bedBreakfast: false,
         balcony: false, washer: true, ac: true, tv: false,
-        bookingUrl: "https://www.booking.com",
       },
     },
   ],
@@ -118,11 +142,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — hot air balloons over Göreme valley
         "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Cave Suite", capacity: 2, beds: "1 king bed", size: "35 m²", imageIndex: 1, highlights: ["Hand-carved tuff walls", "Valley-facing terrace", "Sunrise balloon views"] },
+        { name: "Standard Cave Room", capacity: 2, beds: "2 twin beds", size: "22 m²", imageIndex: 2, highlights: ["Natural cave cooling", "Breakfast included", "Hot tub access"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "11:00",
+      languages: ["English", "Turkish"],
       properties: {
         freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 3,
         freeCancellation: true, freeParking: true, bedBreakfast: true,
         balcony: true, washer: false, ac: false, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
     {
@@ -148,11 +178,18 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Cappadocia fairy chimneys at sunset
         "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Panorama Suite", capacity: 2, beds: "1 king bed", size: "50 m²", imageIndex: 1, highlights: ["Glass-fronted cliff views", "Heated suite", "360° panorama"] },
+        { name: "Cliff Studio", capacity: 2, beds: "1 queen bed", size: "32 m²", imageIndex: 0, highlights: ["Valley & volcano views", "Infinity pool access", "Wine cellar access"] },
+        { name: "Twin Terrace", capacity: 3, beds: "1 double + 1 single", size: "38 m²", imageIndex: 3, highlights: ["Shared terrace", "Guided walks", "Mountain views"] },
+      ],
+      checkInTime: "16:00",
+      checkOutTime: "12:00",
+      languages: ["English", "Turkish", "French"],
       properties: {
         freeWifi: false, bedrooms: 2, bathrooms: 2, distanceKm: 7,
         freeCancellation: true, freeParking: true, bedBreakfast: false,
         balcony: true, washer: true, ac: true, tv: false,
-        bookingUrl: "https://www.booking.com",
       },
     },
   ],
@@ -180,11 +217,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Alaçatı windmills and village
         "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Courtyard Room", capacity: 2, beds: "1 double bed", size: "24 m²", imageIndex: 0, highlights: ["Plunge pool access", "Lavender garden", "Breakfast included"] },
+        { name: "Garden Suite", capacity: 3, beds: "1 queen + 1 sofa bed", size: "38 m²", imageIndex: 1, highlights: ["Private garden access", "Bicycle hire", "Village views"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "11:00",
+      languages: ["English", "Turkish", "Greek"],
       properties: {
         freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 12,
         freeCancellation: true, freeParking: true, bedBreakfast: true,
         balcony: false, washer: true, ac: true, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
     {
@@ -210,11 +253,18 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Bodrum Castle and marina at sunset
         "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Harbour Suite", capacity: 2, beds: "1 king bed", size: "45 m²", imageIndex: 1, highlights: ["Castle & marina views", "Private balcony", "Boat excursion priority"] },
+        { name: "Sea-View Double", capacity: 2, beds: "1 double bed", size: "28 m²", imageIndex: 3, highlights: ["Aegean views", "Beach club access", "Promenade access"] },
+        { name: "Family Terrace", capacity: 4, beds: "2 double beds", size: "55 m²", imageIndex: 0, highlights: ["Two terraces", "Two bathrooms", "Castle panorama"] },
+      ],
+      checkInTime: "14:00",
+      checkOutTime: "12:00",
+      languages: ["English", "Turkish", "Italian"],
       properties: {
         freeWifi: true, bedrooms: 2, bathrooms: 1, distanceKm: 4,
         freeCancellation: false, freeParking: false, bedBreakfast: false,
         balcony: true, washer: false, ac: true, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
   ],
@@ -242,11 +292,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Kalkan bay turquoise water
         "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Infinity Suite", capacity: 2, beds: "1 king bed", size: "55 m²", imageIndex: 1, highlights: ["Private plunge pool", "Cliff-edge position", "Breakfast included"] },
+        { name: "Bay View Room", capacity: 2, beds: "1 queen bed", size: "32 m²", imageIndex: 3, highlights: ["Sea horizon views", "Pool access", "Daily boat trips"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "11:00",
+      languages: ["English", "Turkish", "Russian"],
       properties: {
         freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 9,
         freeCancellation: true, freeParking: true, bedBreakfast: true,
         balcony: true, washer: true, ac: true, tv: false,
-        bookingUrl: "https://www.booking.com",
       },
     },
     {
@@ -272,11 +328,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Kaş harbour and Greek island of Meis
         "https://images.unsplash.com/photo-1548013146-72479768bada?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Sea Terrace Room", capacity: 2, beds: "1 double bed", size: "26 m²", imageIndex: 1, highlights: ["Harbour views", "Rooftop bar access", "Dive centre priority"] },
+        { name: "Ruins Suite", capacity: 2, beds: "1 king bed", size: "40 m²", imageIndex: 0, highlights: ["Above Roman cistern", "Historic setting", "Snorkelling trips"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "11:00",
+      languages: ["English", "Turkish"],
       properties: {
         freeWifi: false, bedrooms: 1, bathrooms: 1, distanceKm: 2,
         freeCancellation: true, freeParking: false, bedBreakfast: false,
         balcony: true, washer: false, ac: true, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
   ],
@@ -304,11 +366,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Rize tea terraces and Black Sea
         "https://images.unsplash.com/photo-1586105251261-72a756497a11?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Fireplace Room", capacity: 2, beds: "1 double bed", size: "28 m²", imageIndex: 1, highlights: ["Wood-burning fireplace", "Highland views", "Farm breakfast"] },
+        { name: "Highland Suite", capacity: 4, beds: "2 twin beds + loft", size: "52 m²", imageIndex: 0, highlights: ["Panoramic veranda", "Black Sea view", "Tea terrace walks"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "10:00",
+      languages: ["English", "Turkish"],
       properties: {
         freeWifi: true, bedrooms: 2, bathrooms: 1, distanceKm: 18,
         freeCancellation: true, freeParking: true, bedBreakfast: true,
         balcony: false, washer: true, ac: false, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
     {
@@ -334,11 +402,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Black Sea horizon from fortress walls
         "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Fortress Room", capacity: 2, beds: "1 double bed", size: "22 m²", imageIndex: 1, highlights: ["Byzantine stone walls", "Sea views", "Breakfast included"] },
+        { name: "Sea Wall Suite", capacity: 2, beds: "1 king bed", size: "38 m²", imageIndex: 3, highlights: ["Panoramic Black Sea", "Historic fortress access", "Balcony"] },
+      ],
+      checkInTime: "14:00",
+      checkOutTime: "11:00",
+      languages: ["English", "Turkish"],
       properties: {
         freeWifi: false, bedrooms: 1, bathrooms: 1, distanceKm: 5,
         freeCancellation: false, freeParking: true, bedBreakfast: true,
         balcony: true, washer: false, ac: false, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
   ],
@@ -366,11 +440,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Lake Van turquoise water
         "https://images.unsplash.com/photo-1631049552057-403cdb8f0658?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Lakeside Room", capacity: 2, beds: "1 king bed", size: "36 m²", imageIndex: 1, highlights: ["Lake Van views", "Boat to Akdamar", "Armenian architecture"] },
+        { name: "Family Suite", capacity: 4, beds: "2 double beds", size: "60 m²", imageIndex: 0, highlights: ["Two bedrooms", "Sunrise lake views", "Regional cuisine"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "12:00",
+      languages: ["English", "Turkish", "Kurdish"],
       properties: {
         freeWifi: true, bedrooms: 2, bathrooms: 2, distanceKm: 11,
         freeCancellation: true, freeParking: true, bedBreakfast: false,
         balcony: true, washer: true, ac: true, tv: true,
-        bookingUrl: "https://www.booking.com",
       },
     },
     {
@@ -396,11 +476,17 @@ export const HOTELS: Record<(typeof REGIONS)[number], HotelCardData[]> = {
         // View — Mesopotamian plain from Mardin rooftop
         "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80",
       ],
+      roomTypes: [
+        { name: "Stone Room", capacity: 2, beds: "1 double bed", size: "24 m²", imageIndex: 1, highlights: ["Hand-carved stone décor", "Old city location", "Breakfast included"] },
+        { name: "Rooftop Suite", capacity: 2, beds: "1 king bed", size: "40 m²", imageIndex: 3, highlights: ["Private rooftop terrace", "Mesopotamian plain views", "Syriac heritage"] },
+      ],
+      checkInTime: "15:00",
+      checkOutTime: "12:00",
+      languages: ["English", "Turkish", "Arabic", "Syriac"],
       properties: {
         freeWifi: true, bedrooms: 1, bathrooms: 1, distanceKm: 8,
         freeCancellation: false, freeParking: false, bedBreakfast: true,
         balcony: true, washer: true, ac: true, tv: false,
-        bookingUrl: "https://www.booking.com",
       },
     },
   ],

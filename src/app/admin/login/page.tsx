@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,13 +10,12 @@ import { createBrowserClient } from "@/lib/supabase/browser";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
+import { AdminLocaleSwitcher } from "@/components/admin/AdminLocaleSwitcher/AdminLocaleSwitcher";
 
-const schema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  email: string;
+  password: string;
+};
 
 const fieldCls =
   "w-full bg-transparent border-0 border-b border-rule text-ink font-sans text-[16px] px-0 py-2.5 focus:outline-none focus:border-ochre transition-colors duration-200";
@@ -23,6 +23,7 @@ const fieldCls =
 const labelCls = "font-mono text-[11px] tracking-[0.22em] uppercase text-muted";
 
 export default function AdminLoginPage() {
+  const t = useTranslations("admin");
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -30,7 +31,12 @@ export default function AdminLoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<FormValues>({
+    resolver: zodResolver(z.object({
+      email: z.string().email(t("login.validEmail")),
+      password: z.string().min(1, t("login.passwordRequired")),
+    })),
+  });
 
   async function onSubmit(values: FormValues) {
     setServerError(null);
@@ -41,7 +47,7 @@ export default function AdminLoginPage() {
     });
 
     if (error) {
-      setServerError("Invalid credentials. Try again.");
+      setServerError(t("login.invalid"));
       return;
     }
 
@@ -55,13 +61,14 @@ export default function AdminLoginPage() {
         <div className="border border-rule bg-cream-warm px-10 py-12 space-y-8">
           <div className="space-y-3">
             <Kicker>Concierge</Kicker>
-            <GoldUnderlineHeading as="h1">Admin access</GoldUnderlineHeading>
+            <GoldUnderlineHeading as="h1">{t("login.title")}</GoldUnderlineHeading>
           </div>
+          <AdminLocaleSwitcher />
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-7">
             <div className="flex flex-col gap-2.5">
               <label htmlFor="email" className={labelCls}>
-                Email
+                {t("login.email")}
               </label>
               <input
                 id="email"
@@ -79,7 +86,7 @@ export default function AdminLoginPage() {
 
             <div className="flex flex-col gap-2.5">
               <label htmlFor="password" className={labelCls}>
-                Password
+                {t("login.password")}
               </label>
               <input
                 id="password"
@@ -102,7 +109,7 @@ export default function AdminLoginPage() {
             )}
 
             <GoldButton type="submit" variant="solid">
-              {isSubmitting ? "Signing in…" : "Sign in"}
+              {isSubmitting ? t("login.signingIn") : t("login.signIn")}
             </GoldButton>
           </form>
         </div>
