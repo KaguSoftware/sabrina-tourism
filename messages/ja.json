@@ -155,7 +155,6 @@
       "kicker": "ステップ1 / 5",
       "heading": "目的地と日程",
       "sub": "旅行の時期と訪れたい地域を選択してください。",
-      "startDate": "開始日",
       "finishDate": "終了日",
       "arrivalDate": "到着日",
       "departureDate": "出発日",
@@ -176,7 +175,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "クリア",
+      "apply": "適用",
+      "selectStart": "開始日を選択"
     },
     "step2": {
       "kicker": "ステップ2 / 5",
@@ -226,7 +228,6 @@
       "bookingSummary": "予約サマリー",
       "destinations": "目的地",
       "destinationDays": "目的地別日数",
-      "startDate": "開始日",
       "finishDate": "終了日",
       "duration": "期間",
       "guests": "ゲスト",

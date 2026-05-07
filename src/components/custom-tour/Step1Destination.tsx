@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
-import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
+import { DateRangePicker, type DateRangePickerHandle } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { DESTINATIONS } from "./types";
@@ -42,7 +43,9 @@ function getSelectedTripDays(startDate: string, endDate: string) {
 
 export function Step1Destination({ state, onChange, onNext }: Props) {
   const t = useTranslations("customTour.step1");
-  const today = new Date().toISOString().split("T")[0];
+  const datePickerRef = useRef<DateRangePickerHandle>(null);
+  const dateWrapperRef = useRef<HTMLDivElement>(null);
+  const today = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; })();
   const needsDestinationDays = state.destinations.length > 1;
   const selectedTripDays = getSelectedTripDays(state.startDate, state.endDate);
   const destinationDayTotal = state.destinations.reduce((sum, id) => {
@@ -117,17 +120,30 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
       </p>
 
       {/* Date range picker */}
-      <div className="flex flex-col gap-2 mb-12 max-w-140">
-        <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-          {t("startDate")} → {t("finishDate")}
-        </label>
-        <DateRangePicker
-          start={state.startDate}
-          end={state.endDate}
-          onChange={(s, e) => onChange({ startDate: s, endDate: e })}
-          min={today}
-          placeholder={`${t("arrivalDate")} → ${t("departureDate")}`}
-        />
+      <div
+        ref={dateWrapperRef}
+        className="mb-12 w-fit border border-ochre px-3 pt-2 pb-3 animate-gold-shine cursor-pointer"
+        onClick={() => datePickerRef.current?.toggle()}
+      >
+        <div className="flex flex-col gap-2">
+          <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted pointer-events-none">
+            {t("startDate")} → {t("finishDate")}
+          </label>
+          <DateRangePicker
+            ref={datePickerRef}
+            containerRef={dateWrapperRef}
+            start={state.startDate}
+            end={state.endDate}
+            onChange={(s, e) => onChange({ startDate: s, endDate: e })}
+            min={today}
+            placeholder={`${t("arrivalDate")} → ${t("departureDate")}`}
+            clearLabel={t("clear")}
+            applyLabel={t("apply")}
+            startDateLabel={t("startDate")}
+            endDateLabel={t("finishDate")}
+            selectStartLabel={t("selectStart")}
+          />
+        </div>
       </div>
 
       {/* Destination grid */}

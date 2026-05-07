@@ -176,7 +176,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "Temizle",
+      "apply": "Uygula",
+      "selectStart": "Başlangıç tarihi seçin"
     },
     "step2": {
       "kicker": "Adım 2 / 5",

@@ -155,7 +155,6 @@
       "kicker": "第1步，共5步",
       "heading": "目的地和日期",
       "sub": "选择旅行时间和想要探索的地区。",
-      "startDate": "开始日期",
       "finishDate": "结束日期",
       "arrivalDate": "到达日期",
       "departureDate": "出发日期",
@@ -176,7 +175,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "清除",
+      "apply": "应用",
+      "selectStart": "选择开始日期"
     },
     "step2": {
       "kicker": "第2步，共5步",
@@ -226,7 +228,6 @@
       "bookingSummary": "预订摘要",
       "destinations": "目的地",
       "destinationDays": "各目的地天数",
-      "startDate": "开始日期",
       "finishDate": "结束日期",
       "duration": "时长",
       "guests": "客人",

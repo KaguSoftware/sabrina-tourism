@@ -1,6 +1,11 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { createPortal } from "react-dom";
+
+export interface DateRangePickerHandle {
+  open: () => void;
+  toggle: () => void;
+}
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -30,13 +35,20 @@ export interface DateRangePickerProps {
   placeholder?: string;
   error?: boolean;
   className?: string;
+  containerRef?: React.RefObject<HTMLElement | null>;
+  clearLabel?: string;
+  applyLabel?: string;
+  startDateLabel?: string;
+  endDateLabel?: string;
+  selectStartLabel?: string;
 }
 
-export function DateRangePicker({ start, end, onChange, min, placeholder = "Select dates", error, className }: DateRangePickerProps) {
+export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePickerProps>(function DateRangePicker({ start, end, onChange, min, placeholder = "Select dates", error, className, containerRef, clearLabel = "Clear", applyLabel = "Apply", startDateLabel = "Start date", endDateLabel = "End date", selectStartLabel = "Select a starting date" }: DateRangePickerProps, ref) {
   const todayYMD = toYMD(new Date());
   const minYMD = min ?? todayYMD;
 
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
   const [mode, setMode] = useState<"start" | "end">("start");
   const [hovered, setHovered] = useState("");
   const [cursor, setCursor] = useState(() => {
@@ -47,14 +59,22 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
 
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const modeRef = useRef<"start" | "end">("start");
+
+  function closePicker() {
+    setClosing(true);
+    setTimeout(() => { setOpen(false); setClosing(false); }, 180);
+  }
 
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {
+      if (modeRef.current === "end") return;
       if (
         triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
-        panelRef.current && !panelRef.current.contains(e.target as Node)
-      ) setOpen(false);
+        panelRef.current && !panelRef.current.contains(e.target as Node) &&
+        !(containerRef?.current && containerRef.current.contains(e.target as Node))
+      ) closePicker();
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -65,25 +85,31 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
       const r = triggerRef.current.getBoundingClientRect();
       setPanelPos({ top: r.bottom + window.scrollY + 6, left: r.left + window.scrollX });
     }
-    // initialise mode: if no start → pick start; if start but no end → pick end; if both → pick start
     setMode(!start || (start && end) ? "start" : "end");
-    setOpen((o) => !o);
+    setOpen(true);
+    setClosing(false);
   }
+
+  useImperativeHandle(ref, () => ({
+    open: openPicker,
+    toggle: () => { if (open) closePicker(); else openPicker(); },
+  }));
 
   function handleSelect(ymd: string) {
     if (mode === "start") {
+      modeRef.current = "end";
       onChange(ymd, "");
       setMode("end");
     } else {
       if (ymd <= start) {
-        // clicked before or on the start — treat as a new start
+        modeRef.current = "end";
         onChange(ymd, "");
         setMode("end");
       } else {
+        modeRef.current = "end";
         onChange(start, ymd);
-        setOpen(false);
         setHovered("");
-        setMode("start");
+        setMode("end");
       }
     }
   }
@@ -103,10 +129,10 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
   const month = cursor.getMonth();
   const total = daysInMonth(year, month);
   const offset = firstWeekday(year, month);
-  const rangeEnd = mode === "end" ? (end || hovered) : "";
+  const rangeEnd = end || (mode === "end" ? hovered : "");
 
   const triggerCls = [
-    "w-full flex items-center justify-between gap-2 bg-transparent border-0 border-b py-2.5 text-left transition-colors duration-200 focus:outline-none cursor-pointer",
+    "w-full flex items-center gap-2 bg-transparent border-0 border-b py-2.5 text-left transition-colors duration-200 focus:outline-none cursor-pointer",
     error ? "border-terracotta" : (start || end) ? "border-ochre" : "border-rule",
     className ?? "",
   ].join(" ");
@@ -114,18 +140,23 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
   const panel = open ? (
     <div
       ref={panelRef}
+      onClick={(e) => e.stopPropagation()}
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
-      className="bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.2)] p-4 w-72 select-none"
+      className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.2)] p-4 w-72 select-none ${closing ? "datepicker-exit" : "datepicker-enter"}`}
     >
+      <style>{`
+        @keyframes goldPulse {
+          0%, 100% { box-shadow: 0 0 6px 1px rgba(201,154,63,0.25); border-color: #c99a3f; }
+          50% { box-shadow: 0 0 18px 5px rgba(201,154,63,0.75), 0 0 36px 10px rgba(201,154,63,0.3); border-color: #c99a3f; }
+        }
+        .drp-gold-pulse { animation: goldPulse 1.6s ease-in-out infinite; border-color: #c99a3f !important; }
+      `}</style>
       {/* start / end toggle buttons */}
       <div className="flex mb-4 gap-1.5">
         {!start ? (
-          <div
-            className="flex-1 flex items-center px-2.5 py-2 border"
-            style={{ borderColor: "#c99a3f" }}
-          >
+          <div className="drp-gold-pulse flex-1 flex items-center px-2.5 py-2 border">
             <span className="font-sans text-[15px] font-medium text-muted">
-              Select a starting date
+              {selectStartLabel}
             </span>
           </div>
         ) : (
@@ -137,7 +168,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
               className="flex-1 text-left px-2.5 py-1.5 border transition-all duration-150"
             >
               <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${start ? "text-ochre/60" : "text-muted"}`}>
-                Start date
+                {startDateLabel}
               </span>
               <span className={`font-sans text-[12px] font-medium ${start ? "text-ochre" : "text-muted"}`}>
                 {formatShort(start)}
@@ -147,10 +178,10 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
               type="button"
               onClick={() => setMode("end")}
               style={end ? { backgroundColor: "#0b1a2e", borderColor: "#c99a3f" } : { borderColor: "#c99a3f" }}
-              className="flex-1 text-left px-2.5 py-1.5 border transition-all duration-150"
+              className={`flex-1 text-left px-2.5 py-1.5 border transition-all duration-150${mode === "end" && !end ? " drp-gold-pulse" : ""}`}
             >
               <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${end ? "text-ochre/60" : "text-muted"}`}>
-                End date
+                {endDateLabel}
               </span>
               <span className={`font-sans text-[12px] font-medium ${end ? "text-ochre" : "text-muted"}`}>
                 {end ? formatShort(end) : "—"}
@@ -204,7 +235,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
               style={
                 inRange
                   ? { backgroundColor: "rgba(201,154,63,0.18)" }
-                  : isStart && (end || hovered) && mode === "end"
+                  : isStart && (end || hovered)
                   ? { background: "linear-gradient(to right, transparent 50%, rgba(201,154,63,0.18) 50%)" }
                   : (isEnd && start)
                   ? { background: "linear-gradient(to left, transparent 50%, rgba(201,154,63,0.18) 50%)" }
@@ -213,7 +244,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
               className={[
                 "relative h-8 flex items-center justify-center text-[12px] transition-colors duration-75",
                 isPast ? "cursor-not-allowed" : "cursor-pointer",
-                isStart && (end || hovered) && mode === "end" ? "rounded-l-full" : "",
+                isStart && (end || hovered) ? "rounded-l-full" : "",
                 isEnd ? "rounded-r-full" : "",
               ].join(" ")}
             >
@@ -237,27 +268,35 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
         <span className="font-mono text-[10px] tracking-widest uppercase text-muted">
           {start && end ? `${nights} night${nights !== 1 ? "s" : ""}` : ""}
         </span>
-        {(start || end) && (
-          <button type="button" onClick={() => { onChange("", ""); setHovered(""); setMode("start"); }}
-            className="font-mono text-[10px] tracking-widest uppercase text-muted hover:text-terracotta transition-colors">
-            Clear
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {(start || end) && (
+            <button type="button" onClick={() => { modeRef.current = "start"; onChange("", ""); setHovered(""); setMode("start"); }}
+              className="font-mono text-[10px] tracking-widest uppercase text-muted hover:text-terracotta transition-colors">
+              {clearLabel}
+            </button>
+          )}
+          {start && end && (
+            <button type="button" onClick={() => { modeRef.current = "start"; setMode("start"); closePicker(); }}
+              className="font-mono text-[10px] tracking-widest uppercase text-ochre hover:text-ochre/70 transition-colors">
+              {applyLabel}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   ) : null;
 
   return (
     <div className="relative">
-      <button ref={triggerRef} type="button" className={triggerCls} onClick={openPicker}>
-        <span className={`font-sans text-[16px] ${(start || end) ? "text-ink" : "text-muted"}`}>{label}</span>
+      <button ref={triggerRef} type="button" className={triggerCls} onClick={(e) => { if (e.target === triggerRef.current || triggerRef.current?.contains(e.target as Node)) { if (open) closePicker(); else openPicker(); } }}>
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className={`shrink-0 ${(start || end) ? "text-ochre" : "text-muted"}`}>
           <rect x="0.75" y="2.75" width="13.5" height="11.5" rx="1.25" stroke="currentColor" strokeWidth="1.1"/>
           <path d="M0.75 6h13.5" stroke="currentColor" strokeWidth="1.1"/>
           <path d="M4.5 1v3M10.5 1v3" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round"/>
         </svg>
+        <span className={`font-sans text-[16px] ${(start || end) ? "text-ink" : "text-muted"}`}>{label}</span>
       </button>
       {typeof window !== "undefined" && createPortal(panel, document.body)}
     </div>
   );
-}
+});

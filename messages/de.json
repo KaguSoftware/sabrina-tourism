@@ -155,7 +155,6 @@
       "kicker": "Schritt 1 von 5",
       "heading": "Ziel & Reisedaten",
       "sub": "Wählen Sie, wann Sie reisen möchten und welche Regionen Sie erkunden wollen.",
-      "startDate": "Startdatum",
       "finishDate": "Enddatum",
       "arrivalDate": "Anreisedatum",
       "departureDate": "Abreisedatum",
@@ -176,7 +175,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "Löschen",
+      "apply": "Übernehmen",
+      "selectStart": "Startdatum auswählen"
     },
     "step2": {
       "kicker": "Schritt 2 von 5",
@@ -226,7 +228,6 @@
       "bookingSummary": "Buchungsübersicht",
       "destinations": "Reiseziele",
       "destinationDays": "Tage pro Ziel",
-      "startDate": "Startdatum",
       "finishDate": "Enddatum",
       "duration": "Dauer",
       "guests": "Gäste",
