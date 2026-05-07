@@ -37,6 +37,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
   const minYMD = min ?? todayYMD;
 
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"start" | "end">("start");
   const [hovered, setHovered] = useState("");
   const [cursor, setCursor] = useState(() => {
     const d = parseYMD(start) ?? new Date();
@@ -64,19 +65,25 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
       const r = triggerRef.current.getBoundingClientRect();
       setPanelPos({ top: r.bottom + window.scrollY + 6, left: r.left + window.scrollX });
     }
+    // initialise mode: if no start → pick start; if start but no end → pick end; if both → pick start
+    setMode(!start || (start && end) ? "start" : "end");
     setOpen((o) => !o);
   }
 
   function handleSelect(ymd: string) {
-    if (!start || (start && end)) {
+    if (mode === "start") {
       onChange(ymd, "");
+      setMode("end");
     } else {
       if (ymd <= start) {
+        // clicked before or on the start — treat as a new start
         onChange(ymd, "");
+        setMode("end");
       } else {
         onChange(start, ymd);
         setOpen(false);
         setHovered("");
+        setMode("start");
       }
     }
   }
@@ -96,7 +103,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
   const month = cursor.getMonth();
   const total = daysInMonth(year, month);
   const offset = firstWeekday(year, month);
-  const rangeEnd = end || hovered;
+  const rangeEnd = mode === "end" ? (end || hovered) : "";
 
   const triggerCls = [
     "w-full flex items-center justify-between gap-2 bg-transparent border-0 border-b py-2.5 text-left transition-colors duration-200 focus:outline-none cursor-pointer",
@@ -110,10 +117,48 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
       className="bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.2)] p-4 w-72 select-none"
     >
-      {/* hint */}
-      <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-3 text-center">
-        {!start || (start && end) ? "Click a start date" : "Now click an end date"}
-      </p>
+      {/* start / end toggle buttons */}
+      <div className="flex mb-4 gap-1.5">
+        {!start ? (
+          <div
+            className="flex-1 flex items-center px-2.5 py-2 border"
+            style={{ borderColor: "#c99a3f" }}
+          >
+            <span className="font-sans text-[15px] font-medium text-muted">
+              Select a starting date
+            </span>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => setMode("start")}
+              style={start ? { backgroundColor: "#0b1a2e", borderColor: "#c99a3f" } : { borderColor: "#c99a3f" }}
+              className="flex-1 text-left px-2.5 py-1.5 border transition-all duration-150"
+            >
+              <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${start ? "text-ochre/60" : "text-muted"}`}>
+                Start date
+              </span>
+              <span className={`font-sans text-[12px] font-medium ${start ? "text-ochre" : "text-muted"}`}>
+                {formatShort(start)}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("end")}
+              style={end ? { backgroundColor: "#0b1a2e", borderColor: "#c99a3f" } : { borderColor: "#c99a3f" }}
+              className="flex-1 text-left px-2.5 py-1.5 border transition-all duration-150"
+            >
+              <span className={`font-mono text-[9px] tracking-[0.18em] uppercase block mb-0.5 ${end ? "text-ochre/60" : "text-muted"}`}>
+                End date
+              </span>
+              <span className={`font-sans text-[12px] font-medium ${end ? "text-ochre" : "text-muted"}`}>
+                {end ? formatShort(end) : "—"}
+              </span>
+            </button>
+          </>
+        )}
+      </div>
 
       {/* month nav */}
       <div className="flex items-center justify-between mb-3">
@@ -135,7 +180,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
         ))}
       </div>
 
-      {/* day grid — single month */}
+      {/* day grid */}
       <div className="grid grid-cols-7">
         {Array.from({ length: offset }).map((_, i) => <span key={`e${i}`} />)}
         {Array.from({ length: total }).map((_, i) => {
@@ -159,7 +204,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
               style={
                 inRange
                   ? { backgroundColor: "rgba(201,154,63,0.18)" }
-                  : isStart && (end || hovered)
+                  : isStart && (end || hovered) && mode === "end"
                   ? { background: "linear-gradient(to right, transparent 50%, rgba(201,154,63,0.18) 50%)" }
                   : (isEnd && start)
                   ? { background: "linear-gradient(to left, transparent 50%, rgba(201,154,63,0.18) 50%)" }
@@ -168,7 +213,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
               className={[
                 "relative h-8 flex items-center justify-center text-[12px] transition-colors duration-75",
                 isPast ? "cursor-not-allowed" : "cursor-pointer",
-                isStart && (end || hovered) ? "rounded-l-full" : "",
+                isStart && (end || hovered) && mode === "end" ? "rounded-l-full" : "",
                 isEnd ? "rounded-r-full" : "",
               ].join(" ")}
             >
@@ -193,7 +238,7 @@ export function DateRangePicker({ start, end, onChange, min, placeholder = "Sele
           {start && end ? `${nights} night${nights !== 1 ? "s" : ""}` : ""}
         </span>
         {(start || end) && (
-          <button type="button" onClick={() => { onChange("", ""); setHovered(""); }}
+          <button type="button" onClick={() => { onChange("", ""); setHovered(""); setMode("start"); }}
             className="font-mono text-[10px] tracking-widest uppercase text-muted hover:text-terracotta transition-colors">
             Clear
           </button>

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { DESTINATIONS } from "./types";
@@ -116,30 +116,18 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
         {t("sub")}
       </p>
 
-      {/* Date pickers */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 max-w-[560px]">
-        <div className="flex flex-col gap-2">
-          <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-            {t("startDate")}
-          </label>
-          <DatePicker
-            value={state.startDate}
-            onChange={(v) => onChange({ startDate: v, endDate: state.endDate && v > state.endDate ? "" : state.endDate })}
-            min={today}
-            placeholder={t("arrivalDate")}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-            {t("finishDate")}
-          </label>
-          <DatePicker
-            value={state.endDate}
-            onChange={(v) => onChange({ endDate: v })}
-            min={state.startDate || today}
-            placeholder={t("departureDate")}
-          />
-        </div>
+      {/* Date range picker */}
+      <div className="flex flex-col gap-2 mb-12 max-w-140">
+        <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
+          {t("startDate")} → {t("finishDate")}
+        </label>
+        <DateRangePicker
+          start={state.startDate}
+          end={state.endDate}
+          onChange={(s, e) => onChange({ startDate: s, endDate: e })}
+          min={today}
+          placeholder={`${t("arrivalDate")} → ${t("departureDate")}`}
+        />
       </div>
 
       {/* Destination grid */}
