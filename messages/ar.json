@@ -266,7 +266,8 @@
     "next": "التالي ←",
     "reserveWhatsapp": "احجز عبر واتساب",
     "days": "أيام",
-    "day": "يوم"
+    "day": "يوم",
+    "selected": "محدد"
   },
   "languageSwitcher": {
     "label": "اللغة",

@@ -266,7 +266,8 @@
     "next": "次へ →",
     "reserveWhatsapp": "WhatsAppで予約",
     "days": "日",
-    "day": "日"
+    "day": "日",
+    "selected": "選択中"
   },
   "languageSwitcher": {
     "label": "言語",

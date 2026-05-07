@@ -41,6 +41,7 @@ function getSelectedRegions(destinations: string[]): Region[] {
 
 export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
   const t = useTranslations("customTour.step3");
+  const tCommon = useTranslations("common");
   const selectedRegions = getSelectedRegions(state.destinations);
   const canProceed =
     selectedRegions.length > 0 &&
@@ -90,9 +91,9 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
                 return (
                   <article
                     key={`${region}:${hotel.id}`}
-                    className={`group overflow-hidden border transition-all duration-380 ease-out bg-[#fcf5ec] ${
+                    className={`group overflow-hidden border transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] bg-[#fcf5ec] ${
                       selected
-                        ? "border-ochre ring-2 ring-ochre shadow-[0_4px_24px_-4px_rgba(201,154,63,0.3)]"
+                        ? "border-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_32px_-6px_rgba(201,154,63,0.55)] motion-safe:scale-[1.02]"
                         : "border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]"
                     }`}
                   >
@@ -112,12 +113,9 @@ export function Step3Hotels({ state, onChange, onNext, onBack }: Props) {
                           {hotel.tags[1]}
                         </span>
                         {selected && (
-                          <div className="absolute inset-0 bg-navy/30" />
-                        )}
-                        {selected && (
-                          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-ochre flex items-center justify-center">
-                            <span className="text-navy text-[13px] font-bold leading-none">✓</span>
-                          </div>
+                          <span className="absolute bottom-3 left-3 bg-ochre text-navy font-mono text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 shadow-[0_2px_8px_-2px_rgba(11,26,46,0.4)] z-10">
+                            {tCommon("selected")}
+                          </span>
                         )}
                       </div>
                       <div className="p-4">

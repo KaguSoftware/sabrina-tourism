@@ -266,7 +266,8 @@
     "next": "下一步 →",
     "reserveWhatsapp": "通过WhatsApp预订",
     "days": "天",
-    "day": "天"
+    "day": "天",
+    "selected": "已选择"
   },
   "languageSwitcher": {
     "label": "语言",

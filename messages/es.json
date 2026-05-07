@@ -266,7 +266,8 @@
     "next": "Siguiente →",
     "reserveWhatsapp": "Reservar por WhatsApp",
     "days": "Días",
-    "day": "Día"
+    "day": "Día",
+    "selected": "Seleccionado"
   },
   "languageSwitcher": {
     "label": "Idioma",

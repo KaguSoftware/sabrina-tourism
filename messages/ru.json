@@ -266,7 +266,8 @@
     "next": "Далее →",
     "reserveWhatsapp": "Забронировать через WhatsApp",
     "days": "Дни",
-    "day": "День"
+    "day": "День",
+    "selected": "Выбрано"
   },
   "languageSwitcher": {
     "label": "Язык",
