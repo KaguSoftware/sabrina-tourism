@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
-import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { DateRangePicker, type DateRangePickerHandle } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { DESTINATIONS } from "./types";
@@ -18,12 +19,12 @@ function ordinal(n: number) {
     n % 100 >= 11 && n % 100 <= 13
       ? "th"
       : n % 10 === 1
-      ? "st"
-      : n % 10 === 2
-      ? "nd"
-      : n % 10 === 3
-      ? "rd"
-      : "th";
+        ? "st"
+        : n % 10 === 2
+          ? "nd"
+          : n % 10 === 3
+            ? "rd"
+            : "th";
 
   return `${n}${suffix}`;
 }
@@ -44,6 +45,8 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
   const t = useTranslations("customTour.step1");
   const tCommon = useTranslations("common");
   const today = new Date().toISOString().split("T")[0];
+  const dateWrapperRef = useRef<HTMLDivElement>(null);
+  const datePickerRef = useRef<DateRangePickerHandle>(null);
   const needsDestinationDays = state.destinations.length > 1;
   const selectedTripDays = getSelectedTripDays(state.startDate, state.endDate);
   const destinationDayTotal = state.destinations.reduce((sum, id) => {
@@ -117,28 +120,29 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
         {t("sub")}
       </p>
 
-      {/* Date pickers */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12 max-w-[560px]">
+      {/* Date range picker */}
+      <div
+        ref={dateWrapperRef}
+        className="mb-12 w-fit border border-ochre px-3 pt-2 pb-3 animate-gold-shine cursor-pointer"
+        onClick={() => datePickerRef.current?.toggle()}
+      >
         <div className="flex flex-col gap-2">
-          <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-            {t("startDate")}
+          <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted pointer-events-none">
+            {t("startDate")} → {t("finishDate")}
           </label>
-          <DatePicker
-            value={state.startDate}
-            onChange={(v) => onChange({ startDate: v, endDate: state.endDate && v > state.endDate ? "" : state.endDate })}
+          <DateRangePicker
+            ref={datePickerRef}
+            containerRef={dateWrapperRef}
+            start={state.startDate}
+            end={state.endDate}
+            onChange={(s, e) => onChange({ startDate: s, endDate: e })}
             min={today}
-            placeholder={t("arrivalDate")}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-            {t("finishDate")}
-          </label>
-          <DatePicker
-            value={state.endDate}
-            onChange={(v) => onChange({ endDate: v })}
-            min={state.startDate || today}
-            placeholder={t("departureDate")}
+            placeholder={`${t("arrivalDate")} → ${t("departureDate")}`}
+            clearLabel={t("clear")}
+            applyLabel={t("apply")}
+            startDateLabel={t("startDate")}
+            endDateLabel={t("finishDate")}
+            selectStartLabel={t("selectStart")}
           />
         </div>
       </div>
@@ -160,27 +164,24 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
               className="group relative aspect-[4/3] text-left focus:outline-none"
             >
               <div
-                className={`relative h-full overflow-hidden bg-[#fcf5ec] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] border ${
-                  selected
+                className={`relative h-full overflow-hidden bg-[#fcf5ec] transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] border ${selected
                     ? "border-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_32px_-6px_rgba(201,154,63,0.55)] motion-safe:scale-[1.02]"
                     : "border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none group-hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] group-hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]"
-                }`}
+                  }`}
               >
                 <Image
                   src={dest.image}
                   alt={dest.label}
                   fill
-                  className={`object-cover transition-transform duration-1200 ease-out ${
-                    selected ? "scale-105" : "group-hover:scale-105"
-                  }`}
+                  className={`object-cover transition-transform duration-1200 ease-out ${selected ? "scale-105" : "group-hover:scale-105"
+                    }`}
                 />
                 {/* Bottom gradient — keeps title legible without dimming the whole photo */}
                 <div
-                  className={`absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t transition-opacity duration-300 ${
-                    selected
+                  className={`absolute inset-x-0 bottom-0 h-2/3 bg-linear-to-t transition-opacity duration-300 ${selected
                       ? "from-navy/85 via-navy/30 to-transparent opacity-100"
                       : "from-black/65 via-black/15 to-transparent group-hover:opacity-90"
-                  }`}
+                    }`}
                 />
                 {/* SELECTED ribbon */}
                 {selected && (
@@ -196,11 +197,10 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
                 )}
                 {/* Title — flips to navy band when selected */}
                 <span
-                  className={`absolute bottom-0 left-0 right-0 font-display text-[clamp(14px,1.6vw,18px)] font-light leading-tight transition-all duration-300 ${
-                    selected
+                  className={`absolute bottom-0 left-0 right-0 font-display text-[clamp(14px,1.6vw,18px)] font-light leading-tight transition-all duration-300 ${selected
                       ? "bg-navy/90 text-cream px-3 py-2.5"
                       : "p-3 text-cream"
-                  }`}
+                    }`}
                 >
                   {dest.label}
                 </span>
@@ -277,17 +277,16 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
           </div>
           {(destinationDaysOver || destinationDaysUnder) && (
             <p
-              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase ${
-                destinationDaysOver
+              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase ${destinationDaysOver
                   ? "border-terracotta bg-terracotta/10 text-terracotta"
                   : "border-ochre bg-ochre/12 text-ink"
-              }`}
+                }`}
             >
               {destinationDaysOver
                 ? t("daysOver")
                 : selectedTripDays - destinationDayTotal === 1
-                ? t("daysLeft", { n: selectedTripDays - destinationDayTotal })
-                : t("daysLeftPlural", { n: selectedTripDays - destinationDayTotal })}
+                  ? t("daysLeft", { n: selectedTripDays - destinationDayTotal })
+                  : t("daysLeftPlural", { n: selectedTripDays - destinationDayTotal })}
             </p>
           )}
         </div>
@@ -318,12 +317,12 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
             {!state.startDate || !state.endDate
               ? t("selectBothDates")
               : state.destinations.length === 0
-              ? t("selectOneDestination")
-              : selectedTripDays === null
-              ? t("validDateRange")
-              : destinationDaysOver
-              ? t("fewerTravelDays")
-              : t("assignTravelDays", { n: selectedTripDays })}
+                ? t("selectOneDestination")
+                : selectedTripDays === null
+                  ? t("validDateRange")
+                  : destinationDaysOver
+                    ? t("fewerTravelDays")
+                    : t("assignTravelDays", { n: selectedTripDays })}
           </p>
         )}
       </div>

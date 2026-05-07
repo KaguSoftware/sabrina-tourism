@@ -159,7 +159,6 @@
       "kicker": "Шаг 1 из 5",
       "heading": "Направление и даты",
       "sub": "Выберите, когда вы хотите путешествовать и какие регионы исследовать.",
-      "startDate": "Дата начала",
       "finishDate": "Дата окончания",
       "arrivalDate": "Дата прибытия",
       "departureDate": "Дата отбытия",
@@ -180,7 +179,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "Очистить",
+      "apply": "Применить",
+      "selectStart": "Выберите дату начала"
     },
     "step2": {
       "kicker": "Шаг 2 из 5",
@@ -230,7 +232,6 @@
       "bookingSummary": "Сводка бронирования",
       "destinations": "Направления",
       "destinationDays": "Дни по направлениям",
-      "startDate": "Дата начала",
       "finishDate": "Дата окончания",
       "duration": "Продолжительность",
       "guests": "Гости",

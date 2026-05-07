@@ -180,7 +180,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "Clear",
+      "apply": "Apply",
+      "selectStart": "Select a starting date"
     },
     "step2": {
       "kicker": "Step 2 of 5",

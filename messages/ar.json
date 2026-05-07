@@ -159,7 +159,6 @@
       "kicker": "الخطوة 1 من 5",
       "heading": "الوجهة والتواريخ",
       "sub": "اختر موعد سفرك والمناطق التي تريد استكشافها.",
-      "startDate": "تاريخ البداية",
       "finishDate": "تاريخ الانتهاء",
       "arrivalDate": "تاريخ الوصول",
       "departureDate": "تاريخ المغادرة",
@@ -180,7 +179,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "مسح",
+      "apply": "تطبيق",
+      "selectStart": "اختر تاريخ البداية"
     },
     "step2": {
       "kicker": "الخطوة 2 من 5",
@@ -230,7 +232,6 @@
       "bookingSummary": "ملخص الحجز",
       "destinations": "الوجهات",
       "destinationDays": "أيام الوجهة",
-      "startDate": "تاريخ البداية",
       "finishDate": "تاريخ الانتهاء",
       "duration": "المدة",
       "guests": "الضيوف",

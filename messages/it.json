@@ -159,7 +159,6 @@
       "kicker": "Passo 1 di 5",
       "heading": "Destinazione e Date",
       "sub": "Scegli quando vuoi viaggiare e quali regioni vuoi esplorare.",
-      "startDate": "Data di inizio",
       "finishDate": "Data di fine",
       "arrivalDate": "Data di arrivo",
       "departureDate": "Data di partenza",
@@ -180,7 +179,10 @@
       "moveEarlier": "Move {destination} earlier",
       "moveLater": "Move {destination} later",
       "daysInDestination": "Days in {destination}",
-      "daysPlaceholder": "Days"
+      "daysPlaceholder": "Days",
+      "clear": "Cancella",
+      "apply": "Applica",
+      "selectStart": "Seleziona una data di inizio"
     },
     "step2": {
       "kicker": "Passo 2 di 5",
@@ -230,7 +232,6 @@
       "bookingSummary": "Riepilogo prenotazione",
       "destinations": "Destinazioni",
       "destinationDays": "Giorni per destinazione",
-      "startDate": "Data di inizio",
       "finishDate": "Data di fine",
       "duration": "Durata",
       "guests": "Ospiti",
