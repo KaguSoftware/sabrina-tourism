@@ -27,22 +27,30 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
   const today = toYMD(new Date());
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(1);
+  const [guests, setGuests] = useState<string>("1");
+  const [children, setChildren] = useState<string>("0");
   const [rooms, setRooms] = useState(1);
   const [guestError, setGuestError] = useState("");
+  const [childrenError, setChildrenError] = useState("");
 
   const selectedRoom = roomTypes[selectedRoomIndex];
-  const needsMultipleRooms = selectedRoom && guests > selectedRoom.capacity;
-  const suggestedRooms = selectedRoom ? Math.ceil(guests / selectedRoom.capacity) : 1;
+  const guestsNum = parseInt(guests, 10);
+  const childrenNum = parseInt(children, 10);
+  const needsMultipleRooms = selectedRoom && !isNaN(guestsNum) && guestsNum > selectedRoom.capacity;
+  const suggestedRooms = selectedRoom && !isNaN(guestsNum) ? Math.ceil(guestsNum / selectedRoom.capacity) : 1;
 
   function handleGuestChange(val: string) {
+    if (val.startsWith("0")) return;
     const num = parseInt(val, 10);
-    setGuests(isNaN(num) ? 1 : num);
+    if (!isNaN(num) && num < 0) return;
+    setGuests(val);
     if (!isNaN(num) && num > 0 && selectedRoom && num > selectedRoom.capacity) {
       setRooms(Math.ceil(num / selectedRoom.capacity));
     }
-    if (isNaN(num) || num < 1) {
+    if (val === "" || isNaN(num)) {
       setGuestError("Please enter at least 1 guest.");
+    } else if (num === 0) {
+      setGuestError("Number of guests cannot be 0.");
     } else if (num > 100) {
       setGuestError("For very large groups, please contact us directly.");
     } else {
@@ -54,13 +62,30 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
     ? Math.round((parseYMD(checkOut).getTime() - parseYMD(checkIn).getTime()) / 86_400_000)
     : 0;
 
-  const hasError = !!guestError;
-  const canEnquire = checkIn && checkOut && !hasError && guests >= 1;
+  function handleChildrenChange(val: string) {
+    const num = parseInt(val, 10);
+    if (val !== "" && !isNaN(num) && num < 0) return;
+    setChildren(val);
+    if (val !== "" && !isNaN(num) && num > 20) {
+      setChildrenError("For very large groups, please contact us directly.");
+    } else {
+      setChildrenError("");
+    }
+  }
+
+  function blockNonDigits(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (!/^\d$/.test(e.key) && !["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"].includes(e.key)) {
+      e.preventDefault();
+    }
+  }
+
+  const hasError = !!guestError || !!childrenError;
+  const canEnquire = checkIn && checkOut && !hasError && !isNaN(guestsNum) && guestsNum >= 1;
 
   const waMessage = [
     `Hi, I'd like to enquire about ${hotelName} in ${region}.`,
     selectedRoom ? `Room type: ${selectedRoom.name} (up to ${selectedRoom.capacity} guests per room).` : "",
-    `Guests: ${guests}.`,
+    `Guests: ${guestsNum} adult${guestsNum !== 1 ? "s" : ""}${!isNaN(childrenNum) && childrenNum > 0 ? `, ${childrenNum} child${childrenNum !== 1 ? "ren" : ""}` : ""}.`,
     needsMultipleRooms ? `Rooms needed: ${rooms}× ${selectedRoom!.name}.` : "",
     checkIn && checkOut
       ? `Dates: ${formatShort(checkIn)} → ${formatShort(checkOut)} (${nights} night${nights !== 1 ? "s" : ""}).`
@@ -131,22 +156,45 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
           </label>
           <input
             type="number"
-            min={1}
+            min={0}
+            max={100}
             value={guests}
             onChange={(e) => handleGuestChange(e.target.value)}
+            onKeyDown={blockNonDigits}
             className={[
               "w-full bg-cream-deep border px-3 py-2.5 text-[15px] text-ink focus:outline-none transition-colors duration-150",
-              hasError ? "border-terracotta focus:border-terracotta" : "border-rule focus:border-ochre",
+              guestError ? "border-terracotta focus:border-terracotta" : "border-rule focus:border-ochre",
             ].join(" ")}
           />
-          {hasError && (
+          {guestError && (
             <p className="mt-2 font-mono text-[10px] tracking-[0.14em] uppercase text-terracotta leading-snug">
               {guestError}
             </p>
           )}
-          {!hasError && selectedRoom && !needsMultipleRooms && (
+          {!guestError && selectedRoom && !needsMultipleRooms && (
             <p className="mt-1.5 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
               Room fits up to {selectedRoom.capacity} guest{selectedRoom.capacity > 1 ? "s" : ""}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="block font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-2">
+            Number of children
+          </label>
+          <input
+            type="number"
+            value={children}
+            onChange={(e) => handleChildrenChange(e.target.value)}
+            onKeyDown={blockNonDigits}
+            className={[
+              "w-full bg-cream-deep border px-3 py-2.5 text-[15px] text-ink focus:outline-none transition-colors duration-150",
+              childrenError ? "border-terracotta focus:border-terracotta" : "border-rule focus:border-ochre",
+            ].join(" ")}
+          />
+          {childrenError && (
+            <p className="mt-2 font-mono text-[10px] tracking-[0.14em] uppercase text-terracotta leading-snug">
+              {childrenError}
             </p>
           )}
         </div>
