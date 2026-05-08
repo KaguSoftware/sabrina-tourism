@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -13,8 +14,12 @@ interface Props {
 
 export function Step2People({ state, onChange, onNext, onBack }: Props) {
   const t = useTranslations("customTour.step2");
+  const [raw, setRaw] = useState(String(state.people));
+
   function setPeople(next: number) {
-    onChange({ people: Math.min(Math.max(next, 1), 99) });
+    const clamped = Math.min(Math.max(next, 1), 99);
+    onChange({ people: clamped });
+    setRaw(String(clamped));
   }
 
   return (
@@ -33,12 +38,18 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
             type="number"
             min={1}
             max={99}
-            value={state.people}
+            value={raw}
             onChange={(e) => {
-              const n = parseInt(e.target.value, 10);
-              if (!isNaN(n)) setPeople(n);
+              const val = e.target.value;
+              if (val === "") { setRaw(""); return; }
+              const n = parseInt(val, 10);
+              if (!isNaN(n) && n <= 99) { setRaw(val); onChange({ people: Math.max(n, 1) }); }
             }}
-            className="font-display font-light text-[96px] leading-none text-navy tracking-tight text-center bg-transparent outline-none w-48 border-2 border-ochre/40 rounded-xl px-2 focus:border-ochre transition-colors duration-200"
+            onBlur={() => {
+              const n = parseInt(raw, 10);
+              setPeople(isNaN(n) || n < 1 ? 1 : n);
+            }}
+            className="font-display font-light text-[96px] leading-none text-navy tracking-tight text-center bg-transparent outline-none w-48 border-2 border-ochre/40 rounded-xl px-2 focus:border-ochre transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
           <div className="flex flex-col gap-2">
             <button
