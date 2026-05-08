@@ -150,6 +150,19 @@ export async function getHotelRawById(id: string): Promise<HotelRow | null> {
   return data as HotelRow;
 }
 
+export async function getFeaturedHotels(): Promise<HotelPublic[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAnonClient() as any;
+  const { data, error } = await supabase
+    .from('hotels')
+    .select(SELECT)
+    .eq('is_published', true)
+    .order('sort_order')
+    .limit(3);
+  if (error) { console.error('[db/hotels] getFeaturedHotels:', error); return []; }
+  return (data ?? []).map(assembleHotel);
+}
+
 export async function getAdminHotels(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServiceClient() as any;
