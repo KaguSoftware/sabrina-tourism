@@ -232,6 +232,8 @@
       "heading": "Revisa tu itinerario",
       "sub": "¿Todo listo? Confirma para enviar tu solicitud directamente a nuestro equipo por WhatsApp.",
       "bookingSummary": "Resumen de la reserva",
+      "tripMap": "Tu ruta",
+      "tripMapEmpty": "Selecciona destinos para ver tu ruta",
       "destinations": "Destinos",
       "destinationDays": "Días por destino",
       "finishDate": "Fecha de fin",

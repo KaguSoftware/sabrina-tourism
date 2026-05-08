@@ -232,6 +232,8 @@
       "heading": "旅程を確認する",
       "sub": "すべてよろしいですか？確認して、WhatsApp経由でチームにリクエストをお送りください。",
       "bookingSummary": "予約サマリー",
+      "tripMap": "あなたのルート",
+      "tripMapEmpty": "目的地を選択してルートを表示",
       "destinations": "目的地",
       "destinationDays": "目的地別日数",
       "finishDate": "終了日",

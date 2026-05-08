@@ -2,6 +2,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
+import { TripMapSVG } from "@/components/illustrations/TripMapSVG/TripMapSVG";
 import { REGIONS } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
 import { DESTINATIONS } from "./types";
@@ -154,7 +155,8 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         {t("sub")}
       </p>
 
-      <div className="max-w-[600px] bg-cream-warm border border-rule rounded-xl p-6 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] gap-8 lg:gap-10 mb-10 items-start">
+      <div className="bg-cream-warm border border-rule rounded-xl p-6">
         <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mb-2">
           {t("bookingSummary")}
         </h3>
@@ -185,6 +187,18 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
               : t("notNeeded")
           }
         />
+      </div>
+
+        <div className="bg-cream border border-rule rounded-xl p-6 lg:sticky lg:top-24">
+          <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mb-4">
+            {t("tripMap")}
+          </h3>
+          <TripMapSVG
+            destinations={state.destinations}
+            destinationDays={state.destinationDays ?? {}}
+            emptyLabel={t("tripMapEmpty")}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-center gap-3">
