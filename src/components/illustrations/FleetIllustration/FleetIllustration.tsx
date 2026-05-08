@@ -1,6 +1,36 @@
 import type { FleetIllustrationProps } from "./types";
 import { VIEWBOX } from "./constants";
 
+function CarSVG() {
+  return (
+    <>
+      {/* Body */}
+      <path d="M24 82 L24 58 Q28 46 56 42 L144 42 Q172 46 176 58 L176 82Z" fill="#1b4d5c" />
+      {/* Roof — slightly rounder than the sedan */}
+      <path d="M56 42 Q66 24 100 22 Q134 24 144 42Z" fill="#162b47" />
+      {/* Windows split */}
+      <path d="M62 42 Q70 30 100 28 Q130 30 138 42Z" fill="#a8c8e1" opacity="0.6" />
+      <line x1="100" y1="28" x2="100" y2="42" stroke="#1b4d5c" strokeWidth="1.5" />
+      {/* Door line */}
+      <line x1="100" y1="42" x2="100" y2="74" stroke="#162b47" strokeWidth="1" opacity="0.6" />
+      {/* Side accent */}
+      <line x1="28" y1="70" x2="172" y2="70" stroke="#c99a3f" strokeWidth="1.2" opacity="0.55" />
+      {/* Wheels */}
+      <circle cx="58" cy="84" r="16" fill="#0b1a2e" />
+      <circle cx="58" cy="84" r="10" fill="#2a3a50" />
+      <circle cx="58" cy="84" r="4" fill="#c99a3f" />
+      <circle cx="142" cy="84" r="16" fill="#0b1a2e" />
+      <circle cx="142" cy="84" r="10" fill="#2a3a50" />
+      <circle cx="142" cy="84" r="4" fill="#c99a3f" />
+      {/* Headlights */}
+      <rect x="168" y="62" width="10" height="8" rx="2" fill="#c99a3f" opacity="0.85" />
+      <rect x="22" y="62" width="10" height="8" rx="2" fill="#c99a3f" opacity="0.55" />
+      {/* Ground shadow */}
+      <ellipse cx="100" cy="100" rx="76" ry="5" fill="#1b4d5c" opacity="0.22" />
+    </>
+  );
+}
+
 function SedanSVG() {
   return (
     <>
@@ -155,19 +185,22 @@ function LuxurySVG() {
 export function FleetIllustration({ vehicleId, className = "" }: FleetIllustrationProps) {
   const renderIcon = () => {
     switch (vehicleId) {
+      case "car":
+        return <CarSVG />;
+      case "minibus":
+        return <MiniBusSVG />;
+      case "luxury":
+        return <LuxurySVG />;
+      // Legacy ids — kept so existing DB rows still render until they're migrated.
       case "sedan":
         return <SedanSVG />;
       case "suv":
         return <SUVSVG />;
       case "van":
         return <VanSVG />;
-      case "minibus":
-        return <MiniBusSVG />;
-      case "luxury":
-        return <LuxurySVG />;
       default:
         // Fallback so DB rows with unexpected ids still render an icon instead of nothing.
-        return <SedanSVG />;
+        return <CarSVG />;
     }
   };
 

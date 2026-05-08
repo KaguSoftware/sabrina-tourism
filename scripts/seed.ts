@@ -49,39 +49,25 @@ const AIRPORTS = [
 
 const VEHICLES = [
   {
-    id: "sedan",
-    label: "Sedan",
-    capacity: "1–3 guests",
+    id: "car",
+    label: "Car",
+    capacity: "1–4 guests",
     note: "Mercedes E-Class or equivalent",
     from: "from €70",
   },
   {
-    id: "suv",
-    label: "SUV",
-    capacity: "1–4 guests",
-    note: "Range Rover or equivalent",
-    from: "from €110",
-  },
-  {
-    id: "van",
-    label: "Van",
+    id: "luxury",
+    label: "Luxury",
     capacity: "1–7 guests",
-    note: "Mercedes V-Class or Vito",
-    from: "from €140",
+    note: "Mercedes Vito executive with chauffeur",
+    from: "from €260",
   },
   {
     id: "minibus",
     label: "Mini Bus",
-    capacity: "8–16 guests",
+    capacity: "1–16 guests",
     note: "Mercedes Sprinter or equivalent",
     from: "from €180",
-  },
-  {
-    id: "luxury",
-    label: "Luxury",
-    capacity: "1–6 guests",
-    note: "Mercedes Vito executive with chauffeur",
-    from: "from €260",
   },
 ];
 
