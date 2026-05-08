@@ -42,7 +42,7 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
   function handleGuestChange(val: string) {
     if (val.startsWith("0")) return;
     const num = parseInt(val, 10);
-    if (!isNaN(num) && num < 0) return;
+    if (!isNaN(num) && (num < 0 || num > 100)) return;
     setGuests(val);
     if (!isNaN(num) && num > 0 && selectedRoom && num > selectedRoom.capacity) {
       setRooms(Math.ceil(num / selectedRoom.capacity));
@@ -64,9 +64,9 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
 
   function handleChildrenChange(val: string) {
     const num = parseInt(val, 10);
-    if (val !== "" && !isNaN(num) && num < 0) return;
+    if (val !== "" && !isNaN(num) && (num < 0 || num > 100)) return;
     setChildren(val);
-    if (val !== "" && !isNaN(num) && num > 20) {
+    if (val !== "" && !isNaN(num) && num > 100) {
       setChildrenError("For very large groups, please contact us directly.");
     } else {
       setChildrenError("");
@@ -101,7 +101,7 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
         <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-3">Room type</p>
         <div className="flex flex-col gap-2">
           {roomTypes.map((room, i) => {
-            const overCapacity = guests > room.capacity;
+            const overCapacity = guestsNum > room.capacity;
             const isSelected = i === selectedRoomIndex;
             return (
               <button
