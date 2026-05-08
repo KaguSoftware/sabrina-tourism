@@ -70,11 +70,18 @@ const VEHICLES = [
     from: "from €140",
   },
   {
+    id: "minibus",
+    label: "Mini Bus",
+    capacity: "8–16 guests",
+    note: "Mercedes Sprinter or equivalent",
+    from: "from €180",
+  },
+  {
     id: "luxury",
     label: "Luxury",
-    capacity: "1–3 guests",
-    note: "Mercedes Vito with chauffeur",
-    from: "from €220",
+    capacity: "1–6 guests",
+    note: "Mercedes Vito executive with chauffeur",
+    from: "from €260",
   },
   {
     id: "minibus",
@@ -690,12 +697,12 @@ async function uploadImage(
     ext === ".png"
       ? "image/png"
       : ext === ".jpg" || ext === ".jpeg"
-      ? "image/jpeg"
-      : ext === ".svg"
-      ? "image/svg+xml"
-      : ext === ".webp"
-      ? "image/webp"
-      : "application/octet-stream";
+        ? "image/jpeg"
+        : ext === ".svg"
+          ? "image/svg+xml"
+          : ext === ".webp"
+            ? "image/webp"
+            : "application/octet-stream";
 
   const { error } = await supabase.storage
     .from(BUCKET)

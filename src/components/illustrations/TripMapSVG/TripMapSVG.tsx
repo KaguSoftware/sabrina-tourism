@@ -22,29 +22,75 @@ const VIEWBOX_H = 620;
 
 // Coordinates calibrated to the TURKEY_PATH below.
 const REGION_ANCHORS: Record<string, RegionAnchor> = {
-  Istanbul:           { x: 165, y: 215, labelDx:   0, labelDy: -42, labelAnchor: "middle" },
-  "Black Sea":        { x: 510, y: 195, labelDx:   0, labelDy: -38, labelAnchor: "middle" },
-  Cappadocia:         { x: 510, y: 355, labelDx:  34, labelDy:   6, labelAnchor: "start"  },
-  "Eastern Anatolia": { x: 745, y: 350, labelDx:   0, labelDy:  56, labelAnchor: "middle" },
-  Aegean:             { x: 195, y: 395, labelDx:   0, labelDy:  44, labelAnchor: "middle" },
-  Mediterranean:      { x: 380, y: 480, labelDx:   0, labelDy:  44, labelAnchor: "middle" },
+  Istanbul:           { x: 175, y: 240, labelDx:   0, labelDy: -44, labelAnchor: "middle" },
+  "Black Sea":        { x: 500, y: 230, labelDx:   0, labelDy: -42, labelAnchor: "middle" },
+  Cappadocia:         { x: 500, y: 360, labelDx:   0, labelDy: -42, labelAnchor: "middle" },
+  "Eastern Anatolia": { x: 735, y: 340, labelDx:   0, labelDy:  72, labelAnchor: "middle" },
+  Aegean:             { x: 175, y: 395, labelDx:   0, labelDy:  46, labelAnchor: "middle" },
+  Mediterranean:      { x: 410, y: 470, labelDx:   0, labelDy:  46, labelAnchor: "middle" },
 };
 
-// Hand-tuned simplified Turkey outline (rectangular-ish landmass).
-const TURKEY_PATH =
-  "M 90 230 " +
-  "C 130 170, 200 145, 260 158 " +
-  "C 310 170, 360 162, 410 145 " +
-  "C 470 125, 560 125, 625 152 " +
-  "C 680 172, 745 172, 805 195 " +
-  "C 845 210, 860 245, 840 290 " +
-  "C 820 330, 805 370, 775 400 " +
-  "C 730 432, 670 432, 615 418 " +
-  "C 560 405, 500 425, 445 450 " +
-  "C 395 478, 345 502, 290 502 " +
-  "C 240 502, 200 475, 160 442 " +
-  "C 115 400, 90 350, 80 305 " +
-  "C 75 275, 78 245, 90 230 Z";
+// More recognizable Turkey outline.
+// Walks clockwise from the Thrace peninsula (NW) → Black Sea coast (N, slight bulge) →
+// Eastern highlands (E, broader) → Hatay finger (SE) → Mediterranean coast with Antalya bay
+// → Aegean coast (W, jagged gulfs) → Sea of Marmara → back to Thrace.
+const TURKEY_PATH = [
+  // Thrace peninsula (top-left)
+  "M 70 215",
+  "L 130 200",
+  "L 165 205",
+  // Bosphorus / Sea of Marmara indent
+  "L 190 220",
+  "L 175 235",
+  "L 200 245",
+  // Black Sea coast — gentle arc with a small Sinop bulge
+  "Q 280 195, 360 200",
+  "Q 420 205, 470 215",
+  "Q 530 222, 580 215",   // Sinop bulge dipping slightly south
+  "Q 640 210, 700 215",
+  // Eastern Black Sea / Caucasus border (NE corner)
+  "L 760 230",
+  "L 800 250",
+  "L 815 280",
+  // Eastern border (Iran/Armenia) — slightly jagged
+  "L 800 320",
+  "L 815 350",
+  "L 790 380",
+  // SE corner / Hatay finger pointing south
+  "L 760 395",
+  "L 720 405",
+  "L 690 395",
+  "L 660 415",
+  "L 645 445",            // Hatay tip
+  "L 625 440",
+  "L 615 410",
+  // Mediterranean coast — Antalya bay indent
+  "L 560 425",
+  "Q 510 460, 460 455",   // Antalya bay (concave dip into the country)
+  "Q 420 450, 380 460",
+  "L 320 470",
+  "L 270 460",
+  // Aegean coast — jagged gulfs (Fethiye / Bodrum / İzmir)
+  "L 230 445",
+  "L 210 455",            // Fethiye gulf
+  "L 195 440",
+  "L 180 460",            // Bodrum gulf
+  "L 160 435",
+  "L 150 415",
+  "L 130 400",            // İzmir gulf
+  "L 115 380",
+  "L 105 350",
+  "L 100 320",
+  "L 90 290",
+  "L 95 260",
+  // Sea of Marmara / Dardanelles back to start
+  "L 110 240",
+  "L 130 250",
+  "L 145 235",
+  "L 130 220",
+  "L 95 215",
+  "Z",
+].join(" ");
 
 // Suggestive neighbor land hints (kept off the main silhouette so they read as foreign).
 const NEIGHBORS = {
@@ -192,15 +238,15 @@ export function TripMapSVG({
 
         {/* Country label — placed in the gap between the western pin row and the central pin row */}
         <text
-          x={380}
-          y={290}
+          x={325}
+          y={285}
           textAnchor="middle"
           fontFamily="Georgia, serif"
-          fontSize="22"
+          fontSize="20"
           fontWeight="700"
           fill="#2f4a18"
-          fillOpacity="0.35"
-          letterSpacing="8"
+          fillOpacity="0.32"
+          letterSpacing="6"
         >
           TÜRKİYE
         </text>
@@ -250,7 +296,7 @@ export function TripMapSVG({
           const r = markerRadius(stop.days);
           const { x, y, labelDx, labelDy, labelAnchor } = stop.anchor;
           const dayText = stop.days ? `${stop.label} · ${stop.days}d` : stop.label;
-          const pillW = dayText.length * 8 + 18;
+          const pillW = dayText.length * 11 + 22;
           return (
             <g key={stop.id}>
               {/* Pin shadow */}
@@ -281,20 +327,20 @@ export function TripMapSVG({
               {/* Label pill */}
               <g transform={`translate(${x + labelDx}, ${y + labelDy})`}>
                 <rect
-                  x={labelAnchor === "start" ? -6 : labelAnchor === "end" ? -(pillW - 6) : -pillW / 2}
-                  y={-14}
+                  x={labelAnchor === "start" ? -8 : labelAnchor === "end" ? -(pillW - 8) : -pillW / 2}
+                  y={-18}
                   width={pillW}
-                  height={22}
-                  rx={11}
+                  height={28}
+                  rx={14}
                   fill="#fffaf0"
                   stroke="#4d6f2a"
-                  strokeWidth="1.4"
+                  strokeWidth="1.6"
                   opacity="0.97"
                 />
                 <text
                   textAnchor={labelAnchor}
                   fill="#1f1a14"
-                  fontSize="13"
+                  fontSize="18"
                   fontFamily="Georgia, serif"
                   fontWeight="600"
                 >
