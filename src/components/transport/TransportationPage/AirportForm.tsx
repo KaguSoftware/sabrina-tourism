@@ -16,9 +16,28 @@ interface AirportFormProps {
   setVehicleId: (id: string | null) => void;
   airports: Airport[];
   vehicles: Vehicle[];
+  initialPassengers?: number;
+  guideNeeded?: boolean;
+  setGuideNeeded?: (value: boolean) => void;
+  guideType?: GuideType;
+  setGuideType?: (value: GuideType) => void;
+  guideLanguage?: string;
+  setGuideLanguage?: (value: string) => void;
 }
 
-export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: AirportFormProps) {
+export function AirportForm({
+  vehicleId,
+  setVehicleId,
+  airports,
+  vehicles,
+  initialPassengers = 2,
+  guideNeeded: guideNeededProp,
+  setGuideNeeded: setGuideNeededProp,
+  guideType: guideTypeProp,
+  setGuideType: setGuideTypeProp,
+  guideLanguage: guideLanguageProp,
+  setGuideLanguage: setGuideLanguageProp,
+}: AirportFormProps) {
   const t = useTranslations("transport.form");
   const [airport, setAirport] = useState(airports[0]?.label ?? "");
   const [direction, setDirection] = useState<"pickup" | "dropoff" | "both">("pickup");
@@ -29,15 +48,21 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
   const [destination, setDestination] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [passengers, setPassengers] = useState("2");
+  const [passengers, setPassengers] = useState(String(initialPassengers));
   const [flightNumber, setFlightNumber] = useState("");
   const [luggage, setLuggage] = useState("");
   const [childSeat, setChildSeat] = useState(false);
   const [meetAndGreet, setMeetAndGreet] = useState(false);
-  const [guideNeeded, setGuideNeeded] = useState(false);
-  const [guideType, setGuideType] = useState<GuideType>("assistant");
-  const [guideLanguage, setGuideLanguage] = useState("English");
+  const [localGuideNeeded, setLocalGuideNeeded] = useState(false);
+  const [localGuideType, setLocalGuideType] = useState<GuideType>("assistant");
+  const [localGuideLanguage, setLocalGuideLanguage] = useState("English");
   const [submitted, setSubmitted] = useState(false);
+  const guideNeeded = guideNeededProp ?? localGuideNeeded;
+  const setGuideNeeded = setGuideNeededProp ?? setLocalGuideNeeded;
+  const guideType = guideTypeProp ?? localGuideType;
+  const setGuideType = setGuideTypeProp ?? setLocalGuideType;
+  const guideLanguage = guideLanguageProp ?? localGuideLanguage;
+  const setGuideLanguage = setGuideLanguageProp ?? setLocalGuideLanguage;
 
   const today = new Date().toISOString().split("T")[0];
   const vClass = vehicles.find((v) => v.id === vehicleId);
@@ -201,21 +226,21 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
                 onClick={() => { setVehicleId(v.id); if (!overCapacity) setVehicleQty({}); }}
                 aria-pressed={vehicleId === v.id}
                 title={overCapacity ? t("fitsUpToUseMulti", { n: cap }) : undefined}
-                className={`relative flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] rounded-xl before:absolute before:top-0 before:left-0 before:right-0 before:h-0.75 before:rounded-t-xl before:transition-opacity before:duration-300 ${
+                className={`relative flex flex-col items-center gap-1.5 px-3 py-3 border transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] rounded-xl ${
                   vehicleId === v.id
-                    ? "bg-navy border-navy text-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_28px_-6px_rgba(201,154,63,0.5)] motion-safe:scale-[1.02] before:bg-ochre before:opacity-100"
+                    ? "bg-navy border-navy text-ochre ring-[3px] ring-ochre ring-offset-2 ring-offset-cream shadow-[0_8px_28px_-6px_rgba(201,154,63,0.5)] motion-safe:scale-[1.02]"
                     : overCapacity
-                    ? "opacity-50 border-rule bg-cream-warm text-muted hover:opacity-80 hover:border-ochre/40 before:opacity-0"
-                    : "bg-cream-warm border-rule text-ink hover:border-ochre before:opacity-0"
+                    ? "opacity-50 border-rule bg-cream-warm text-muted hover:opacity-80 hover:border-ochre/40"
+                    : "bg-cream-warm border-rule text-ink hover:border-ochre"
                 }`}
               >
                 {vehicleId === v.id && (
                   <span aria-hidden className="absolute top-2 right-2 w-2 h-2 rounded-full bg-ochre motion-safe:animate-pulse" />
                 )}
-                <FleetIllustration vehicleId={v.id} className="w-full h-13" selected={vehicleId === v.id} />
+                <FleetIllustration vehicleId={v.id} className="w-full h-24" selected={vehicleId === v.id} />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
-                <span className={`font-mono text-[10px] tracking-[0.18em] uppercase ${vehicleId === v.id ? "text-cream" : "text-ochre"}`}>{v.from}</span>
-                <span className={`text-[11px] ${vehicleId === v.id ? "text-cream/70" : "text-muted"}`}>{v.capacity}</span>
+                <span className={`font-mono text-[10px] tracking-[0.18em] uppercase text-ochre`}>{v.from}</span>
+                <span className={`text-[11px] text-muted`}>{v.capacity}</span>
               </button>
             );
           })}
@@ -262,7 +287,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
               const qty = vehicleQty[v.id] ?? 0;
               return (
                 <div key={v.id} className="flex flex-col items-center gap-2 p-3 border border-rule bg-cream rounded-xl">
-                  <FleetIllustration vehicleId={v.id} className="w-full h-10" />
+                  <FleetIllustration vehicleId={v.id} className="w-full h-16" />
                   <span className="font-display text-[13px] tracking-tight text-ink">{v.label}</span>
                   <span className="font-mono text-[10px] text-muted">{v.capacity}</span>
                   <span className="font-mono text-[10px] text-muted">{v.luggageCapacity} {t("bags")}</span>

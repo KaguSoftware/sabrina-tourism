@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { FleetIllustrationProps } from "./types";
 import { VIEWBOX } from "./constants";
 
@@ -8,6 +9,12 @@ const BLUE = "#1b4d5c";
 const BLUE_DARK = "#162b47";
 const BLUE_MID = "#2a3a50";
 const WINDOW = "#a8c8e1";
+
+const VEHICLE_IMAGES: Partial<Record<string, string>> = {
+  car: "/C5CB74E9-4C15-4FA9-9B45-F76918D425D8.PNG",
+  minibus: "/IMG_9227.PNG",
+  luxury: "/F726CEB8-ED4C-49AA-AE1A-D749A43A4A95.PNG",
+};
 
 type IconProps = {
   selected: boolean;
@@ -180,6 +187,25 @@ export function FleetIllustration({
   variant = "default",
 }: FleetIllustrationProps) {
   const props = { selected, variant };
+  const imageSrc = VEHICLE_IMAGES[vehicleId];
+
+  if (imageSrc) {
+    const selectedClass =
+      variant === "custom" && selected
+        ? "drop-shadow-[0_8px_18px_rgba(201,154,63,0.35)]"
+        : "";
+
+    return (
+      <Image
+        src={imageSrc}
+        alt=""
+        width={200}
+        height={120}
+        aria-hidden="true"
+        className={`${className} object-contain scale-[1.15] transition-all duration-300 ${selectedClass}`}
+      />
+    );
+  }
 
   const renderIcon = () => {
     switch (vehicleId) {

@@ -9,6 +9,7 @@ export interface HotelRow {
   long_description: string;
   tag_a: string;
   tag_b: string;
+  stars: number;
   svg_variant: string;
   location: string;
   bedroom_image: string;
@@ -42,6 +43,7 @@ export type HotelPublic = {
   description: string;
   longDescription: string;
   tags: [string, string];
+  stars: number;
   svgVariant: string;
   location: string;
   bedroomImage: string;
@@ -76,6 +78,7 @@ function assembleHotel(row: HotelRow): HotelPublic {
     description: row.description,
     longDescription: row.long_description,
     tags: [row.tag_a, row.tag_b],
+    stars: row.stars ?? 0,
     svgVariant: row.svg_variant,
     location: row.location,
     bedroomImage: row.bedroom_image,
@@ -148,6 +151,19 @@ export async function getHotelRawById(id: string): Promise<HotelRow | null> {
   const { data, error } = await supabase.from('hotels').select(SELECT).eq('id', id).maybeSingle();
   if (error || !data) return null;
   return data as HotelRow;
+}
+
+export async function getFeaturedHotels(): Promise<HotelPublic[]> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAnonClient() as any;
+  const { data, error } = await supabase
+    .from('hotels')
+    .select(SELECT)
+    .eq('is_published', true)
+    .order('sort_order')
+    .limit(3);
+  if (error) { console.error('[db/hotels] getFeaturedHotels:', error); return []; }
+  return (data ?? []).map(assembleHotel);
 }
 
 export async function getAdminHotels(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {

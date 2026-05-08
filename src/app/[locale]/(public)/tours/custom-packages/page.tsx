@@ -5,7 +5,7 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { CustomTourWizard } from "@/components/custom-tour/CustomTourWizard";
 import { getSiteContent } from "@/lib/db/site-content";
-import { getVehicles } from "@/lib/db/transport";
+import { getAirports, getVehicles } from "@/lib/db/transport";
 
 export const revalidate = 60;
 
@@ -17,10 +17,16 @@ export const metadata = {
 };
 
 export default async function CustomPackagesPage() {
-  const [hero, vehicleRows] = await Promise.all([
+  const [hero, airportRows, vehicleRows] = await Promise.all([
     getSiteContent("tours_hero"),
+    getAirports(),
     getVehicles(),
   ]);
+
+  const airports = airportRows.map((a) => ({
+    code: a.code,
+    label: a.label,
+  }));
 
   const vehicles = vehicleRows.map((v) => ({
     id: v.vehicle_id,
@@ -67,7 +73,7 @@ export default async function CustomPackagesPage() {
 
       <div className="relative z-10">
         <Suspense>
-          <CustomTourWizard vehicles={vehicles} />
+          <CustomTourWizard airports={airports} vehicles={vehicles} />
         </Suspense>
       </div>
     </>

@@ -8,6 +8,7 @@ export const HotelSchema = z.object({
   long_description: z.string().min(1, "Long description is required"),
   tag_a: z.string().min(1, "First tag is required"),
   tag_b: z.string().min(1, "Second tag is required"),
+  stars: z.number().int().min(0).max(5),
   svg_variant: z.string().min(1, "Style is required"),
   location: z.string().min(1, "Location is required"),
   check_in_time: z.string().min(1, "Check-in time is required"),

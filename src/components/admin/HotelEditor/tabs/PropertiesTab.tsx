@@ -23,6 +23,9 @@ export function PropertiesTab() {
   return (
     <div className="space-y-10">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <FormField label="Stars" error={errors.stars?.message}>
+          <Input type="number" min={0} max={5} {...register("stars", { valueAsNumber: true })} />
+        </FormField>
         <FormField label="Bedrooms" required error={errors.bedrooms?.message}>
           <Input type="number" min={1} {...register("bedrooms", { valueAsNumber: true })} />
         </FormField>

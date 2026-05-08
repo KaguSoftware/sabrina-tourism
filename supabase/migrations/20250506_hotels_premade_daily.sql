@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS hotels (
   long_description text        NOT NULL,
   tag_a            text        NOT NULL,
   tag_b            text        NOT NULL,
+  stars            int         NOT NULL DEFAULT 0 CHECK (stars >= 0 AND stars <= 5),
   svg_variant      text        NOT NULL DEFAULT 'ottoman',
   location         text        NOT NULL,
   bedroom_image    text        NOT NULL DEFAULT '',

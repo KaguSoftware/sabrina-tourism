@@ -1,6 +1,12 @@
 import { createAnonClient } from '@/lib/supabase/server';
 import type { TransportAirportRow, TransportVehicleRow } from '@/lib/supabase/types';
 
+const VEHICLE_LABELS: Partial<Record<TransportVehicleRow['vehicle_id'], string>> = {
+  car: 'Van',
+  minibus: 'Bus',
+  luxury: 'Minibus',
+};
+
 export async function getAirports(): Promise<TransportAirportRow[]> {
   const supabase = createAnonClient();
 
@@ -30,5 +36,8 @@ export async function getVehicles(): Promise<TransportVehicleRow[]> {
     return [];
   }
 
-  return data ?? [];
+  return ((data ?? []) as TransportVehicleRow[]).map((vehicle) => ({
+    ...vehicle,
+    label: VEHICLE_LABELS[vehicle.vehicle_id] ?? vehicle.label,
+  }));
 }

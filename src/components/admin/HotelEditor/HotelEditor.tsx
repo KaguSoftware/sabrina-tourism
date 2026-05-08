@@ -39,6 +39,7 @@ function defaultValues(hotel?: HotelRow): HotelFormValues {
       long_description: hotel.long_description,
       tag_a: hotel.tag_a,
       tag_b: hotel.tag_b,
+      stars: hotel.stars ?? 0,
       svg_variant: hotel.svg_variant,
       location: hotel.location,
       check_in_time: hotel.check_in_time,
@@ -63,7 +64,7 @@ function defaultValues(hotel?: HotelRow): HotelFormValues {
   }
   return {
     name: "", region: "Istanbul", description: "", long_description: "",
-    tag_a: "", tag_b: "", svg_variant: "ottoman", location: "",
+    tag_a: "", tag_b: "", stars: 0, svg_variant: "ottoman", location: "",
     check_in_time: "15:00", check_out_time: "12:00", languages: [],
     distance_km: 0, bedrooms: 1, bathrooms: 1,
     free_wifi: false, free_cancellation: false, free_parking: false,

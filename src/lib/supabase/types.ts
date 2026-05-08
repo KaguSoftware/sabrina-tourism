@@ -55,12 +55,17 @@ export interface TransportHeroData {
 // Row types — mirror exact column names from schema.sql
 // ---------------------------------------------------------------------------
 
+export interface HomeFeaturedHotelsHeadingData {
+  section_heading: string;
+}
+
 export type SiteContentKey =
   | 'home_hero'
   | 'home_about'
   | 'home_how_it_works'
   | 'home_quote'
   | 'home_featured_heading'
+  | 'home_featured_hotels_heading'
   | 'tours_hero'
   | 'transport_hero';
 
@@ -70,6 +75,7 @@ export interface SiteContentDataMap {
   home_how_it_works: HomeHowItWorksData;
   home_quote: HomeQuoteData;
   home_featured_heading: HomeFeaturedHeadingData;
+  home_featured_hotels_heading: HomeFeaturedHotelsHeadingData;
   tours_hero: ToursHeroData;
   transport_hero: TransportHeroData;
 }

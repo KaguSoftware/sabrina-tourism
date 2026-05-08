@@ -14,7 +14,7 @@ async function main() {
   const { error } = await supabase.from("transport_vehicles").upsert(
     {
       vehicle_id: "minibus",
-      label: "Minibus",
+      label: "Bus",
       capacity: "1–16 guests",
       note: "Mercedes Sprinter",
       from_price: "from €280",

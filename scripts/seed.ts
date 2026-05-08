@@ -50,21 +50,21 @@ const AIRPORTS = [
 const VEHICLES = [
   {
     id: "car",
-    label: "Car",
+    label: "Van",
     capacity: "1–4 guests",
     note: "Mercedes E-Class or equivalent",
     from: "from €70",
   },
   {
     id: "luxury",
-    label: "Luxury",
+    label: "Minibus",
     capacity: "1–7 guests",
     note: "Mercedes Vito executive with chauffeur",
     from: "from €260",
   },
   {
     id: "minibus",
-    label: "Mini Bus",
+    label: "Bus",
     capacity: "1–16 guests",
     note: "Mercedes Sprinter or equivalent",
     from: "from €180",

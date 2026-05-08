@@ -28,6 +28,7 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     const { error } = await supabase.from("hotels").update({
       name: data.name, region: data.region, description: data.description,
       long_description: data.long_description, tag_a: data.tag_a, tag_b: data.tag_b,
+      stars: data.stars,
       svg_variant: data.svg_variant, location: data.location,
       check_in_time: data.check_in_time, check_out_time: data.check_out_time,
       languages: data.languages, distance_km: data.distance_km,
@@ -49,6 +50,7 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     const { data: newH, error } = await supabase.from("hotels").insert({
       slug, name: data.name, region: data.region, description: data.description,
       long_description: data.long_description, tag_a: data.tag_a, tag_b: data.tag_b,
+      stars: data.stars,
       svg_variant: data.svg_variant, location: data.location,
       check_in_time: data.check_in_time, check_out_time: data.check_out_time,
       languages: data.languages, distance_km: data.distance_km,

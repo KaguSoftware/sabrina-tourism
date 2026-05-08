@@ -8,5 +8,5 @@ ALTER TABLE transport_vehicles
 
 -- Insert the minibus entry (no-op if already present)
 INSERT INTO transport_vehicles (vehicle_id, label, capacity, note, from_price, sort_order)
-VALUES ('minibus', 'Minibus', '1–16 guests', 'Mercedes Sprinter', 'from €280', 5)
+VALUES ('minibus', 'Bus', '1–16 guests', 'Mercedes Sprinter', 'from €280', 5)
 ON CONFLICT (vehicle_id) DO NOTHING;
