@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -33,10 +33,44 @@ function bookMessage(pkg: DailyPackage, date: string, guests: number): string {
   return `https://wa.me/${num}?text=${text}`;
 }
 
+const GLOW_WINDOW = 3;
+
+function useStopGlow(count: number) {
+  const refs = useRef<(HTMLLIElement | null)[]>([]);
+  const [anchor, setAnchor] = useState<number | null>(null);
+
+  useEffect(() => {
+    function onScroll() {
+      const mid = window.innerHeight / 2;
+      let closest = -1;
+      let closestDist = Infinity;
+      refs.current.forEach((el, i) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top + rect.height / 2 - mid);
+        if (dist < closestDist) { closestDist = dist; closest = i; }
+      });
+      if (closest !== -1) setAnchor(closest);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [count]);
+
+  const active = new Set(
+    anchor === null
+      ? []
+      : Array.from({ length: GLOW_WINDOW }, (_, k) => anchor - (GLOW_WINDOW - 1) + k).filter((i) => i >= 0 && i < count)
+  );
+  return { refs, active };
+}
+
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
   const [guests, setGuests] = useState(1);
+  const { refs: stopRefs, active: activeStops } = useStopGlow(pkg.stops.length);
   return (
     <>
       {/* Hero */}
@@ -106,39 +140,69 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             <Kicker className="mb-6">Day Itinerary</Kicker>
           </Reveal>
           <ol className="relative border-l border-rule pl-8 space-y-10 mb-20">
-            {pkg.stops.map((stop, i) => (
-              <Reveal key={i} delay={i * 50}>
-                <li className="relative">
+            {pkg.stops.map((stop, i) => {
+              const lit = activeStops.has(i);
+              return (
+                <li
+                  key={i}
+                  ref={(el) => { stopRefs.current[i] = el; }}
+                  className="relative"
+                >
                   {/* dot */}
-                  <span className="absolute -left-[41px] top-1.5 w-3 h-3 rounded-full bg-ochre border-2 border-cream shadow" />
-                  <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-ochre mb-1">
-                    {stop.time}
-                  </p>
-                  <h3 className="font-display text-[20px] leading-tight mb-1">
+                  <span className={`absolute -left-10.25 top-1.5 w-3 h-3 rounded-full bg-ochre border-2 border-cream shadow transition-all duration-700 ${lit ? "scale-125 shadow-[0_0_14px_5px_rgba(212,175,55,0.7)]" : ""}`} />
+                  {(i === 0 || i === pkg.stops.length - 1) && (
+                    <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-ochre mb-1">
+                      {stop.time}
+                    </p>
+                  )}
+                  <h3 className={`font-display text-[20px] leading-tight mb-1 text-ink transition-all duration-700 w-fit ${lit ? "drop-shadow-[0_0_8px_rgba(212,175,55,0.9)]" : ""}`}>
                     {stop.place}
                   </h3>
-                  <p className="text-[15px] text-ink-soft leading-[1.6]">
+                  <p className={`text-[15px] text-ink-soft leading-[1.6] transition-all duration-700 w-fit ${lit ? "drop-shadow-[0_0_6px_rgba(212,175,55,0.6)]" : ""}`}>
                     {stop.description}
                   </p>
                 </li>
-              </Reveal>
-            ))}
+              );
+            })}
           </ol>
 
           {/* Inclusions */}
-          <Reveal>
-            <Kicker className="mb-6">What's Covered</Kicker>
-          </Reveal>
-          <ul className="space-y-3 mb-0">
-            {pkg.included.map((item, i) => (
-              <Reveal key={i} delay={i * 40}>
-                <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
-                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ochre shrink-0" />
-                  {item}
-                </li>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+            <div>
+              <Reveal>
+                <Kicker className="mb-6">What's Included</Kicker>
               </Reveal>
-            ))}
-          </ul>
+              <ul className="space-y-3">
+                {pkg.included.map((item, i) => (
+                  <Reveal key={i} delay={i * 40}>
+                    <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ochre shrink-0" />
+                      {item}
+                    </li>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <Reveal>
+                <Kicker className="mb-6">What's Not Included</Kicker>
+              </Reveal>
+              <ul className="space-y-3">
+                <Reveal>
+                  <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                    Hotel accommodation
+                  </li>
+                </Reveal>
+                <Reveal>
+                  <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
+                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+                    Breakfast
+                  </li>
+                </Reveal>
+              </ul>
+            </div>
+          </div>
         </div>
 
         {/* Right column — sticky booking card */}

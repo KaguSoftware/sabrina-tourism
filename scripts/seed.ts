@@ -73,8 +73,15 @@ const VEHICLES = [
     id: "luxury",
     label: "Luxury",
     capacity: "1–3 guests",
-    note: "Mercedes S-Class with chauffeur",
+    note: "Mercedes Vito with chauffeur",
     from: "from €220",
+  },
+  {
+    id: "minibus",
+    label: "Minibus",
+    capacity: "1–16 guests",
+    note: "Mercedes Sprinter",
+    from: "from €280",
   },
 ];
 

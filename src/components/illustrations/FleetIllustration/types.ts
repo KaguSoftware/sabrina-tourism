@@ -1,4 +1,4 @@
-export type VehicleId = "sedan" | "suv" | "van" | "luxury";
+export type VehicleId = "sedan" | "suv" | "van" | "luxury" | "minibus";
 
 export interface FleetIllustrationProps {
   vehicleId: VehicleId;
