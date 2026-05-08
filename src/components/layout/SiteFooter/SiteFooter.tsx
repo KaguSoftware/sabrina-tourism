@@ -23,9 +23,8 @@ export async function SiteFooter() {
     {
       heading: t("services"),
       links: [
-        { label: t("airportTransfer"), href: `${pfx}/transportation` },
-        { label: t("privateDriver"), href: `${pfx}/transportation` },
         { label: t("allPackages"), href: `${pfx}/packages` },
+        { label: t("driver"), href: `${pfx}/transportation` },
       ],
     },
     {

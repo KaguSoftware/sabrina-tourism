@@ -40,7 +40,8 @@
       "Bash(kill %1)",
       "Bash(npx eslint *)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\app\\\\[locale\\\\]\\\\\\(public\\\\\\)\\\\tours\\\\\" -Directory)",
-      "Bash(grep -E \"\\\\.\\(json|ts\\)$\")"
+      "Bash(grep -E \"\\\\.\\(json|ts\\)$\")",
+      "Bash(node -e ' *)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
