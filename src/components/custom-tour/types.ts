@@ -8,6 +8,9 @@ export interface CustomTourState {
   hotelIds: Record<string, string>;
   vehicleId: string | null;
   noDriverNeeded: boolean;
+  airportTransferOnly: boolean;
+  flightArrivalDate: string;
+  flightArrivalTime: string;
   guideNeeded: boolean;
   guideType: "assistant" | "certified guide";
   guideLanguage: string;
@@ -23,6 +26,9 @@ export const INITIAL_STATE: CustomTourState = {
   hotelIds: {},
   vehicleId: null,
   noDriverNeeded: false,
+  airportTransferOnly: false,
+  flightArrivalDate: "",
+  flightArrivalTime: "",
   guideNeeded: false,
   guideType: "assistant",
   guideLanguage: "English",

@@ -3,6 +3,8 @@ import { useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
+import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import type { CustomTourState } from "./types";
 import type { Vehicle } from "@/lib/transport/types";
 
@@ -29,7 +31,7 @@ const GUIDE_LANGUAGES = [
 
 export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Props) {
   const t = useTranslations("customTour.step4");
-  const canProceed = state.noDriverNeeded || !!state.vehicleId;
+  const canProceed = state.noDriverNeeded || state.airportTransferOnly || !!state.vehicleId;
   const guideType = state.guideType ?? "assistant";
   const guideLanguage = state.guideLanguage ?? "English";
 
@@ -48,6 +50,57 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
         {t("sub")}
       </p>
 
+      <div className="mb-4 max-w-190 bg-cream-warm border border-rule p-4">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={state.airportTransferOnly}
+            onChange={(e) =>
+              onChange({
+                airportTransferOnly: e.target.checked,
+                noDriverNeeded: e.target.checked ? false : state.noDriverNeeded,
+                vehicleId: e.target.checked ? null : state.vehicleId,
+                flightArrivalDate: e.target.checked ? state.flightArrivalDate : "",
+                flightArrivalTime: e.target.checked ? state.flightArrivalTime : "",
+              })
+            }
+            className="mt-1 h-4 w-4 accent-ochre"
+          />
+          <span className="flex flex-col gap-1">
+            <span className="font-mono text-[12px] tracking-[0.16em] uppercase text-ink">
+              {t("airportTransferOnly")}
+            </span>
+            <span className="text-[13px] leading-normal text-ink-soft">
+              {t("airportTransferOnlyHint")}
+            </span>
+          </span>
+        </label>
+
+        <div className={`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 transition-opacity duration-200 ${state.airportTransferOnly ? "opacity-100" : "opacity-45 pointer-events-none"}`}>
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">
+              {t("flightArrivalTime")}
+            </span>
+            <DatePicker
+              value={state.flightArrivalDate}
+              onChange={(v) => onChange({ flightArrivalDate: v })}
+              placeholder={t("selectDate")}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">
+              {t("flightArrivalTimeClock")}
+            </span>
+            <TimePicker
+              value={state.flightArrivalTime}
+              onChange={(v) => onChange({ flightArrivalTime: v })}
+              placeholder="00:00"
+              disabled={!state.airportTransferOnly}
+            />
+          </div>
+        </div>
+      </div>
+
       <label className="mb-6 flex max-w-[760px] items-start gap-3 bg-cream-warm border border-rule p-4 cursor-pointer">
         <input
           type="checkbox"
@@ -55,6 +108,7 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
           onChange={(e) =>
             onChange({
               noDriverNeeded: e.target.checked,
+              airportTransferOnly: e.target.checked ? false : state.airportTransferOnly,
               vehicleId: e.target.checked ? null : state.vehicleId,
             })
           }
@@ -74,7 +128,7 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
         {vehicles.map((v) => {
           const selected = state.vehicleId === v.id;
           const overCapacity = state.people > maxCapacity(v);
-          const unavailable = state.noDriverNeeded || overCapacity;
+          const unavailable = state.noDriverNeeded || state.airportTransferOnly || overCapacity;
           return (
             <button
               key={v.id}

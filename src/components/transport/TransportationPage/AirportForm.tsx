@@ -22,7 +22,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
   const t = useTranslations("transport.form");
   const [airport, setAirport] = useState(airports[0]?.label ?? "");
   const [direction, setDirection] = useState<"pickup" | "dropoff" | "both">("pickup");
-  const [directionOpen, setDirectionOpen] = useState(false);
+
   const [returnDate, setReturnDate] = useState("");
   const [returnTime, setReturnTime] = useState("");
   const [returnFlightNumber, setReturnFlightNumber] = useState("");
@@ -119,52 +119,11 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
         </TransportFormField>
 
         <TransportFormField label={t("direction")}>
-          <div className="relative w-full">
-            <button
-              type="button"
-              onClick={() => setDirectionOpen((o) => !o)}
-              style={{ backgroundColor: "#0b1a2e", color: "#c99a3f", border: "1.5px solid #0b1a2e", fontWeight: 600, borderRadius: "16px" }}
-              className="w-full font-mono text-[11px] tracking-[0.08em] uppercase transition-all duration-200 px-3 py-2 flex items-center justify-between"
-            >
-              <span>{direction === "pickup" ? t("pickup") : direction === "dropoff" ? t("dropoff") : t("bothWays")}</span>
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={`transition-transform duration-200 ${directionOpen ? "rotate-180" : ""}`}>
-                <path d="M2 4l4 4 4-4" stroke="#c99a3f" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <div
-              className="absolute z-20 top-full left-0 right-0 mt-1 overflow-hidden transition-all duration-200 ease-out"
-              style={{
-                borderRadius: "16px",
-                border: directionOpen ? "1.5px solid #c99a3f" : "1.5px solid transparent",
-                backgroundColor: "#f5ede0",
-                maxHeight: directionOpen ? "200px" : "0px",
-                pointerEvents: directionOpen ? "auto" : "none",
-              }}
-            >
-              <style>{`
-                @keyframes slideDown {
-                  from { opacity: 0; transform: translateY(-8px); }
-                  to   { opacity: 1; transform: translateY(0); }
-                }
-              `}</style>
-              {(["pickup", "both", "dropoff"] as const).map((d, i) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => { setDirection(d); setDirectionOpen(false); }}
-                  className="w-full font-mono text-[11px] tracking-[0.08em] uppercase px-3 py-2 text-left transition-colors duration-150 hover:bg-navy hover:text-ochre"
-                  style={{
-                    color: direction === d ? "#c99a3f" : "#1f1a14",
-                    backgroundColor: direction === d ? "#0b1a2e" : "transparent",
-                    opacity: directionOpen ? undefined : 0,
-                    animation: directionOpen ? `slideDown 280ms ease-out ${i * 100}ms both` : "none",
-                  }}
-                >
-                  {d === "pickup" ? t("pickup") : d === "dropoff" ? t("dropoff") : t("bothWays")}
-                </button>
-              ))}
-            </div>
-          </div>
+          <select value={direction} onChange={(e) => setDirection(e.target.value as "pickup" | "dropoff" | "both")} className={selectCls}>
+            <option value="pickup">{t("pickup")}</option>
+            <option value="dropoff">{t("dropoff")}</option>
+            <option value="both">{t("bothWays")}</option>
+          </select>
         </TransportFormField>
 
         <TransportFormField label={t("areaHotel")}>

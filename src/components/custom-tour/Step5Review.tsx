@@ -132,6 +132,8 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
     t("whatsappVehicle", {
       value: state.noDriverNeeded
         ? t("noDriver")
+        : state.airportTransferOnly
+        ? t("airportTransferOnly")
         : `${vehicle?.label ?? "—"} (${vehicle?.capacity ?? "—"})`,
     }),
     t("whatsappTravelGuide", {
@@ -174,6 +176,8 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           value={
             state.noDriverNeeded
               ? t("noDriver")
+              : state.airportTransferOnly
+              ? t("airportTransferOnly")
               : vehicle
               ? `${vehicle.label} · ${vehicle.capacity}`
               : "—"

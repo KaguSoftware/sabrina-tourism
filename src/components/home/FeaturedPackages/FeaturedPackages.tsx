@@ -2,21 +2,17 @@ import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
-import { PackageCard } from "@/components/packages/PackageCard/PackageCard";
-import type { Package } from "@/lib/packages/types";
+import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPackageCard";
+import type { DailyPackage } from "@/lib/daily/types";
 
 interface FeaturedPackagesProps {
   sectionHeading: string;
-  packages: Package[];
+  packages: DailyPackage[];
 }
 
 export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesProps) {
-    const featured = packages;
-
     return (
         <section className="relative z-10  py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
-            {/* Diagonal hatch — bottom-left */}
-
             {/* Diagonal hatch — top-right */}
             <div
                 aria-hidden="true"
@@ -29,7 +25,6 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
                     color: "rgba(201,154,63,0.25)",
                 }}
             />
-            {/* Diagonal hatch — bottom-right */}
 
             {/* Rings — bottom-right */}
             <div
@@ -54,14 +49,13 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
                     />
                 ))}
             </div>
-            {/* Rings — top-left */}
 
             <div className="max-w-[1320px] mx-auto relative z-10">
                 {/* Head */}
                 <div className="flex justify-between items-end gap-6 mb-12 flex-wrap">
                     <div>
                         <Reveal>
-                            <Kicker>Featured itineraries</Kicker>
+                            <Kicker>Our Daily Packages</Kicker>
                         </Reveal>
                         <Reveal delay={120}>
                             <GoldUnderlineHeading
@@ -74,10 +68,10 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
                     </div>
                     <Reveal delay={160}>
                         <Link
-                            href="/packages"
+                            href="/packages#daily"
                             className="font-mono text-[13px] tracking-[0.16em] uppercase border-b border-ochre pb-1 transition-colors duration-200 hover:text-ochre group"
                         >
-                            See all itineraries{" "}
+                            See all daily packages{" "}
                             <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
                                 →
                             </em>
@@ -87,9 +81,9 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-                    {featured.map((pkg, i) => (
-                        <Reveal key={pkg.slug} delay={i * 80}>
-                            <PackageCard pkg={pkg} />
+                    {packages.map((pkg, i) => (
+                        <Reveal key={pkg.id} delay={i * 80}>
+                            <DailyPackageCard pkg={pkg} />
                         </Reveal>
                     ))}
                 </div>

@@ -5,20 +5,21 @@ import { FeaturedPackages } from "@/components/home/FeaturedPackages/FeaturedPac
 import { HowItWorks } from "@/components/home/HowItWorks/HowItWorks";
 import { QuoteStrip } from "@/components/home/QuoteStrip/QuoteStrip";
 import { getSiteContent } from "@/lib/db/site-content";
-import { getFeaturedPackages } from "@/lib/db/packages";
+import { getAllPremadePackages } from "@/lib/db/premade-packages";
+import { DAILY_PACKAGES } from "@/lib/daily/data";
 import type { Step } from "@/components/home/HowItWorks/types";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [hero, about, howItWorks, quote, featuredHeading, featuredPackages] =
+  const [hero, about, howItWorks, quote, featuredHeading, groupPackages] =
     await Promise.all([
       getSiteContent("home_hero"),
       getSiteContent("home_about"),
       getSiteContent("home_how_it_works"),
       getSiteContent("home_quote"),
       getSiteContent("home_featured_heading"),
-      getFeaturedPackages(),
+      getAllPremadePackages(),
     ]);
 
   return (
@@ -30,10 +31,10 @@ export default async function HomePage() {
         kicker={hero.kicker}
       />
       <AboutStrip heading={about.heading} body={about.body} />
-      <SignatureDestinations />
+      <SignatureDestinations packages={groupPackages.slice(0, 3)} />
       <FeaturedPackages
         sectionHeading={featuredHeading.section_heading}
-        packages={featuredPackages}
+        packages={DAILY_PACKAGES.slice(0, 3)}
       />
       <HowItWorks
         sectionHeading={howItWorks.section_heading}
