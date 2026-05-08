@@ -71,7 +71,15 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           .join("; ")
       : "";
 
-  const vehicle = vehicles.find((v) => v.id === state.vehicleId);
+  const selections = state.vehicleSelections ?? {};
+  const selectedEntries = vehicles
+    .map((v) => ({ vehicle: v, count: selections[v.id] ?? 0 }))
+    .filter((e) => e.count > 0);
+  const vehicleSummary = selectedEntries.length === 0
+    ? "—"
+    : selectedEntries
+        .map((e) => e.count > 1 ? `${e.count}× ${e.vehicle.label}` : e.vehicle.label)
+        .join(" + ");
   const guideType = state.guideType ?? "assistant";
   const guideLanguage = state.guideLanguage ?? "English";
 
@@ -97,9 +105,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
     }),
     t("whatsappGuests", { value: state.people }),
     t("whatsappVehicle", {
-      value: state.noDriverNeeded
-        ? t("noDriver")
-        : `${vehicle?.label ?? "—"} (${vehicle?.capacity ?? "—"})`,
+      value: state.noDriverNeeded ? t("noDriver") : vehicleSummary,
     }),
     t("whatsappTravelGuide", {
       value: state.guideNeeded
@@ -136,13 +142,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         <Row label={t("guests")} value={`${state.people} ${state.people === 1 ? t("person") : t("people")}`} />
         <Row
           label={t("vehicle")}
-          value={
-            state.noDriverNeeded
-              ? t("noDriver")
-              : vehicle
-              ? `${vehicle.label} · ${vehicle.capacity}`
-              : "—"
-          }
+          value={state.noDriverNeeded ? t("noDriver") : vehicleSummary}
         />
         <Row
           label={t("travelGuide")}

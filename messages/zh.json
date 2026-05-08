@@ -225,7 +225,12 @@
       "guideAssistant": "助理",
       "guideCertified": "持证导游",
       "language": "语言",
-      "driverHours": "⚠ 司机工作时间通常为每天8–10小时。超出时间将额外收费。"
+      "driverHours": "⚠ 司机工作时间通常为每天8–10小时。超出时间将额外收费。",
+      "largeGroupNotice": "大型团体 — 超过 {n} 人",
+      "largeGroupHint": "您的团体超出了单辆车的容量。使用每辆车上的 +/− 按钮来组合您的车辆。",
+      "seatCoverage": "已覆盖座位",
+      "seatsShort": "还需要 {n} 个座位来覆盖您的团体",
+      "seatsCoveredOk": "✓ 所有客人均已覆盖"
     },
     "step5": {
       "kicker": "第5步，共5步",

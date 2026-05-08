@@ -226,7 +226,12 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge."
+      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "largeGroupNotice": "Büyük grup — {n} kişiyi aşıyor",
+      "largeGroupHint": "Grubunuz tek bir aracın kapasitesini aşıyor. Her araç için +/− butonlarını kullanarak araç kombinasyonunuzu oluşturun.",
+      "seatCoverage": "Kaplanan koltuklar",
+      "seatsShort": "Grubunuzu kapsamak için {n} koltuk daha gerekli",
+      "seatsCoveredOk": "✓ Tüm misafirler kapsandı"
     },
     "step5": {
       "kicker": "Adım 5 / 5",

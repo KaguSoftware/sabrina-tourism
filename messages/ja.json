@@ -225,7 +225,12 @@
       "guideAssistant": "アシスタント",
       "guideCertified": "認定ガイド",
       "language": "言語",
-      "driverHours": "⚠ ドライバーの勤務時間は通常1日8〜10時間です。超過分は追加料金が発生します。"
+      "driverHours": "⚠ ドライバーの勤務時間は通常1日8〜10時間です。超過分は追加料金が発生します。",
+      "largeGroupNotice": "大人数グループ — {n}名以上",
+      "largeGroupHint": "グループが1台の車両の定員を超えています。各車の+/−ボタンで車両の組み合わせを作成してください。",
+      "seatCoverage": "カバーされた座席",
+      "seatsShort": "グループをカバーするためにあと{n}席必要です",
+      "seatsCoveredOk": "✓ 全員分の席が確保されました"
     },
     "step5": {
       "kicker": "ステップ5 / 5",
