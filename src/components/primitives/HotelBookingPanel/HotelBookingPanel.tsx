@@ -69,10 +69,31 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
 
   const waHref = `https://wa.me/${waPhone ?? ""}?text=${encodeURIComponent(waMessage)}`;
 
+  const datesSelected = !!(checkIn && checkOut);
+
   return (
     <div className="border border-rule">
-      {/* Room type selector */}
+      {/* Date picker — mandatory first step */}
       <div className="border-b border-rule p-5">
+        <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-1">
+          Dates <span className="text-terracotta">*</span>
+        </p>
+        {!datesSelected && (
+          <p className="font-mono text-[9px] tracking-[0.14em] uppercase text-terracotta mb-2">
+            Please select your dates to continue
+          </p>
+        )}
+        <DateRangePicker
+          start={checkIn}
+          end={checkOut}
+          onChange={(s, e) => { setCheckIn(s); setCheckOut(e); }}
+          min={today}
+          placeholder="Select check-in → check-out"
+        />
+      </div>
+
+      {/* Room type selector */}
+      <div className={["border-b border-rule p-5 transition-opacity duration-200", !datesSelected ? "opacity-40 pointer-events-none select-none" : ""].join(" ")}>
         <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-3">Room type</p>
         <div className="flex flex-col gap-2">
           {roomTypes.map((room, i) => {
@@ -124,7 +145,7 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
       </div>
 
       {/* Guest count + rooms */}
-      <div className="border-b border-rule p-5 space-y-4">
+      <div className={["border-b border-rule p-5 space-y-4 transition-opacity duration-200", !datesSelected ? "opacity-40 pointer-events-none select-none" : ""].join(" ")}>
         <div>
           <label className="block font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-2">
             Number of guests
@@ -174,26 +195,17 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
         )}
       </div>
 
-      {/* Date picker */}
+      {/* Message preview + enquiry button */}
       <div className="p-5">
-        <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-3">Dates</p>
-        <DateRangePicker
-          start={checkIn}
-          end={checkOut}
-          onChange={(s, e) => { setCheckIn(s); setCheckOut(e); }}
-          min={today}
-          placeholder="Select check-in → check-out"
-        />
-
         {/* Message preview */}
         {waMessage && (
-          <div className="mt-4 mb-1 border-l-2 border-ochre bg-cream-deep p-3">
+          <div className="mb-4 border-l-2 border-ochre bg-cream-deep p-3">
             <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
             <p className="font-sans text-[12px] text-ink-soft leading-snug">{waMessage}</p>
           </div>
         )}
 
-        <div className="flex flex-col gap-2 mt-4">
+        <div className="flex flex-col gap-2">
           <a
             href={canEnquire ? waHref : undefined}
             onClick={canEnquire ? undefined : (e) => e.preventDefault()}

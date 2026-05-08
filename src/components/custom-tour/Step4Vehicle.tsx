@@ -76,7 +76,7 @@ export function Step4Vehicle({ state, onChange, onNext, onBack, vehicles }: Prop
           </span>
         </label>
 
-        <div className={`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 transition-opacity duration-200 ${state.airportTransferOnly ? "opacity-100" : "opacity-45 pointer-events-none"}`}>
+        <div className={`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-hidden transition-all duration-500 ease-in-out ${state.airportTransferOnly ? "max-h-60 opacity-100 translate-y-0" : "max-h-0 opacity-0 -translate-y-3 pointer-events-none"}`}>
           <div className="flex flex-col gap-2">
             <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted">
               {t("flightArrivalTime")}

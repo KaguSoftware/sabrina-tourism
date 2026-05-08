@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
@@ -39,10 +39,20 @@ export function DatePicker({
   const today = new Date();
   const initial = parseYMD(value) ?? today;
   const [open, setOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [cursor, setCursor] = useState(new Date(initial.getFullYear(), initial.getMonth(), 1));
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const closePanel = useCallback(() => {
+    setIsClosing(true);
+    closeTimerRef.current = setTimeout(() => {
+      setOpen(false);
+      setIsClosing(false);
+    }, 180);
+  }, []);
 
   useEffect(() => {
     const d = parseYMD(value);
@@ -55,7 +65,7 @@ export function DatePicker({
       if (
         triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
         panelRef.current && !panelRef.current.contains(e.target as Node)
-      ) setOpen(false);
+      ) closePanel();
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -66,7 +76,13 @@ export function DatePicker({
       const r = triggerRef.current.getBoundingClientRect();
       setPanelPos({ top: r.bottom + window.scrollY + 6, left: r.left + window.scrollX });
     }
-    setOpen((o) => !o);
+    if (open && !isClosing) {
+      closePanel();
+    } else if (!open) {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      setIsClosing(false);
+      setOpen(true);
+    }
   }
 
   const minDate = parseYMD(min ?? "") ?? null;
@@ -81,7 +97,7 @@ export function DatePicker({
 
   function select(day: number) {
     onChange(toYMD(new Date(year, month, day)));
-    setOpen(false);
+    closePanel();
   }
 
   function isDisabled(day: number) {
@@ -107,7 +123,7 @@ export function DatePicker({
     <div
       ref={panelRef}
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
-      className="bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] p-4 w-72 select-none"
+      className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] p-4 w-72 select-none ${isClosing ? "picker-exit" : "picker-enter"}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 function pad(n: number) {
@@ -21,9 +21,19 @@ export function TimePicker({
   disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0 });
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const closePanel = useCallback(() => {
+    setIsClosing(true);
+    closeTimerRef.current = setTimeout(() => {
+      setOpen(false);
+      setIsClosing(false);
+    }, 180);
+  }, []);
 
   const parsedHour = value ? parseInt(value.split(":")[0], 10) : null;
   const parsedMinute = value ? parseInt(value.split(":")[1], 10) : null;
@@ -45,7 +55,7 @@ export function TimePicker({
       if (
         triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
         panelRef.current && !panelRef.current.contains(e.target as Node)
-      ) setOpen(false);
+      ) closePanel();
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
@@ -58,7 +68,13 @@ export function TimePicker({
       const r = triggerRef.current.getBoundingClientRect();
       setPanelPos({ top: r.bottom + window.scrollY + 6, left: r.left + window.scrollX });
     }
-    setOpen((o) => !o);
+    if (open && !isClosing) {
+      closePanel();
+    } else if (!open) {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      setIsClosing(false);
+      setOpen(true);
+    }
   }
 
   function selectHour(h: number) {
@@ -71,7 +87,7 @@ export function TimePicker({
     setLocalMinute(m);
     const h = localHour ?? 0;
     onChange(`${pad(h)}:${pad(m)}`);
-    setOpen(false);
+    closePanel();
   }
 
   const displayValue =
@@ -89,7 +105,7 @@ export function TimePicker({
     <div
       ref={panelRef}
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
-      className="bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] select-none w-52"
+      className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] select-none w-52 ${isClosing ? "picker-exit" : "picker-enter"}`}
     >
       <div className="grid grid-cols-2 divide-x divide-rule">
         {/* Hours */}
