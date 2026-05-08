@@ -233,6 +233,8 @@
       "heading": "Rivedi il tuo itinerario",
       "sub": "Tutto pronto? Conferma per inviare la tua richiesta direttamente al nostro team via WhatsApp.",
       "bookingSummary": "Riepilogo prenotazione",
+      "tripMap": "Il tuo percorso",
+      "tripMapEmpty": "Seleziona le destinazioni per vedere il percorso",
       "destinations": "Destinazioni",
       "destinationDays": "Giorni per destinazione",
       "finishDate": "Data di fine",

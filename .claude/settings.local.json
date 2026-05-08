@@ -40,8 +40,8 @@
       "Bash(kill %1)",
       "Bash(npx eslint *)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\app\\\\[locale\\\\]\\\\\\(public\\\\\\)\\\\tours\\\\\" -Directory)",
-      "Bash(grep -E \"\\\\.\\(json|ts\\)$\")",
-      "Bash(node -e ' *)"
+      "Bash(awk '/^c:/{f=$0} /error /{print f\": \"$0}')",
+      "Bash(awk 'NR==215,NR==218; NR==235,NR==240' lint-out.txt)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

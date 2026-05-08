@@ -77,34 +77,100 @@ function VanSVG() {
   );
 }
 
-function LuxurySVG() {
+function MiniBusSVG() {
+  // Short bus shape — boxier and taller than a van, with a row of windows.
   return (
     <>
-      {/* Long low body */}
-      <path d="M18 80 L18 60 Q22 44 55 40 L145 40 Q178 44 182 60 L182 80Z" fill="#0b1a2e" />
-      {/* Sweeping roof */}
-      <path d="M55 40 Q65 28 100 26 Q135 28 145 40Z" fill="#162b47" />
-      {/* Windows */}
-      <path d="M60 40 Q68 32 100 30 Q132 32 140 40Z" fill="#a8c8e1" opacity="0.5" />
-      <line x1="100" y1="30" x2="100" y2="40" stroke="#0b1a2e" strokeWidth="1.5" />
-      {/* Gold trim lines */}
-      <path d="M18 72 L182 72" stroke="#c99a3f" strokeWidth="1.5" opacity="0.6" />
-      <path d="M18 60 Q22 56 55 54 L145 54 Q178 56 182 60" stroke="#c99a3f" strokeWidth="1" opacity="0.4" fill="none" />
+      {/* Body */}
+      <path d="M14 88 L14 32 Q16 22 36 20 L164 20 Q184 22 186 32 L186 88Z" fill="#1b4d5c" />
+      {/* Roof highlight */}
+      <rect x="14" y="20" width="172" height="6" fill="#162b47" />
+      {/* Windshield */}
+      <path d="M36 22 Q38 14 56 12 Q76 12 80 22Z" fill="#a8c8e1" opacity="0.55" />
+      {/* Row of side windows */}
+      <rect x="84" y="28" width="22" height="20" rx="2" fill="#a8c8e1" opacity="0.5" />
+      <rect x="110" y="28" width="22" height="20" rx="2" fill="#a8c8e1" opacity="0.5" />
+      <rect x="136" y="28" width="22" height="20" rx="2" fill="#a8c8e1" opacity="0.5" />
+      <rect x="162" y="28" width="20" height="20" rx="2" fill="#a8c8e1" opacity="0.5" />
+      {/* Door */}
+      <rect x="58" y="50" width="22" height="34" rx="1" fill="#162b47" />
+      <line x1="69" y1="52" x2="69" y2="82" stroke="#0b1a2e" strokeWidth="1" />
+      {/* Lower body trim (gold accent) */}
+      <line x1="14" y1="76" x2="186" y2="76" stroke="#c99a3f" strokeWidth="1.4" opacity="0.65" />
       {/* Wheels */}
-      <circle cx="55" cy="82" r="16" fill="#0d0d14" />
-      <circle cx="55" cy="82" r="10" fill="#1a1a28" />
-      <circle cx="55" cy="82" r="5" fill="#c99a3f" />
-      <circle cx="145" cy="82" r="16" fill="#0d0d14" />
-      <circle cx="145" cy="82" r="10" fill="#1a1a28" />
-      <circle cx="145" cy="82" r="5" fill="#c99a3f" />
+      <circle cx="46" cy="92" r="16" fill="#0b1a2e" />
+      <circle cx="46" cy="92" r="9" fill="#2a3a50" />
+      <circle cx="46" cy="92" r="3.5" fill="#c99a3f" />
+      <circle cx="154" cy="92" r="16" fill="#0b1a2e" />
+      <circle cx="154" cy="92" r="9" fill="#2a3a50" />
+      <circle cx="154" cy="92" r="3.5" fill="#c99a3f" />
       {/* Headlight */}
-      <path d="M174 64 L182 64 L182 70 L174 68Z" fill="#c99a3f" opacity="0.9" />
-      <ellipse cx="100" cy="98" rx="82" ry="4" fill="#0b1a2e" opacity="0.25" />
+      <rect x="178" y="58" width="8" height="10" rx="1.5" fill="#c99a3f" opacity="0.85" />
+      {/* Ground shadow */}
+      <ellipse cx="100" cy="110" rx="86" ry="4.5" fill="#1b4d5c" opacity="0.22" />
+    </>
+  );
+}
+
+function LuxurySVG() {
+  // Mercedes Vito style — executive van: tall front, raked windshield, sliding-door window line.
+  return (
+    <>
+      {/* Body — Vito silhouette: short hood rising into a tall passenger cabin */}
+      <path
+        d="M14 86 L14 60 Q16 54 26 52 L40 52 Q44 38 60 34 L168 34 Q184 36 186 50 L186 86 Z"
+        fill="#0b1a2e"
+      />
+      {/* Roof line shadow */}
+      <path d="M60 34 L168 34 Q184 36 186 50 L186 56 L60 56 Z" fill="#162b47" />
+      {/* Raked windshield */}
+      <path d="M44 52 Q48 40 64 38 L78 38 L78 52 Z" fill="#a8c8e1" opacity="0.6" />
+      {/* Long passenger window with gold divider */}
+      <rect x="84" y="40" width="58" height="16" rx="1.5" fill="#a8c8e1" opacity="0.55" />
+      <line x1="113" y1="40" x2="113" y2="56" stroke="#0b1a2e" strokeWidth="1.5" />
+      {/* Rear quarter window */}
+      <path d="M148 40 L178 40 Q182 42 182 50 L182 56 L148 56 Z" fill="#a8c8e1" opacity="0.55" />
+      {/* Sliding-door track (subtle) */}
+      <line x1="80" y1="60" x2="146" y2="60" stroke="#162b47" strokeWidth="1" opacity="0.7" />
+      {/* Gold trim along lower body */}
+      <line x1="14" y1="74" x2="186" y2="74" stroke="#c99a3f" strokeWidth="1.5" opacity="0.7" />
+      {/* Mercedes star hint on the grille */}
+      <circle cx="22" cy="64" r="4" fill="#c99a3f" opacity="0.9" />
+      <path d="M22 60 L22 68 M18.5 62 L25.5 66 M25.5 62 L18.5 66" stroke="#0b1a2e" strokeWidth="0.9" />
+      {/* Wheels */}
+      <circle cx="50" cy="88" r="16" fill="#0d0d14" />
+      <circle cx="50" cy="88" r="10" fill="#1a1a28" />
+      <circle cx="50" cy="88" r="4.5" fill="#c99a3f" />
+      <circle cx="150" cy="88" r="16" fill="#0d0d14" />
+      <circle cx="150" cy="88" r="10" fill="#1a1a28" />
+      <circle cx="150" cy="88" r="4.5" fill="#c99a3f" />
+      {/* Headlight */}
+      <path d="M14 60 L26 60 L26 68 L14 68 Z" fill="#c99a3f" opacity="0.85" />
+      {/* Ground shadow */}
+      <ellipse cx="100" cy="106" rx="86" ry="4.5" fill="#0b1a2e" opacity="0.28" />
     </>
   );
 }
 
 export function FleetIllustration({ vehicleId, className = "" }: FleetIllustrationProps) {
+  const renderIcon = () => {
+    switch (vehicleId) {
+      case "sedan":
+        return <SedanSVG />;
+      case "suv":
+        return <SUVSVG />;
+      case "van":
+        return <VanSVG />;
+      case "minibus":
+        return <MiniBusSVG />;
+      case "luxury":
+        return <LuxurySVG />;
+      default:
+        // Fallback so DB rows with unexpected ids still render an icon instead of nothing.
+        return <SedanSVG />;
+    }
+  };
+
   return (
     <svg
       viewBox={VIEWBOX}
@@ -113,10 +179,7 @@ export function FleetIllustration({ vehicleId, className = "" }: FleetIllustrati
       className={className}
       aria-hidden="true"
     >
-      {vehicleId === "sedan" && <SedanSVG />}
-      {vehicleId === "suv" && <SUVSVG />}
-      {vehicleId === "van" && <VanSVG />}
-      {vehicleId === "luxury" && <LuxurySVG />}
+      {renderIcon()}
     </svg>
   );
 }

@@ -234,6 +234,8 @@
       "heading": "Review Your Itinerary",
       "sub": "Everything looks good? Hit confirm to send your request directly to our team via WhatsApp.",
       "bookingSummary": "Booking Summary",
+      "tripMap": "Your Route",
+      "tripMapEmpty": "Select destinations to see your route",
       "destinations": "Destinations",
       "destinationDays": "Destination Days",
       "startDate": "Start Date",

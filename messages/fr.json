@@ -233,6 +233,8 @@
       "heading": "Vérifiez votre itinéraire",
       "sub": "Tout semble bon ? Confirmez pour envoyer votre demande directement à notre équipe via WhatsApp.",
       "bookingSummary": "Résumé de la réservation",
+      "tripMap": "Votre itinéraire",
+      "tripMapEmpty": "Sélectionnez des destinations pour voir votre itinéraire",
       "destinations": "Destinations",
       "destinationDays": "Jours par destination",
       "finishDate": "Date de fin",

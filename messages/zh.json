@@ -233,6 +233,8 @@
       "heading": "审查您的行程",
       "sub": "一切都好？点击确认，通过WhatsApp直接向我们团队发送请求。",
       "bookingSummary": "预订摘要",
+      "tripMap": "您的路线",
+      "tripMapEmpty": "选择目的地以查看您的路线",
       "destinations": "目的地",
       "destinationDays": "各目的地天数",
       "finishDate": "结束日期",
