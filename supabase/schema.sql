@@ -207,7 +207,7 @@ CREATE TRIGGER set_updated_at_transport_airports
 -- 3j. transport_vehicles
 CREATE TABLE IF NOT EXISTS transport_vehicles (
   id          uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-  vehicle_id  text        UNIQUE NOT NULL CHECK (vehicle_id IN ('sedan', 'suv', 'van', 'luxury')),
+  vehicle_id  text        UNIQUE NOT NULL CHECK (vehicle_id IN ('car', 'luxury', 'minibus', 'sedan', 'suv', 'van')),
   label       text        NOT NULL,
   capacity    text        NOT NULL,
   note        text        NOT NULL,
