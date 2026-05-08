@@ -232,6 +232,8 @@
       "heading": "Ihre Reiseroute prüfen",
       "sub": "Alles in Ordnung? Bestätigen Sie, um Ihre Anfrage direkt über WhatsApp an unser Team zu senden.",
       "bookingSummary": "Buchungsübersicht",
+      "tripMap": "Ihre Route",
+      "tripMapEmpty": "Wählen Sie Ziele, um Ihre Route zu sehen",
       "destinations": "Reiseziele",
       "destinationDays": "Tage pro Ziel",
       "finishDate": "Enddatum",

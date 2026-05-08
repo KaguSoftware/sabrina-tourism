@@ -233,6 +233,8 @@
       "heading": "İtinerarınızı İnceleyin",
       "sub": "Her şey yolunda mı? Talebinizi ekibimize WhatsApp üzerinden göndermek için onaylayın.",
       "bookingSummary": "Rezervasyon Özeti",
+      "tripMap": "Rotanız",
+      "tripMapEmpty": "Rotanızı görmek için destinasyon seçin",
       "destinations": "Destinasyonlar",
       "destinationDays": "Destinasyon Günleri",
       "startDate": "Başlangıç Tarihi",
