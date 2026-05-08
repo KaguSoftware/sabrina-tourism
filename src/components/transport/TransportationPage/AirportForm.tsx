@@ -212,7 +212,7 @@ export function AirportForm({ vehicleId, setVehicleId, airports, vehicles }: Air
                 {vehicleId === v.id && (
                   <span aria-hidden className="absolute top-2 right-2 w-2 h-2 rounded-full bg-ochre motion-safe:animate-pulse" />
                 )}
-                <FleetIllustration vehicleId={v.id} className="w-full h-13" />
+                <FleetIllustration vehicleId={v.id} className="w-full h-13" selected={vehicleId === v.id} />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
                 <span className={`font-mono text-[10px] tracking-[0.18em] uppercase ${vehicleId === v.id ? "text-cream" : "text-ochre"}`}>{v.from}</span>
                 <span className={`text-[11px] ${vehicleId === v.id ? "text-cream/70" : "text-muted"}`}>{v.capacity}</span>

@@ -6,7 +6,8 @@ export interface CustomTourState {
   people: number;
   hotelId: string | null;
   hotelIds: Record<string, string>;
-  vehicleId: string | null;
+  /** vehicleId → count. Empty means no vehicle chosen yet. */
+  vehicleSelections: Record<string, number>;
   noDriverNeeded: boolean;
   airportTransferOnly: boolean;
   flightArrivalDate: string;
@@ -24,7 +25,7 @@ export const INITIAL_STATE: CustomTourState = {
   people: 2,
   hotelId: null,
   hotelIds: {},
-  vehicleId: null,
+  vehicleSelections: {},
   noDriverNeeded: false,
   airportTransferOnly: false,
   flightArrivalDate: "",

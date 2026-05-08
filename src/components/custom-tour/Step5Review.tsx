@@ -3,8 +3,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { TripMapSVG } from "@/components/illustrations/TripMapSVG/TripMapSVG";
-import { REGIONS } from "@/lib/packages/constants";
-import { HOTELS } from "@/lib/regions/hotels";
 import { DESTINATIONS } from "./types";
 import type { CustomTourState } from "./types";
 import type { Vehicle } from "@/lib/transport/types";
@@ -54,28 +52,10 @@ function ordinal(n: number) {
   return `${n}${suffix}`;
 }
 
-function findHotel(id: string | null) {
-  if (!id) return null;
-
-  for (const region of REGIONS) {
-    const hotel = HOTELS[region].find((item) => item.id === id);
-    if (hotel) return { ...hotel, region };
-  }
-
-  return null;
-}
-
-function getSelectedRegions(destinations: string[]) {
-  return destinations.filter((destination): destination is (typeof REGIONS)[number] =>
-    REGIONS.includes(destination as (typeof REGIONS)[number])
-  );
-}
-
 export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
   const locale = useLocale();
   const t = useTranslations("customTour.step5");
   const whatsappT = useTranslations("whatsapp");
-  const selectedRegions = getSelectedRegions(state.destinations);
   const destLabels = state.destinations
     .map((id) => DESTINATIONS.find((d) => d.id === id)?.label ?? id)
     .join(", ");
@@ -92,18 +72,20 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           .join("; ")
       : "";
 
-  const hotelBreakdown = selectedRegions
-    .map((region, i) => {
-      const hotelId = (state.hotelIds ?? {})[region] ?? (i === 0 ? state.hotelId : null);
-      const hotel = findHotel(hotelId);
-      const regionLabel =
-        selectedRegions.length > 1 ? `${ordinal(i + 1)} ${region}` : region;
-      return `${regionLabel}: ${
-        hotel ? `${hotel.name} (${hotel.location})` : "—"
-      }`;
-    })
-    .join("; ");
-  const vehicle = vehicles.find((v) => v.id === state.vehicleId);
+  const selections = state.vehicleSelections ?? {};
+  const selectedEntries = vehicles
+    .map((v) => ({ vehicle: v, count: selections[v.id] ?? 0 }))
+    .filter((e) => e.count > 0);
+  const vehicleSummary = selectedEntries.length === 0
+    ? "—"
+    : selectedEntries
+        .map((e) => e.count > 1 ? `${e.count}× ${e.vehicle.label}` : e.vehicle.label)
+        .join(" + ");
+  const vehicleReviewValue = state.noDriverNeeded
+    ? t("noDriver")
+    : state.airportTransferOnly
+    ? t("airportTransferOnly")
+    : vehicleSummary;
   const guideType = state.guideType ?? "assistant";
   const guideLanguage = state.guideLanguage ?? "English";
 
@@ -128,13 +110,8 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
       duration,
     }),
     t("whatsappGuests", { value: state.people }),
-    t("whatsappHotels", { value: hotelBreakdown || "—" }),
     t("whatsappVehicle", {
-      value: state.noDriverNeeded
-        ? t("noDriver")
-        : state.airportTransferOnly
-        ? t("airportTransferOnly")
-        : `${vehicle?.label ?? "—"} (${vehicle?.capacity ?? "—"})`,
+      value: vehicleReviewValue,
     }),
     t("whatsappTravelGuide", {
       value: state.guideNeeded
@@ -170,18 +147,9 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         <Row label={t("finishDate")} value={formatDate(state.endDate, locale)} />
         <Row label={t("duration")} value={duration} />
         <Row label={t("guests")} value={`${state.people} ${state.people === 1 ? t("person") : t("people")}`} />
-        <Row label={t("hotels")} value={hotelBreakdown || "—"} />
         <Row
           label={t("vehicle")}
-          value={
-            state.noDriverNeeded
-              ? t("noDriver")
-              : state.airportTransferOnly
-              ? t("airportTransferOnly")
-              : vehicle
-              ? `${vehicle.label} · ${vehicle.capacity}`
-              : "—"
-          }
+          value={vehicleReviewValue}
         />
         <Row
           label={t("travelGuide")}

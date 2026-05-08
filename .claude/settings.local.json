@@ -41,7 +41,14 @@
       "Bash(npx eslint *)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\app\\\\[locale\\\\]\\\\\\(public\\\\\\)\\\\tours\\\\\" -Directory)",
       "Bash(awk '/^c:/{f=$0} /error /{print f\": \"$0}')",
-      "Bash(awk 'NR==215,NR==218; NR==235,NR==240' lint-out.txt)"
+      "Bash(awk 'NR==215,NR==218; NR==235,NR==240' lint-out.txt)",
+      "Bash(xargs cat -n)",
+      "Bash(sed -i '' 's/ selected={selected}//' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/custom-tour/Step4Vehicle.tsx)",
+      "Bash(sed -i '' 's/ selected={vehicleId === v\\\\.id}//' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/transport/TransportationPage/AirportForm.tsx)",
+      "Bash(sed -i '' 's/ selected={vehicleId === v\\\\.id}//' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/transport/TransportationPage/CustomForm.tsx)",
+      "Bash(sed -i '' 's/<FleetIllustration vehicleId={v\\\\.id} className=\"w-full h-14\" \\\\/>/<FleetIllustration vehicleId={v.id} className=\"w-full h-14\" selected={selected} \\\\/>/' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/custom-tour/Step4Vehicle.tsx)",
+      "Bash(sed -i '' 's/<FleetIllustration vehicleId={v\\\\.id} className=\"w-full h-13\" \\\\/>/<FleetIllustration vehicleId={v.id} className=\"w-full h-13\" selected={vehicleId === v.id} \\\\/>/' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/transport/TransportationPage/AirportForm.tsx)",
+      "Bash(sed -i '' 's/<FleetIllustration vehicleId={v\\\\.id} className=\"w-full h-13\" \\\\/>/<FleetIllustration vehicleId={v.id} className=\"w-full h-13\" selected={vehicleId === v.id} \\\\/>/' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/transport/TransportationPage/CustomForm.tsx)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

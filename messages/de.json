@@ -231,7 +231,12 @@
       "guideAssistant": "Assistent",
       "guideCertified": "Zertifizierter Führer",
       "language": "Sprache",
-      "driverHours": "⚠ Die Arbeitszeiten des Fahrers betragen in der Regel 8–10 Stunden pro Tag. Jede zusätzliche Stunde wird separat berechnet."
+      "driverHours": "⚠ Die Arbeitszeiten des Fahrers betragen in der Regel 8–10 Stunden pro Tag. Jede zusätzliche Stunde wird separat berechnet.",
+      "largeGroupNotice": "Große Gruppe — über {n} Personen",
+      "largeGroupHint": "Ihre Gruppe überschreitet die Kapazität eines einzelnen Fahrzeugs. Nutzen Sie die +/−-Tasten, um Ihre Fahrzeugkombination zusammenzustellen.",
+      "seatCoverage": "Abgedeckte Plätze",
+      "seatsShort": "Noch {n} Platz/Plätze für Ihre Gruppe benötigt",
+      "seatsCoveredOk": "✓ Alle Gäste abgedeckt"
     },
     "step5": {
       "kicker": "Schritt 5 von 5",

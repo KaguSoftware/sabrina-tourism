@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { StepIndicator } from "./StepIndicator";
 import { Step1Destination } from "./Step1Destination";
 import { Step2People } from "./Step2People";
-import { Step3Hotels } from "./Step3Hotels";
 import { Step4Vehicle } from "./Step4Vehicle";
 import { Step5Review } from "./Step5Review";
 import { CUSTOM_TOUR_DRAFT_KEY, INITIAL_STATE } from "./types";
@@ -17,12 +15,9 @@ interface Props {
 }
 
 export function CustomTourWizard({ vehicles }: Props) {
-  const searchParams = useSearchParams();
-  const shouldRestoreHotelsStep = searchParams.get("step") === "hotels";
   const wizardHeaderRef = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(0);
   const [state, setState] = useState<CustomTourState>(INITIAL_STATE);
-  const [draftChecked, setDraftChecked] = useState(!shouldRestoreHotelsStep);
 
   function scrollWizardHeaderIntoView() {
     window.requestAnimationFrame(() => {
@@ -37,38 +32,15 @@ export function CustomTourWizard({ vehicles }: Props) {
   }
 
   useEffect(() => {
-    if (!shouldRestoreHotelsStep) {
-      setDraftChecked(true);
-      return;
-    }
-
-    try {
-      const draft = window.sessionStorage.getItem(CUSTOM_TOUR_DRAFT_KEY);
-      if (draft) {
-        const parsed = JSON.parse(draft) as Partial<CustomTourState>;
-        setState({ ...INITIAL_STATE, ...parsed });
-      }
-    } catch {
-      window.sessionStorage.removeItem(CUSTOM_TOUR_DRAFT_KEY);
-    }
-
-    setStep(2);
-    setDraftChecked(true);
-    scrollWizardHeaderIntoView();
-  }, [shouldRestoreHotelsStep]);
-
-  useEffect(() => {
-    if (!draftChecked) return;
-
     window.sessionStorage.setItem(CUSTOM_TOUR_DRAFT_KEY, JSON.stringify(state));
-  }, [draftChecked, state]);
+  }, [state]);
 
   function patch(update: Partial<CustomTourState>) {
     setState((prev) => ({ ...prev, ...update }));
   }
 
   function next() {
-    setStep((s) => Math.min(s + 1, 4));
+    setStep((s) => Math.min(s + 1, 3));
     scrollWizardHeaderIntoView();
   }
 
@@ -89,12 +61,9 @@ export function CustomTourWizard({ vehicles }: Props) {
           <Step2People state={state} onChange={patch} onNext={next} onBack={back} />
         )}
         {step === 2 && (
-          <Step3Hotels state={state} onChange={patch} onNext={next} onBack={back} />
-        )}
-        {step === 3 && (
           <Step4Vehicle state={state} onChange={patch} onNext={next} onBack={back} vehicles={vehicles} />
         )}
-        {step === 4 && (
+        {step === 3 && (
           <Step5Review state={state} onBack={back} onConfirm={() => {}} vehicles={vehicles} />
         )}
       </div>

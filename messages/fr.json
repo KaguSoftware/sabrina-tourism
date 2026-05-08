@@ -231,7 +231,12 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Guide certifié",
       "language": "Langue",
-      "driverHours": "⚠ Les horaires de travail du chauffeur sont généralement de 8 à 10 heures par jour. Toute heure supplémentaire fera l'objet d'un tarif additionnel."
+      "driverHours": "⚠ Les horaires de travail du chauffeur sont généralement de 8 à 10 heures par jour. Toute heure supplémentaire fera l'objet d'un tarif additionnel.",
+      "largeGroupNotice": "Grand groupe — plus de {n} passagers",
+      "largeGroupHint": "Votre groupe dépasse la capacité d'un seul véhicule. Utilisez les boutons +/− sur chaque voiture pour composer votre flotte.",
+      "seatCoverage": "Sièges couverts",
+      "seatsShort": "Encore {n} siège(s) nécessaire(s) pour couvrir votre groupe",
+      "seatsCoveredOk": "✓ Tous les voyageurs sont couverts"
     },
     "step5": {
       "kicker": "Étape 5 sur 5",

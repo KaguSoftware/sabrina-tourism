@@ -232,7 +232,12 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge."
+      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "largeGroupNotice": "Large group — over {n} passengers",
+      "largeGroupHint": "Your group exceeds the capacity of a single vehicle. Use the +/− buttons on each car to build your fleet mix.",
+      "seatCoverage": "Seats covered",
+      "seatsShort": "{n} more seat(s) needed to cover your group",
+      "seatsCoveredOk": "✓ All guests covered"
     },
     "step5": {
       "kicker": "Step 5 of 5",

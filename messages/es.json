@@ -231,7 +231,12 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge."
+      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "largeGroupNotice": "Grupo grande — más de {n} pasajeros",
+      "largeGroupHint": "Su grupo supera la capacidad de un solo vehículo. Use los botones +/− en cada auto para combinar vehículos.",
+      "seatCoverage": "Asientos cubiertos",
+      "seatsShort": "Se necesitan {n} asiento(s) más para cubrir su grupo",
+      "seatsCoveredOk": "✓ Todos los huéspedes cubiertos"
     },
     "step5": {
       "kicker": "Paso 5 de 5",

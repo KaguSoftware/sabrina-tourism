@@ -3,7 +3,6 @@
 const STEPS = [
   "Destination & Dates",
   "No. of Guests",
-  "Accommodation",
   "Chauffeur",
   "Review",
 ];
