@@ -12,12 +12,12 @@ export async function SiteFooter() {
     {
       heading: t("itineraries"),
       links: [
-        { label: t("istanbul"), href: `${pfx}/packages?region=Istanbul` },
-        { label: t("cappadocia"), href: `${pfx}/packages?region=Cappadocia` },
-        { label: t("aegean"), href: `${pfx}/packages?region=Aegean` },
-        { label: t("mediterranean"), href: `${pfx}/packages?region=Mediterranean` },
-        { label: t("blackSea"), href: `${pfx}/packages?region=Black%20Sea` },
-        { label: t("easternAnatolia"), href: `${pfx}/packages?region=Eastern%20Anatolia` },
+        { label: t("istanbul"), href: `${pfx}/regions/istanbul` },
+        { label: t("cappadocia"), href: `${pfx}/regions/cappadocia` },
+        { label: t("aegean"), href: `${pfx}/regions/aegean` },
+        { label: t("mediterranean"), href: `${pfx}/regions/mediterranean` },
+        { label: t("blackSea"), href: `${pfx}/regions/black-sea` },
+        { label: t("easternAnatolia"), href: `${pfx}/regions/eastern-anatolia` },
       ],
     },
     {

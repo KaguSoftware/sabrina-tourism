@@ -39,7 +39,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/packages/custom)",
       "Bash(kill %1)",
       "Bash(npx eslint *)",
-      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\app\\\\[locale\\\\]\\\\\\(public\\\\\\)\\\\tours\\\\\" -Directory)"
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\app\\\\[locale\\\\]\\\\\\(public\\\\\\)\\\\tours\\\\\" -Directory)",
+      "Bash(grep -E \"\\\\.\\(json|ts\\)$\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
