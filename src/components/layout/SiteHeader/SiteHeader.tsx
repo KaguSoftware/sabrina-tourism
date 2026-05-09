@@ -105,7 +105,7 @@ export function SiteHeader() {
 
   const localePfx = locale === "en" ? "" : `/${locale}`;
   const NO_HERO_PATHS = [`${localePfx}/tours/custom-packages`];
-  const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname);
+  const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname) && !menuOpen;
 
   return (
     <>
@@ -216,34 +216,15 @@ export function SiteHeader() {
         </div>
       </header>
 
-      {/* Mobile overlay */}
+      {/* Mobile overlay — slides in from right, sits below the header bar */}
       <div
-        className={`fixed inset-0 bg-navy text-cream z-[60] flex flex-col p-6 transition-transform duration-[460ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-          menuOpen ? "translate-y-0 visible" : "-translate-y-full"
+        className={`md:hidden fixed top-21.5 bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
         aria-modal="true"
         aria-hidden={!menuOpen}
       >
-        <div className="flex justify-between items-center pb-10">
-          <Image
-            src="/sabrina_logo_cropped.png"
-            alt="Sabrina Turizm"
-            width="140"
-            height="48"
-            className="h-7 w-auto object-contain brightness-0 invert"
-          />
-          <button
-            className="w-12 h-12 flex items-center justify-center"
-            onClick={() => setMenuOpen(false)}
-            aria-label={t("closeMenu")}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
         <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
           {[
             { href: "/", label: t("home") },
@@ -255,10 +236,10 @@ export function SiteHeader() {
               className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
               style={{
                 opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-                transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                transform: menuOpen ? "translateX(0)" : "translateX(40px)",
+                transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                   100 + i * 60
-                }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+                }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                   100 + i * 60
                 }ms`,
               }}
@@ -270,10 +251,10 @@ export function SiteHeader() {
           <div
             style={{
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+              transform: menuOpen ? "translateX(0)" : "translateX(40px)",
+              transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                 100 + NAV_ITEMS.length * 60
-              }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
+              }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                 100 + NAV_ITEMS.length * 60
               }ms`,
             }}
@@ -301,11 +282,11 @@ export function SiteHeader() {
           <div
             style={{
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? "translateY(0)" : "translateY(20px)",
-              transition: `opacity 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                100 + NAV_ITEMS.length * 60
-              }ms, transform 600ms cubic-bezier(0.22,0.61,0.36,1) ${
-                100 + NAV_ITEMS.length * 60
+              transform: menuOpen ? "translateX(0)" : "translateX(40px)",
+              transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
+                160 + NAV_ITEMS.length * 60
+              }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
+                160 + NAV_ITEMS.length * 60
               }ms`,
             }}
           >
