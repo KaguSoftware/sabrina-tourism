@@ -1,4 +1,8 @@
+import { unstable_cache } from 'next/cache';
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
+import { tags } from '@/lib/cache/tags';
+
+const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
 export interface HotelRow {
   id: string;
@@ -117,7 +121,7 @@ const SELECT = `
   hotel_images(*)
 `;
 
-export async function getAllHotels({ publishedOnly = true } = {}): Promise<HotelPublic[]> {
+async function _getAllHotels({ publishedOnly = true } = {}): Promise<HotelPublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   let q = supabase.from('hotels').select(SELECT).order('sort_order');
@@ -127,7 +131,7 @@ export async function getAllHotels({ publishedOnly = true } = {}): Promise<Hotel
   return (data ?? []).map(assembleHotel);
 }
 
-export async function getHotelsByRegion(region: string, { publishedOnly = true } = {}): Promise<HotelPublic[]> {
+async function _getHotelsByRegion(region: string, { publishedOnly = true } = {}): Promise<HotelPublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   let q = supabase.from('hotels').select(SELECT).eq('region', region).order('sort_order');
@@ -137,12 +141,38 @@ export async function getHotelsByRegion(region: string, { publishedOnly = true }
   return (data ?? []).map(assembleHotel);
 }
 
-export async function getHotelBySlug(slug: string): Promise<HotelPublic | null> {
+async function _getHotelBySlug(slug: string): Promise<HotelPublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase.from('hotels').select(SELECT).eq('slug', slug).maybeSingle();
   if (error || !data) return null;
   return assembleHotel(data);
+}
+
+export async function getAllHotels(opts?: { publishedOnly?: boolean }): Promise<HotelPublic[]> {
+  const publishedOnly = opts?.publishedOnly ?? true;
+  return unstable_cache(
+    () => _getAllHotels({ publishedOnly }),
+    ['hotels:all', String(publishedOnly)],
+    { tags: [tags.hotels.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getHotelsByRegion(region: string, opts?: { publishedOnly?: boolean }): Promise<HotelPublic[]> {
+  const publishedOnly = opts?.publishedOnly ?? true;
+  return unstable_cache(
+    () => _getHotelsByRegion(region, { publishedOnly }),
+    ['hotels:byRegion', region, String(publishedOnly)],
+    { tags: [tags.hotels.byRegion(region), tags.hotels.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getHotelBySlug(slug: string): Promise<HotelPublic | null> {
+  return unstable_cache(
+    () => _getHotelBySlug(slug),
+    ['hotels:bySlug', slug],
+    { tags: [tags.hotels.bySlug(slug), tags.hotels.all()], revalidate: REVALIDATE_SECONDS },
+  )();
 }
 
 export async function getHotelRawById(id: string): Promise<HotelRow | null> {
@@ -153,7 +183,7 @@ export async function getHotelRawById(id: string): Promise<HotelRow | null> {
   return data as HotelRow;
 }
 
-export async function getFeaturedHotels(): Promise<HotelPublic[]> {
+async function _getFeaturedHotels(): Promise<HotelPublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase
@@ -164,6 +194,14 @@ export async function getFeaturedHotels(): Promise<HotelPublic[]> {
     .limit(3);
   if (error) { console.error('[db/hotels] getFeaturedHotels:', error); return []; }
   return (data ?? []).map(assembleHotel);
+}
+
+export async function getFeaturedHotels(): Promise<HotelPublic[]> {
+  return unstable_cache(
+    _getFeaturedHotels,
+    ['hotels:featured'],
+    { tags: [tags.hotels.featured(), tags.hotels.all()], revalidate: REVALIDATE_SECONDS },
+  )();
 }
 
 export async function getAdminHotels(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {

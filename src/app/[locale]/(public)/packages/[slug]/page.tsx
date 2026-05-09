@@ -3,7 +3,6 @@ import { PackageDetailPage } from "@/components/packages/PackageDetailPage/Packa
 import { getAllSlugs, getPackageBySlug } from "@/lib/db/packages";
 import type { Package } from "@/lib/packages/types";
 
-export const revalidate = 60;
 export const dynamicParams = true;
 
 interface Props {

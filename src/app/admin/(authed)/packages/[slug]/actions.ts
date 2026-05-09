@@ -1,8 +1,9 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { PackageSchema, type PackageFormValues } from "./schema";
 
@@ -56,15 +57,10 @@ export async function savePackage(
 
   const slug = (returnedSlug as string) ?? finalSlug;
 
-  revalidatePath(`/packages/${slug}`);
-  revalidatePath(`/packages`);
-  revalidatePath(`/`);
-  revalidateTag("packages", "max");
-
-  // If slug changed, also revalidate old path
-  if (data.id && data.id !== slug) {
-    // old slug is unknown here but Next.js will bust cache via revalidatePath('/')
-  }
+  revalidateTag(tags.packages.all(), "max");
+  revalidateTag(tags.packages.slugs(), "max");
+  revalidateTag(tags.packages.featured(), "max");
+  revalidateTag(tags.packages.bySlug(slug), "max");
 
   return { slug };
 }
