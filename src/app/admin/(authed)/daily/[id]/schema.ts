@@ -15,7 +15,6 @@ export const DailySchema = z.object({
   hero_image: z.string(),
   card_image: z.string(),
   stops: z.array(z.object({
-    stop_time: z.string(),
     place: z.string(),
     description: z.string(),
   })),

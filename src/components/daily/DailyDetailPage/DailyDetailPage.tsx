@@ -164,11 +164,6 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                 >
                   {/* dot */}
                   <span className={`absolute -left-10.25 top-1.5 w-3 h-3 rounded-full bg-ochre border-2 border-cream shadow transition-all duration-700 ${lit ? "scale-125 shadow-[0_0_14px_5px_rgba(212,175,55,0.7)]" : ""}`} />
-                  {(i === 0 || i === pkg.stops.length - 1) && (
-                    <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-ochre mb-1">
-                      {stop.time}
-                    </p>
-                  )}
                   <h3 className={`font-display text-[20px] leading-tight mb-1 text-ink transition-all duration-700 w-fit ${lit ? "drop-shadow-[0_0_8px_rgba(212,175,55,0.9)]" : ""}`}>
                     {stop.place}
                   </h3>

@@ -160,7 +160,7 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
   };
 }
 
-const SELECT = '*, name_translations, short_description_translations, overview_translations, accommodation_name_translations, accommodation_description_translations, premade_package_gallery(*), premade_package_itinerary_days(*), premade_package_tiers(*), premade_package_inclusions(*)';
+const SELECT = '*, name_translations, short_description_translations, overview_translations, accommodation_name_translations, accommodation_description_translations, premade_package_gallery(*), premade_package_dates(*), premade_package_itinerary_days(*), premade_package_tiers(*), premade_package_inclusions(*)';
 
 export async function getAllPremadePackages({ publishedOnly = true, locale = 'en' } = {}): Promise<PremadePackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

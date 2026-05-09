@@ -13,7 +13,7 @@ export function ItineraryTab() {
   return (
     <div className="space-y-6">
       <p className="font-sans text-[14px] text-ink-soft leading-relaxed">
-        Add each stop in chronological order. Include a time, place name, and short description of what happens there.
+        Add each stop in chronological order. Include a place name and short description of what happens there.
       </p>
 
       {fields.map((field, i) => {
@@ -24,14 +24,9 @@ export function ItineraryTab() {
               <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-muted">Stop {i + 1}</p>
               <button type="button" onClick={() => remove(i)} className="text-ink-soft hover:text-terracotta transition-colors"><Trash2 size={14} /></button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField label="Time" error={errs?.stop_time?.message}>
-                <Input {...register(`stops.${i}.stop_time`)} placeholder="e.g. 09:30" />
-              </FormField>
-              <FormField label="Place" error={errs?.place?.message}>
-                <Input {...register(`stops.${i}.place`)} placeholder="e.g. Sultanahmet Square" />
-              </FormField>
-            </div>
+            <FormField label="Place" error={errs?.place?.message}>
+              <Input {...register(`stops.${i}.place`)} placeholder="e.g. Sultanahmet Square" />
+            </FormField>
             <FormField label="Description" error={errs?.description?.message}>
               <Textarea rows={2} {...register(`stops.${i}.description`)} placeholder="What guests will experience here…" />
             </FormField>
@@ -39,7 +34,7 @@ export function ItineraryTab() {
         );
       })}
 
-      <button type="button" onClick={() => append({ stop_time: "", place: "", description: "" })}
+      <button type="button" onClick={() => append({ place: "", description: "" })}
         className="flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium border border-ochre text-ochre hover:bg-ochre hover:text-navy transition-all duration-200">
         <Plus size={14} /> Add stop
       </button>

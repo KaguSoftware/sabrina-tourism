@@ -53,7 +53,7 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
   await supabase.from("daily_package_stops").delete().eq("package_id", pkgId);
   if (data.stops.length) {
     await supabase.from("daily_package_stops").insert(
-      data.stops.map((s, i) => ({ package_id: pkgId, stop_time: s.stop_time, place: s.place, description: s.description, sort_order: i }))
+      data.stops.map((s, i) => ({ package_id: pkgId, stop_time: "", place: s.place, description: s.description, sort_order: i }))
     );
   }
 

@@ -12,7 +12,9 @@ const WINDOW = "#a8c8e1";
 
 const VEHICLE_IMAGES: Partial<Record<string, string>> = {
   car: "/C5CB74E9-4C15-4FA9-9B45-F76918D425D8.PNG",
+  van: "/C5CB74E9-4C15-4FA9-9B45-F76918D425D8.PNG",
   minibus: "/IMG_9227.PNG",
+  bus: "/IMG_9227.PNG",
   luxury: "/F726CEB8-ED4C-49AA-AE1A-D749A43A4A95.PNG",
 };
 

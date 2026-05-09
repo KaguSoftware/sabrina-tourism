@@ -43,7 +43,7 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
       short_description: pkg.short_description,
       hero_image: pkg.hero_image ?? "",
       card_image: pkg.card_image ?? "",
-      stops: sorted(pkg.daily_package_stops ?? []).map((s) => ({ stop_time: s.stop_time, place: s.place, description: s.description })),
+      stops: sorted(pkg.daily_package_stops ?? []).map((s) => ({ place: s.place, description: s.description })),
       included: sorted(pkg.daily_package_included ?? []).map((i) => ({ text: i.text })),
       gallery: sorted(pkg.daily_package_gallery ?? []).map((g) => ({ url: g.url })),
       is_published: pkg.is_published,

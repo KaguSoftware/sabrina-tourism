@@ -1,336 +1,263 @@
+import React from "react";
 import {
-  Document,
-  Page,
-  View,
-  Text,
-  Image,
-  StyleSheet,
+  Document, Page, View, Text, Image,
+  Svg, Polygon,
 } from "@react-pdf/renderer";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { colors, fonts, spacing } from "@/lib/pdf/theme";
+import { C, F, MARGIN } from "@/lib/pdf/theme";
 
 registerFonts();
 
-function fmt(iso: string) {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
-
-const s = StyleSheet.create({
-  coverPage: {
-    fontFamily: fonts.sans,
-    backgroundColor: colors.navy,
-    padding: 0,
-  },
-  page: {
-    fontFamily: fonts.sans,
-    backgroundColor: colors.white,
-    paddingHorizontal: spacing.pageH,
-    paddingVertical: spacing.pageV,
-  },
-  heroImage: {
-    width: "100%",
-    height: 280,
-    objectFit: "cover",
-  },
-  coverBody: {
-    backgroundColor: colors.navy,
-    paddingHorizontal: spacing.pageH,
-    paddingTop: 28,
-    paddingBottom: 20,
-  },
-  tagPill: {
-    backgroundColor: colors.ochre,
-    color: colors.navy,
-    fontSize: 8,
-    fontWeight: 700,
-    letterSpacing: 1.5,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    alignSelf: "flex-start",
-    marginBottom: 12,
-    textTransform: "uppercase",
-  },
-  coverTitle: {
-    fontSize: 30,
-    fontWeight: 700,
-    color: colors.white,
-    marginBottom: 8,
-    lineHeight: 1.1,
-  },
-  coverDates: {
-    fontSize: 10,
-    color: colors.ochre,
-    letterSpacing: 2,
-    textTransform: "uppercase",
-    marginBottom: 14,
-  },
-  coverDesc: {
-    fontSize: 12,
-    color: colors.cream,
-    lineHeight: 1.6,
-    fontStyle: "italic",
-    maxWidth: 420,
-  },
-  coverPrice: {
-    fontSize: 22,
-    fontWeight: 700,
-    color: colors.ochre,
-    marginTop: 14,
-  },
-  coverPriceSub: {
-    fontSize: 9,
-    color: colors.cream,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-    marginTop: 2,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    marginTop: 8,
-  },
-  sectionBorder: {
-    width: 3,
-    height: 18,
-    backgroundColor: colors.ochre,
-    marginRight: 10,
-  },
-  sectionLabel: {
-    fontSize: 9,
-    fontWeight: 700,
-    color: colors.navy,
-    letterSpacing: 2,
-    textTransform: "uppercase",
-  },
-  dayRow: {
-    flexDirection: "row",
-    marginBottom: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-  },
-  dayRowAlt: {
-    backgroundColor: colors.lightGray,
-  },
-  dayCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.ochre,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-    flexShrink: 0,
-  },
-  dayNum: {
-    color: colors.navy,
-    fontSize: 9,
-    fontWeight: 700,
-  },
-  dayContent: {
-    flex: 1,
-  },
-  dayTitle: {
-    fontSize: 11,
-    fontWeight: 700,
-    color: colors.navy,
-    marginBottom: 3,
-  },
-  dayDesc: {
-    fontSize: 10,
-    color: colors.inkSoft,
-    lineHeight: 1.5,
-  },
-  inclusionsGrid: {
-    flexDirection: "row",
-    gap: 20,
-    marginTop: 8,
-  },
-  inclusionCol: {
-    flex: 1,
-  },
-  inclusionItem: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 5,
-  },
-  checkMark: {
-    fontSize: 10,
-    color: colors.green,
-    marginRight: 6,
-    marginTop: 1,
-    fontWeight: 700,
-  },
-  xMark: {
-    fontSize: 10,
-    color: colors.terracotta,
-    marginRight: 6,
-    marginTop: 1,
-    fontWeight: 700,
-  },
-  inclusionText: {
-    fontSize: 10,
-    color: colors.inkSoft,
-    lineHeight: 1.4,
-    flex: 1,
-  },
-  tiersRow: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 8,
-  },
-  tierCard: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: colors.ruleLight,
-    padding: 10,
-  },
-  tierName: {
-    fontSize: 9,
-    fontWeight: 700,
-    color: colors.ochre,
-    letterSpacing: 1.5,
-    textTransform: "uppercase",
-    marginBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.ruleLight,
-    paddingBottom: 6,
-  },
-  tierRow: {
-    marginBottom: 5,
-  },
-  tierLabel: {
-    fontSize: 7,
-    color: colors.inkSoft,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 1,
-  },
-  tierValue: {
-    fontSize: 9,
-    color: colors.navy,
-    fontWeight: 700,
-  },
-  mt16: { marginTop: 16 },
-  footer: {
-    position: "absolute",
-    bottom: 20,
-    left: spacing.pageH,
-    right: spacing.pageH,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: colors.ruleLight,
-    paddingTop: 8,
-  },
-  footerBrand: { fontSize: 9, color: colors.ochre, fontWeight: 700 },
-  footerTagline: { fontSize: 7, color: colors.inkSoft },
-  footerWa: { fontSize: 8, color: colors.inkSoft },
-  pageNum: { fontSize: 8, color: colors.inkSoft },
-});
-
-function Footer({ waPhone }: { waPhone: string }) {
-  return (
-    <View style={s.footer} fixed>
-      <View>
-        <Text style={s.footerBrand}>SABRINA TOURISM</Text>
-        <Text style={s.footerTagline}>Boutique Tours Across Türkiye</Text>
-      </View>
-      {waPhone ? <Text style={s.footerWa}>WhatsApp: {waPhone}</Text> : null}
-      <Text style={s.pageNum} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
-    </View>
-  );
-}
-
-interface Props {
-  pkg: PremadePackagePublic;
-  waPhone?: string;
-  baseUrl?: string;
-}
+const PW = 595;
+const HERO_H = 310;
+const CUT_RISE = 32; // right side is this many points higher than left
 
 function abs(src: string, base: string) {
   return src.startsWith("http") ? src : `${base}${src}`;
 }
+function fmtMonth(iso: string) {
+  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+}
 
-export function PremadePackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
-  const dateRange = pkg.dates?.[0]
-    ? `${fmt(pkg.dates[0].startDate)} → ${fmt(pkg.dates[0].endDate)}`
-    : `${fmt(pkg.startDate)} → ${fmt(pkg.endDate)}`;
+// ── shared atoms ─────────────────────────────────────────────────
+function Wordmark({ light = false }: { light?: boolean }) {
+  return (
+    <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>
+      SABRINA TURIZM
+    </Text>
+  );
+}
+
+function Mono({ children, style = {} }: { children: React.ReactNode; style?: object }) {
+  return (
+    <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>
+      {children}
+    </Text>
+  );
+}
+
+function PageFooter({ left, page, total }: { left: string; page: number; total: number }) {
+  return (
+    <View style={{
+      position: "absolute", bottom: 32, left: MARGIN, right: MARGIN,
+      flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+      borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10,
+    }}>
+      <Mono style={{ color: C.inkSoft }}>{left.toUpperCase()}</Mono>
+      <Wordmark />
+      <Mono style={{ color: C.inkSoft }}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
+    </View>
+  );
+}
+
+// ── Diagonal hero transition ──────────────────────────────────────
+// Full-bleed hero with gradient overlay → angled ochre stripe → paper
+// Hero is absolute; page uses paddingTop to push flow content below it.
+const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
+
+function HeroBlock({ heroSrc }: { heroSrc: string | null }) {
+  return (
+    <>
+      {/* Full-bleed hero — no margins */}
+      {heroSrc ? (
+        <Image src={heroSrc} style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, objectFit: "cover" }} />
+      ) : (
+        <View style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, backgroundColor: C.navy }} />
+      )}
+
+      {/* Wordmark top-left on the image */}
+      <View style={{ position: "absolute", top: 28, left: MARGIN }}>
+        <Wordmark light />
+      </View>
+
+      {/* Ochre diagonal stripe at bottom of hero */}
+      <Svg width={PW} height={CUT_RISE + 8} style={{ position: "absolute", top: HERO_H - 8, left: 0 }}>
+        <Polygon points={`0,${CUT_RISE + 8} ${PW},8 ${PW},0 0,${CUT_RISE}`} fill={C.ochre} />
+      </Svg>
+      {/* Paper fill sealing below the diagonal */}
+      <Svg width={PW} height={CUT_RISE + 4} style={{ position: "absolute", top: HERO_H + CUT_RISE - 4, left: 0 }}>
+        <Polygon points={`0,0 ${PW},0 ${PW},${CUT_RISE + 4} 0,${CUT_RISE + 4}`} fill={C.creamDeep} />
+      </Svg>
+    </>
+  );
+}
+
+// ── Page 1: Cover ────────────────────────────────────────────────
+function Cover({ pkg, waPhone, baseUrl }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string }) {
+  const heroSrc = pkg.heroImage ? abs(pkg.heroImage, baseUrl) : null;
+  const facts = [
+    { k: "Duration",   v: pkg.duration ?? "—" },
+    { k: "Region",     v: pkg.region ?? "—" },
+    { k: "Group size", v: pkg.minPeople != null && pkg.maxPeople != null ? `${pkg.minPeople}–${pkg.maxPeople} guests` : "—" },
+    { k: "Available",  v: pkg.availableFrom && pkg.availableTo ? `${fmtMonth(pkg.availableFrom)} – ${fmtMonth(pkg.availableTo)}` : "—" },
+  ];
 
   return (
-    <Document title={pkg.name} author="Sabrina Tourism">
-      {/* Cover */}
-      <Page size="A4" style={s.coverPage}>
-        <Image src={abs(pkg.heroImage, baseUrl)} style={s.heroImage} />
-        <View style={s.coverBody}>
-          <Text style={s.tagPill}>Fixed-Date Group Package</Text>
-          <Text style={s.coverTitle}>{pkg.name}</Text>
-          <Text style={s.coverDates}>{dateRange}</Text>
-          <Text style={s.coverDesc}>{pkg.shortDescription}</Text>
-          {pkg.price != null && (
-            <>
-              <Text style={s.coverPrice}>{pkg.currency} {pkg.price.toLocaleString()}</Text>
-              <Text style={s.coverPriceSub}>Per person · starting from</Text>
-            </>
-          )}
-        </View>
-        <Footer waPhone={waPhone} />
-      </Page>
+    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body, paddingTop: HERO_PADDING_TOP }}>
+      {/* Absolute: hero image + wordmark + diagonal SVGs */}
+      <HeroBlock heroSrc={heroSrc} />
 
-      {/* Itinerary + Inclusions + Tiers */}
-      <Page size="A4" style={s.page}>
-        {pkg.itinerary.length > 0 && (
-          <>
-            <View style={s.sectionHeader}>
-              <View style={s.sectionBorder} />
-              <Text style={s.sectionLabel}>Itinerary</Text>
-            </View>
-            {pkg.itinerary.map((day, i) => (
-              <View key={day.day} style={[s.dayRow, i % 2 === 1 ? s.dayRowAlt : {}]} wrap={false}>
-                <View style={s.dayCircle}>
-                  <Text style={s.dayNum}>{day.day}</Text>
-                </View>
-                <View style={s.dayContent}>
-                  <Text style={s.dayTitle}>{day.title}</Text>
-                  <Text style={s.dayDesc}>{day.description}</Text>
-                </View>
-              </View>
-            ))}
-          </>
-        )}
+      {/* Flow content — starts below hero thanks to paddingTop */}
+      <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
+        <Mono style={{ color: C.ochre, marginBottom: 10 }}>{`${(pkg.region ?? "").toUpperCase()} · GROUP PACKAGE`}</Mono>
+        <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 54, lineHeight: 1, letterSpacing: -1, color: C.ink }}>
+          {pkg.name}
+        </Text>
+        <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 17, lineHeight: 1.4, color: C.inkSoft, marginTop: 10 }}>
+          {pkg.shortDescription}
+        </Text>
+      </View>
 
-        {(pkg.included.length > 0 || pkg.notIncluded.length > 0) && (
-          <View style={s.mt16}>
-            <View style={s.sectionHeader}>
-              <View style={s.sectionBorder} />
-              <Text style={s.sectionLabel}>What&apos;s Included</Text>
-            </View>
-            <View style={s.inclusionsGrid}>
-              <View style={s.inclusionCol}>
-                {pkg.included.map((item, i) => (
-                  <View key={i} style={s.inclusionItem}>
-                    <Text style={s.checkMark}>✓</Text>
-                    <Text style={s.inclusionText}>{item}</Text>
-                  </View>
-                ))}
-              </View>
-              <View style={s.inclusionCol}>
-                {pkg.notIncluded.map((item, i) => (
-                  <View key={i} style={s.inclusionItem}>
-                    <Text style={s.xMark}>✗</Text>
-                    <Text style={s.inclusionText}>{item}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
+      {/* Facts strip */}
+      <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", backgroundColor: C.navy }}>
+        {facts.map((f, i) => (
+          <View key={i} style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 14, borderRightWidth: i < 3 ? 1 : 0, borderRightColor: C.navySoft }}>
+            <Mono style={{ color: C.ochre, marginBottom: 6 }}>{f.k.toUpperCase()}</Mono>
+            <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 15, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
           </View>
-        )}
+        ))}
+      </View>
 
-        <Footer waPhone={waPhone} />
-      </Page>
+      {waPhone ? (
+        <View style={{ position: "absolute", bottom: 72, left: MARGIN }}>
+          <Text style={{ fontFamily: F.body, fontSize: 10, color: C.inkSoft }}>{`WhatsApp ${waPhone}  ·  sabrinaturizm.com`}</Text>
+        </View>
+      ) : null}
+
+      <PageFooter left="Sabrina Turizm" page={1} total={3} />
+    </Page>
+  );
+}
+
+// ── Page 2: Itinerary ────────────────────────────────────────────
+function Itinerary({ pkg }: { pkg: PremadePackagePublic }) {
+  return (
+    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
+      <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
+        <Wordmark />
+      </View>
+
+      <View style={{ paddingHorizontal: MARGIN, paddingTop: 28 }}>
+        <Mono style={{ color: C.ochre, marginBottom: 8 }}>DAY BY DAY</Mono>
+        <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 50, lineHeight: 1, letterSpacing: -1, color: C.ink }}>
+          The itinerary.
+        </Text>
+        <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 15, color: C.inkSoft, marginTop: 8, lineHeight: 1.5 }}>
+          {pkg.shortDescription}
+        </Text>
+      </View>
+
+      <View style={{ marginHorizontal: MARGIN, marginTop: 24 }}>
+        {pkg.itinerary.map((day, i) => (
+          <View key={day.day} style={{
+            flexDirection: "row", alignItems: "center",
+            paddingVertical: 13,
+            borderTopWidth: 1, borderTopColor: C.rule,
+            borderBottomWidth: i === pkg.itinerary.length - 1 ? 1 : 0,
+            borderBottomColor: C.rule,
+          }}>
+            <View style={{ width: 70 }}>
+              <Mono style={{ color: C.ochre }}>{`DAY ${String(day.day).padStart(2, "0")}`}</Mono>
+            </View>
+            <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: i % 3 === 0 ? C.ochre : C.rule, marginRight: 18 }} />
+            <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 20, color: C.ink, flex: 1, lineHeight: 1.1 }}>
+              {day.title}
+            </Text>
+          </View>
+        ))}
+      </View>
+
+      <PageFooter left="Day by day" page={2} total={3} />
+    </Page>
+  );
+}
+
+// ── Page 3: Closing ───────────────────────────────────────────────
+function Closing({ pkg, waPhone }: { pkg: PremadePackagePublic; waPhone: string }) {
+  return (
+    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
+      <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
+        <Wordmark />
+      </View>
+
+      <View style={{ paddingHorizontal: MARGIN, paddingTop: 24, paddingBottom: 24, backgroundColor: C.navy, marginTop: 0 }}>
+        <Mono style={{ color: C.ochre, marginBottom: 8 }}>RESERVE</Mono>
+        <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 44, lineHeight: 1, letterSpacing: -0.5, color: C.cream }}>
+          {pkg.name}.
+        </Text>
+        <View style={{ flexDirection: "row", marginTop: 20, gap: 28 }}>
+          <View style={{ flex: 1 }}>
+            <Mono style={{ color: C.ochre, marginBottom: 6 }}>STARTING FROM</Mono>
+            {pkg.price != null ? (
+              <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 40, lineHeight: 1, color: C.ochre }}>
+                {`${pkg.currency} ${pkg.price.toLocaleString()}`}
+              </Text>
+            ) : (
+              <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 22, color: C.cream }}>Contact us</Text>
+            )}
+            <Text style={{ fontFamily: F.body, fontSize: 11, color: C.cream, marginTop: 4, opacity: 0.7 }}>per person</Text>
+          </View>
+          <View style={{ flex: 1, paddingLeft: 24, borderLeftWidth: 1, borderLeftColor: C.navySoft }}>
+            <Mono style={{ color: C.ochre, marginBottom: 8 }}>HOW TO RESERVE</Mono>
+            <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 14, lineHeight: 1.5, color: C.cream }}>
+              No payment now. We send a tailored quote — you confirm only when ready.
+            </Text>
+            {waPhone ? (
+              <Text style={{ fontFamily: F.body, fontSize: 12, color: C.cream, marginTop: 8, opacity: 0.9 }}>
+                {`WhatsApp: ${waPhone}`}
+              </Text>
+            ) : null}
+            {waPhone ? (
+              <View style={{ marginTop: 10, alignSelf: "flex-start", backgroundColor: C.ochre, paddingVertical: 7, paddingHorizontal: 12 }}>
+                <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.2, color: C.navy }}>{`WHATSAPP · ${waPhone}`}</Text>
+              </View>
+            ) : null}
+          </View>
+        </View>
+      </View>
+
+      <View style={{ marginHorizontal: MARGIN, marginTop: 28, flexDirection: "row", gap: 32 }}>
+        <View style={{ flex: 1 }}>
+          <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 8, marginBottom: 14 }}>
+            <Mono style={{ color: C.ochre }}>INCLUDED</Mono>
+          </View>
+          {pkg.included.map((it, i) => (
+            <View key={i} style={{ flexDirection: "row", paddingVertical: 6 }}>
+              <Text style={{ fontFamily: F.mono, fontSize: 9, color: C.ochre, width: 16 }}>✓</Text>
+              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5 }}>{it}</Text>
+            </View>
+          ))}
+        </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ borderBottomWidth: 1, borderBottomColor: C.rule, paddingBottom: 8, marginBottom: 14 }}>
+            <Mono style={{ color: C.inkSoft }}>NOT INCLUDED</Mono>
+          </View>
+          {pkg.notIncluded.map((it, i) => (
+            <View key={i} style={{ flexDirection: "row", paddingVertical: 6 }}>
+              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, width: 16 }}>×</Text>
+              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5 }}>{it}</Text>
+            </View>
+          ))}
+        </View>
+      </View>
+
+      <PageFooter left="Inclusions & reservation" page={3} total={3} />
+    </Page>
+  );
+}
+
+// ── Document ─────────────────────────────────────────────────────
+interface Props { pkg: PremadePackagePublic; waPhone?: string; baseUrl?: string }
+
+export function PremadePackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
+  return (
+    <Document title={pkg.name} author="Sabrina Turizm">
+      <Cover pkg={pkg} waPhone={waPhone} baseUrl={baseUrl} />
+      <Itinerary pkg={pkg} />
+      <Closing pkg={pkg} waPhone={waPhone} />
     </Document>
   );
 }

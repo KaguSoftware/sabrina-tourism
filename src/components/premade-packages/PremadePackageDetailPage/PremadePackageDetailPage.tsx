@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -13,6 +13,38 @@ import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 type PremadePackage = PremadePackagePublic;
 
 type DateRange = { startDate: string; endDate: string };
+
+const GLOW_WINDOW = 3;
+
+function useItineraryGlow(count: number) {
+  const refs = useRef<(HTMLLIElement | null)[]>([]);
+  const [anchor, setAnchor] = useState<number | null>(null);
+
+  useEffect(() => {
+    function onScroll() {
+      const mid = window.innerHeight / 2;
+      let closest = -1;
+      let closestDist = Infinity;
+      refs.current.forEach((el, i) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top + rect.height / 2 - mid);
+        if (dist < closestDist) { closestDist = dist; closest = i; }
+      });
+      if (closest !== -1) setAnchor(closest);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [count]);
+
+  const active = new Set(
+    anchor === null
+      ? []
+      : Array.from({ length: GLOW_WINDOW }, (_, k) => anchor - (GLOW_WINDOW - 1) + k).filter((i) => i >= 0 && i < count)
+  );
+  return { refs, active };
+}
 
 const TIER_ROMAN = ["I", "II", "III"] as const;
 
@@ -76,33 +108,22 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
 
         <Reveal delay={200}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-[560px] mb-8">
-            {/* Date pills */}
+            {/* Date select */}
             <div className="flex flex-col gap-2">
-              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Start date</span>
-              <div className="flex flex-wrap gap-2">
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Departure date</span>
+              <select
+                value={selectedDateIdx}
+                onChange={(e) => setSelectedDateIdx(Number(e.target.value))}
+                className="w-full border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-2.5 pr-6 focus:outline-none focus:border-ochre transition-colors duration-200 cursor-pointer appearance-none"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c99a3f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 0 center" }}
+              >
                 {dates.map((d, i) => {
                   const s = new Date(d.startDate + "T00:00:00");
                   const e = new Date(d.endDate + "T00:00:00");
                   const label = `${s.getDate()}–${e.getDate()} ${s.toLocaleDateString("en-GB", { month: "short", year: "numeric" })}`;
-                  const active = selectedDateIdx === i;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setSelectedDateIdx(i)}
-                      className="font-sans text-[13px] px-4 py-1.5 rounded-full border transition-all duration-200"
-                      style={{
-                        backgroundColor: active ? "#0b1a2e" : "transparent",
-                        color: active ? "#c99a3f" : "#1f1a14",
-                        borderColor: active ? "transparent" : "#c99a3f",
-                        fontWeight: active ? 600 : 400,
-                      }}
-                    >
-                      {label}
-                    </button>
-                  );
+                  return <option key={i} value={i}>{label}</option>;
                 })}
-              </div>
+              </select>
             </div>
 
             {/* Group size stepper */}
@@ -188,6 +209,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
   const [selectedDateIdx, setSelectedDateIdx] = useState(0);
   const [tier, setTier] = useState("Signature");
   const [openDay, setOpenDay] = useState(1);
+  const { refs: dayRefs, active: activeDays } = useItineraryGlow(pkg.itinerary?.length ?? 0);
 
   const selectedDate = dates[selectedDateIdx] ?? dates[0];
 
@@ -298,22 +320,23 @@ export function PremadePackageDetailPage({ pkg }: Props) {
             <span className="absolute left-[6px] top-3 bottom-3 w-px bg-rule" aria-hidden="true" />
             {pkg.itinerary.map((day, i) => {
               const isOpen = openDay === day.day;
+              const lit = activeDays.has(i);
               return (
-                <Reveal key={day.day} as="li" delay={i * 60} className="relative">
+                <li key={day.day} ref={(el) => { dayRefs.current[i] = el; }} className="relative">
                   <button
                     className="w-full text-left grid grid-cols-[auto_80px_1fr_auto] sm:grid-cols-[auto_100px_1fr_auto] gap-4 sm:gap-6 items-center py-5 border-b border-rule"
                     onClick={() => setOpenDay(isOpen ? -1 : day.day)}
                     aria-expanded={isOpen}
                   >
                     <span
-                      className={`relative z-10 w-3.5 h-3.5 rounded-full border flex-shrink-0 transition-colors duration-200 ${
+                      className={`relative z-10 w-3.5 h-3.5 rounded-full border flex-shrink-0 transition-all duration-700 ${
                         isOpen ? "bg-ochre border-ochre" : "bg-cream border-ochre"
-                      }`}
+                      } ${lit ? "scale-125 shadow-[0_0_14px_5px_rgba(201,154,63,0.7)]" : ""}`}
                     />
-                    <span className="font-display italic text-ochre text-[18px]">
+                    <span className={`font-display italic text-ochre text-[18px] transition-all duration-700 ${lit ? "drop-shadow-[0_0_8px_rgba(201,154,63,0.9)]" : ""}`}>
                       Day {String(day.day).padStart(2, "0")}
                     </span>
-                    <span className="font-display font-normal text-[clamp(17px,1.8vw,22px)]">{day.title}</span>
+                    <span className={`font-display font-normal text-[clamp(17px,1.8vw,22px)] transition-all duration-700 ${lit ? "drop-shadow-[0_0_6px_rgba(201,154,63,0.6)]" : ""}`}>{day.title}</span>
                     <span className="text-ochre text-[20px] w-6 text-center" aria-hidden="true">
                       {isOpen ? "−" : "+"}
                     </span>
@@ -326,7 +349,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                       {day.description}
                     </p>
                   </div>
-                </Reveal>
+                </li>
               );
             })}
           </ol>
