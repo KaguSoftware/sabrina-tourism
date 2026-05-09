@@ -71,7 +71,7 @@ export function LanguageSwitcher({ transparent }: { transparent?: boolean }) {
       </button>
 
       <div
-        className={`absolute top-full right-0 mt-3 min-w-28 border border-rule bg-cream shadow-[0_10px_34px_-10px_rgba(11,26,46,0.25)] transition-all duration-200 origin-top-right ${
+        className={`absolute top-full right-0 mt-3 min-w-28 border border-rule bg-cream shadow-[0_10px_34px_-10px_rgba(11,26,46,0.25)] transition-all duration-200 origin-top-right z-70 ${
           open ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
         }`}
         role="menu"
