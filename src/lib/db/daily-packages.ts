@@ -1,4 +1,8 @@
+import { unstable_cache } from 'next/cache';
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
+import { tags } from '@/lib/cache/tags';
+
+const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
 export interface DailyPackagePublic {
   id: string;
@@ -74,7 +78,7 @@ function assemble(row: any): DailyPackagePublic {
 
 const SELECT = '*, daily_package_stops(*), daily_package_included(*), daily_package_gallery(*)';
 
-export async function getAllDailyPackages({ publishedOnly = true } = {}): Promise<DailyPackagePublic[]> {
+async function _getAllDailyPackages({ publishedOnly = true } = {}): Promise<DailyPackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   let q = supabase.from('daily_packages').select(SELECT).order('sort_order');
@@ -84,12 +88,29 @@ export async function getAllDailyPackages({ publishedOnly = true } = {}): Promis
   return (data ?? []).map(assemble);
 }
 
-export async function getDailyPackageBySlug(slug: string): Promise<DailyPackagePublic | null> {
+async function _getDailyPackageBySlug(slug: string): Promise<DailyPackagePublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase.from('daily_packages').select(SELECT).eq('slug', slug).maybeSingle();
   if (error || !data) return null;
   return assemble(data);
+}
+
+export async function getAllDailyPackages(opts?: { publishedOnly?: boolean }): Promise<DailyPackagePublic[]> {
+  const publishedOnly = opts?.publishedOnly ?? true;
+  return unstable_cache(
+    () => _getAllDailyPackages({ publishedOnly }),
+    ['daily:all', String(publishedOnly)],
+    { tags: [tags.daily.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getDailyPackageBySlug(slug: string): Promise<DailyPackagePublic | null> {
+  return unstable_cache(
+    () => _getDailyPackageBySlug(slug),
+    ['daily:bySlug', slug],
+    { tags: [tags.daily.bySlug(slug), tags.daily.all()], revalidate: REVALIDATE_SECONDS },
+  )();
 }
 
 export async function getDailyPackageRawById(id: string): Promise<DailyPackageRaw | null> {

@@ -1,13 +1,26 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
+import { REGIONS } from "@/lib/packages/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function db(): any { return createServiceClient(); }
 
-function revalidateAll() {
-  revalidatePath("/regions");
-  revalidatePath("/");
+function revalidateAll(regions?: ReadonlyArray<string | null | undefined>) {
+  revalidateTag(tags.hotels.all(), "max");
+  revalidateTag(tags.hotels.featured(), "max");
+  const seen = new Set<string>();
+  for (const r of regions ?? []) {
+    if (r && !seen.has(r)) {
+      seen.add(r);
+      revalidateTag(tags.hotels.byRegion(r), "max");
+    }
+  }
+}
+
+function revalidateAllRegions() {
+  revalidateAll(REGIONS);
 }
 
 export async function reorderHotels(orderedIds: string[]): Promise<{ error?: string }> {
@@ -16,21 +29,25 @@ export async function reorderHotels(orderedIds: string[]): Promise<{ error?: str
     const { error } = await supabase.from("hotels").update({ sort_order: i }).eq("id", orderedIds[i]);
     if (error) return { error: error.message };
   }
-  revalidateAll();
+  revalidateAllRegions();
   return {};
 }
 
 export async function setHotelPublished(id: string, isPublished: boolean): Promise<{ error?: string }> {
-  const { error } = await db().from("hotels").update({ is_published: isPublished }).eq("id", id);
+  const supabase = db();
+  const { data: prev } = await supabase.from("hotels").select("region").eq("id", id).maybeSingle();
+  const { error } = await supabase.from("hotels").update({ is_published: isPublished }).eq("id", id);
   if (error) return { error: error.message };
-  revalidateAll();
+  revalidateAll([prev?.region]);
   return {};
 }
 
 export async function deleteHotel(id: string): Promise<{ error?: string }> {
-  const { error } = await db().from("hotels").delete().eq("id", id);
+  const supabase = db();
+  const { data: prev } = await supabase.from("hotels").select("region").eq("id", id).maybeSingle();
+  const { error } = await supabase.from("hotels").delete().eq("id", id);
   if (error) return { error: error.message };
-  revalidateAll();
+  revalidateAll([prev?.region]);
   return {};
 }
 
@@ -63,6 +80,6 @@ export async function duplicateHotel(id: string): Promise<{ error?: string; newI
   if (h.hotel_room_types?.length) await supabase.from("hotel_room_types").insert(h.hotel_room_types.map((r: Record<string, unknown>) => ({ ...strip(r), hotel_id: newId, updated_at: undefined })));
   if (h.hotel_images?.length) await supabase.from("hotel_images").insert(h.hotel_images.map((r: Record<string, unknown>) => ({ ...strip(r), hotel_id: newId })));
 
-  revalidateAll();
+  revalidateAll([h.region]);
   return { newId };
 }

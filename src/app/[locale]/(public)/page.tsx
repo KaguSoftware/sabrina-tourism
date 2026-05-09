@@ -11,8 +11,6 @@ import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { getFeaturedHotels } from "@/lib/db/hotels";
 import type { Step } from "@/components/home/HowItWorks/types";
 
-export const revalidate = 60;
-
 export default async function HomePage() {
   const [
     hero,

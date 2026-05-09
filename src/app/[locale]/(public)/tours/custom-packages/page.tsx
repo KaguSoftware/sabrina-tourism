@@ -7,8 +7,6 @@ import { CustomTourWizard } from "@/components/custom-tour/CustomTourWizard";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";
 
-export const revalidate = 60;
-
 export const metadata = {
   title: "Custom Tour Package — Sabrina Turizm",
   description:

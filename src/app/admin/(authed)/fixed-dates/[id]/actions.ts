@@ -1,13 +1,14 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { PremadeSchema, type PremadeFormValues } from "./schema";
 
-function revalidateAll() {
-  revalidatePath("/tours/fixed-dates");
-  revalidatePath("/tours/premade", "layout");
-  revalidatePath("/");
+function revalidateAll(slug?: string) {
+  revalidateTag(tags.premade.all(), "max");
+  revalidateTag(tags.premade.slugs(), "max");
+  if (slug) revalidateTag(tags.premade.bySlug(slug), "max");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,6 +123,6 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     await supabase.from("premade_package_inclusions").insert(inclusionRows);
   }
 
-  revalidateAll();
+  revalidateAll(slug);
   return { id: pkgId };
 }

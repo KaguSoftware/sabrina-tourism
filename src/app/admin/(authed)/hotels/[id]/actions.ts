@@ -1,13 +1,21 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { HotelSchema, type HotelFormValues } from "./schema";
 
-function revalidateAll(slug?: string) {
-  revalidatePath("/regions");
-  if (slug) revalidatePath(`/regions/${slug}`);
-  revalidatePath("/");
+function revalidateAll(slug?: string, regions?: ReadonlyArray<string | null | undefined>) {
+  revalidateTag(tags.hotels.all(), "max");
+  revalidateTag(tags.hotels.featured(), "max");
+  if (slug) revalidateTag(tags.hotels.bySlug(slug), "max");
+  const seen = new Set<string>();
+  for (const r of regions ?? []) {
+    if (r && !seen.has(r)) {
+      seen.add(r);
+      revalidateTag(tags.hotels.byRegion(r), "max");
+    }
+  }
 }
 
 export async function saveHotel(payload: HotelFormValues): Promise<{ error?: string; id?: string }> {
@@ -22,8 +30,17 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
   if (!slug) return { error: "Name produces an empty slug." };
 
   let hotelId = data.id;
+  let previousRegion: string | null = null;
 
   if (hotelId) {
+    // Read previous region so we can invalidate the old region tag if it changed
+    const { data: prev } = await supabase
+      .from("hotels")
+      .select("region")
+      .eq("id", hotelId)
+      .maybeSingle();
+    previousRegion = prev?.region ?? null;
+
     // UPDATE
     const { error } = await supabase.from("hotels").update({
       name: data.name, region: data.region, description: data.description,
@@ -86,6 +103,6 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     await supabase.from("hotel_images").insert(data.images.map((img, i) => ({ hotel_id: hotelId, url: img.url, label: img.label, sort_order: i })));
   }
 
-  revalidateAll(slug);
+  revalidateAll(slug, [data.region, previousRegion]);
   return { id: hotelId };
 }

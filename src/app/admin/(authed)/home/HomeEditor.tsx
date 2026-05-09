@@ -19,6 +19,7 @@ import type {
   HomeAboutData,
   HomeHowItWorksData,
   HomeFeaturedHeadingData,
+  HomeFeaturedHotelsHeadingData,
   HomeQuoteData,
 } from "@/lib/supabase/types";
 
@@ -27,6 +28,7 @@ interface HomeEditorProps {
   about: HomeAboutData;
   howItWorks: HomeHowItWorksData;
   featured: HomeFeaturedHeadingData;
+  featuredHotels: HomeFeaturedHotelsHeadingData;
   quote: HomeQuoteData;
 }
 
@@ -78,7 +80,7 @@ function CharCount({ value, max }: { value: string; max: number }) {
   );
 }
 
-export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEditorProps) {
+export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, quote }: HomeEditorProps) {
   const [openSection, setOpenSection] = useState<string>("hero");
   const [saving, setSaving] = useState(false);
 
@@ -110,6 +112,9 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
     featured: {
       section_heading: featured.section_heading ?? "",
       featured_slugs: featured.featured_slugs ?? [],
+    },
+    featured_hotels: {
+      section_heading: featuredHotels.section_heading ?? "",
     },
     quote: {
       quote: quote.quote ?? "",
@@ -288,9 +293,21 @@ export function HomeEditor({ hero, about, howItWorks, featured, quote }: HomeEdi
           </FormField>
         </Section>
 
-        {/* Quote */}
+        {/* Featured hotels heading */}
         <Section
           kicker="Section 5"
+          title="Featured hotels heading"
+          open={openSection === "featured_hotels"}
+          onToggle={() => toggleSection("featured_hotels")}
+        >
+          <FormField label="Section heading" required error={errors.featured_hotels?.section_heading?.message}>
+            <Input {...register("featured_hotels.section_heading")} />
+          </FormField>
+        </Section>
+
+        {/* Quote */}
+        <Section
+          kicker="Section 6"
           title="Quote strip"
           open={openSection === "quote"}
           onToggle={() => toggleSection("quote")}

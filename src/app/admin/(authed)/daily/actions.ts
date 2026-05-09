@@ -1,10 +1,11 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 
-function revalidateAll() {
-  revalidatePath("/packages");
-  revalidatePath("/");
+function revalidateAll(slug?: string) {
+  revalidateTag(tags.daily.all(), "max");
+  if (slug) revalidateTag(tags.daily.bySlug(slug), "max");
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

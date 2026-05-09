@@ -49,7 +49,15 @@
       "Bash(sed -i '' 's/<FleetIllustration vehicleId={v\\\\.id} className=\"w-full h-14\" \\\\/>/<FleetIllustration vehicleId={v.id} className=\"w-full h-14\" selected={selected} \\\\/>/' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/custom-tour/Step4Vehicle.tsx)",
       "Bash(sed -i '' 's/<FleetIllustration vehicleId={v\\\\.id} className=\"w-full h-13\" \\\\/>/<FleetIllustration vehicleId={v.id} className=\"w-full h-13\" selected={vehicleId === v.id} \\\\/>/' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/transport/TransportationPage/AirportForm.tsx)",
       "Bash(sed -i '' 's/<FleetIllustration vehicleId={v\\\\.id} className=\"w-full h-13\" \\\\/>/<FleetIllustration vehicleId={v.id} className=\"w-full h-13\" selected={vehicleId === v.id} \\\\/>/' /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/transport/TransportationPage/CustomForm.tsx)",
-      "Bash(mkdir -p /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/\\\\[locale\\\\]/\\\\\\(public\\\\\\)/hotels)"
+      "Bash(mkdir -p /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/\\\\[locale\\\\]/\\\\\\(public\\\\\\)/hotels)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\app\" -Recurse -Filter \"page.tsx\")",
+      "Bash(NEXT_PRIVATE_DEBUG_CACHE=1 npm run dev)",
+      "Bash(curl -s -o /dev/null -L -m 30 \"http://localhost:3000/en/hotels\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -m 5 http://localhost:3000/)",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"CommandLine LIKE '%next dev%'\" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 2; \\(Test-NetConnection -ComputerName localhost -Port 3000 -WarningAction SilentlyContinue\\).TcpTestSucceeded)",
+      "PowerShell(Stop-Process -Id 23700 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Id 11628 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(\"stopped\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

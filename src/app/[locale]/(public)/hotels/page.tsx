@@ -4,8 +4,6 @@ import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCard } from "@/components/hotels/HotelCard/HotelCard";
 import { getAllHotels } from "@/lib/db/hotels";
 
-export const revalidate = 60;
-
 export const metadata = {
   title: "Hotels — Sabrina Turizm",
   description: "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.",

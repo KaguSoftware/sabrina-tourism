@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import {
   transportHeroSchema,
   fleetSchema,
@@ -20,7 +21,7 @@ export async function saveTransportHero(raw: TransportHeroFormValues): Promise<{
 
   if (error) return { error: error.message };
 
-  revalidatePath("/transportation");
+  revalidateTag(tags.siteContent("transport_hero"), "max");
   return {};
 }
 
@@ -111,6 +112,7 @@ export async function saveFleet(raw: FleetFormValues): Promise<{ error?: string 
     }
   }
 
-  revalidatePath("/transportation");
+  revalidateTag(tags.transport.airports(), "max");
+  revalidateTag(tags.transport.vehicles(), "max");
   return {};
 }

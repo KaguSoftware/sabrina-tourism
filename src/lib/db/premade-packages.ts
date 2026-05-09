@@ -1,4 +1,8 @@
+import { unstable_cache } from 'next/cache';
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
+import { tags } from '@/lib/cache/tags';
+
+const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
 export interface PremadeTierPublic {
   name: string;
@@ -162,7 +166,7 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
 
 const SELECT = '*, name_translations, short_description_translations, overview_translations, accommodation_name_translations, accommodation_description_translations, premade_package_gallery(*), premade_package_itinerary_days(*), premade_package_tiers(*), premade_package_inclusions(*)';
 
-export async function getAllPremadePackages({ publishedOnly = true, locale = 'en' } = {}): Promise<PremadePackagePublic[]> {
+async function _getAllPremadePackages({ publishedOnly = true, locale = 'en' } = {}): Promise<PremadePackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   let q = supabase.from('premade_packages').select(SELECT).order('sort_order');
@@ -172,7 +176,7 @@ export async function getAllPremadePackages({ publishedOnly = true, locale = 'en
   return (data ?? []).map((row: unknown) => assemble(row, locale));
 }
 
-export async function getPremadePackageBySlug(slug: string, locale = 'en'): Promise<PremadePackagePublic | null> {
+async function _getPremadePackageBySlug(slug: string, locale = 'en'): Promise<PremadePackagePublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase.from('premade_packages').select(SELECT).eq('slug', slug).maybeSingle();
@@ -180,11 +184,37 @@ export async function getPremadePackageBySlug(slug: string, locale = 'en'): Prom
   return assemble(data, locale);
 }
 
-export async function getAllPremadeSlugs(): Promise<string[]> {
+async function _getAllPremadeSlugs(): Promise<string[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   const { data } = await supabase.from('premade_packages').select('slug').eq('is_published', true);
   return (data ?? []).map((r: { slug: string }) => r.slug);
+}
+
+export async function getAllPremadePackages(opts: { publishedOnly?: boolean; locale?: string } = {}): Promise<PremadePackagePublic[]> {
+  const publishedOnly = opts.publishedOnly ?? true;
+  const locale = opts.locale ?? 'en';
+  return unstable_cache(
+    () => _getAllPremadePackages({ publishedOnly, locale }),
+    ['premade:all', String(publishedOnly), locale],
+    { tags: [tags.premade.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getPremadePackageBySlug(slug: string, locale = 'en'): Promise<PremadePackagePublic | null> {
+  return unstable_cache(
+    () => _getPremadePackageBySlug(slug, locale),
+    ['premade:bySlug', slug, locale],
+    { tags: [tags.premade.bySlug(slug), tags.premade.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getAllPremadeSlugs(): Promise<string[]> {
+  return unstable_cache(
+    _getAllPremadeSlugs,
+    ['premade:slugs'],
+    { tags: [tags.premade.slugs(), tags.premade.all()], revalidate: REVALIDATE_SECONDS },
+  )();
 }
 
 export async function getPremadePackageRawById(id: string): Promise<PremadePackageRaw | null> {

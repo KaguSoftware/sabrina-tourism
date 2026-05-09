@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import { toursPageSchema, type ToursPageFormValues } from "./schema";
 
 export async function saveToursPage(raw: ToursPageFormValues): Promise<{ error?: string }> {
@@ -18,6 +19,6 @@ export async function saveToursPage(raw: ToursPageFormValues): Promise<{ error?:
 
   if (error) return { error: error.message };
 
-  revalidatePath("/packages");
+  revalidateTag(tags.siteContent("tours_hero"), "max");
   return {};
 }

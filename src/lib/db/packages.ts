@@ -1,6 +1,10 @@
+import { unstable_cache } from 'next/cache';
 import { createAnonClient } from '@/lib/supabase/server';
 import { getPublicUrl } from '@/lib/supabase/storage';
+import { tags } from '@/lib/cache/tags';
 import type { Package } from '@/lib/packages/types';
+
+const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 import type {
   PackageRow,
   PackageItineraryDayRow,
@@ -64,7 +68,7 @@ function assemblePackage(
   };
 }
 
-export async function getAllPackages({ publishedOnly = true } = {}): Promise<Package[]> {
+async function _getAllPackages({ publishedOnly = true } = {}): Promise<Package[]> {
   const supabase = createAnonClient();
 
   let query = supabase
@@ -100,7 +104,7 @@ export async function getAllPackages({ publishedOnly = true } = {}): Promise<Pac
   );
 }
 
-export async function getPackageBySlug(
+async function _getPackageBySlug(
   slug: string,
 ): Promise<Package | { redirectTo: string } | null> {
   const supabase = createAnonClient();
@@ -161,7 +165,7 @@ export async function getPackageBySlug(
   return { redirectTo: current.slug };
 }
 
-export async function getFeaturedPackages(): Promise<Package[]> {
+async function _getFeaturedPackages(): Promise<Package[]> {
   const supabase = createAnonClient();
 
   const { data, error } = await supabase
@@ -309,7 +313,7 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
   };
 }
 
-export async function getAllSlugs(): Promise<string[]> {
+async function _getAllSlugs(): Promise<string[]> {
   const supabase = createAnonClient();
 
   const { data, error } = await supabase
@@ -323,4 +327,37 @@ export async function getAllSlugs(): Promise<string[]> {
   }
 
   return (data ?? []).map((row) => (row as { slug: string }).slug);
+}
+
+export async function getAllPackages(opts?: { publishedOnly?: boolean }): Promise<Package[]> {
+  const publishedOnly = opts?.publishedOnly ?? true;
+  return unstable_cache(
+    () => _getAllPackages({ publishedOnly }),
+    ['packages:all', String(publishedOnly)],
+    { tags: [tags.packages.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getPackageBySlug(slug: string) {
+  return unstable_cache(
+    () => _getPackageBySlug(slug),
+    ['packages:bySlug', slug],
+    { tags: [tags.packages.bySlug(slug), tags.packages.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getFeaturedPackages(): Promise<Package[]> {
+  return unstable_cache(
+    _getFeaturedPackages,
+    ['packages:featured'],
+    { tags: [tags.packages.featured(), tags.packages.all()], revalidate: REVALIDATE_SECONDS },
+  )();
+}
+
+export async function getAllSlugs(): Promise<string[]> {
+  return unstable_cache(
+    _getAllSlugs,
+    ['packages:slugs'],
+    { tags: [tags.packages.slugs(), tags.packages.all()], revalidate: REVALIDATE_SECONDS },
+  )();
 }

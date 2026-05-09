@@ -27,6 +27,9 @@ export const homeContentSchema = z.object({
     section_heading: z.string(),
     featured_slugs: z.array(z.string()),
   }),
+  featured_hotels: z.object({
+    section_heading: z.string(),
+  }),
   quote: z.object({
     quote: z.string(),
     attribution: z.string(),

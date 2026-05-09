@@ -8,8 +8,6 @@ import { HotelCard } from "@/components/regions/HotelCard/HotelCard";
 import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
 
-export const revalidate = 60;
-
 const REGION_COPY: Record<
   (typeof REGIONS)[number],
   { heading: string; lede: string }
