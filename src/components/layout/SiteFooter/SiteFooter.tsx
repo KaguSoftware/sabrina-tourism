@@ -30,9 +30,9 @@ export async function SiteFooter() {
     {
       heading: t("legal"),
       links: [
-        { label: t("privacyPolicy"), href: "/privacy" },
-        { label: t("termsConditions"), href: "/terms" },
-        { label: t("cancellationPolicy"), href: "/cancellation" },
+        { label: t("privacyPolicy"), href: `${pfx}/privacy` },
+        { label: t("termsConditions"), href: `${pfx}/terms` },
+        { label: t("cancellationPolicy"), href: `${pfx}/cancellation` },
       ],
     },
   ];

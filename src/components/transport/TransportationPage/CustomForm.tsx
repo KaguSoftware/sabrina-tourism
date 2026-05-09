@@ -177,16 +177,6 @@ export function CustomForm({
           />
         </TransportFormField>
 
-        <TransportFormField label={t("destinationsStops")}>
-          <input
-            type="text"
-            value={destinations}
-            placeholder={t("destinationsStopsPlaceholder")}
-            onChange={(e) => setDestinations(e.target.value)}
-            className={fieldCls}
-          />
-        </TransportFormField>
-
         <div className="col-span-full flex flex-col sm:flex-row gap-6 items-start relative z-8">
           <div className="flex flex-col gap-1.5 min-w-40">
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("vehicleClass")}</span>

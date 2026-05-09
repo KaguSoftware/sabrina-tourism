@@ -135,7 +135,7 @@ export function TripMapSVG({
       <svg
         viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`}
         width="100%"
-        height="auto"
+        style={{ height: "auto" }}
         role="img"
         aria-label="Trip route map of Turkey"
         xmlns="http://www.w3.org/2000/svg"

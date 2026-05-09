@@ -174,7 +174,7 @@ export interface TransportAirportRow {
   updated_at: string;
 }
 
-export type VehicleId = 'car' | 'minibus' | 'luxury' | 'sedan' | 'suv' | 'van';
+export type VehicleId = string;
 
 export interface TransportVehicleRow {
   id: string;

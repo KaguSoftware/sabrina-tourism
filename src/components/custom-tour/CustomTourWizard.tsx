@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { StepIndicator } from "./StepIndicator";
 import { Step1Destination } from "./Step1Destination";
 import { Step2People } from "./Step2People";
+import { Step3Hotels } from "./Step3Hotels";
 import { Step4Vehicle } from "./Step4Vehicle";
 import { Step5Review } from "./Step5Review";
 import { CUSTOM_TOUR_DRAFT_KEY, INITIAL_STATE } from "./types";
@@ -41,7 +42,7 @@ export function CustomTourWizard({ airports, vehicles }: Props) {
   }
 
   function next() {
-    setStep((s) => Math.min(s + 1, 3));
+    setStep((s) => Math.min(s + 1, 4));
     scrollWizardHeaderIntoView();
   }
 
@@ -54,7 +55,7 @@ export function CustomTourWizard({ airports, vehicles }: Props) {
     <section id="custom-tour-wizard" className="relative z-10 min-h-screen px-[clamp(20px,4vw,56px)] py-[clamp(60px,8vw,100px)]">
       <div
         ref={wizardHeaderRef}
-        className={`relative z-10 mx-auto ${step === 2 ? "max-w-[1320px]" : "max-w-[1040px]"}`}
+        className={`relative z-10 mx-auto ${step === 2 || step === 3 ? "max-w-[1320px]" : "max-w-[1040px]"}`}
       >
         <StepIndicator current={step} />
 
@@ -65,9 +66,12 @@ export function CustomTourWizard({ airports, vehicles }: Props) {
           <Step2People state={state} onChange={patch} onNext={next} onBack={back} />
         )}
         {step === 2 && (
-          <Step4Vehicle state={state} onChange={patch} onNext={next} onBack={back} airports={airports} vehicles={vehicles} />
+          <Step3Hotels state={state} onChange={patch} onNext={next} onBack={back} />
         )}
         {step === 3 && (
+          <Step4Vehicle state={state} onChange={patch} onNext={next} onBack={back} airports={airports} vehicles={vehicles} />
+        )}
+        {step === 4 && (
           <Step5Review state={state} onBack={back} onConfirm={() => {}} vehicles={vehicles} />
         )}
       </div>

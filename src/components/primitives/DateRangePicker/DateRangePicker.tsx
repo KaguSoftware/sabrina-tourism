@@ -76,6 +76,15 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
+  }, [open, containerRef]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") closePicker();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
   function openPicker() {
@@ -108,6 +117,7 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
         onChange(start, ymd);
         setHovered("");
         setMode("end");
+        closePicker();
       }
     }
   }

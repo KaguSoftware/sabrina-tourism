@@ -14,13 +14,13 @@ async function main() {
   const { error } = await supabase.from("transport_vehicles").upsert(
     {
       vehicle_id: "minibus",
-      label: "Bus",
+      label: "Minibus",
       capacity: "1–16 guests",
       note: "Mercedes Sprinter",
       from_price: "from €280",
       sort_order: 5,
     },
-    { onConflict: "vehicle_id" }
+    { onConflict: "vehicle_id", ignoreDuplicates: true }
   );
 
   if (error) {

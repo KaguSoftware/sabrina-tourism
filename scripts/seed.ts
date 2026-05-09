@@ -761,12 +761,24 @@ async function main() {
     throw new Error(`transport_airports upsert failed: ${airportError.message}`);
   console.log(`✓ Seeded transport_airports (${AIRPORTS.length})`);
 
+  const { data: existingVehicleRows, error: existingVehicleError } = await supabase
+    .from("transport_vehicles")
+    .select("vehicle_id,label");
+  if (existingVehicleError)
+    throw new Error(
+      `transport_vehicles read failed: ${existingVehicleError.message}`
+    );
+
+  const existingVehicleLabels = new Map(
+    (existingVehicleRows ?? []).map((v) => [v.vehicle_id, v.label])
+  );
+
   const { error: vehicleError } = await supabase
     .from("transport_vehicles")
     .upsert(
       VEHICLES.map((v, i) => ({
         vehicle_id: v.id,
-        label: v.label,
+        label: existingVehicleLabels.get(v.id) ?? v.label,
         capacity: v.capacity,
         note: v.note,
         from_price: v.from,
