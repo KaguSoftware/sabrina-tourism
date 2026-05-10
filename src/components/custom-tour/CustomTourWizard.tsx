@@ -34,6 +34,15 @@ export function CustomTourWizard({ airports, vehicles }: Props) {
   }
 
   useEffect(() => {
+    try {
+      const saved = window.sessionStorage.getItem(CUSTOM_TOUR_DRAFT_KEY);
+      if (saved) setState(JSON.parse(saved));
+    } catch {
+      // ignore corrupt draft
+    }
+  }, []);
+
+  useEffect(() => {
     window.sessionStorage.setItem(CUSTOM_TOUR_DRAFT_KEY, JSON.stringify(state));
   }, [state]);
 

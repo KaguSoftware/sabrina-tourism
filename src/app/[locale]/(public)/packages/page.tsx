@@ -24,7 +24,7 @@ export default async function PackagesPage() {
   ]);
 
   return (
-    <Suspense>
+    <Suspense fallback={<div className="min-h-screen" />}>
       <AllPackagesPage
         pageHeading={hero.page_heading}
         pageLede={hero.page_lede}

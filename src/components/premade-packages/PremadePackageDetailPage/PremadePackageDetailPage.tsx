@@ -9,6 +9,8 @@ import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
+import { useLocale } from "next-intl";
+import { PackageLightbox } from "@/components/packages/PackageDetailPage/PackageLightbox";
 
 type PremadePackage = PremadePackagePublic;
 
@@ -48,13 +50,13 @@ function useItineraryGlow(count: number) {
 
 const TIER_ROMAN = ["I", "II", "III"] as const;
 
-function formatDate(iso: string): string {
+function formatDate(iso: string, locale: string): string {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  return d.toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
 }
 
-function prettyMonth(iso: string) {
-  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+function prettyMonth(iso: string, locale: string) {
+  return new Date(iso + "T00:00:00").toLocaleDateString(locale, { month: "short", year: "numeric" });
 }
 
 function waLink(message: string): string {
@@ -71,12 +73,13 @@ interface ReserveSectionProps {
   selectedDateIdx: number;
   setSelectedDateIdx: (i: number) => void;
   selectedDate: DateRange;
+  locale: string;
 }
 
-function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSelectedDateIdx, selectedDate }: ReserveSectionProps) {
+function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSelectedDateIdx, selectedDate, locale }: ReserveSectionProps) {
   const [people, setPeople] = useState(2);
 
-  const dateLabel = `${formatDate(selectedDate.startDate)} → ${formatDate(selectedDate.endDate)}`;
+  const dateLabel = `${formatDate(selectedDate.startDate, locale)} → ${formatDate(selectedDate.endDate, locale)}`;
   const previewMsg = `Hey Sabrina — I'd like to reserve "${pkg.name}" at the ${tier} tier for ${people} guest(s), starting ${dateLabel}. Could you confirm availability?`;
   const waHref = waLink(previewMsg);
 
@@ -120,7 +123,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
                 {dates.map((d, i) => {
                   const s = new Date(d.startDate + "T00:00:00");
                   const e = new Date(d.endDate + "T00:00:00");
-                  const label = `${s.getDate()}–${e.getDate()} ${s.toLocaleDateString("en-GB", { month: "short", year: "numeric" })}`;
+                  const label = `${s.getDate()}–${e.getDate()} ${s.toLocaleDateString(locale, { month: "short", year: "numeric" })}`;
                   return <option key={i} value={i}>{label}</option>;
                 })}
               </select>
@@ -205,11 +208,24 @@ interface Props {
 }
 
 export function PremadePackageDetailPage({ pkg }: Props) {
+  const locale = useLocale();
   const dates = pkg.dates && pkg.dates.length > 0 ? pkg.dates : [{ startDate: pkg.startDate, endDate: pkg.endDate }];
   const [selectedDateIdx, setSelectedDateIdx] = useState(0);
   const [tier, setTier] = useState("Signature");
   const [openDay, setOpenDay] = useState(1);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const { refs: dayRefs, active: activeDays } = useItineraryGlow(pkg.itinerary?.length ?? 0);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowRight") setLightbox((i) => ((i ?? 0) + 1) % pkg.gallery.length);
+      if (e.key === "ArrowLeft") setLightbox((i) => ((i ?? 0) - 1 + pkg.gallery.length) % pkg.gallery.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox, pkg.gallery.length]);
 
   const selectedDate = dates[selectedDateIdx] ?? dates[0];
 
@@ -275,7 +291,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                   pkg.duration && ["Duration", pkg.duration],
                   pkg.region && ["Region", pkg.region],
                   (pkg.minPeople != null && pkg.maxPeople != null) && ["Group size", `${pkg.minPeople}–${pkg.maxPeople} guests`],
-                  (pkg.availableFrom && pkg.availableTo) && ["Available", `${prettyMonth(pkg.availableFrom)} – ${prettyMonth(pkg.availableTo)}`],
+                  (pkg.availableFrom && pkg.availableTo) && ["Available", `${prettyMonth(pkg.availableFrom, locale)} – ${prettyMonth(pkg.availableTo, locale)}`],
                 ]
                   .filter((x): x is [string, string] => Boolean(x))
                   .map(([label, val]) => (
@@ -436,7 +452,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
       )}
 
       {/* Reserve section */}
-      <ReserveSection pkg={pkg} tier={tier} onTierChange={setTier} dates={dates} selectedDateIdx={selectedDateIdx} setSelectedDateIdx={setSelectedDateIdx} selectedDate={selectedDate} />
+      <ReserveSection pkg={pkg} tier={tier} onTierChange={setTier} dates={dates} selectedDateIdx={selectedDateIdx} setSelectedDateIdx={setSelectedDateIdx} selectedDate={selectedDate} locale={locale} />
 
       {/* Gallery */}
       {pkg.gallery.length > 0 && (
@@ -452,7 +468,12 @@ export function PremadePackageDetailPage({ pkg }: Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {pkg.gallery.map((src, i) => (
               <Reveal key={i} delay={i * 60}>
-                <div className="relative aspect-[4/3] overflow-hidden border border-rule group">
+                <button
+                  type="button"
+                  className="relative aspect-[4/3] overflow-hidden border border-rule group w-full cursor-zoom-in"
+                  onClick={() => setLightbox(i)}
+                  aria-label={`View image ${i + 1}`}
+                >
                   <Image
                     src={src}
                     alt={`${pkg.destinations[i % pkg.destinations.length]} scene`}
@@ -464,7 +485,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                   <span className="absolute bottom-2 left-2 font-mono text-[10px] tracking-[0.2em] uppercase text-cream bg-navy/70 px-2 py-1">
                     {pkg.destinations[i % pkg.destinations.length]}
                   </span>
-                </div>
+                </button>
               </Reveal>
             ))}
           </div>
@@ -514,6 +535,16 @@ export function PremadePackageDetailPage({ pkg }: Props) {
           <span>←</span> All fixed-date packages
         </Link>
       </div>
+
+      {lightbox !== null && (
+        <PackageLightbox
+          gallery={pkg.gallery}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onPrev={() => setLightbox((i) => ((i ?? 0) - 1 + pkg.gallery.length) % pkg.gallery.length)}
+          onNext={() => setLightbox((i) => ((i ?? 0) + 1) % pkg.gallery.length)}
+        />
+      )}
     </main>
   );
 }

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { LegalPage } from "@/components/legal/LegalPage";
 
 export const metadata = {
@@ -5,25 +6,17 @@ export const metadata = {
   description: "General cancellation information for Sabrina Turizm bookings.",
 };
 
-export default function CancellationPage() {
+export default async function CancellationPage() {
+  const t = await getTranslations("legal.cancellation");
   return (
     <LegalPage
-      eyebrow="Legal"
-      title="Cancellation Policy"
-      intro="Cancellation terms can vary by hotel, vehicle, guide, route, season, and supplier. The applicable terms are confirmed with each booking."
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      intro={t("intro")}
       sections={[
-        {
-          heading: "Before confirmation",
-          body: "You can change or stop an enquiry before the booking is confirmed. No service is held until confirmation details are agreed in writing.",
-        },
-        {
-          heading: "After confirmation",
-          body: "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
-        },
-        {
-          heading: "How to cancel",
-          body: "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation.",
-        },
+        { heading: t("section1Heading"), body: t("section1Body") },
+        { heading: t("section2Heading"), body: t("section2Body") },
+        { heading: t("section3Heading"), body: t("section3Body") },
       ]}
     />
   );

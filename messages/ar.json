@@ -526,5 +526,40 @@
       "accommodation": "الإقامة",
       "vehicle": "المركبة"
     }
+  },
+  "legal": {
+    "privacy": {
+      "eyebrow": "Legal",
+      "title": "Privacy Policy",
+      "intro": "This page explains the basic information Sabrina Turizm uses to respond to enquiries and arrange travel services.",
+      "section1Heading": "Information we collect",
+      "section1Body": "When you contact us, we may receive your name, contact details, travel dates, group size, destination preferences, booking notes, and related messages.",
+      "section2Heading": "How we use it",
+      "section2Body": "We use this information to respond to your enquiry, prepare quotes, coordinate travel services, manage bookings, and provide customer support.",
+      "section3Heading": "Requests",
+      "section3Body": "To ask about your information, request a correction, or request deletion where applicable, contact us directly by WhatsApp or email."
+    },
+    "terms": {
+      "eyebrow": "Legal",
+      "title": "Terms & Conditions",
+      "intro": "These general terms describe how enquiries and bookings are handled. Confirmed booking details are shared directly with each guest before payment.",
+      "section1Heading": "Quotes and availability",
+      "section1Body": "Website prices and examples are starting points unless stated otherwise. Final availability, inclusions, route details, and pricing are confirmed in writing.",
+      "section2Heading": "Guest responsibility",
+      "section2Body": "Guests are responsible for providing accurate travel dates, passenger counts, accommodation details, flight information, and any special requirements before confirmation.",
+      "section3Heading": "Service changes",
+      "section3Body": "Route, timing, hotel, vehicle, or guide changes may be needed because of availability, weather, traffic, local closures, or operational requirements."
+    },
+    "cancellation": {
+      "eyebrow": "Legal",
+      "title": "Cancellation Policy",
+      "intro": "Cancellation terms can vary by hotel, vehicle, guide, route, season, and supplier. The applicable terms are confirmed with each booking.",
+      "section1Heading": "Before confirmation",
+      "section1Body": "You can change or stop an enquiry before the booking is confirmed. No service is held until confirmation details are agreed in writing.",
+      "section2Heading": "After confirmation",
+      "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
+      "section3Heading": "How to cancel",
+      "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
+    }
   }
 }

@@ -24,7 +24,7 @@ export const metadata = {
 export default async function FixedDatesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   return (
-    <Suspense>
+    <Suspense fallback={<div className="min-h-screen" />}>
       <PremadePackagesPage locale={locale} />
     </Suspense>
   );

@@ -70,7 +70,7 @@ export default async function CustomPackagesPage() {
       </section>
 
       <div className="relative z-10">
-        <Suspense>
+        <Suspense fallback={<div className="min-h-screen" />}>
           <CustomTourWizard airports={airports} vehicles={vehicles} />
         </Suspense>
       </div>

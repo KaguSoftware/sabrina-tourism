@@ -5,6 +5,7 @@ interface QuoteStripProps {
 }
 
 export function QuoteStrip({ quote, attribution }: QuoteStripProps) {
+    if (!quote) return null;
     return (
         <section className="relative z-10 text-cream py-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}

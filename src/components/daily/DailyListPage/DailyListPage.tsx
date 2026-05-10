@@ -55,13 +55,19 @@ export function DailyListPage({ packages }: DailyListPageProps) {
           {packages.length === 1 ? "day available" : "days available"}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-          {packages.map((pkg, i) => (
-            <Reveal key={pkg.id} delay={i * 70}>
-              <DailyPackageCard pkg={pkg} />
-            </Reveal>
-          ))}
-        </div>
+        {packages.length === 0 ? (
+          <p className="font-mono text-[14px] tracking-[0.12em] text-muted py-20 text-center">
+            No daily packages available at the moment — check back soon.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
+            {packages.map((pkg, i) => (
+              <Reveal key={pkg.id} delay={i * 70}>
+                <DailyPackageCard pkg={pkg} />
+              </Reveal>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );

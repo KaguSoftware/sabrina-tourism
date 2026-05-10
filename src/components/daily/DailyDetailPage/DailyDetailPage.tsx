@@ -8,14 +8,15 @@ import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import type { DailyPackage } from "@/lib/daily/types";
+import { useLocale } from "next-intl";
 
 function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso: string, locale: string): string {
   const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-GB", {
+  return d.toLocaleDateString(locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -23,10 +24,10 @@ function formatDate(iso: string): string {
   });
 }
 
-function bookMessage(pkg: DailyPackage, date: string, guests: number): string {
+function bookMessage(pkg: DailyPackage, date: string, guests: number, locale: string): string {
   const phone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
   const num = phone.replace(/[^\d+]/g, "");
-  const dateStr = date ? formatDate(date) : "a date TBD";
+  const dateStr = date ? formatDate(date, locale) : "a date TBD";
   const text = encodeURIComponent(
     `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`
   );
@@ -67,6 +68,7 @@ function useStopGlow(count: number) {
 }
 
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
+  const locale = useLocale();
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
   const [guests, setGuests] = useState(1);
@@ -274,13 +276,13 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   <div className="border-l-2 border-ochre bg-cream-deep p-3 mb-4">
                     <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
                     <p className="font-sans text-[12px] text-ink-soft leading-snug">
-                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate)} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`}
+                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate, locale)} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`}
                     </p>
                   </div>
                 )}
 
                 <GoldButton
-                  href={selectedDate ? bookMessage(pkg, selectedDate, guests) : undefined}
+                  href={selectedDate ? bookMessage(pkg, selectedDate, guests, locale) : undefined}
                   variant="solid"
                   target="_blank"
                   rel="noopener noreferrer"

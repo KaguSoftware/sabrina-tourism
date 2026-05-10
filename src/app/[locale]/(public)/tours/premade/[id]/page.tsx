@@ -36,7 +36,7 @@ export default async function PremadePackageDetailRoute({ params }: Props) {
   const pkg = await getPremadePackageBySlug(id, locale);
   if (!pkg) notFound();
   return (
-    <Suspense>
+    <Suspense fallback={<div className="min-h-screen" />}>
       <PremadePackageDetailPage pkg={pkg} />
     </Suspense>
   );

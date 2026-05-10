@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRef } from "react";
 
 export function PackageLightbox({
   gallery,
@@ -14,12 +15,29 @@ export function PackageLightbox({
   onPrev: () => void;
   onNext: () => void;
 }) {
+  const touchStartX = useRef<number | null>(null);
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 50) {
+      dx < 0 ? onNext() : onPrev();
+    }
+    touchStartX.current = null;
+  }
+
   return (
     <div
       className="fixed inset-0 bg-navy/96 z-200 flex items-center justify-center p-14"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{ animation: "fadeIn 240ms ease-out" }}
     >
       <button

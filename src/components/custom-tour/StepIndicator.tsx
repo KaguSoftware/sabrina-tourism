@@ -1,18 +1,20 @@
 "use client";
 
-const STEPS = [
-  "Destination & Dates",
-  "No. of Guests",
-  "Hotels",
-  "Chauffeur",
-  "Review",
-];
+import { useTranslations } from "next-intl";
 
 interface StepIndicatorProps {
   current: number;
 }
 
 export function StepIndicator({ current }: StepIndicatorProps) {
+  const t = useTranslations("customTour");
+  const STEPS = [
+    t("step1.heading"),
+    t("step2.heading"),
+    t("step3.heading"),
+    t("step4.heading"),
+    t("step5.heading"),
+  ];
   return (
     <div className="mb-14 overflow-x-auto pb-2 px-1">
       <div className="mx-auto flex w-max items-center gap-0">

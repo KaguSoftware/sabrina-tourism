@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { LegalPage } from "@/components/legal/LegalPage";
 
 export const metadata = {
@@ -5,25 +6,17 @@ export const metadata = {
   description: "How Sabrina Turizm handles enquiry and booking information.",
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const t = await getTranslations("legal.privacy");
   return (
     <LegalPage
-      eyebrow="Legal"
-      title="Privacy Policy"
-      intro="This page explains the basic information Sabrina Turizm uses to respond to enquiries and arrange travel services."
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      intro={t("intro")}
       sections={[
-        {
-          heading: "Information we collect",
-          body: "When you contact us, we may receive your name, contact details, travel dates, group size, destination preferences, booking notes, and related messages.",
-        },
-        {
-          heading: "How we use it",
-          body: "We use this information to respond to your enquiry, prepare quotes, coordinate travel services, manage bookings, and provide customer support.",
-        },
-        {
-          heading: "Requests",
-          body: "To ask about your information, request a correction, or request deletion where applicable, contact us directly by WhatsApp or email.",
-        },
+        { heading: t("section1Heading"), body: t("section1Body") },
+        { heading: t("section2Heading"), body: t("section2Body") },
+        { heading: t("section3Heading"), body: t("section3Body") },
       ]}
     />
   );
