@@ -7,12 +7,14 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const baseUrl = new URL(req.url).origin;
+  const url = new URL(req.url);
+  const baseUrl = url.origin;
   const waPhone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
+  const locale = url.searchParams.get("locale") ?? "en";
 
   let bytes: ArrayBuffer | null;
   try {
-    bytes = await renderPremadePdf(slug, baseUrl, waPhone);
+    bytes = await renderPremadePdf(slug, baseUrl, waPhone, locale);
   } catch (err) {
     console.error("[pdf/premade] render error:", err);
     return new Response("PDF generation failed", { status: 500 });

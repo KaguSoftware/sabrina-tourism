@@ -5,13 +5,23 @@ import {
 } from "@react-pdf/renderer";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { C, F, MARGIN } from "@/lib/pdf/theme";
+import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
+import { visualRTL } from "@/lib/pdf/rtl";
 
 registerFonts();
 
+function tx(text: string, rtl: boolean): string {
+  return rtl ? visualRTL(text) : text;
+}
+
+function ds(size: number, scale: number): number {
+  return Math.round(size * scale);
+}
+
 const PW = 595;
 const HERO_H = 310;
-const CUT_RISE = 32; // right side is this many points higher than left
+const CUT_RISE = 32;
+const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
 
 function abs(src: string, base: string) {
   return src.startsWith("http") ? src : `${base}${src}`;
@@ -20,62 +30,50 @@ function fmtMonth(iso: string) {
   return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 }
 
-// ── shared atoms ─────────────────────────────────────────────────
-function Wordmark({ light = false }: { light?: boolean }) {
+function Wordmark({ light = false, fonts }: { light?: boolean; fonts: FontSet }) {
   return (
-    <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>
+    <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>
       SABRINA TURIZM
     </Text>
   );
 }
 
-function Mono({ children, style = {} }: { children: React.ReactNode; style?: object }) {
+function Mono({ children, style = {}, fonts }: { children: React.ReactNode; style?: object; fonts: FontSet }) {
   return (
-    <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>
+    <Text style={{ fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>
       {children}
     </Text>
   );
 }
 
-function PageFooter({ left, page, total }: { left: string; page: number; total: number }) {
+function PageFooter({ left, page, total, fonts }: { left: string; page: number; total: number; fonts: FontSet }) {
   return (
     <View style={{
       position: "absolute", bottom: 32, left: MARGIN, right: MARGIN,
       flexDirection: "row", justifyContent: "space-between", alignItems: "center",
       borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10,
     }}>
-      <Mono style={{ color: C.inkSoft }}>{left.toUpperCase()}</Mono>
-      <Wordmark />
-      <Mono style={{ color: C.inkSoft }}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
+      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{left.toUpperCase()}</Mono>
+      <Wordmark fonts={fonts} />
+      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
   );
 }
 
-// ── Diagonal hero transition ──────────────────────────────────────
-// Full-bleed hero with gradient overlay → angled ochre stripe → paper
-// Hero is absolute; page uses paddingTop to push flow content below it.
-const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
-
-function HeroBlock({ heroSrc }: { heroSrc: string | null }) {
+function HeroBlock({ heroSrc, fonts }: { heroSrc: string | null; fonts: FontSet }) {
   return (
     <>
-      {/* Full-bleed hero — no margins */}
       {heroSrc ? (
         <Image src={heroSrc} style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, objectFit: "cover" }} />
       ) : (
         <View style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, backgroundColor: C.navy }} />
       )}
-
-      {/* Wordmark top-left on the image */}
       <View style={{ position: "absolute", top: 28, left: MARGIN }}>
-        <Wordmark light />
+        <Wordmark light fonts={fonts} />
       </View>
-
-      {/* Ochre diagonal stripe at bottom of hero */}
       <Svg width={PW} height={CUT_RISE + 8} style={{ position: "absolute", top: HERO_H - 8, left: 0 }}>
         <Polygon points={`0,${CUT_RISE + 8} ${PW},8 ${PW},0 0,${CUT_RISE}`} fill={C.ochre} />
       </Svg>
-      {/* Paper fill sealing below the diagonal */}
       <Svg width={PW} height={CUT_RISE + 4} style={{ position: "absolute", top: HERO_H + CUT_RISE - 4, left: 0 }}>
         <Polygon points={`0,0 ${PW},0 ${PW},${CUT_RISE + 4} 0,${CUT_RISE + 4}`} fill={C.creamDeep} />
       </Svg>
@@ -83,8 +81,7 @@ function HeroBlock({ heroSrc }: { heroSrc: string | null }) {
   );
 }
 
-// ── Page 1: Cover ────────────────────────────────────────────────
-function Cover({ pkg, waPhone, baseUrl }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string }) {
+function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string; fonts: FontSet }) {
   const heroSrc = pkg.heroImage ? abs(pkg.heroImage, baseUrl) : null;
   const facts = [
     { k: "Duration",   v: pkg.duration ?? "—" },
@@ -94,170 +91,155 @@ function Cover({ pkg, waPhone, baseUrl }: { pkg: PremadePackagePublic; waPhone: 
   ];
 
   return (
-    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body, paddingTop: HERO_PADDING_TOP }}>
-      {/* Absolute: hero image + wordmark + diagonal SVGs */}
-      <HeroBlock heroSrc={heroSrc} />
-
-      {/* Flow content — starts below hero thanks to paddingTop */}
+    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body, paddingTop: HERO_PADDING_TOP }}>
+      <HeroBlock heroSrc={heroSrc} fonts={fonts} />
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
-        <Mono style={{ color: C.ochre, marginBottom: 10 }}>{`${(pkg.region ?? "").toUpperCase()} · GROUP PACKAGE`}</Mono>
-        <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 54, lineHeight: 1, letterSpacing: -1, color: C.ink }}>
-          {pkg.name}
+        <Mono style={{ color: C.ochre, marginBottom: 10 }} fonts={fonts}>{`${(pkg.region ?? "").toUpperCase()} · GROUP PACKAGE`}</Mono>
+        <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(54, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>
+          {tx(pkg.name, fonts.rtl)}
         </Text>
-        <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 17, lineHeight: 1.4, color: C.inkSoft, marginTop: 10 }}>
-          {pkg.shortDescription}
+        <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(17, fonts.displayScale), lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>
+          {tx(pkg.shortDescription, fonts.rtl)}
         </Text>
       </View>
-
-      {/* Facts strip */}
-      <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", backgroundColor: C.navy }}>
+      <View style={{ marginHorizontal: MARGIN, marginTop: 20, flexDirection: "row", backgroundColor: C.navy }}>
         {facts.map((f, i) => (
-          <View key={i} style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 14, borderRightWidth: i < 3 ? 1 : 0, borderRightColor: C.navySoft }}>
-            <Mono style={{ color: C.ochre, marginBottom: 6 }}>{f.k.toUpperCase()}</Mono>
-            <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 15, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
+          <View key={i} style={{ flex: 1, paddingVertical: 14, paddingHorizontal: 12, borderRightWidth: i < 3 ? 1 : 0, borderRightColor: C.navySoft }}>
+            <Mono style={{ color: C.ochre, marginBottom: 5 }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
+            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(13, fonts.displayScale), color: C.cream, lineHeight: 1.3 }}>{tx(f.v, fonts.rtl)}</Text>
           </View>
         ))}
       </View>
-
       {waPhone ? (
         <View style={{ position: "absolute", bottom: 72, left: MARGIN }}>
-          <Text style={{ fontFamily: F.body, fontSize: 10, color: C.inkSoft }}>{`WhatsApp ${waPhone}  ·  sabrinaturizm.com`}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 10, color: C.inkSoft }}>{`WhatsApp ${waPhone}  ·  sabrinaturizm.com`}</Text>
         </View>
       ) : null}
-
-      <PageFooter left="Sabrina Turizm" page={1} total={3} />
+      <PageFooter left="Sabrina Turizm" page={1} total={3} fonts={fonts} />
     </Page>
   );
 }
 
-// ── Page 2: Itinerary ────────────────────────────────────────────
-function Itinerary({ pkg }: { pkg: PremadePackagePublic }) {
+function Itinerary({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSet }) {
   return (
-    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
+    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
       <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
-        <Wordmark />
+        <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
+        <Wordmark fonts={fonts} />
       </View>
-
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 28 }}>
-        <Mono style={{ color: C.ochre, marginBottom: 8 }}>DAY BY DAY</Mono>
-        <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 50, lineHeight: 1, letterSpacing: -1, color: C.ink }}>
+        <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>DAY BY DAY</Mono>
+        <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(50, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>
           The itinerary.
         </Text>
-        <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 15, color: C.inkSoft, marginTop: 8, lineHeight: 1.5 }}>
-          {pkg.shortDescription}
+        <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(14, fonts.displayScale), color: C.inkSoft, marginTop: 6, lineHeight: 1.5 }}>
+          {tx(pkg.shortDescription, fonts.rtl)}
         </Text>
       </View>
-
-      <View style={{ marginHorizontal: MARGIN, marginTop: 24 }}>
+      <View style={{ marginHorizontal: MARGIN, marginTop: 18 }}>
         {pkg.itinerary.map((day, i) => (
           <View key={day.day} style={{
             flexDirection: "row", alignItems: "center",
-            paddingVertical: 13,
+            paddingVertical: 10,
             borderTopWidth: 1, borderTopColor: C.rule,
             borderBottomWidth: i === pkg.itinerary.length - 1 ? 1 : 0,
             borderBottomColor: C.rule,
           }}>
             <View style={{ width: 70 }}>
-              <Mono style={{ color: C.ochre }}>{`DAY ${String(day.day).padStart(2, "0")}`}</Mono>
+              <Mono style={{ color: C.ochre }} fonts={fonts}>{`DAY ${String(day.day).padStart(2, "0")}`}</Mono>
             </View>
             <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: i % 3 === 0 ? C.ochre : C.rule, marginRight: 18 }} />
-            <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 20, color: C.ink, flex: 1, lineHeight: 1.1 }}>
-              {day.title}
+            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(18, fonts.displayScale), color: C.ink, flex: 1, lineHeight: 1.2 }}>
+              {tx(day.title, fonts.rtl)}
             </Text>
           </View>
         ))}
       </View>
-
-      <PageFooter left="Day by day" page={2} total={3} />
+      <PageFooter left="Day by day" page={2} total={3} fonts={fonts} />
     </Page>
   );
 }
 
-// ── Page 3: Closing ───────────────────────────────────────────────
-function Closing({ pkg, waPhone }: { pkg: PremadePackagePublic; waPhone: string }) {
+function Closing({ pkg, waPhone, fonts }: { pkg: PremadePackagePublic; waPhone: string; fonts: FontSet }) {
   return (
-    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
+    <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
       <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
-        <Wordmark />
+        <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
+        <Wordmark fonts={fonts} />
       </View>
-
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 24, paddingBottom: 24, backgroundColor: C.navy, marginTop: 0 }}>
-        <Mono style={{ color: C.ochre, marginBottom: 8 }}>RESERVE</Mono>
-        <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 44, lineHeight: 1, letterSpacing: -0.5, color: C.cream }}>
-          {pkg.name}.
+        <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>RESERVE</Mono>
+        <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(44, fonts.displayScale), lineHeight: 1.1, color: C.cream }}>
+          {tx(pkg.name, fonts.rtl)}.
         </Text>
-        <View style={{ flexDirection: "row", marginTop: 20, gap: 28 }}>
+        <View style={{ flexDirection: "row", marginTop: 16, gap: 28 }}>
           <View style={{ flex: 1 }}>
-            <Mono style={{ color: C.ochre, marginBottom: 6 }}>STARTING FROM</Mono>
+            <Mono style={{ color: C.ochre, marginBottom: 6 }} fonts={fonts}>STARTING FROM</Mono>
             {pkg.price != null ? (
-              <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 40, lineHeight: 1, color: C.ochre }}>
+              <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(40, fonts.displayScale), lineHeight: 1.1, color: C.ochre }}>
                 {`${pkg.currency} ${pkg.price.toLocaleString()}`}
               </Text>
             ) : (
-              <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 22, color: C.cream }}>Contact us</Text>
+              <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(22, fonts.displayScale), color: C.cream }}>Contact us</Text>
             )}
-            <Text style={{ fontFamily: F.body, fontSize: 11, color: C.cream, marginTop: 4, opacity: 0.7 }}>per person</Text>
+            <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, marginTop: 4, opacity: 0.7 }}>per person</Text>
           </View>
           <View style={{ flex: 1, paddingLeft: 24, borderLeftWidth: 1, borderLeftColor: C.navySoft }}>
-            <Mono style={{ color: C.ochre, marginBottom: 8 }}>HOW TO RESERVE</Mono>
-            <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 14, lineHeight: 1.5, color: C.cream }}>
+            <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>HOW TO RESERVE</Mono>
+            <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(14, fonts.displayScale), lineHeight: 1.5, color: C.cream }}>
               No payment now. We send a tailored quote — you confirm only when ready.
             </Text>
             {waPhone ? (
-              <Text style={{ fontFamily: F.body, fontSize: 12, color: C.cream, marginTop: 8, opacity: 0.9 }}>
+              <Text style={{ fontFamily: fonts.body, fontSize: 12, color: C.cream, marginTop: 8, opacity: 0.9 }}>
                 {`WhatsApp: ${waPhone}`}
               </Text>
             ) : null}
             {waPhone ? (
               <View style={{ marginTop: 10, alignSelf: "flex-start", backgroundColor: C.ochre, paddingVertical: 7, paddingHorizontal: 12 }}>
-                <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.2, color: C.navy }}>{`WHATSAPP · ${waPhone}`}</Text>
+                <Text style={{ fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.2, color: C.navy }}>{`WHATSAPP · ${waPhone}`}</Text>
               </View>
             ) : null}
           </View>
         </View>
       </View>
-
       <View style={{ marginHorizontal: MARGIN, marginTop: 28, flexDirection: "row", gap: 32 }}>
         <View style={{ flex: 1 }}>
           <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 8, marginBottom: 14 }}>
-            <Mono style={{ color: C.ochre }}>INCLUDED</Mono>
+            <Mono style={{ color: C.ochre }} fonts={fonts}>INCLUDED</Mono>
           </View>
           {pkg.included.map((it, i) => (
             <View key={i} style={{ flexDirection: "row", paddingVertical: 6 }}>
-              <Text style={{ fontFamily: F.mono, fontSize: 9, color: C.ochre, width: 16 }}>✓</Text>
-              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5 }}>{it}</Text>
+              <Text style={{ fontFamily: fonts.mono, fontSize: 9, color: C.ochre, width: 16 }}>✓</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5 }}>{tx(it, fonts.rtl)}</Text>
             </View>
           ))}
         </View>
         <View style={{ flex: 1 }}>
           <View style={{ borderBottomWidth: 1, borderBottomColor: C.rule, paddingBottom: 8, marginBottom: 14 }}>
-            <Mono style={{ color: C.inkSoft }}>NOT INCLUDED</Mono>
+            <Mono style={{ color: C.inkSoft }} fonts={fonts}>NOT INCLUDED</Mono>
           </View>
           {pkg.notIncluded.map((it, i) => (
             <View key={i} style={{ flexDirection: "row", paddingVertical: 6 }}>
-              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, width: 16 }}>×</Text>
-              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5 }}>{it}</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, width: 16 }}>×</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5 }}>{tx(it, fonts.rtl)}</Text>
             </View>
           ))}
         </View>
       </View>
-
-      <PageFooter left="Inclusions & reservation" page={3} total={3} />
+      <PageFooter left="Inclusions & reservation" page={3} total={3} fonts={fonts} />
     </Page>
   );
 }
 
-// ── Document ─────────────────────────────────────────────────────
-interface Props { pkg: PremadePackagePublic; waPhone?: string; baseUrl?: string }
+interface Props { pkg: PremadePackagePublic; waPhone?: string; baseUrl?: string; locale?: string }
 
-export function PremadePackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
+export function PremadePackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en" }: Props) {
+  const fonts = getFontsForLocale(locale);
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
-      <Cover pkg={pkg} waPhone={waPhone} baseUrl={baseUrl} />
-      <Itinerary pkg={pkg} />
-      <Closing pkg={pkg} waPhone={waPhone} />
+      <Cover pkg={pkg} waPhone={waPhone} baseUrl={baseUrl} fonts={fonts} />
+      <Itinerary pkg={pkg} fonts={fonts} />
+      <Closing pkg={pkg} waPhone={waPhone} fonts={fonts} />
     </Document>
   );
 }

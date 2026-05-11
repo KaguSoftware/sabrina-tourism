@@ -7,12 +7,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const baseUrl = new URL(req.url).origin;
+  const url = new URL(req.url);
+  const baseUrl = url.origin;
   const waPhone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
+  const locale = url.searchParams.get("locale") ?? "en";
 
   let bytes: ArrayBuffer | null;
   try {
-    bytes = await renderDailyPdf(id, baseUrl, waPhone);
+    bytes = await renderDailyPdf(id, baseUrl, waPhone, locale);
   } catch (err) {
     console.error("[pdf/daily] render error:", err);
     return new Response("PDF generation failed", { status: 500 });

@@ -17,37 +17,49 @@ export async function translateContentBatch(
 
   const groq = new Groq({ apiKey });
 
-  const localeList = CONTENT_LOCALES
-    .map((l) => `"${l}" (${LOCALE_NAMES[l]})`)
-    .join(", ");
+  // Translate all locales in parallel — one request per locale, all fields per request
+  try {
+    const fieldsJson = JSON.stringify(fields, null, 2);
 
-  const langList = CONTENT_LOCALES
-    .map((l) => LOCALE_NAMES[l])
-    .join(", ");
-
-  const prompt = `You are a professional translator for a boutique Turkish tourism company. Translate ALL the following fields from English into: ${langList}.
+    const localeResults = await Promise.all(
+      CONTENT_LOCALES.map(async (locale) => {
+        const localeName = LOCALE_NAMES[locale];
+        const prompt = `You are a professional translator for a boutique Turkish tourism company.
+Translate ALL the following fields from English into ${localeName}.
 
 Context: ${context}
 
 Rules:
 - Keep the tone professional, warm, and travel-focused
 - Preserve any formatting (line breaks, dashes, bullet chars)
-- Return ONLY a valid JSON object where each key from the input maps to an object with keys ${localeList}
+- Return ONLY a valid JSON object with the same keys as the input, each value being the ${localeName} translation
+- You MUST include every key — do not skip any
 
 English fields:
-${JSON.stringify(fields, null, 2)}`;
+${fieldsJson}`;
 
-  try {
-    const chat = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-    });
+        const chat = await groq.chat.completions.create({
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.2,
+          response_format: { type: "json_object" },
+          max_tokens: 4096,
+        });
 
-    const content = chat.choices[0]?.message?.content ?? "{}";
-    const result = JSON.parse(content) as Record<string, Record<ContentLocale, string>>;
-    return { result };
+        const content = chat.choices[0]?.message?.content ?? "{}";
+        return { locale, result: JSON.parse(content) as Record<string, string> };
+      })
+    );
+
+    const merged: Record<string, Record<ContentLocale, string>> = {};
+    for (const { locale, result } of localeResults) {
+      for (const [key, value] of Object.entries(result)) {
+        if (!merged[key]) merged[key] = {} as Record<ContentLocale, string>;
+        merged[key][locale as ContentLocale] = value;
+      }
+    }
+
+    return { result: merged };
   } catch (e) {
     return { error: String(e) };
   }

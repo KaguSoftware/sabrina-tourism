@@ -51,11 +51,17 @@ export interface DailyPackageRaw {
 function sortBy<T extends { sort_order: number }>(arr: T[]): T[] { return [...arr].sort((a, b) => a.sort_order - b.sort_order); }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assemble(row: any): DailyPackagePublic {
+function tr(translations: any, locale: string, fallback: string): string {
+  if (!locale || locale === 'en') return fallback;
+  return translations?.[locale] || fallback;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function assemble(row: any, locale = 'en'): DailyPackagePublic {
   return {
     id: row.id,
     slug: row.slug,
-    name: row.name,
+    name: tr(row.name_translations, locale, row.name),
     date: row.tour_date,
     startTime: row.start_time,
     endTime: row.end_time,
@@ -65,50 +71,55 @@ function assemble(row: any): DailyPackagePublic {
     driver: row.driver,
     price: row.price,
     currency: row.currency,
-    shortDescription: row.short_description,
+    shortDescription: tr(row.short_description_translations, locale, row.short_description),
     region: row.region,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    stops: sortBy(row.daily_package_stops ?? []).map((s: any) => ({ time: s.stop_time, place: s.place, description: s.description })),
+    stops: sortBy(row.daily_package_stops ?? []).map((s: any) => ({
+      time: s.stop_time,
+      place: tr(s.place_translations, locale, s.place),
+      description: tr(s.description_translations, locale, s.description),
+    })),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    included: sortBy(row.daily_package_included ?? []).map((i: any) => i.text),
+    included: sortBy(row.daily_package_included ?? []).map((i: any) => tr(i.text_translations, locale, i.text)),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     groupImages: sortBy(row.daily_package_gallery ?? []).map((g: any) => g.url),
   };
 }
 
-const SELECT = '*, daily_package_stops(*), daily_package_included(*), daily_package_gallery(*)';
+const SELECT = '*, name_translations, short_description_translations, daily_package_stops(*, place_translations, description_translations), daily_package_included(*, text_translations), daily_package_gallery(*)';
 
-async function _getAllDailyPackages({ publishedOnly = true } = {}): Promise<DailyPackagePublic[]> {
+async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}): Promise<DailyPackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   let q = supabase.from('daily_packages').select(SELECT).order('sort_order');
   if (publishedOnly) q = q.eq('is_published', true);
   const { data, error } = await q;
   if (error) { console.error('[db/daily] getAllDailyPackages:', error); return []; }
-  return (data ?? []).map(assemble);
+  return (data ?? []).map((row: unknown) => assemble(row, locale));
 }
 
-async function _getDailyPackageBySlug(slug: string): Promise<DailyPackagePublic | null> {
+async function _getDailyPackageBySlug(slug: string, locale = 'en'): Promise<DailyPackagePublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase.from('daily_packages').select(SELECT).eq('slug', slug).maybeSingle();
   if (error || !data) return null;
-  return assemble(data);
+  return assemble(data, locale);
 }
 
-export async function getAllDailyPackages(opts?: { publishedOnly?: boolean }): Promise<DailyPackagePublic[]> {
+export async function getAllDailyPackages(opts?: { publishedOnly?: boolean; locale?: string }): Promise<DailyPackagePublic[]> {
   const publishedOnly = opts?.publishedOnly ?? true;
+  const locale = opts?.locale ?? 'en';
   return unstable_cache(
-    () => _getAllDailyPackages({ publishedOnly }),
-    ['daily:all', String(publishedOnly)],
+    () => _getAllDailyPackages({ publishedOnly, locale }),
+    ['daily:all', String(publishedOnly), locale],
     { tags: [tags.daily.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }
 
-export async function getDailyPackageBySlug(slug: string): Promise<DailyPackagePublic | null> {
+export async function getDailyPackageBySlug(slug: string, locale = 'en'): Promise<DailyPackagePublic | null> {
   return unstable_cache(
-    () => _getDailyPackageBySlug(slug),
-    ['daily:bySlug', slug],
+    () => _getDailyPackageBySlug(slug, locale),
+    ['daily:bySlug', slug, locale],
     { tags: [tags.daily.bySlug(slug), tags.daily.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }

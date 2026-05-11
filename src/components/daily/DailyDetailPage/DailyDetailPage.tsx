@@ -129,7 +129,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
       {/* PDF download */}
       <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-8 flex justify-end">
         <a
-          href={`/api/pdf/daily/${pkg.id}`}
+          href={`/api/pdf/daily/${pkg.id}?locale=${locale}`}
           download
           className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase border border-ochre text-ochre px-4 py-2.5 hover:bg-ochre hover:text-navy transition-colors duration-200"
         >

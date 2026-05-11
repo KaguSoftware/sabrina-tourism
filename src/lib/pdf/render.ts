@@ -3,10 +3,9 @@ import type { DocumentProps } from "@react-pdf/renderer";
 import { buffer } from "node:stream/consumers";
 import { createElement } from "react";
 import type { ReactElement } from "react";
-import { unstable_cache } from "next/cache";
-import { tags } from "@/lib/cache/tags";
 import { getPackageBySlug } from "@/lib/db/packages";
 import { getPremadePackageBySlug } from "@/lib/db/premade-packages";
+import { getDailyPackageBySlug } from "@/lib/db/daily-packages";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { PackagePDF } from "@/components/pdf/PackagePDF";
 import { PremadePackagePDF } from "@/components/pdf/PremadePackagePDF";
@@ -41,12 +40,13 @@ async function _renderPremadePdf(
   slug: string,
   baseUrl: string,
   waPhone: string,
+  locale: string,
 ): Promise<ArrayBuffer | null> {
-  const pkg = await getPremadePackageBySlug(slug);
+  const pkg = await getPremadePackageBySlug(slug, locale);
   if (!pkg) return null;
 
   const stream = await renderToStream(
-    createElement(PremadePackagePDF, { pkg, waPhone, baseUrl }) as ReactElement<DocumentProps>,
+    createElement(PremadePackagePDF, { pkg, waPhone, baseUrl, locale }) as ReactElement<DocumentProps>,
   );
   return streamToBytes(stream);
 }
@@ -55,36 +55,31 @@ async function _renderDailyPdf(
   id: string,
   baseUrl: string,
   waPhone: string,
+  locale: string,
 ): Promise<ArrayBuffer | null> {
-  const pkg = DAILY_PACKAGES.find((p) => p.id === id);
+  // Try DB first (has translations), fall back to static data
+  const dbPkg = await getDailyPackageBySlug(id, locale).catch(() => null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pkg: any = dbPkg ?? DAILY_PACKAGES.find((p) => p.id === id);
   if (!pkg) return null;
 
   const stream = await renderToStream(
-    createElement(DailyPackagePDF, { pkg, waPhone, baseUrl }) as ReactElement<DocumentProps>,
+    createElement(DailyPackagePDF, { pkg, waPhone, baseUrl, locale }) as ReactElement<DocumentProps>,
   );
   return streamToBytes(stream);
 }
 
+// PDFs are generated on-demand — ArrayBuffer is not JSON-serializable so
+// unstable_cache would corrupt the bytes. The route handler sets its own
+// Cache-Control headers, so we just render directly each time.
 export async function renderPackagePdf(slug: string, baseUrl: string, waPhone: string) {
-  return unstable_cache(
-    () => _renderPackagePdf(slug, baseUrl, waPhone),
-    ["pdf:package", slug, baseUrl, waPhone],
-    { tags: [tags.packages.bySlug(slug), tags.packages.all()], revalidate: REVALIDATE_SECONDS },
-  )();
+  return _renderPackagePdf(slug, baseUrl, waPhone);
 }
 
-export async function renderPremadePdf(slug: string, baseUrl: string, waPhone: string) {
-  return unstable_cache(
-    () => _renderPremadePdf(slug, baseUrl, waPhone),
-    ["pdf:premade", slug, baseUrl, waPhone],
-    { tags: [tags.premade.bySlug(slug), tags.premade.all()], revalidate: REVALIDATE_SECONDS },
-  )();
+export async function renderPremadePdf(slug: string, baseUrl: string, waPhone: string, locale = 'en') {
+  return _renderPremadePdf(slug, baseUrl, waPhone, locale);
 }
 
-export async function renderDailyPdf(id: string, baseUrl: string, waPhone: string) {
-  return unstable_cache(
-    () => _renderDailyPdf(id, baseUrl, waPhone),
-    ["pdf:daily", id, baseUrl, waPhone],
-    { tags: [tags.daily.bySlug(id), tags.daily.all()], revalidate: REVALIDATE_SECONDS },
-  )();
+export async function renderDailyPdf(slug: string, baseUrl: string, waPhone: string, locale = 'en') {
+  return _renderDailyPdf(slug, baseUrl, waPhone, locale);
 }

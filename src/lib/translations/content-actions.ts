@@ -1,6 +1,8 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import type { ContentLocale } from "./ai";
 
 export type ContentTranslations = Record<string, Record<ContentLocale, string>>;
@@ -67,6 +69,7 @@ export async function saveDailyTranslations(
     }
   }
 
+  revalidateTag(tags.daily.all(), "max");
   return {};
 }
 
@@ -135,6 +138,7 @@ export async function savePremadeTranslations(
     if (item) await supabase.from("premade_package_inclusions").update({ text_translations: val }).eq("id", item.id);
   }
 
+  revalidateTag(tags.premade.all(), "max");
   return {};
 }
 
@@ -187,6 +191,7 @@ export async function saveHotelTranslations(
     if (room) await supabase.from("hotel_room_types").update(update).eq("id", room.id);
   }
 
+  revalidateTag(tags.hotels.all(), "max");
   return {};
 }
 
@@ -273,6 +278,29 @@ export async function loadPremadeTranslations(pkgId: string): Promise<ContentTra
 
   (tiers ?? []).forEach((t: Record<string, unknown>, i: number) => {
     if (t.highlights_translations) result[`tier_${i}_highlights`] = t.highlights_translations as Record<ContentLocale, string>;
+  });
+
+  // Inclusions
+  const { data: included } = await supabase
+    .from("premade_package_inclusions")
+    .select("text_translations, kind")
+    .eq("package_id", pkgId)
+    .eq("kind", "included")
+    .order("sort_order");
+
+  const { data: notIncluded } = await supabase
+    .from("premade_package_inclusions")
+    .select("text_translations, kind")
+    .eq("package_id", pkgId)
+    .eq("kind", "not_included")
+    .order("sort_order");
+
+  (included ?? []).forEach((item: Record<string, unknown>, i: number) => {
+    if (item.text_translations) result[`inclusion_included_${i}`] = item.text_translations as Record<ContentLocale, string>;
+  });
+
+  (notIncluded ?? []).forEach((item: Record<string, unknown>, i: number) => {
+    if (item.text_translations) result[`inclusion_not_included_${i}`] = item.text_translations as Record<ContentLocale, string>;
   });
 
   return result;

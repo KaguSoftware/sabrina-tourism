@@ -86,16 +86,34 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     );
   }
 
-  // Replace itinerary — ordered by day_number
+  // Replace itinerary — preserve existing translations
+  const { data: existingDays } = await supabase
+    .from("premade_package_itinerary_days")
+    .select("sort_order, title_translations, description_translations")
+    .eq("package_id", pkgId)
+    .order("sort_order");
   await supabase.from("premade_package_itinerary_days").delete().eq("package_id", pkgId);
   if (data.itinerary.length) {
     const sorted = [...data.itinerary].sort((a, b) => a.day_number - b.day_number);
     await supabase.from("premade_package_itinerary_days").insert(
-      sorted.map((d, i) => ({ package_id: pkgId, day_number: d.day_number, title: d.title, description: d.description, sort_order: i }))
+      sorted.map((d, i) => ({
+        package_id: pkgId,
+        day_number: d.day_number,
+        title: d.title,
+        description: d.description,
+        sort_order: i,
+        title_translations: existingDays?.[i]?.title_translations ?? null,
+        description_translations: existingDays?.[i]?.description_translations ?? null,
+      }))
     );
   }
 
-  // Replace tiers
+  // Replace tiers — preserve existing translations
+  const { data: existingTiers } = await supabase
+    .from("premade_package_tiers")
+    .select("sort_order, highlights_translations")
+    .eq("package_id", pkgId)
+    .order("sort_order");
   await supabase.from("premade_package_tiers").delete().eq("package_id", pkgId);
   if (data.tiers.length) {
     await supabase.from("premade_package_tiers").insert(
@@ -109,15 +127,32 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
         meals_included: t.meals_included,
         highlights: t.highlights,
         sort_order: i,
+        highlights_translations: existingTiers?.[i]?.highlights_translations ?? null,
       }))
     );
   }
 
-  // Replace inclusions
+  // Replace inclusions — preserve existing translations
+  const { data: existingIncluded } = await supabase
+    .from("premade_package_inclusions")
+    .select("sort_order, text_translations")
+    .eq("package_id", pkgId).eq("kind", "included")
+    .order("sort_order");
+  const { data: existingNotIncluded } = await supabase
+    .from("premade_package_inclusions")
+    .select("sort_order, text_translations")
+    .eq("package_id", pkgId).eq("kind", "not_included")
+    .order("sort_order");
   await supabase.from("premade_package_inclusions").delete().eq("package_id", pkgId);
   const inclusionRows = [
-    ...data.included.map((text, i) => ({ package_id: pkgId, kind: "included", text, sort_order: i })),
-    ...data.not_included.map((text, i) => ({ package_id: pkgId, kind: "not_included", text, sort_order: i })),
+    ...data.included.map((text, i) => ({
+      package_id: pkgId, kind: "included", text, sort_order: i,
+      text_translations: existingIncluded?.[i]?.text_translations ?? null,
+    })),
+    ...data.not_included.map((text, i) => ({
+      package_id: pkgId, kind: "not_included", text, sort_order: i,
+      text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
+    })),
   ];
   if (inclusionRows.length) {
     await supabase.from("premade_package_inclusions").insert(inclusionRows);

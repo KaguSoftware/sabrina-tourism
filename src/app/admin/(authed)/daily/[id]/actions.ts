@@ -50,19 +50,36 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     pkgId = row.id;
   }
 
-  // Replace stops
+  // Replace stops — preserve existing translations
+  const { data: existingStops } = await supabase
+    .from("daily_package_stops")
+    .select("sort_order, place_translations, description_translations")
+    .eq("package_id", pkgId)
+    .order("sort_order");
   await supabase.from("daily_package_stops").delete().eq("package_id", pkgId);
   if (data.stops.length) {
     await supabase.from("daily_package_stops").insert(
-      data.stops.map((s, i) => ({ package_id: pkgId, stop_time: "", place: s.place, description: s.description, sort_order: i }))
+      data.stops.map((s, i) => ({
+        package_id: pkgId, stop_time: "", place: s.place, description: s.description, sort_order: i,
+        place_translations: existingStops?.[i]?.place_translations ?? null,
+        description_translations: existingStops?.[i]?.description_translations ?? null,
+      }))
     );
   }
 
-  // Replace inclusions
+  // Replace inclusions — preserve existing translations
+  const { data: existingIncluded } = await supabase
+    .from("daily_package_included")
+    .select("sort_order, text_translations")
+    .eq("package_id", pkgId)
+    .order("sort_order");
   await supabase.from("daily_package_included").delete().eq("package_id", pkgId);
   if (data.included.length) {
     await supabase.from("daily_package_included").insert(
-      data.included.map((item, i) => ({ package_id: pkgId, text: item.text, sort_order: i }))
+      data.included.map((item, i) => ({
+        package_id: pkgId, text: item.text, sort_order: i,
+        text_translations: existingIncluded?.[i]?.text_translations ?? null,
+      }))
     );
   }
 

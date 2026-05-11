@@ -4,6 +4,8 @@ import { loadPremadeTranslations } from "@/lib/translations/content-actions";
 import { PremadeEditor } from "@/components/admin/PremadePackageEditor/PremadeEditor";
 import type { PremadePackageRaw } from "@/lib/db/premade-packages";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditPremadePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [pkg, translations] = await Promise.all([

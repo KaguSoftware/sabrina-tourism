@@ -4,6 +4,8 @@ import { loadDailyTranslations } from "@/lib/translations/content-actions";
 import { DailyEditor } from "@/components/admin/DailyPackageEditor/DailyEditor";
 import type { DailyPackageRaw } from "@/lib/db/daily-packages";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditDailyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [pkg, translations] = await Promise.all([

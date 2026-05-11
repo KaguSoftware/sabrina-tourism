@@ -1,22 +1,50 @@
 // Exact site design tokens from src/styles/globals.css
 export const C = {
-  cream:      "#f5ede0",   // --color-cream (light bg)
-  creamDeep:  "#e8dac8",   // --color-cream-deep (darker paper)
-  ink:        "#1f1a14",   // --color-ink
-  inkSoft:    "#4a4036",   // --color-ink-soft
-  navy:       "#0b1a2e",   // --color-navy
-  navySoft:   "#162b47",   // --color-navy-soft
-  ochre:      "#c99a3f",   // --color-ochre (gold accent)
-  gold:       "#b8893d",   // --color-gold
-  terracotta: "#c46b4f",   // --color-terracotta
-  tealDeep:   "#1b4d5c",   // --color-teal-deep
-  rule:       "#d6cab5",   // --color-rule
+  cream:      "#f5ede0",
+  creamDeep:  "#e8dac8",
+  ink:        "#1f1a14",
+  inkSoft:    "#4a4036",
+  navy:       "#0b1a2e",
+  navySoft:   "#162b47",
+  ochre:      "#c99a3f",
+  gold:       "#b8893d",
+  terracotta: "#c46b4f",
+  tealDeep:   "#1b4d5c",
+  rule:       "#d6cab5",
 } as const;
 
+// Default Latin fonts
 export const F = {
-  display: "Fraunces",      // site's --font-fraunces
-  body:    "Inter",         // site's --font-inter
-  mono:    "JetBrains Mono",// site's --font-mono
+  display: "Fraunces",
+  body:    "Inter",
+  mono:    "JetBrains Mono",
 } as const;
 
 export const MARGIN = 52;
+
+export interface FontSet {
+  display: string;
+  body: string;
+  mono: string;
+  rtl: boolean;
+  /** Scale factor applied to large display sizes (default 1.0) */
+  displayScale: number;
+}
+
+// Returns the right font set for a given locale.
+// Arabic and CJK scripts need dedicated fonts — Latin fonts can't render them.
+export function getFontsForLocale(locale: string): FontSet {
+  switch (locale) {
+    case "ar":
+      // IBM Plex Sans Arabic — same font as project1; scale down display sizes to prevent overflow
+      return { display: "IBMPlexSansArabic", body: "IBMPlexSansArabic", mono: "IBMPlexSansArabic", rtl: true, displayScale: 0.65 };
+    case "ja":
+      return { display: "Noto Sans JP", body: "Noto Sans JP", mono: "Noto Sans JP", rtl: false, displayScale: 0.85 };
+    case "zh":
+      return { display: "Noto Sans SC", body: "Noto Sans SC", mono: "Noto Sans SC", rtl: false, displayScale: 0.85 };
+    case "ru":
+      return { display: "Noto Sans", body: "Noto Sans", mono: "JetBrains Mono", rtl: false, displayScale: 1.0 };
+    default:
+      return { display: "Fraunces", body: "Inter", mono: "JetBrains Mono", rtl: false, displayScale: 1.0 };
+  }
+}
