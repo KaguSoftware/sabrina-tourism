@@ -1,10 +1,7 @@
 import { TransportationPage } from "@/components/transport/TransportationPage/TransportationPage";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
 
-export const dynamic = "force-static";
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: "Private Chauffeur & Airport Transfer — Sabrina Turizm",

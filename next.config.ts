@@ -7,7 +7,6 @@ const STATIC_HTML_CACHE_CONTROL =
   "public, s-maxage=2592000, stale-while-revalidate=86400";
 const LEGAL_HTML_CACHE_CONTROL =
   "public, max-age=86400, s-maxage=31536000, immutable";
-const IMMUTABLE_ASSET_CACHE_CONTROL = "public, max-age=31536000, immutable";
 
 const SECURITY_HEADERS = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -65,18 +64,6 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: IMMUTABLE_ASSET_CACHE_CONTROL },
-        ],
-      },
-      {
-        source: "/_next/image",
-        headers: [
-          { key: "Cache-Control", value: IMMUTABLE_ASSET_CACHE_CONTROL },
-        ],
-      },
       ...STATIC_HTML_ROUTES.map((source) => ({
         source,
         headers: [

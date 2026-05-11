@@ -6,10 +6,7 @@ import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { CustomTourWizard } from "@/components/custom-tour/CustomTourWizard";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
 
-export const dynamic = "force-static";
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: "Custom Tour Package — Sabrina Turizm",

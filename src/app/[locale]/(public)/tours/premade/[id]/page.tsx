@@ -3,11 +3,8 @@ import { Suspense } from "react";
 import { getPremadePackageBySlug, getAllPremadeSlugs } from "@/lib/db/premade-packages";
 import { PremadePackageDetailPage } from "@/components/premade-packages/PremadePackageDetailPage/PremadePackageDetailPage";
 import type { Metadata } from "next";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
 
 export const dynamicParams = true;
-export const dynamic = "force-static";
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 interface Props {
   params: Promise<{ id: string; locale: string }>;

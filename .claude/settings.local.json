@@ -57,7 +57,8 @@
       "PowerShell(Get-CimInstance Win32_Process -Filter \"CommandLine LIKE '%next dev%'\" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 2; \\(Test-NetConnection -ComputerName localhost -Port 3000 -WarningAction SilentlyContinue\\).TcpTestSucceeded)",
       "PowerShell(Stop-Process -Id 23700 -Force -ErrorAction SilentlyContinue)",
       "PowerShell(Stop-Process -Id 11628 -Force -ErrorAction SilentlyContinue)",
-      "PowerShell(\"stopped\")"
+      "PowerShell(\"stopped\")",
+      "Bash(NEXT_DEBUG_BUILD=1 npm run build)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

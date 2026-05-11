@@ -11,10 +11,7 @@ import { getAllPremadePackages } from "@/lib/db/premade-packages";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { getFeaturedHotels } from "@/lib/db/hotels";
 import type { Step } from "@/components/home/HowItWorks/types";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
 
-export const dynamic = "force-static";
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 async function HeroSection() {
   const hero = await getSiteContent("home_hero");

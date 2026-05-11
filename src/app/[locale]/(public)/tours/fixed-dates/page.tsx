@@ -1,9 +1,6 @@
 import { Suspense } from "react";
 import { PremadePackagesPage } from "@/components/premade-packages/PremadePackagesPage/PremadePackagesPage";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
 
-export const dynamic = "force-static";
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: "Fixed-Date Packages — Sabrina Turizm",

@@ -9,9 +9,6 @@ import { HotelBackButton } from "@/components/regions/HotelBackButton/HotelBackB
 import { HotelDetailClient } from "@/components/regions/HotelDetailClient/HotelDetailClient";
 import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
-
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export function generateStaticParams() {
   return REGIONS.flatMap((region) =>

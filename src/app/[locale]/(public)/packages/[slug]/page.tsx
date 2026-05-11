@@ -2,10 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { PackageDetailPage } from "@/components/packages/PackageDetailPage/PackageDetailPage";
 import { getAllSlugs, getPackageBySlug } from "@/lib/db/packages";
 import type { Package } from "@/lib/packages/types";
-import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
-
 export const dynamicParams = true;
-export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 interface Props {
   params: Promise<{ slug: string }>;
