@@ -8,7 +8,6 @@ import { HotelCard } from "@/components/regions/HotelCard/HotelCard";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
 
-
 export const metadata: Metadata = {
   title: "Partnered Hotels — Sabrina Turizm",
   description:

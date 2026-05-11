@@ -4,8 +4,6 @@ import { getPremadePackageBySlug, getAllPremadeSlugs } from "@/lib/db/premade-pa
 import { PremadePackageDetailPage } from "@/components/premade-packages/PremadePackageDetailPage/PremadePackageDetailPage";
 import type { Metadata } from "next";
 
-export const dynamicParams = true;
-
 interface Props {
   params: Promise<{ id: string; locale: string }>;
 }

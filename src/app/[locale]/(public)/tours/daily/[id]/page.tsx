@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { DailyDetailPage } from "@/components/daily/DailyDetailPage/DailyDetailPage";
 
-
 export function generateStaticParams() {
   return DAILY_PACKAGES.map((pkg) => ({ id: pkg.id }));
 }

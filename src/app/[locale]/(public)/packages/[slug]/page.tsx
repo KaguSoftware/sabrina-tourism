@@ -2,7 +2,6 @@ import { notFound, redirect } from "next/navigation";
 import { PackageDetailPage } from "@/components/packages/PackageDetailPage/PackageDetailPage";
 import { getAllSlugs, getPackageBySlug } from "@/lib/db/packages";
 import type { Package } from "@/lib/packages/types";
-export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;

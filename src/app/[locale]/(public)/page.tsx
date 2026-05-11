@@ -12,7 +12,6 @@ import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { getFeaturedHotels } from "@/lib/db/hotels";
 import type { Step } from "@/components/home/HowItWorks/types";
 
-
 async function HeroSection() {
   const hero = await getSiteContent("home_hero");
   return (

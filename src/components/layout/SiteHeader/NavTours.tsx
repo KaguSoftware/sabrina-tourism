@@ -56,6 +56,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
   return (
     <div
+      className="relative"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -72,7 +73,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
       <div
         data-open={open}
-        className="absolute top-full right-0 mt-3 z-50 w-[840px] pointer-events-none opacity-0 -translate-y-1 transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,0.61,0.36,1)] data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 data-[open=true]:translate-y-0 motion-reduce:transition-none motion-reduce:translate-y-0"
+        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] max-w-[calc(100vw-2rem)] pointer-events-none opacity-0 transition-opacity duration-200 ease-[cubic-bezier(0.22,0.61,0.36,1)] data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 motion-reduce:transition-none"
         role="menu"
         aria-hidden={!open}
       >

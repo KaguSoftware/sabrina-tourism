@@ -2,7 +2,6 @@ import { TransportationPage } from "@/components/transport/TransportationPage/Tr
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";
 
-
 export const metadata = {
   title: "Private Chauffeur & Airport Transfer — Sabrina Turizm",
   description:

@@ -1,7 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { LegalPage } from "@/components/legal/LegalPage";
 
-
 export const metadata = {
   title: "Privacy Policy — Sabrina Turizm",
   description: "How Sabrina Turizm handles enquiry and booking information.",

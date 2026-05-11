@@ -1,7 +1,6 @@
 import { DailyListPage } from "@/components/daily/DailyListPage/DailyListPage";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
 
-
 export const metadata = {
   title: "Daily Packages — Sabrina Turizm",
   description:

@@ -64,24 +64,18 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      ...STATIC_HTML_ROUTES.map((source) => ({
-        source,
-        headers: [
-          { key: "Cache-Control", value: STATIC_HTML_CACHE_CONTROL },
-          ...SECURITY_HEADERS,
-        ],
-      })),
-      ...LEGAL_ROUTES.map((source) => ({
-        source,
-        headers: [
-          { key: "Cache-Control", value: LEGAL_HTML_CACHE_CONTROL },
-          ...SECURITY_HEADERS,
-        ],
-      })),
       {
         source: "/:path*",
         headers: SECURITY_HEADERS,
       },
+      ...STATIC_HTML_ROUTES.map((source) => ({
+        source,
+        headers: [{ key: "Cache-Control", value: STATIC_HTML_CACHE_CONTROL }],
+      })),
+      ...LEGAL_ROUTES.map((source) => ({
+        source,
+        headers: [{ key: "Cache-Control", value: LEGAL_HTML_CACHE_CONTROL }],
+      })),
     ];
   },
 };

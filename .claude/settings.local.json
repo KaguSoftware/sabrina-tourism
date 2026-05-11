@@ -58,7 +58,8 @@
       "PowerShell(Stop-Process -Id 23700 -Force -ErrorAction SilentlyContinue)",
       "PowerShell(Stop-Process -Id 11628 -Force -ErrorAction SilentlyContinue)",
       "PowerShell(\"stopped\")",
-      "Bash(NEXT_DEBUG_BUILD=1 npm run build)"
+      "Bash(NEXT_DEBUG_BUILD=1 npm run build)",
+      "Bash(git status *)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

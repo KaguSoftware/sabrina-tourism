@@ -4,7 +4,6 @@ import { getSiteContent } from "@/lib/db/site-content";
 import { getAllPremadePackages } from "@/lib/db/premade-packages";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
 
-
 export const metadata = {
   title: "Itineraries — Sabrina Turizm",
   description:
