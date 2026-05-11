@@ -3,6 +3,10 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCard } from "@/components/hotels/HotelCard/HotelCard";
 import { getAllHotels } from "@/lib/db/hotels";
+import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
+
+export const dynamic = "force-static";
+export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: "Hotels — Sabrina Turizm",

@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { DailyDetailPage } from "@/components/daily/DailyDetailPage/DailyDetailPage";
+import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
+
+export const dynamic = "force-static";
+export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export function generateStaticParams() {
   return DAILY_PACKAGES.map((pkg) => ({ id: pkg.id }));

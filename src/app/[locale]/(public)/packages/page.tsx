@@ -3,6 +3,10 @@ import { AllPackagesPage } from "@/components/packages/AllPackagesPage/AllPackag
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAllPremadePackages } from "@/lib/db/premade-packages";
 import { DAILY_PACKAGES } from "@/lib/daily/data";
+import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
+
+export const dynamic = "force-static";
+export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: "Itineraries — Sabrina Turizm",

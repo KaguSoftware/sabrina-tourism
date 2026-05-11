@@ -1,6 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { LegalPage } from "@/components/legal/LegalPage";
 
+export const dynamic = "force-static";
+export const revalidate = false;
+
 export const metadata = {
   title: "Terms & Conditions — Sabrina Turizm",
   description: "General booking terms for Sabrina Turizm enquiries and services.",

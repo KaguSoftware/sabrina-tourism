@@ -144,7 +144,7 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                             const filterParams = fp.toString();
                             return (
                                 <Reveal key={pkg.slug} delay={i * 70}>
-                                    <PackageCard pkg={pkg} filterParams={filterParams || undefined} />
+                                    <PackageCard pkg={pkg} filterParams={filterParams || undefined} priority={i < 3} />
                                 </Reveal>
                             );
                         })}

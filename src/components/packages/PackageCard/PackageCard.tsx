@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { PackageCardProps } from "./types";
 import { CARD_IMAGE_SIZES } from "./constants";
 
-export function PackageCard({ pkg, filterParams }: PackageCardProps) {
+export function PackageCard({ pkg, filterParams, priority = false }: PackageCardProps) {
   const href = filterParams ? `/packages/${pkg.slug}?${filterParams}` : `/packages/${pkg.slug}`;
   return (
     <Link href={href} className="block group">
@@ -17,7 +17,7 @@ export function PackageCard({ pkg, filterParams }: PackageCardProps) {
             src={pkg.cardImage ?? pkg.heroImage}
             alt={pkg.name}
             fill
-            loading="lazy"
+            {...(priority ? { priority: true, fetchPriority: "high" as const } : { loading: "lazy" as const })}
             className="object-cover transition-transform duration-1400 ease-out group-hover:scale-[1.06]"
             sizes={CARD_IMAGE_SIZES}
           />

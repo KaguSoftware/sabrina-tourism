@@ -7,6 +7,10 @@ import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCard } from "@/components/regions/HotelCard/HotelCard";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
+import { PUBLIC_REVALIDATE_SECONDS } from "@/lib/cache/config";
+
+export const dynamic = "force-static";
+export const revalidate = PUBLIC_REVALIDATE_SECONDS;
 
 export const metadata: Metadata = {
   title: "Partnered Hotels — Sabrina Turizm",

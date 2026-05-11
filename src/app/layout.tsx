@@ -33,6 +33,15 @@ export default async function RootLayout({
     // admin routes are outside next-intl scope — default to en
   }
 
+  const supabaseOrigin = (() => {
+    try {
+      const raw = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      return raw ? new URL(raw).origin : null;
+    } catch {
+      return null;
+    }
+  })();
+
   return (
     <html
       lang={locale}
@@ -40,6 +49,16 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
       className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
+      <head>
+        {supabaseOrigin && (
+          <>
+            <link rel="preconnect" href={supabaseOrigin} crossOrigin="" />
+            <link rel="dns-prefetch" href={supabaseOrigin} />
+          </>
+        )}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+      </head>
       <body className="relative">{children}</body>
     </html>
   );

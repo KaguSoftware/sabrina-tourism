@@ -22,8 +22,10 @@ export function HeroPanorama({
           src="/tours.png"
           alt="Hero panorama"
           fill
+          sizes="100vw"
           className="object-cover object-right md:object-center"
           priority
+          fetchPriority="high"
         />
       </div>
 
