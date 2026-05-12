@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -10,7 +11,14 @@ import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 import { useLocale } from "next-intl";
-import { PackageLightbox } from "@/components/packages/PackageDetailPage/PackageLightbox";
+
+const PackageLightbox = dynamic(
+  () =>
+    import("@/components/packages/PackageDetailPage/PackageLightbox").then((m) => ({
+      default: m.PackageLightbox,
+    })),
+  { ssr: false, loading: () => null },
+);
 
 type PremadePackage = PremadePackagePublic;
 

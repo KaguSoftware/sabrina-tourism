@@ -59,7 +59,10 @@
       "PowerShell(Stop-Process -Id 11628 -Force -ErrorAction SilentlyContinue)",
       "PowerShell(\"stopped\")",
       "Bash(NEXT_DEBUG_BUILD=1 npm run build)",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "Bash(Get-ChildItem -Recurse -Include *.ts, *.tsx, *.js, *.jsx -Path src/)",
+      "Bash(Measure-Object)",
+      "Bash(Select-Object Count)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

@@ -5,6 +5,17 @@ import { tags } from '@/lib/cache/tags';
 import type { Package } from '@/lib/packages/types';
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
+
+const PACKAGE_SELECT = `
+  id, slug, name, region, duration, duration_days, short_description, overview,
+  hero_image, card_image, min_people, max_people, available_from, available_to,
+  is_published, is_featured, sort_order, updated_at,
+  package_itinerary_days(id, day_number, title, description, sort_order),
+  package_tiers(id, tier_name, vehicle_class, accommodation, group_size, guide_languages, meals_included, highlights),
+  package_gallery(id, image_path, sort_order),
+  package_inclusions(id, kind, text, sort_order)
+`;
+
 import type {
   PackageRow,
   PackageItineraryDayRow,
@@ -73,13 +84,7 @@ async function _getAllPackages({ publishedOnly = true } = {}): Promise<Package[]
 
   let query = supabase
     .from('packages')
-    .select(`
-      *,
-      package_itinerary_days(*),
-      package_tiers(*),
-      package_gallery(*),
-      package_inclusions(*)
-    `)
+    .select(PACKAGE_SELECT)
     .order('sort_order');
 
   if (publishedOnly) {
@@ -111,13 +116,7 @@ async function _getPackageBySlug(
 
   const { data, error } = await supabase
     .from('packages')
-    .select(`
-      *,
-      package_itinerary_days(*),
-      package_tiers(*),
-      package_gallery(*),
-      package_inclusions(*)
-    `)
+    .select(PACKAGE_SELECT)
     .eq('slug', slug)
     .maybeSingle();
 
@@ -170,13 +169,7 @@ async function _getFeaturedPackages(): Promise<Package[]> {
 
   const { data, error } = await supabase
     .from('packages')
-    .select(`
-      *,
-      package_itinerary_days(*),
-      package_tiers(*),
-      package_gallery(*),
-      package_inclusions(*)
-    `)
+    .select(PACKAGE_SELECT)
     .eq('is_published', true)
     .eq('is_featured', true)
     .order('sort_order')
@@ -230,13 +223,7 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
 
   const { data, error } = await supabase
     .from('packages')
-    .select(`
-      *,
-      package_itinerary_days(*),
-      package_tiers(*),
-      package_gallery(*),
-      package_inclusions(*)
-    `)
+    .select(PACKAGE_SELECT)
     .eq('slug', slug)
     .maybeSingle() as unknown as { data: any; error: any };
 
