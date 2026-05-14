@@ -144,7 +144,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "Enter the number of checked bags or large suitcases. We use this to confirm your vehicle has enough luggage space.",
+      "tooltipChildSeat": "We'll install a child safety seat appropriate for your child's age and weight at no extra cost. Please mention your child's age in the WhatsApp message.",
+      "tooltipMeetAndGreet": "A driver will wait for you at the arrivals hall with a name board, help with luggage, and escort you directly to your vehicle — no searching, no stress.",
+      "tooltipGuideNeeded": "Add a licensed travel guide to your transfer. They'll join you in the vehicle and provide commentary, local tips, and language support throughout your journey.",
+      "tooltipGuideAssistant": "An English-speaking assistant who can help with directions, recommendations, and light translation. Ideal for shorter trips.",
+      "tooltipGuideCertified": "A Ministry of Culture licensed guide with deep historical and cultural knowledge. Required for site entries at some attractions."
     },
     "chauffeur": {
       "pickup": "Pickup",

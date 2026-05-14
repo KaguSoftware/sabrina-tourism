@@ -144,7 +144,13 @@
       "flightSummary": "Vol : {value}.",
       "childSeatSummary": "Siège enfant requis.",
       "meetAndGreetSummary": "Accueil personnalisé demandé.",
-      "flightInline": "Vol : {value}"
+      "flightInline": "Vol : {value}",
+      "tooltipLuggageBags": "Indiquez le nombre de grandes valises ou bagages en soute. Nous l'utilisons pour confirmer que le véhicule dispose d'un espace suffisant.",
+      "tooltipChildSeat": "Nous installerons gratuitement un siège auto adapté à l'âge et au poids de votre enfant. Veuillez préciser son âge dans le message WhatsApp.",
+      "tooltipMeetAndGreet": "Un chauffeur vous attendra dans le hall des arrivées avec un panneau à votre nom, vous aidera avec vos bagages et vous accompagnera jusqu'au véhicule.",
+      "tooltipGuideNeeded": "Ajoutez un guide de voyage agréé à votre transfert. Il vous accompagnera dans le véhicule tout au long du trajet.",
+      "tooltipGuideAssistant": "Un assistant anglophone pour les directions, recommandations et traductions légères. Idéal pour les trajets courts.",
+      "tooltipGuideCertified": "Un guide agréé par le Ministère de la Culture avec des connaissances historiques et culturelles approfondies. Requis dans certains sites."
     },
     "chauffeur": {
       "pickup": "Prise en charge",

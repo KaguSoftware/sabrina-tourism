@@ -144,7 +144,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "Indique el número de maletas grandes o equipaje facturado. Lo usamos para confirmar que el vehículo tiene espacio suficiente.",
+      "tooltipChildSeat": "Instalaremos gratuitamente una silla de seguridad adecuada a la edad y peso de su hijo. Indique la edad del niño en el mensaje de WhatsApp.",
+      "tooltipMeetAndGreet": "Un conductor le esperará en la sala de llegadas con un cartel con su nombre, le ayudará con el equipaje y le acompañará directamente al vehículo.",
+      "tooltipGuideNeeded": "Añada un guía de viaje con licencia a su traslado. Le acompañará en el vehículo durante todo el trayecto.",
+      "tooltipGuideAssistant": "Un asistente anglófono para orientación, recomendaciones y traducción básica. Ideal para trayectos cortos.",
+      "tooltipGuideCertified": "Un guía con licencia del Ministerio de Cultura con profundos conocimientos históricos y culturales. Requerido en algunos sitios arqueológicos."
     },
     "chauffeur": {
       "pickup": "Punto de recogida",
