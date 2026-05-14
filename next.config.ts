@@ -41,6 +41,12 @@ const LEGAL_ROUTES = [
 
 const nextConfig: NextConfig = {
   compress: true,
+  serverExternalPackages: [
+    "@react-pdf/renderer",
+    "groq-sdk",
+    "arabic-reshaper",
+    "bidi-js",
+  ],
   experimental: {
     optimizePackageImports: [
       "lucide-react",
@@ -48,6 +54,10 @@ const nextConfig: NextConfig = {
       "@dnd-kit/core",
       "@dnd-kit/sortable",
       "@dnd-kit/utilities",
+      "react-hook-form",
+      "@hookform/resolvers",
+      "zod",
+      "next-intl",
     ],
   },
   webpack: (config) => {
@@ -56,7 +66,8 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 2592000,
+    minimumCacheTTL: 604800,
+    qualities: [60, 75, 85],
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "*.supabase.co" },

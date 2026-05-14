@@ -30,3 +30,40 @@ export async function getSiteContent<K extends SiteContentKey>(key: K): Promise<
   );
   return cached();
 }
+
+async function fetchSiteContentBatch<K extends SiteContentKey>(
+  keys: readonly K[],
+): Promise<{ [P in K]: SiteContentDataMap[P] }> {
+  const supabase = createAnonClient();
+  const { data, error } = await supabase
+    .from('site_content')
+    .select('id, data')
+    .in('id', keys as unknown as string[]) as unknown as {
+      data: Array<{ id: K; data: Record<string, unknown> }> | null;
+      error: unknown;
+    };
+
+  const result = {} as { [P in K]: SiteContentDataMap[P] };
+  if (error || !data) {
+    for (const k of keys) result[k] = {} as unknown as SiteContentDataMap[K];
+    return result;
+  }
+  const byId = new Map(data.map((r) => [r.id, r.data]));
+  for (const k of keys) {
+    const row = byId.get(k);
+    result[k] = (row ?? {}) as unknown as SiteContentDataMap[typeof k];
+  }
+  return result;
+}
+
+export async function getSiteContentBatch<K extends SiteContentKey>(
+  keys: readonly K[],
+): Promise<{ [P in K]: SiteContentDataMap[P] }> {
+  const sortedKeys = [...keys].sort() as K[];
+  const cached = unstable_cache(
+    () => fetchSiteContentBatch(sortedKeys),
+    ['site-content:batch', sortedKeys.join('|')],
+    { tags: sortedKeys.map((k) => tags.siteContent(k)), revalidate: REVALIDATE_SECONDS },
+  );
+  return cached();
+}

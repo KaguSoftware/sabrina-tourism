@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -10,9 +11,16 @@ import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 import { useLocale } from "next-intl";
-import { PackageLightbox } from "@/components/packages/PackageDetailPage/PackageLightbox";
 import * as Lucide from "lucide-react";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+
+const PackageLightbox = dynamic(
+  () =>
+    import("@/components/packages/PackageDetailPage/PackageLightbox").then((m) => ({
+      default: m.PackageLightbox,
+    })),
+  { ssr: false, loading: () => null },
+);
 
 function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
   const def = getInclusionIcon(name);

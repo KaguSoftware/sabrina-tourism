@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
 import { PackageHero } from "./PackageHero";
 import { PackageOverview } from "./PackageOverview";
 import { PackageItinerary } from "./PackageItinerary";
@@ -7,8 +8,12 @@ import { PackageTierSelector } from "./PackageTierSelector";
 import { PackageIncludes } from "./PackageIncludes";
 import { PackageGallery } from "./PackageGallery";
 import { PackageCTAStrip } from "./PackageCTAStrip";
-import { PackageLightbox } from "./PackageLightbox";
 import type { PackageDetailPageProps } from "./types";
+
+const PackageLightbox = dynamic(
+  () => import("./PackageLightbox").then((m) => ({ default: m.PackageLightbox })),
+  { ssr: false, loading: () => null },
+);
 
 const VALID_TIERS = ["Essential", "Signature", "Private"];
 
