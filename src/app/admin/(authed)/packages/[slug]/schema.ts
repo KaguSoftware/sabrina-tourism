@@ -3,12 +3,15 @@ import { z } from "zod";
 const TierSchema = z.object({
   tier_name: z.enum(["Essential", "Signature", "Private"]),
   vehicle_class: z.string().min(1, "Required"),
-  accommodation: z.string().min(1, "Required"),
+  accommodation: z.string(),
+  hotel_id: z.string().uuid().nullable().optional(),
   group_size: z.string().min(1, "Required"),
   guide_languages: z.array(z.string()),
   meals_included: z.string().min(1, "Required"),
   highlights: z.array(z.string()),
 });
+
+export const SEASON_OPTIONS = ["Spring", "Summer", "Autumn", "Winter", "Year-round"] as const;
 
 export const PackageSchema = z.object({
   id: z.string().optional(),
@@ -21,6 +24,7 @@ export const PackageSchema = z.object({
     "Black Sea",
     "Eastern Anatolia",
   ]),
+  season: z.enum(SEASON_OPTIONS).nullable().optional(),
   duration: z.string().min(1, "Duration label is required"),
   duration_days: z.number().int().min(1),
   short_description: z.string().min(1, "Short description is required").max(300),
@@ -41,8 +45,8 @@ export const PackageSchema = z.object({
   ),
   tiers: z.tuple([TierSchema, TierSchema, TierSchema]),
   gallery: z.array(z.object({ path: z.string() })),
-  included: z.array(z.object({ text: z.string().min(1) })),
-  not_included: z.array(z.object({ text: z.string().min(1) })),
+  included: z.array(z.object({ text: z.string().min(1), icon: z.string().nullable().optional() })),
+  not_included: z.array(z.object({ text: z.string().min(1), icon: z.string().nullable().optional() })),
 });
 
 export type PackageFormValues = z.infer<typeof PackageSchema>;

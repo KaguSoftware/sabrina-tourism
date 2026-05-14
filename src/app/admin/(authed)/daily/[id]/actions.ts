@@ -23,14 +23,39 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
   if (!slug) return { error: "Name produces an empty slug." };
 
   let pkgId = data.id;
+  let storedSlug: string | null = null;
+  if (pkgId) {
+    const { data: existing } = await supabase
+      .from("daily_packages")
+      .select("slug")
+      .eq("id", pkgId)
+      .maybeSingle();
+    storedSlug = existing?.slug ?? null;
+  }
+
+  const coreFields = {
+    name: data.name,
+    tour_date: data.tour_date,
+    start_time: data.start_time,
+    end_time: data.end_time,
+    region: data.region,
+    season: data.season ?? null,
+    vehicle: data.vehicle,
+    driver: data.driver,
+    price: data.price,
+    currency: data.currency,
+    short_description: data.short_description,
+    hero_image: data.hero_image,
+    card_image: data.card_image,
+    is_published: data.is_published,
+    price_1_person: data.price_1_person ?? null,
+    price_2_people: data.price_2_people ?? null,
+    price_3_people: data.price_3_people ?? null,
+    price_baby: data.price_baby ?? null,
+  };
 
   if (pkgId) {
-    const { error } = await supabase.from("daily_packages").update({
-      name: data.name, tour_date: data.tour_date, start_time: data.start_time, end_time: data.end_time,
-      region: data.region, vehicle: data.vehicle, driver: data.driver,
-      price: data.price, currency: data.currency, short_description: data.short_description,
-      hero_image: data.hero_image, card_image: data.card_image, is_published: data.is_published,
-    }).eq("id", pkgId);
+    const { error } = await supabase.from("daily_packages").update(coreFields).eq("id", pkgId);
     if (error) return { error: error.message };
   } else {
     let candidate = slug; let n = 2;
@@ -40,10 +65,8 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
       candidate = `${slug}-${n++}`;
     }
     const { data: row, error } = await supabase.from("daily_packages").insert({
-      slug, name: data.name, tour_date: data.tour_date, start_time: data.start_time, end_time: data.end_time,
-      region: data.region, vehicle: data.vehicle, driver: data.driver,
-      price: data.price, currency: data.currency, short_description: data.short_description,
-      hero_image: data.hero_image, card_image: data.card_image, is_published: data.is_published,
+      slug,
+      ...coreFields,
       sort_order: (await supabase.from("daily_packages").select("sort_order").order("sort_order", { ascending: false }).limit(1).maybeSingle()).data?.sort_order + 1 || 0,
     }).select("id").single();
     if (error || !row) return { error: error?.message ?? "Insert failed" };
@@ -77,8 +100,24 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
   if (data.included.length) {
     await supabase.from("daily_package_included").insert(
       data.included.map((item, i) => ({
-        package_id: pkgId, text: item.text, sort_order: i,
+        package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
         text_translations: existingIncluded?.[i]?.text_translations ?? null,
+      }))
+    );
+  }
+
+  // Replace not-included
+  const { data: existingNotIncluded } = await supabase
+    .from("daily_package_not_included")
+    .select("sort_order, text_translations")
+    .eq("package_id", pkgId)
+    .order("sort_order");
+  await supabase.from("daily_package_not_included").delete().eq("package_id", pkgId);
+  if (data.not_included.length) {
+    await supabase.from("daily_package_not_included").insert(
+      data.not_included.map((item, i) => ({
+        package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
+        text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
       }))
     );
   }
@@ -91,6 +130,6 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     );
   }
 
-  revalidateAll(slug);
+  revalidateAll(storedSlug ?? slug);
   return { id: pkgId };
 }

@@ -95,11 +95,14 @@ export type PackageRegion =
   | 'Black Sea'
   | 'Eastern Anatolia';
 
+export type PackageSeason = 'Spring' | 'Summer' | 'Autumn' | 'Winter' | 'Year-round';
+
 export interface PackageRow {
   id: string;
   slug: string;
   name: string;
   region: PackageRegion;
+  season: PackageSeason | null;
   duration: string;
   duration_days: number;
   short_description: string;
@@ -136,6 +139,7 @@ export interface PackageTierRow {
   tier_name: PackageTierName;
   vehicle_class: string;
   accommodation: string;
+  hotel_id: string | null;
   group_size: string;
   guide_languages: string[];
   meals_included: string;
@@ -160,6 +164,7 @@ export interface PackageInclusionRow {
   package_id: string;
   kind: InclusionKind;
   text: string;
+  icon: string | null;
   sort_order: number;
   created_at: string;
   updated_at: string;

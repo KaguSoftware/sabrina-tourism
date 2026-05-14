@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPremadePackageRawById } from "@/lib/db/premade-packages";
+import { getAdminHotels } from "@/lib/db/hotels";
 import { loadPremadeTranslations } from "@/lib/translations/content-actions";
 import { PremadeEditor } from "@/components/admin/PremadePackageEditor/PremadeEditor";
 import type { PremadePackageRaw } from "@/lib/db/premade-packages";
@@ -13,5 +14,11 @@ export default async function EditPremadePage({ params }: { params: Promise<{ id
     loadPremadeTranslations(id).catch(() => ({})),
   ]);
   if (!pkg) notFound();
-  return <PremadeEditor pkg={pkg as PremadePackageRaw} initialTranslations={translations} />;
+  const hotels = await getAdminHotels();
+  const availableHotels = hotels.map((h) => ({
+    id: h.id,
+    name: h.name,
+    region: h.region,
+  }));
+  return <PremadeEditor pkg={pkg as PremadePackageRaw} initialTranslations={translations} availableHotels={availableHotels} />;
 }

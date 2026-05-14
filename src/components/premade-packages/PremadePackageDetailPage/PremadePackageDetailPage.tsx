@@ -11,6 +11,17 @@ import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 import { useLocale } from "next-intl";
 import { PackageLightbox } from "@/components/packages/PackageDetailPage/PackageLightbox";
+import * as Lucide from "lucide-react";
+import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+
+function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
+  const def = getInclusionIcon(name);
+  const Component = (def
+    ? (Lucide as unknown as Record<string, Lucide.LucideIcon>)[def.lucide]
+    : (Lucide as unknown as Record<string, Lucide.LucideIcon>)[fallback as string]) as Lucide.LucideIcon | undefined;
+  if (!Component) return null;
+  return <Component size={16} strokeWidth={1.75} />;
+}
 
 type PremadePackage = PremadePackagePublic;
 
@@ -246,7 +257,19 @@ export function PremadePackageDetailPage({ pkg }: Props) {
 
         <div className="relative z-5 max-w-[1320px] mx-auto w-full">
           <Reveal>
-            <Kicker light>Group Package</Kicker>
+            <div className="flex flex-wrap items-center gap-2">
+              <Kicker light>Group Package</Kicker>
+              {pkg.region && (
+                <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-navy/60 text-cream px-2.5 py-1 rounded-full">
+                  {pkg.region}
+                </span>
+              )}
+              {pkg.season && (
+                <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-ochre/90 text-navy px-2.5 py-1 rounded-full">
+                  {pkg.season}
+                </span>
+              )}
+            </div>
           </Reveal>
           <Reveal delay={140}>
             <GoldUnderlineHeading
@@ -421,10 +444,32 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                       )}
                     </div>
                     <Hairline className="mb-6 opacity-50" />
+                    {t.hotel && (
+                      <div className="mb-5 overflow-hidden border border-rule bg-cream-deep">
+                        {t.hotel.bedroomImage && (
+                          <div className="relative aspect-[4/2.1]">
+                            <Image
+                              src={t.hotel.bedroomImage}
+                              alt={t.hotel.name}
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 1024px) 100vw, 33vw"
+                            />
+                          </div>
+                        )}
+                        <div className="p-4">
+                          <p className="font-display text-[19px] leading-tight text-ink">{t.hotel.name}</p>
+                          <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted mt-1">
+                            {t.hotel.region}
+                            {t.hotel.stars ? ` · ${"★".repeat(t.hotel.stars)}` : ""}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                     <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 mb-6 text-[13px]">
                       {[
                         ["Vehicle", t.vehicleClass],
-                        ["Stay", t.accommodation],
+                        ["Stay", t.hotel ? t.hotel.name : t.accommodation],
                         ["Group", t.groupSize],
                         ["Guide", t.guideLanguages.join(", ")],
                         ["Meals", t.mealsIncluded],
@@ -501,9 +546,11 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                 <Kicker>Included</Kicker>
                 <ul className="list-none p-0 mt-6">
                   {pkg.included.map((x, i) => (
-                    <li key={i} className="flex gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                      <span className="font-display italic text-ochre text-[18px] w-4 flex-shrink-0">✓</span>
-                      {x}
+                    <li key={i} className="flex items-center gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
+                      <span className="text-ochre flex-shrink-0 w-4 flex items-center justify-center">
+                        <InclusionIcon name={x.icon} fallback="Check" />
+                      </span>
+                      {x.text}
                     </li>
                   ))}
                 </ul>
@@ -514,9 +561,11 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                 <Kicker>Not included</Kicker>
                 <ul className="list-none p-0 mt-6">
                   {pkg.notIncluded.map((x, i) => (
-                    <li key={i} className="flex gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                      <span className="text-muted text-[18px] w-4 flex-shrink-0">×</span>
-                      {x}
+                    <li key={i} className="flex items-center gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
+                      <span className="text-muted flex-shrink-0 w-4 flex items-center justify-center">
+                        <InclusionIcon name={x.icon} fallback="X" />
+                      </span>
+                      {x.text}
                     </li>
                   ))}
                 </ul>

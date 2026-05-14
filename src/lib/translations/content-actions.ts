@@ -69,6 +69,24 @@ export async function saveDailyTranslations(
     }
   }
 
+  const notIncludedUpdates: Record<string, Record<ContentLocale, string>> = {};
+  for (const [key, val] of Object.entries(translations)) {
+    const m = key.match(/^not_included_(\d+)$/);
+    if (!m) continue;
+    notIncludedUpdates[m[1]] = val;
+  }
+  for (const [idx, val] of Object.entries(notIncludedUpdates)) {
+    const { data: items } = await supabase
+      .from("daily_package_not_included")
+      .select("id")
+      .eq("package_id", pkgId)
+      .order("sort_order");
+    const item = items?.[parseInt(idx)];
+    if (item) {
+      await supabase.from("daily_package_not_included").update({ text_translations: val }).eq("id", item.id);
+    }
+  }
+
   revalidateTag(tags.daily.all(), "max");
   return {};
 }
@@ -231,6 +249,16 @@ export async function loadDailyTranslations(pkgId: string): Promise<ContentTrans
 
   (included ?? []).forEach((item: Record<string, unknown>, i: number) => {
     if (item.text_translations) result[`included_${i}`] = item.text_translations as Record<ContentLocale, string>;
+  });
+
+  const { data: notIncluded } = await supabase
+    .from("daily_package_not_included")
+    .select("text_translations")
+    .eq("package_id", pkgId)
+    .order("sort_order");
+
+  (notIncluded ?? []).forEach((item: Record<string, unknown>, i: number) => {
+    if (item.text_translations) result[`not_included_${i}`] = item.text_translations as Record<ContentLocale, string>;
   });
 
   return result;

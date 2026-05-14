@@ -29,6 +29,11 @@ export function DailyTranslationsTab({ pkgId, formValues, initialTranslations }:
       label: `Included item ${i + 1}`,
       englishValue: item.text,
     })),
+    ...formValues.not_included.map((item, i) => ({
+      key: `not_included_${i}`,
+      label: `Not included item ${i + 1}`,
+      englishValue: item.text,
+    })),
   ];
 
   async function handleSave() {

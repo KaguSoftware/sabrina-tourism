@@ -64,11 +64,18 @@ function collectErrors(errs: Record<string, any>): string[] {
 // PackageEditor
 // ---------------------------------------------------------------------------
 
-interface PackageEditorProps {
-  pkg?: PackageRaw;
+export interface HotelOption {
+  id: string;
+  name: string;
+  region: string;
 }
 
-export function PackageEditor({ pkg }: PackageEditorProps) {
+interface PackageEditorProps {
+  pkg?: PackageRaw;
+  availableHotels?: HotelOption[];
+}
+
+export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps) {
   const tabT = useTranslations("admin.tabs");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("Basics");
@@ -238,7 +245,7 @@ export function PackageEditor({ pkg }: PackageEditorProps) {
           {activeTab === "Basics" && <BasicsTab />}
           {activeTab === "Overview" && <OverviewTab />}
           {activeTab === "Itinerary" && <ItineraryTab />}
-          {activeTab === "Tiers" && <TiersTab />}
+          {activeTab === "Tiers" && <TiersTab availableHotels={availableHotels} />}
           {activeTab === "Gallery" && <GalleryTab />}
           {activeTab === "Inclusions" && <InclusionsTab />}
         </div>

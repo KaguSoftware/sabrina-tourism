@@ -2,13 +2,24 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import * as Lucide from "lucide-react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
-import type { DailyPackage } from "@/lib/daily/types";
+import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
 import { useLocale } from "next-intl";
+
+function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
+  const def = getInclusionIcon(name);
+  const Component = (def
+    ? (Lucide as unknown as Record<string, Lucide.LucideIcon>)[def.lucide]
+    : (Lucide as unknown as Record<string, Lucide.LucideIcon>)[fallback as string]) as Lucide.LucideIcon | undefined;
+  if (!Component) return null;
+  return <Component size={16} strokeWidth={1.75} />;
+}
 
 function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -101,9 +112,16 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           </Reveal>
 
           <Reveal delay={140}>
-            <Kicker className="kicker--light mb-5">
-              {pkg.region.toUpperCase()} · DAY EXPERIENCE
-            </Kicker>
+            <div className="flex flex-wrap items-center gap-2 mb-5">
+              <Kicker className="kicker--light">
+                {pkg.region.toUpperCase()} · DAY EXPERIENCE
+              </Kicker>
+              {pkg.season && (
+                <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-ochre/90 text-navy px-2.5 py-1 rounded-full">
+                  {pkg.season}
+                </span>
+              )}
+            </div>
           </Reveal>
 
           <div className="inline-block backdrop-blur-[1px] bg-black/30 rounded-3xl px-[5%] py-5">
@@ -129,7 +147,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
       {/* PDF download */}
       <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-8 flex justify-end">
         <a
-          href={`/api/pdf/daily/${pkg.id}?locale=${locale}`}
+          href={`/api/pdf/daily/${pkg.slug ?? pkg.id}?locale=${locale}`}
           download
           className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase border border-ochre text-ochre px-4 py-2.5 hover:bg-ochre hover:text-navy transition-colors duration-200"
         >
@@ -181,14 +199,16 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
             <div>
               <Reveal>
-                <Kicker className="mb-6">What's Included</Kicker>
+                <Kicker className="mb-6">What&apos;s Included</Kicker>
               </Reveal>
               <ul className="space-y-3">
                 {pkg.included.map((item, i) => (
                   <Reveal key={i} delay={i * 40}>
-                    <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-ochre shrink-0" />
-                      {item}
+                    <li className="flex items-center gap-3 text-[15px] text-ink-soft leading-[1.6]">
+                      <span className="text-ochre shrink-0 w-4 flex items-center justify-center">
+                        <InclusionIcon name={item.icon} fallback="Check" />
+                      </span>
+                      {item.text}
                     </li>
                   </Reveal>
                 ))}
@@ -196,21 +216,25 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             </div>
             <div>
               <Reveal>
-                <Kicker className="mb-6">What's Not Included</Kicker>
+                <Kicker className="mb-6">What&apos;s Not Included</Kicker>
               </Reveal>
               <ul className="space-y-3">
-                <Reveal>
-                  <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
-                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                    Hotel accommodation
-                  </li>
-                </Reveal>
-                <Reveal>
-                  <li className="flex items-start gap-3 text-[15px] text-ink-soft leading-[1.6]">
-                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                    Breakfast
-                  </li>
-                </Reveal>
+                {(pkg.notIncluded?.length
+                  ? pkg.notIncluded
+                  : ([
+                      { text: "Hotel accommodation", icon: null },
+                      { text: "Breakfast", icon: null },
+                    ] as DailyInclusionItem[])
+                ).map((item, i) => (
+                  <Reveal key={i} delay={i * 40}>
+                    <li className="flex items-center gap-3 text-[15px] text-ink-soft leading-[1.6]">
+                      <span className="text-muted shrink-0 w-4 flex items-center justify-center">
+                        <InclusionIcon name={item.icon} fallback="X" />
+                      </span>
+                      {item.text}
+                    </li>
+                  </Reveal>
+                ))}
               </ul>
             </div>
           </div>

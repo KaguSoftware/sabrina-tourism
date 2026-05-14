@@ -1,5 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
+import { getPublicUrl } from '@/lib/supabase/storage';
 import { tags } from '@/lib/cache/tags';
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -8,6 +9,16 @@ export interface PremadeTierPublic {
   name: string;
   vehicleClass: string;
   accommodation: string;
+  hotelId: string | null;
+  hotel: {
+    id: string;
+    slug: string;
+    name: string;
+    region: string;
+    stars: number;
+    description: string;
+    bedroomImage: string;
+  } | null;
   groupSize: string;
   guideLanguages: string[];
   mealsIncluded: string;
@@ -18,6 +29,18 @@ export interface PremadeItineraryDayPublic {
   day: number;
   title: string;
   description: string;
+}
+
+export interface PremadeInclusionItemPublic {
+  text: string;
+  icon: string | null;
+}
+
+export interface PremadePricingPublic {
+  onePerson: number | null;
+  twoPeople: number | null;
+  threePeople: number | null;
+  baby: number | null;
 }
 
 export interface PremadePackagePublic {
@@ -36,6 +59,7 @@ export interface PremadePackagePublic {
   dates: Array<{ startDate: string; endDate: string }>;
   // Rich fields
   region: string | null;
+  season: string | null;
   duration: string | null;
   minPeople: number | null;
   maxPeople: number | null;
@@ -44,10 +68,11 @@ export interface PremadePackagePublic {
   overview: string[] | null;
   tiers: PremadeTierPublic[];
   itinerary: PremadeItineraryDayPublic[];
-  included: string[];
-  notIncluded: string[];
+  included: PremadeInclusionItemPublic[];
+  notIncluded: PremadeInclusionItemPublic[];
   price: number | null;
   currency: string;
+  pricing: PremadePricingPublic | null;
 }
 
 export interface PremadePackageRaw {
@@ -70,6 +95,7 @@ export interface PremadePackageRaw {
   sort_order: number;
   updated_at: string;
   region: string | null;
+  season: string | null;
   duration: string | null;
   min_people: number | null;
   max_people: number | null;
@@ -78,11 +104,25 @@ export interface PremadePackageRaw {
   overview: string | null;
   price: number | null;
   currency: string | null;
+  price_1_person: number | null;
+  price_2_people: number | null;
+  price_3_people: number | null;
+  price_baby: number | null;
   premade_package_gallery: Array<{ id: string; url: string; sort_order: number }>;
   premade_package_dates: Array<{ id: string; start_date: string; end_date: string; sort_order: number }>;
   premade_package_itinerary_days: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
-  premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number }>;
-  premade_package_inclusions: Array<{ id: string; kind: string; text: string; sort_order: number }>;
+  premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number }>;
+  premade_package_inclusions: Array<{ id: string; kind: string; text: string; icon: string | null; sort_order: number }>;
+}
+
+interface HotelLookupRow {
+  id: string;
+  slug: string;
+  name: string;
+  region: string;
+  stars: number;
+  description: string;
+  bedroom_image: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,8 +137,21 @@ function t(translations: any, locale: string, fallback: string): string {
   return translations?.[locale] || fallback;
 }
 
+function toTierHotel(row: HotelLookupRow | undefined): PremadeTierPublic['hotel'] {
+  if (!row) return null;
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    region: row.region,
+    stars: row.stars,
+    description: row.description,
+    bedroomImage: row.bedroom_image ? getPublicUrl(row.bedroom_image) : '',
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assemble(row: any, locale = 'en'): PremadePackagePublic {
+function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRow> = new Map()): PremadePackagePublic {
   const gallery = byOrder(row.premade_package_gallery ?? []).map((g: { url: string }) => g.url);
   const dates = byOrder(row.premade_package_dates ?? []).map((d: { start_date: string; end_date: string }) => ({ startDate: d.start_date, endDate: d.end_date }));
   const itinerary = byOrder(row.premade_package_itinerary_days ?? []).map((d: { day_number: number; title: string; description: string; title_translations: unknown; description_translations: unknown }) => ({
@@ -106,10 +159,12 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
     title: t(d.title_translations, locale, d.title),
     description: t(d.description_translations, locale, d.description),
   }));
-  const tiers = byOrder(row.premade_package_tiers ?? []).map((tier: { tier_name: string; vehicle_class: string; accommodation: string; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; highlights_translations: unknown }) => ({
+  const tiers = byOrder(row.premade_package_tiers ?? []).map((tier: { tier_name: string; vehicle_class: string; accommodation: string; hotel_id?: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; highlights_translations: unknown }) => ({
     name: tier.tier_name,
     vehicleClass: tier.vehicle_class,
     accommodation: tier.accommodation,
+    hotelId: tier.hotel_id ?? null,
+    hotel: toTierHotel(tier.hotel_id ? hotelsById.get(tier.hotel_id) : undefined),
     groupSize: tier.group_size,
     guideLanguages: tier.guide_languages ?? [],
     mealsIncluded: tier.meals_included,
@@ -120,10 +175,16 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
   const inclusions = byOrder(row.premade_package_inclusions ?? []);
   const included = inclusions
     .filter((i: { kind: string }) => i.kind === 'included')
-    .map((i: { text: string; text_translations: unknown }) => t(i.text_translations, locale, i.text));
+    .map((i: { text: string; icon?: string | null; text_translations: unknown }) => ({
+      text: t(i.text_translations, locale, i.text),
+      icon: i.icon ?? null,
+    }));
   const notIncluded = inclusions
     .filter((i: { kind: string }) => i.kind === 'not_included')
-    .map((i: { text: string; text_translations: unknown }) => t(i.text_translations, locale, i.text));
+    .map((i: { text: string; icon?: string | null; text_translations: unknown }) => ({
+      text: t(i.text_translations, locale, i.text),
+      icon: i.icon ?? null,
+    }));
 
   const overviewEn = row.overview ? row.overview.split('\n').filter(Boolean) : null;
   const overviewTranslated = locale !== 'en' && row.overview_translations?.[locale]
@@ -149,6 +210,7 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
     gallery,
     dates,
     region: row.region ?? null,
+    season: row.season ?? null,
     duration: row.duration ?? null,
     minPeople: row.min_people ?? null,
     maxPeople: row.max_people ?? null,
@@ -157,6 +219,12 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
     overview: overviewTranslated ?? overviewEn,
     price: row.price ?? null,
     currency: row.currency ?? 'USD',
+    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_3_people ?? row.price_baby) != null ? {
+      onePerson: row.price_1_person ?? null,
+      twoPeople: row.price_2_people ?? null,
+      threePeople: row.price_3_people ?? null,
+      baby: row.price_baby ?? null,
+    } : null,
     tiers,
     itinerary,
     included,
@@ -166,6 +234,21 @@ function assemble(row: any, locale = 'en'): PremadePackagePublic {
 
 const SELECT = '*, name_translations, short_description_translations, overview_translations, accommodation_name_translations, accommodation_description_translations, premade_package_gallery(*), premade_package_dates(*), premade_package_itinerary_days(*), premade_package_tiers(*), premade_package_inclusions(*)';
 
+async function fetchHotelsForTiers(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  rows: Array<{ premade_package_tiers?: Array<{ hotel_id?: string | null }> }>,
+): Promise<Map<string, HotelLookupRow>> {
+  const ids = Array.from(new Set(rows.flatMap((row) => row.premade_package_tiers ?? []).map((tier) => tier.hotel_id).filter(Boolean))) as string[];
+  if (ids.length === 0) return new Map();
+  const { data, error } = await supabase
+    .from('hotels')
+    .select('id, slug, name, region, stars, description, bedroom_image')
+    .in('id', ids);
+  if (error || !data) return new Map();
+  return new Map((data as HotelLookupRow[]).map((h) => [h.id, h]));
+}
+
 async function _getAllPremadePackages({ publishedOnly = true, locale = 'en' } = {}): Promise<PremadePackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
@@ -173,7 +256,8 @@ async function _getAllPremadePackages({ publishedOnly = true, locale = 'en' } = 
   if (publishedOnly) q = q.eq('is_published', true);
   const { data, error } = await q;
   if (error) { console.error('[db/premade] getAllPremadePackages:', error.message, error.code, error.details, error.hint); return []; }
-  return (data ?? []).map((row: unknown) => assemble(row, locale));
+  const hotelsById = await fetchHotelsForTiers(supabase, data ?? []);
+  return (data ?? []).map((row: unknown) => assemble(row, locale, hotelsById));
 }
 
 async function _getPremadePackageBySlug(slug: string, locale = 'en'): Promise<PremadePackagePublic | null> {
@@ -181,7 +265,8 @@ async function _getPremadePackageBySlug(slug: string, locale = 'en'): Promise<Pr
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase.from('premade_packages').select(SELECT).eq('slug', slug).maybeSingle();
   if (error || !data) return null;
-  return assemble(data, locale);
+  const hotelsById = await fetchHotelsForTiers(supabase, [data]);
+  return assemble(data, locale, hotelsById);
 }
 
 async function _getAllPremadeSlugs(): Promise<string[]> {

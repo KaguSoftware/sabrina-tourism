@@ -6,7 +6,7 @@ import { Select } from "@/components/admin/Input/Select";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { Toggle } from "@/components/admin/PackageEditor/primitives";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
-import type { DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
+import { DAILY_SEASON_OPTIONS, type DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
 
 const REGIONS = ["Istanbul", "Cappadocia", "Aegean", "Mediterranean", "Black Sea", "Eastern Anatolia"] as const;
 
@@ -33,6 +33,13 @@ export function BasicsTab() {
       </FormField>
       <FormField label="Region" required error={errors.region?.message}>
         <Select {...register("region")}>{REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}</Select>
+      </FormField>
+
+      <FormField label="Season">
+        <Select {...register("season", { setValueAs: (v) => (v === "" || v == null ? null : v) })}>
+          <option value="">—</option>
+          {DAILY_SEASON_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+        </Select>
       </FormField>
 
       <FormField label="Start time" required error={errors.start_time?.message}>

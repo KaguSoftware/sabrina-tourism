@@ -17,13 +17,15 @@ import { OverviewTab } from "./tabs/OverviewTab";
 import { ItineraryTab } from "./tabs/ItineraryTab";
 import { TiersTab } from "./tabs/TiersTab";
 import { InclusionsTab } from "./tabs/InclusionsTab";
+import { PricingTab } from "./tabs/PricingTab";
 import { PremadeTranslationsTab } from "./tabs/TranslationsTab";
 import type { TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
 
-const TABS = ["Basics", "Overview", "Itinerary", "Tiers", "Inclusions", "Imagery", "Accommodation", "Vehicle", "Translations"] as const;
+const TABS = ["Basics", "Pricing", "Overview", "Itinerary", "Tiers", "Inclusions", "Imagery", "Accommodation", "Vehicle", "Translations"] as const;
 type Tab = typeof TABS[number];
 const TAB_LABEL_KEYS: Record<Tab, string> = {
   Basics: "basics",
+  Pricing: "pricing",
   Overview: "overview",
   Itinerary: "itinerary",
   Tiers: "tiers",
@@ -66,6 +68,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
         tier_name: t.tier_name,
         vehicle_class: t.vehicle_class,
         accommodation: t.accommodation,
+        hotel_id: t.hotel_id ?? null,
         group_size: t.group_size,
         guide_languages: t.guide_languages ?? [],
         meals_included: t.meals_included,
@@ -76,10 +79,15 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
         title: d.title,
         description: d.description,
       })),
-      included: (pkg.premade_package_inclusions ?? []).filter((i) => i.kind === "included").sort((a, b) => a.sort_order - b.sort_order).map((i) => i.text),
-      not_included: (pkg.premade_package_inclusions ?? []).filter((i) => i.kind === "not_included").sort((a, b) => a.sort_order - b.sort_order).map((i) => i.text),
+      included: (pkg.premade_package_inclusions ?? []).filter((i) => i.kind === "included").sort((a, b) => a.sort_order - b.sort_order).map((i) => ({ text: i.text, icon: i.icon ?? null })),
+      not_included: (pkg.premade_package_inclusions ?? []).filter((i) => i.kind === "not_included").sort((a, b) => a.sort_order - b.sort_order).map((i) => ({ text: i.text, icon: i.icon ?? null })),
       price: pkg.price ?? null,
       currency: pkg.currency ?? "USD",
+      season: (pkg.season ?? null) as PremadeFormValues["season"],
+      price_1_person: pkg.price_1_person ?? null,
+      price_2_people: pkg.price_2_people ?? null,
+      price_3_people: pkg.price_3_people ?? null,
+      price_baby: pkg.price_baby ?? null,
     };
   }
   return {
@@ -90,12 +98,13 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
     accommodation_image_a: "", accommodation_image_b: "",
     vehicle_model: "", vehicle_features: [],
     gallery: [], is_published: false,
-    region: "", duration: "",
+    region: "", season: null, duration: "",
     min_people: null, max_people: null,
     available_from: "", available_to: "",
     overview: "", tiers: [], itinerary: [],
     included: [], not_included: [],
     price: null, currency: "USD",
+    price_1_person: null, price_2_people: null, price_3_people: null, price_baby: null,
   };
 }
 
@@ -111,7 +120,21 @@ function collectErrors(errs: Record<string, unknown>): string[] {
   return msgs;
 }
 
-export function PremadeEditor({ pkg, initialTranslations = {} }: { pkg?: PremadePackageRaw; initialTranslations?: TranslationsState }) {
+export interface PremadeHotelOption {
+  id: string;
+  name: string;
+  region: string;
+}
+
+export function PremadeEditor({
+  pkg,
+  initialTranslations = {},
+  availableHotels = [],
+}: {
+  pkg?: PremadePackageRaw;
+  initialTranslations?: TranslationsState;
+  availableHotels?: PremadeHotelOption[];
+}) {
   const tabT = useTranslations("admin.tabs");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("Basics");
@@ -170,9 +193,10 @@ export function PremadeEditor({ pkg, initialTranslations = {} }: { pkg?: Premade
         <div className="pt-8">
           {errorMessages.length > 0 && <ErrorCallout errors={errorMessages} />}
           {activeTab === "Basics" && <BasicsTab />}
+          {activeTab === "Pricing" && <PricingTab />}
           {activeTab === "Overview" && <OverviewTab />}
           {activeTab === "Itinerary" && <ItineraryTab />}
-          {activeTab === "Tiers" && <TiersTab />}
+          {activeTab === "Tiers" && <TiersTab availableHotels={availableHotels} />}
           {activeTab === "Inclusions" && <InclusionsTab />}
           {activeTab === "Imagery" && <ImageryTab />}
           {activeTab === "Accommodation" && <AccommodationTab />}

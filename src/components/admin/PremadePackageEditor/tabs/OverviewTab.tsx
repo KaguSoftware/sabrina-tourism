@@ -2,8 +2,9 @@
 import { useFormContext } from "react-hook-form";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
+import { Select } from "@/components/admin/Input/Select";
 import { Textarea } from "@/components/admin/Input/Textarea";
-import type { PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
+import { SEASON_OPTIONS, type PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
 
 export function OverviewTab() {
   const { register, formState: { errors } } = useFormContext<PremadeFormValues>();
@@ -12,6 +13,17 @@ export function OverviewTab() {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <FormField label="Region" hint="e.g. Cappadocia">
         <Input {...register("region")} placeholder="e.g. Istanbul & Cappadocia" />
+      </FormField>
+
+      <FormField label="Season">
+        <Select
+          {...register("season", { setValueAs: (v) => (v === "" || v == null ? null : v) })}
+        >
+          <option value="">—</option>
+          {SEASON_OPTIONS.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </Select>
       </FormField>
 
       <FormField label="Duration" hint="e.g. 7 days / 6 nights">

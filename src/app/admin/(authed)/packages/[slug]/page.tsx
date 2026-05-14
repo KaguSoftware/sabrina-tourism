@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPackageRawBySlug } from "@/lib/db/packages";
+import { getAdminHotels } from "@/lib/db/hotels";
 import { PackageEditor } from "@/components/admin/PackageEditor/PackageEditor";
 
 interface Props {
@@ -12,5 +13,12 @@ export default async function AdminPackageEditPage({ params }: Props) {
 
   if (!pkg) notFound();
 
-  return <PackageEditor pkg={pkg} />;
+  const hotels = await getAdminHotels();
+  const availableHotels = hotels.map((h) => ({
+    id: h.id,
+    name: h.name,
+    region: h.region,
+  }));
+
+  return <PackageEditor pkg={pkg} availableHotels={availableHotels} />;
 }

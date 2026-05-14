@@ -7,6 +7,7 @@ import { Select } from "@/components/admin/Input/Select";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { Toggle } from "../primitives";
 import { REGIONS } from "../types";
+import { SEASON_OPTIONS } from "@/app/admin/(authed)/packages/[slug]/schema";
 import { slugify } from "@/lib/utils/slug";
 import type { PackageFormValues } from "../types";
 
@@ -41,6 +42,27 @@ export function BasicsTab() {
             <option key={r} value={r}>{r}</option>
           ))}
         </Select>
+      </FormField>
+
+      <FormField label="Season" error={errors.season?.message}>
+        <Controller
+          name="season"
+          control={control}
+          render={({ field }) => (
+            <Select
+              value={field.value ?? ""}
+              onChange={(e) => field.onChange(e.target.value === "" ? null : e.target.value)}
+              onBlur={field.onBlur}
+              name={field.name}
+              ref={field.ref}
+            >
+              <option value="">— None —</option>
+              {SEASON_OPTIONS.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </Select>
+          )}
+        />
       </FormField>
 
       <FormField label="Duration label" required error={errors.duration?.message}>

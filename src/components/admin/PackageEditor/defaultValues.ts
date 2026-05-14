@@ -1,6 +1,14 @@
 import type { PackageRaw } from "@/lib/db/packages";
 import type { PackageFormValues } from "@/app/admin/(authed)/packages/[slug]/schema";
+import { SEASON_OPTIONS } from "@/app/admin/(authed)/packages/[slug]/schema";
 import { REGIONS, TIER_NAMES } from "./types";
+
+type Season = (typeof SEASON_OPTIONS)[number];
+
+function normalizeSeason(value: string | null | undefined): Season | null {
+  if (!value) return null;
+  return (SEASON_OPTIONS as readonly string[]).includes(value) ? (value as Season) : null;
+}
 
 export function defaultValues(pkg?: PackageRaw): PackageFormValues {
   if (pkg) {
@@ -8,6 +16,7 @@ export function defaultValues(pkg?: PackageRaw): PackageFormValues {
       id: pkg.id,
       name: pkg.name,
       region: (REGIONS.includes(pkg.region as PackageFormValues["region"]) ? pkg.region : "Istanbul") as PackageFormValues["region"],
+      season: normalizeSeason(pkg.season),
       duration: pkg.duration,
       duration_days: pkg.duration_days,
       short_description: pkg.short_description,
@@ -26,6 +35,7 @@ export function defaultValues(pkg?: PackageRaw): PackageFormValues {
           tier_name: name,
           vehicle_class: "",
           accommodation: "",
+          hotel_id: null,
           group_size: "",
           guide_languages: [],
           meals_included: "",
@@ -35,6 +45,7 @@ export function defaultValues(pkg?: PackageRaw): PackageFormValues {
           tier_name: name,
           vehicle_class: t.vehicle_class,
           accommodation: t.accommodation,
+          hotel_id: t.hotel_id ?? null,
           group_size: t.group_size,
           guide_languages: t.guide_languages,
           meals_included: t.meals_included,
@@ -42,14 +53,15 @@ export function defaultValues(pkg?: PackageRaw): PackageFormValues {
         };
       }) as unknown as PackageFormValues["tiers"],
       gallery: pkg.gallery.map((g) => ({ path: g.image_path })),
-      included: pkg.included.map((i) => ({ text: i.text })),
-      not_included: pkg.not_included.map((i) => ({ text: i.text })),
+      included: pkg.included.map((i) => ({ text: i.text, icon: i.icon ?? null })),
+      not_included: pkg.not_included.map((i) => ({ text: i.text, icon: i.icon ?? null })),
     };
   }
 
   return {
     name: "",
     region: "Istanbul",
+    season: null,
     duration: "",
     duration_days: 1,
     short_description: "",
@@ -67,6 +79,7 @@ export function defaultValues(pkg?: PackageRaw): PackageFormValues {
       tier_name: name,
       vehicle_class: "",
       accommodation: "",
+      hotel_id: null,
       group_size: "",
       guide_languages: [] as string[],
       meals_included: "",

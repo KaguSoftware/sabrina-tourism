@@ -24,6 +24,15 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   if (!slug) return { error: "Name produces an empty slug." };
 
   let pkgId = data.id;
+  let storedSlug: string | null = null;
+  if (pkgId) {
+    const { data: existing } = await supabase
+      .from("premade_packages")
+      .select("slug")
+      .eq("id", pkgId)
+      .maybeSingle();
+    storedSlug = existing?.slug ?? null;
+  }
 
   const coreFields = {
     name: data.name,
@@ -41,6 +50,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     vehicle_features: data.vehicle_features,
     is_published: data.is_published,
     region: data.region || null,
+    season: data.season ?? null,
     duration: data.duration || null,
     min_people: data.min_people,
     max_people: data.max_people,
@@ -49,6 +59,10 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     overview: data.overview || null,
     price: data.price ?? null,
     currency: data.currency || 'USD',
+    price_1_person: data.price_1_person ?? null,
+    price_2_people: data.price_2_people ?? null,
+    price_3_people: data.price_3_people ?? null,
+    price_baby: data.price_baby ?? null,
   };
 
   if (pkgId) {
@@ -122,6 +136,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
         tier_name: t.tier_name,
         vehicle_class: t.vehicle_class,
         accommodation: t.accommodation,
+        hotel_id: t.hotel_id ?? null,
         group_size: t.group_size,
         guide_languages: t.guide_languages,
         meals_included: t.meals_included,
@@ -145,12 +160,12 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     .order("sort_order");
   await supabase.from("premade_package_inclusions").delete().eq("package_id", pkgId);
   const inclusionRows = [
-    ...data.included.map((text, i) => ({
-      package_id: pkgId, kind: "included", text, sort_order: i,
+    ...data.included.map((item, i) => ({
+      package_id: pkgId, kind: "included", text: item.text, icon: item.icon ?? null, sort_order: i,
       text_translations: existingIncluded?.[i]?.text_translations ?? null,
     })),
-    ...data.not_included.map((text, i) => ({
-      package_id: pkgId, kind: "not_included", text, sort_order: i,
+    ...data.not_included.map((item, i) => ({
+      package_id: pkgId, kind: "not_included", text: item.text, icon: item.icon ?? null, sort_order: i,
       text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
     })),
   ];
@@ -158,6 +173,6 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     await supabase.from("premade_package_inclusions").insert(inclusionRows);
   }
 
-  revalidateAll(slug);
+  revalidateAll(storedSlug ?? slug);
   return { id: pkgId };
 }

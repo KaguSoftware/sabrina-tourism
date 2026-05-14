@@ -91,7 +91,7 @@ export function BasicsTab() {
           type="number"
           min="0"
           step="1"
-          {...register("price", { valueAsNumber: true })}
+          {...register("price", { setValueAs: (v) => (v === "" || v == null ? null : Number(v)) })}
           placeholder="e.g. 1200"
         />
       </FormField>

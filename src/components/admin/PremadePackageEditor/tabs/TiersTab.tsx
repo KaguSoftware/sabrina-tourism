@@ -3,7 +3,9 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 import { X, Plus } from "lucide-react";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
+import { Select } from "@/components/admin/Input/Select";
 import type { PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
+import type { PremadeHotelOption } from "../PremadeEditor";
 
 function TagList({
   values,
@@ -45,7 +47,7 @@ function TagList({
   );
 }
 
-export function TiersTab() {
+export function TiersTab({ availableHotels = [] }: { availableHotels?: PremadeHotelOption[] }) {
   const { register, control, watch, setValue } = useFormContext<PremadeFormValues>();
   const { fields, append, remove } = useFieldArray({ control, name: "tiers" });
 
@@ -73,6 +75,22 @@ export function TiersTab() {
               </FormField>
               <FormField label="Vehicle class">
                 <Input {...register(`tiers.${i}.vehicle_class`)} placeholder="Mercedes V-Class with private driver" />
+              </FormField>
+              <FormField label="Hotel" hint="Optional — links this tier to a hotel record.">
+                <Select
+                  value={watch(`tiers.${i}.hotel_id`) ?? ""}
+                  onChange={(e) =>
+                    setValue(`tiers.${i}.hotel_id`, e.target.value === "" ? null : e.target.value, { shouldDirty: true })
+                  }
+                >
+                  <option value="">— None —</option>
+                  {availableHotels.map((h) => (
+                    <option key={h.id} value={h.id}>
+                      {h.name}
+                      {h.region ? ` — ${h.region}` : ""}
+                    </option>
+                  ))}
+                </Select>
               </FormField>
               <FormField label="Accommodation">
                 <Input {...register(`tiers.${i}.accommodation`)} placeholder="4★ design hotels" />
@@ -106,7 +124,7 @@ export function TiersTab() {
 
       <button
         type="button"
-        onClick={() => append({ tier_name: "", vehicle_class: "", accommodation: "", group_size: "", guide_languages: [], meals_included: "", highlights: [] })}
+        onClick={() => append({ tier_name: "", vehicle_class: "", accommodation: "", hotel_id: null, group_size: "", guide_languages: [], meals_included: "", highlights: [] })}
         className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors"
       >
         <Plus size={12} /> Add tier

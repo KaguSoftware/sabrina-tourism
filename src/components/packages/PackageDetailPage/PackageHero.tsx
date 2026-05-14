@@ -20,9 +20,16 @@ export function PackageHero({ pkg }: { pkg: Package }) {
           </span>
         </Reveal>
         <Reveal delay={140}>
-          <Kicker className="kicker--light mb-5">
-            {pkg.region.toUpperCase()} · {pkg.duration.toUpperCase()}
-          </Kicker>
+          <div className="flex flex-wrap items-center gap-2 mb-5">
+            <Kicker className="kicker--light">
+              {pkg.region.toUpperCase()} · {pkg.duration.toUpperCase()}
+            </Kicker>
+            {pkg.season && (
+              <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-ochre/90 text-navy px-2.5 py-1 rounded-full">
+                {pkg.season}
+              </span>
+            )}
+          </div>
         </Reveal>
         <div className="inline-block backdrop-blur-[1px] bg-black/30 rounded-3xl px-[5%] py-5">
           <Reveal delay={260}>

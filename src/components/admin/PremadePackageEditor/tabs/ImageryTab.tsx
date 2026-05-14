@@ -71,7 +71,7 @@ function ImageField({ label, name, folder, showPresets }: { label: string; name:
 }
 
 export function ImageryTab() {
-  const { control, watch, setValue } = useFormContext<PremadeFormValues>();
+  const { control, watch, setValue, register } = useFormContext<PremadeFormValues>();
   const { fields, append, remove } = useFieldArray({ control, name: "gallery" });
   const gallery = watch("gallery");
 
@@ -103,7 +103,7 @@ export function ImageryTab() {
                 ) : (
                   <ImageUploader value={null} onChange={(p) => { if (p) setValue(`gallery.${i}.url`, p); }} folder="premade/gallery" aspectRatio="4/3" />
                 )}
-                <Input {...useFormContext<PremadeFormValues>().register(`gallery.${i}.url`)} placeholder="Or paste URL…" />
+                <Input {...register(`gallery.${i}.url`)} placeholder="Or paste URL…" />
               </div>
             );
           })}

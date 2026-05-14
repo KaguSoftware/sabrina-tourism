@@ -1,5 +1,7 @@
 "use client";
 import { Fragment } from "react";
+import Image from "next/image";
+import { Star } from "lucide-react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -62,10 +64,39 @@ export function PackageTierSelector({
                   )}
                 </div>
                 <Hairline className="mb-6 opacity-50" />
+                {t.hotel && (
+                  <div className="mb-5 flex items-start gap-3 border border-rule bg-cream-deep p-3">
+                    {t.hotel.bedroomImage && (
+                      <div className="relative w-16 h-16 shrink-0 overflow-hidden border border-rule">
+                        <Image
+                          src={t.hotel.bedroomImage}
+                          alt={t.hotel.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">Hotel</p>
+                      <p className="font-display text-[16px] leading-tight text-ink truncate">{t.hotel.name}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        {t.hotel.stars > 0 && (
+                          <span className="flex items-center gap-0.5 text-ochre" aria-label={`${t.hotel.stars} star hotel`}>
+                            {Array.from({ length: Math.min(5, Math.max(0, t.hotel.stars)) }).map((_, k) => (
+                              <Star key={k} size={11} fill="currentColor" strokeWidth={1.5} aria-hidden />
+                            ))}
+                          </span>
+                        )}
+                        <span className="font-mono text-[10px] tracking-[0.14em] uppercase text-muted">{t.hotel.region}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <dl className="grid grid-cols-[1fr_2fr] gap-x-4 gap-y-2 mb-6 text-[13px]">
                   {[
                     ["Vehicle", t.vehicleClass],
-                    ["Stay", t.accommodation],
+                    ["Stay", t.hotel ? t.hotel.name : t.accommodation],
                     ["Group", t.groupSize],
                     ["Guide", t.guideLanguages.join(", ")],
                     ["Meals", t.mealsIncluded],

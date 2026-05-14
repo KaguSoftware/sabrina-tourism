@@ -6,6 +6,7 @@ import {
 import type { Package } from "@/lib/packages/types";
 import { registerFonts } from "@/lib/pdf/fonts";
 import { C, F, MARGIN } from "@/lib/pdf/theme";
+import { PdfIcon } from "@/lib/pdf/icons";
 
 registerFonts();
 
@@ -58,12 +59,25 @@ interface Props { pkg: Package; waPhone?: string; baseUrl?: string }
 
 export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
   const heroSrc = abs(pkg.heroImage, baseUrl);
-  const facts = [
-    { k: "Duration",   v: pkg.duration },
-    { k: "Region",     v: pkg.region },
-    { k: "Group size", v: `${pkg.minPeople}–${pkg.maxPeople} guests` },
-    { k: "Available",  v: `${fmtMonth(pkg.availableFrom)} – ${fmtMonth(pkg.availableTo)}` },
+  const primaryHotel = pkg.tiers.find((tier) => tier.hotel)?.hotel?.name ?? pkg.tiers[0]?.accommodation ?? "";
+  const facts: Array<{ k: string; v: string; icon: string | null }> = [
+    { k: "Duration",   v: pkg.duration, icon: "clock" },
+    { k: "Region",     v: pkg.region, icon: "map-pin" },
   ];
+  if (pkg.season) {
+    facts.push({ k: "Season", v: pkg.season, icon: "compass" });
+  }
+  if (primaryHotel) {
+    facts.push({ k: "Hotel", v: primaryHotel, icon: "hotel" });
+  }
+  facts.push(
+    { k: "Group size", v: `${pkg.minPeople}–${pkg.maxPeople} guests`, icon: "users" },
+    { k: "Available",  v: `${fmtMonth(pkg.availableFrom)} – ${fmtMonth(pkg.availableTo)}`, icon: "calendar" },
+  );
+  const factCount = facts.length;
+  const kicker = pkg.season
+    ? `${pkg.region.toUpperCase()} · ${pkg.season.toUpperCase()} · PACKAGE`
+    : `${pkg.region.toUpperCase()} · PACKAGE`;
 
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
@@ -71,14 +85,17 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body, paddingTop: HERO_PADDING_TOP }}>
         <HeroBlock heroSrc={heroSrc} />
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
-          <Mono style={{ color: C.ochre, marginBottom: 10 }}>{`${pkg.region.toUpperCase()} · PACKAGE`}</Mono>
+          <Mono style={{ color: C.ochre, marginBottom: 10 }}>{kicker}</Mono>
           <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 54, lineHeight: 1, letterSpacing: -1, color: C.ink }}>{pkg.name}</Text>
           <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 17, lineHeight: 1.4, color: C.inkSoft, marginTop: 10 }}>{pkg.shortDescription}</Text>
         </View>
-        <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", backgroundColor: C.navy }}>
+        <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", flexWrap: "wrap", backgroundColor: C.navy }}>
           {facts.map((f, i) => (
-            <View key={i} style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 14, borderRightWidth: i < 3 ? 1 : 0, borderRightColor: C.navySoft }}>
-              <Mono style={{ color: C.ochre, marginBottom: 6 }}>{f.k.toUpperCase()}</Mono>
+            <View key={i} style={{ width: "33.333%", paddingVertical: 12, paddingHorizontal: 12, borderRightWidth: (i + 1) % 3 !== 0 && i < factCount - 1 ? 1 : 0, borderRightColor: C.navySoft, borderBottomWidth: i < factCount - 3 ? 1 : 0, borderBottomColor: C.navySoft }}>
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 6, gap: 4 }}>
+                {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
+                <Mono style={{ color: C.ochre }}>{f.k.toUpperCase()}</Mono>
+              </View>
               <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 14, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
             </View>
           ))}
@@ -151,9 +168,11 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
               <Mono style={{ color: C.ochre }}>INCLUDED</Mono>
             </View>
             {pkg.included.map((it, i) => (
-              <View key={i} style={{ flexDirection: "row", paddingVertical: 6 }}>
-                <Text style={{ fontFamily: F.mono, fontSize: 9, color: C.ochre, width: 16 }}>✓</Text>
-                <Text style={{ fontFamily: F.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5 }}>{it}</Text>
+              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 6 }}>
+                <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
+                  <PdfIcon name={it.icon ?? "circle-plus"} size={11} color={C.ochre} />
+                </View>
+                <Text style={{ fontFamily: F.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5 }}>{it.text}</Text>
               </View>
             ))}
           </View>
@@ -162,9 +181,11 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
               <Mono style={{ color: C.inkSoft }}>NOT INCLUDED</Mono>
             </View>
             {pkg.notIncluded.map((it, i) => (
-              <View key={i} style={{ flexDirection: "row", paddingVertical: 6 }}>
-                <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, width: 16 }}>×</Text>
-                <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5 }}>{it}</Text>
+              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 6 }}>
+                <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
+                  <PdfIcon name={it.icon ?? "circle-minus"} size={11} color={C.inkSoft} />
+                </View>
+                <Text style={{ fontFamily: F.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5 }}>{it.text}</Text>
               </View>
             ))}
           </View>

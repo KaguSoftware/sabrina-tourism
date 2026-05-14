@@ -4,6 +4,18 @@ import { tags } from '@/lib/cache/tags';
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
+export interface DailyInclusionItemPublic {
+  text: string;
+  icon: string | null;
+}
+
+export interface DailyPricingPublic {
+  onePerson: number | null;
+  twoPeople: number | null;
+  threePeople: number | null;
+  baby: number | null;
+}
+
 export interface DailyPackagePublic {
   id: string;
   slug: string;
@@ -19,9 +31,12 @@ export interface DailyPackagePublic {
   currency: string;
   shortDescription: string;
   region: string;
+  season: string | null;
   stops: Array<{ time: string; place: string; description: string }>;
-  included: string[];
+  included: DailyInclusionItemPublic[];
+  notIncluded: DailyInclusionItemPublic[];
   groupImages: string[];
+  pricing: DailyPricingPublic | null;
 }
 
 export interface DailyPackageRaw {
@@ -39,15 +54,20 @@ export interface DailyPackageRaw {
   currency: string;
   short_description: string;
   region: string;
+  season: string | null;
   is_published: boolean;
   sort_order: number;
   updated_at: string;
+  price_1_person: number | null;
+  price_2_people: number | null;
+  price_3_people: number | null;
+  price_baby: number | null;
   daily_package_stops: Array<{ id: string; stop_time: string; place: string; description: string; sort_order: number }>;
-  daily_package_included: Array<{ id: string; text: string; sort_order: number }>;
+  daily_package_included: Array<{ id: string; text: string; icon: string | null; sort_order: number }>;
+  daily_package_not_included: Array<{ id: string; package_id?: string; text: string; icon: string | null; text_translations?: unknown; sort_order: number }>;
   daily_package_gallery: Array<{ id: string; url: string; sort_order: number }>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function sortBy<T extends { sort_order: number }>(arr: T[]): T[] { return [...arr].sort((a, b) => a.sort_order - b.sort_order); }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,6 +93,7 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
     currency: row.currency,
     shortDescription: tr(row.short_description_translations, locale, row.short_description),
     region: row.region,
+    season: row.season ?? null,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     stops: sortBy(row.daily_package_stops ?? []).map((s: any) => ({
       time: s.stop_time,
@@ -80,13 +101,48 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
       description: tr(s.description_translations, locale, s.description),
     })),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    included: sortBy(row.daily_package_included ?? []).map((i: any) => tr(i.text_translations, locale, i.text)),
+    included: sortBy(row.daily_package_included ?? []).map((i: any) => ({
+      text: tr(i.text_translations, locale, i.text),
+      icon: i.icon ?? null,
+    })),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    notIncluded: sortBy(row.daily_package_not_included ?? []).map((i: any) => ({
+      text: tr(i.text_translations, locale, i.text),
+      icon: i.icon ?? null,
+    })),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     groupImages: sortBy(row.daily_package_gallery ?? []).map((g: any) => g.url),
+    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_3_people ?? row.price_baby) != null ? {
+      onePerson: row.price_1_person ?? null,
+      twoPeople: row.price_2_people ?? null,
+      threePeople: row.price_3_people ?? null,
+      baby: row.price_baby ?? null,
+    } : null,
   };
 }
 
 const SELECT = '*, name_translations, short_description_translations, daily_package_stops(*, place_translations, description_translations), daily_package_included(*, text_translations), daily_package_gallery(*)';
+
+async function fetchNotIncludedByPackageIds(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  packageIds: string[],
+): Promise<Map<string, DailyPackageRaw['daily_package_not_included']>> {
+  const ids = Array.from(new Set(packageIds.filter(Boolean)));
+  if (ids.length === 0) return new Map();
+  const { data, error } = await supabase
+    .from('daily_package_not_included')
+    .select('id, package_id, text, icon, text_translations, sort_order')
+    .in('package_id', ids)
+    .order('sort_order');
+  if (error || !data) return new Map();
+  const grouped = new Map<string, DailyPackageRaw['daily_package_not_included']>();
+  for (const item of data as DailyPackageRaw['daily_package_not_included']) {
+    if (!item.package_id) continue;
+    grouped.set(item.package_id, [...(grouped.get(item.package_id) ?? []), item]);
+  }
+  return grouped;
+}
 
 async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}): Promise<DailyPackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,7 +151,8 @@ async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}
   if (publishedOnly) q = q.eq('is_published', true);
   const { data, error } = await q;
   if (error) { console.error('[db/daily] getAllDailyPackages:', error); return []; }
-  return (data ?? []).map((row: unknown) => assemble(row, locale));
+  const notIncludedById = await fetchNotIncludedByPackageIds(supabase, (data ?? []).map((row: { id: string }) => row.id));
+  return (data ?? []).map((row: DailyPackageRaw) => assemble({ ...row, daily_package_not_included: notIncludedById.get(row.id) ?? [] }, locale));
 }
 
 async function _getDailyPackageBySlug(slug: string, locale = 'en'): Promise<DailyPackagePublic | null> {
@@ -103,7 +160,8 @@ async function _getDailyPackageBySlug(slug: string, locale = 'en'): Promise<Dail
   const supabase = createAnonClient() as any;
   const { data, error } = await supabase.from('daily_packages').select(SELECT).eq('slug', slug).maybeSingle();
   if (error || !data) return null;
-  return assemble(data, locale);
+  const notIncludedById = await fetchNotIncludedByPackageIds(supabase, [data.id]);
+  return assemble({ ...data, daily_package_not_included: notIncludedById.get(data.id) ?? [] }, locale);
 }
 
 export async function getAllDailyPackages(opts?: { publishedOnly?: boolean; locale?: string }): Promise<DailyPackagePublic[]> {
@@ -129,7 +187,8 @@ export async function getDailyPackageRawById(id: string): Promise<DailyPackageRa
   const supabase = createServiceClient() as any;
   const { data, error } = await supabase.from('daily_packages').select(SELECT).eq('id', id).maybeSingle();
   if (error || !data) return null;
-  return data as DailyPackageRaw;
+  const notIncludedById = await fetchNotIncludedByPackageIds(supabase, [id]);
+  return { ...data, daily_package_not_included: notIncludedById.get(id) ?? [] } as DailyPackageRaw;
 }
 
 export async function getAdminDailyPackages(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {

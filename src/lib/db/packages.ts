@@ -2,7 +2,7 @@ import { unstable_cache } from 'next/cache';
 import { createAnonClient } from '@/lib/supabase/server';
 import { getPublicUrl } from '@/lib/supabase/storage';
 import { tags } from '@/lib/cache/tags';
-import type { Package } from '@/lib/packages/types';
+import type { Package, TierHotelSummary } from '@/lib/packages/types';
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 import type {
@@ -15,20 +15,47 @@ import type {
 
 type PackageTierName = 'Essential' | 'Signature' | 'Private';
 
+interface HotelLookupRow {
+  id: string;
+  slug: string;
+  name: string;
+  region: string;
+  stars: number;
+  description: string;
+  bedroom_image: string;
+}
+
+function toTierHotelSummary(row: HotelLookupRow | undefined): TierHotelSummary | null {
+  if (!row) return null;
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    region: row.region,
+    stars: row.stars,
+    description: row.description,
+    bedroomImage: row.bedroom_image ? getPublicUrl(row.bedroom_image) : '',
+  };
+}
+
 function assemblePackage(
   row: PackageRow,
   itinerary: PackageItineraryDayRow[],
   tiers: PackageTierRow[],
   gallery: PackageGalleryRow[],
   inclusions: PackageInclusionRow[],
+  hotelsById: Map<string, HotelLookupRow>,
 ): Package {
   const orderedTiers = (['Essential', 'Signature', 'Private'] as PackageTierName[])
     .map((name) => {
       const t = tiers.find((t) => t.tier_name === name)!;
+      const hotel = t.hotel_id ? hotelsById.get(t.hotel_id) : undefined;
       return {
         name: t.tier_name,
         vehicleClass: t.vehicle_class,
         accommodation: t.accommodation,
+        hotelId: t.hotel_id,
+        hotel: toTierHotelSummary(hotel),
         groupSize: t.group_size,
         guideLanguages: t.guide_languages,
         mealsIncluded: t.meals_included,
@@ -40,6 +67,7 @@ function assemblePackage(
     slug: row.slug,
     name: row.name,
     region: row.region,
+    season: row.season,
     duration: row.duration,
     durationDays: row.duration_days,
     shortDescription: row.short_description,
@@ -56,16 +84,41 @@ function assemblePackage(
     included: inclusions
       .filter((i) => i.kind === 'included')
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map((i) => i.text),
+      .map((i) => ({ text: i.text, icon: i.icon ?? null })),
     notIncluded: inclusions
       .filter((i) => i.kind === 'not_included')
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map((i) => i.text),
+      .map((i) => ({ text: i.text, icon: i.icon ?? null })),
     minPeople: row.min_people,
     maxPeople: row.max_people,
     availableFrom: row.available_from,
     availableTo: row.available_to,
   };
+}
+
+async function fetchHotelsForTiers(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  hotelIds: string[],
+): Promise<Map<string, HotelLookupRow>> {
+  const unique = Array.from(new Set(hotelIds.filter(Boolean)));
+  if (unique.length === 0) return new Map();
+  const { data, error } = await supabase
+    .from('hotels')
+    .select('id, slug, name, region, stars, description, bedroom_image')
+    .in('id', unique);
+  if (error || !data) return new Map();
+  return new Map((data as HotelLookupRow[]).map((h) => [h.id, h]));
+}
+
+function collectHotelIds(rows: { package_tiers?: { hotel_id: string | null }[] }[]): string[] {
+  const ids: string[] = [];
+  for (const row of rows) {
+    for (const t of row.package_tiers ?? []) {
+      if (t.hotel_id) ids.push(t.hotel_id);
+    }
+  }
+  return ids;
 }
 
 async function _getAllPackages({ publishedOnly = true } = {}): Promise<Package[]> {
@@ -93,6 +146,8 @@ async function _getAllPackages({ publishedOnly = true } = {}): Promise<Package[]
     return [];
   }
 
+  const hotelsById = await fetchHotelsForTiers(supabase, collectHotelIds(data ?? []));
+
   return (data ?? []).map((row: any) =>
     assemblePackage(
       row,
@@ -100,6 +155,7 @@ async function _getAllPackages({ publishedOnly = true } = {}): Promise<Package[]
       row.package_tiers ?? [],
       row.package_gallery ?? [],
       row.package_inclusions ?? [],
+      hotelsById,
     ),
   );
 }
@@ -127,12 +183,14 @@ async function _getPackageBySlug(
   }
 
   if (data) {
+    const hotelsById = await fetchHotelsForTiers(supabase, collectHotelIds([data as any]));
     return assemblePackage(
       data,
       (data as any).package_itinerary_days ?? [],
       (data as any).package_tiers ?? [],
       (data as any).package_gallery ?? [],
       (data as any).package_inclusions ?? [],
+      hotelsById,
     );
   }
 
@@ -187,6 +245,8 @@ async function _getFeaturedPackages(): Promise<Package[]> {
     return [];
   }
 
+  const hotelsById = await fetchHotelsForTiers(supabase, collectHotelIds(data ?? []));
+
   return (data ?? []).map((row: any) =>
     assemblePackage(
       row,
@@ -194,6 +254,7 @@ async function _getFeaturedPackages(): Promise<Package[]> {
       row.package_tiers ?? [],
       row.package_gallery ?? [],
       row.package_inclusions ?? [],
+      hotelsById,
     ),
   );
 }
@@ -204,6 +265,7 @@ export interface PackageRaw {
   slug: string;
   name: string;
   region: string;
+  season: string | null;
   duration: string;
   duration_days: number;
   short_description: string;
@@ -219,10 +281,10 @@ export interface PackageRaw {
   sort_order: number;
   updated_at: string;
   itinerary: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
-  tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[] }>;
+  tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[] }>;
   gallery: Array<{ id: string; image_path: string; sort_order: number }>;
-  included: Array<{ id: string; text: string; sort_order: number }>;
-  not_included: Array<{ id: string; text: string; sort_order: number }>;
+  included: Array<{ id: string; text: string; icon: string | null; sort_order: number }>;
+  not_included: Array<{ id: string; text: string; icon: string | null; sort_order: number }>;
 }
 
 export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | null> {
@@ -252,6 +314,7 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
     slug: data.slug,
     name: data.name,
     region: data.region,
+    season: data.season ?? null,
     duration: data.duration,
     duration_days: data.duration_days,
     short_description: data.short_description,
@@ -279,6 +342,7 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
         tier_name: name,
         vehicle_class: '',
         accommodation: '',
+        hotel_id: null,
         group_size: '',
         guide_languages: [],
         meals_included: '',
@@ -289,6 +353,7 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
         tier_name: t.tier_name,
         vehicle_class: t.vehicle_class,
         accommodation: t.accommodation,
+        hotel_id: t.hotel_id ?? null,
         group_size: t.group_size,
         guide_languages: t.guide_languages ?? [],
         meals_included: t.meals_included,
@@ -303,11 +368,13 @@ export async function getPackageRawBySlug(slug: string): Promise<PackageRaw | nu
     included: sorted(inclusions.filter((i: any) => i.kind === 'included')).map((i: any) => ({
       id: i.id,
       text: i.text,
+      icon: i.icon ?? null,
       sort_order: i.sort_order,
     })),
     not_included: sorted(inclusions.filter((i: any) => i.kind === 'not_included')).map((i: any) => ({
       id: i.id,
       text: i.text,
+      icon: i.icon ?? null,
       sort_order: i.sort_order,
     })),
   };

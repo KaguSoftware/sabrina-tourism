@@ -1,23 +1,24 @@
 import { notFound } from "next/navigation";
-import { DAILY_PACKAGES } from "@/lib/daily/data";
+import { getAllDailyPackages, getDailyPackageBySlug } from "@/lib/db/daily-packages";
 import { DailyDetailPage } from "@/components/daily/DailyDetailPage/DailyDetailPage";
 
-export function generateStaticParams() {
-  return DAILY_PACKAGES.map((pkg) => ({ id: pkg.id }));
+export async function generateStaticParams() {
+  const packages = await getAllDailyPackages({ locale: "en" });
+  return packages.map((pkg) => ({ id: pkg.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }) {
-  const { id } = await params;
-  const pkg = DAILY_PACKAGES.find((p) => p.id === id);
+  const { locale, id } = await params;
+  const pkg = await getDailyPackageBySlug(id, locale);
   if (!pkg) return {};
   return {
     title: `${pkg.name} — Sabrina Turizm`,
     description: pkg.shortDescription,
-    alternates: { canonical: `/tours/daily/${pkg.id}` },
+    alternates: { canonical: `/tours/daily/${pkg.slug}` },
     openGraph: {
       title: `${pkg.name} — Sabrina Turizm`,
       description: pkg.shortDescription,
@@ -29,10 +30,10 @@ export async function generateMetadata({
 export default async function DailyPackageDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }) {
-  const { id } = await params;
-  const pkg = DAILY_PACKAGES.find((p) => p.id === id);
+  const { locale, id } = await params;
+  const pkg = await getDailyPackageBySlug(id, locale);
   if (!pkg) notFound();
   return <DailyDetailPage pkg={pkg} />;
 }

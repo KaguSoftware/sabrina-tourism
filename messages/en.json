@@ -528,7 +528,8 @@
       "inclusions": "Inclusions",
       "imagery": "Imagery",
       "accommodation": "Accommodation",
-      "vehicle": "Vehicle"
+      "vehicle": "Vehicle",
+      "pricing": "Pricing"
     }
   },
   "legal": {

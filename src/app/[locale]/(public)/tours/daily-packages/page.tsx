@@ -1,5 +1,5 @@
 import { DailyListPage } from "@/components/daily/DailyListPage/DailyListPage";
-import { DAILY_PACKAGES } from "@/lib/daily/data";
+import { getAllDailyPackages } from "@/lib/db/daily-packages";
 
 export const metadata = {
   title: "Daily Packages — Sabrina Turizm",
@@ -21,6 +21,12 @@ export const metadata = {
   },
 };
 
-export default function DailyPackagesPage() {
-  return <DailyListPage packages={DAILY_PACKAGES} />;
+export default async function DailyPackagesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const packages = await getAllDailyPackages({ locale });
+  return <DailyListPage packages={packages} />;
 }

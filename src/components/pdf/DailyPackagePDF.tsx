@@ -7,6 +7,7 @@ import type { DailyPackage } from "@/lib/daily/types";
 import { registerFonts } from "@/lib/pdf/fonts";
 import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
 import { visualRTL } from "@/lib/pdf/rtl";
+import { PdfIcon } from "@/lib/pdf/icons";
 
 registerFonts();
 
@@ -60,7 +61,12 @@ function HeroBlock({ heroSrc, fonts }: { heroSrc: string; fonts: FontSet }) {
   );
 }
 
-const NOT_INCLUDED = ["Hotel accommodation", "Breakfast"];
+function fmtPrice(amount: number, currency: string): string {
+  const code = (currency || "USD").toUpperCase();
+  const symbol = code === "USD" ? "$" : code === "EUR" ? "€" : code === "GBP" ? "£" : "";
+  const num = Math.round(amount).toLocaleString("en-US");
+  return symbol ? `${symbol}${num}` : `${code} ${num}`;
+}
 
 interface Props { pkg: DailyPackage; waPhone?: string; baseUrl?: string; locale?: string }
 
@@ -68,25 +74,53 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const fonts = getFontsForLocale(locale);
   const heroSrc = abs(pkg.heroImage, baseUrl);
 
+  const kicker = pkg.season
+    ? `${pkg.region.toUpperCase()} · ${pkg.season.toUpperCase()} · DAILY PACKAGE`
+    : `${pkg.region.toUpperCase()} · DAILY PACKAGE`;
+
+  const facts: Array<{ k: string; v: string; icon: string | null }> = [
+    { k: "Timeframe", v: `${pkg.startTime} – ${pkg.endTime}`, icon: "clock" },
+    { k: "Region",    v: pkg.region, icon: "map-pin" },
+  ];
+  if (pkg.season) {
+    facts.push({ k: "Season", v: pkg.season, icon: "compass" });
+  }
+  facts.push(
+    { k: "Price",   v: `${pkg.currency} ${pkg.price.toLocaleString()}`, icon: "wallet" },
+    { k: "Vehicle", v: pkg.vehicle, icon: "car-front" },
+  );
+  const factCount = facts.length;
+
+  const pricing = pkg.pricing;
+  const pricingRowsAll: Array<{ icon: string; label: string; value: number | null | undefined }> = pricing
+    ? [
+        { icon: "user",  label: "1 adult",        value: pricing.onePerson },
+        { icon: "users", label: "2 adults",       value: pricing.twoPeople },
+        { icon: "users", label: "3 adults",       value: pricing.threePeople },
+        { icon: "baby",  label: "Baby (add-on)",  value: pricing.baby },
+      ]
+    : [];
+  const pricingRows = pricingRowsAll.filter(
+    (r): r is { icon: string; label: string; value: number } => r.value != null,
+  );
+
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
       {/* Cover */}
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body, paddingTop: HERO_PADDING_TOP }}>
         <HeroBlock heroSrc={heroSrc} fonts={fonts} />
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
-          <Mono style={{ color: C.ochre, marginBottom: 10 }} fonts={fonts}>{`${pkg.region.toUpperCase()} · DAILY PACKAGE`}</Mono>
+          <Mono style={{ color: C.ochre, marginBottom: 10 }} fonts={fonts}>{kicker}</Mono>
           <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(54, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>{tx(pkg.name, fonts.rtl)}</Text>
           <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(17, fonts.displayScale), lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>{tx(pkg.shortDescription, fonts.rtl)}</Text>
         </View>
         <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", backgroundColor: C.navy }}>
-          {[
-            { k: "Timeframe", v: `${pkg.startTime} – ${pkg.endTime}` },
-            { k: "Region",    v: pkg.region },
-            { k: "Price",     v: `${pkg.currency} ${pkg.price.toLocaleString()}` },
-            { k: "Vehicle",   v: pkg.vehicle },
-          ].map((f, i) => (
-            <View key={i} style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 14, borderRightWidth: i < 3 ? 1 : 0, borderRightColor: C.navySoft }}>
-              <Mono style={{ color: C.ochre, marginBottom: 6 }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
+          {facts.map((f, i) => (
+            <View key={i} style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 14, borderRightWidth: i < factCount - 1 ? 1 : 0, borderRightColor: C.navySoft }}>
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 6, gap: 4 }}>
+                {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
+                <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
+              </View>
               <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
             </View>
           ))}
@@ -128,9 +162,11 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
               <Mono style={{ color: C.ochre }} fonts={fonts}>INCLUDED</Mono>
             </View>
             {pkg.included.map((it, i) => (
-              <View key={i} style={{ flexDirection: "row", paddingVertical: 5 }}>
-                <Text style={{ fontFamily: fonts.mono, fontSize: 9, color: C.ochre, width: 16 }}>✓</Text>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.45 }}>{tx(it, fonts.rtl)}</Text>
+              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 5 }}>
+                <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
+                  <PdfIcon name={it.icon ?? "circle-plus"} size={11} color={C.ochre} />
+                </View>
+                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.45 }}>{tx(it.text, fonts.rtl)}</Text>
               </View>
             ))}
           </View>
@@ -138,14 +174,32 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
             <View style={{ borderBottomWidth: 1, borderBottomColor: C.rule, paddingBottom: 8, marginBottom: 12 }}>
               <Mono style={{ color: C.inkSoft }} fonts={fonts}>NOT INCLUDED</Mono>
             </View>
-            {NOT_INCLUDED.map((it, i) => (
-              <View key={i} style={{ flexDirection: "row", paddingVertical: 5 }}>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, width: 16 }}>×</Text>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.45 }}>{it}</Text>
+            {pkg.notIncluded.map((it, i) => (
+              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 5 }}>
+                <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
+                  <PdfIcon name={it.icon ?? "circle-minus"} size={11} color={C.inkSoft} />
+                </View>
+                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.45 }}>{tx(it.text, fonts.rtl)}</Text>
               </View>
             ))}
           </View>
         </View>
+        {pricingRows.length > 0 ? (
+          <View style={{ marginHorizontal: MARGIN, marginTop: 22 }}>
+            <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 6, marginBottom: 8 }}>
+              <Mono style={{ color: C.ochre }} fonts={fonts}>{`PRICE (PER PERSON, ${(pkg.currency ?? "USD").toUpperCase()})`}</Mono>
+            </View>
+            {pricingRows.map((row, i) => (
+              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 4, borderBottomWidth: i < pricingRows.length - 1 ? 1 : 0, borderBottomColor: C.rule }}>
+                <View style={{ width: 22, flexDirection: "row", alignItems: "center" }}>
+                  <PdfIcon name={row.icon} size={12} color={C.ochre} />
+                </View>
+                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1 }}>{row.label}</Text>
+                <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink }}>{fmtPrice(row.value, pkg.currency ?? "USD")}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
         {waPhone ? (
           <View style={{ marginHorizontal: MARGIN, marginTop: 24, backgroundColor: C.navy, padding: 18, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: 14, color: C.cream, lineHeight: 1.4 }}>

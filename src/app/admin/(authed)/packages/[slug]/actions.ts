@@ -34,6 +34,15 @@ export async function savePackage(
   }
 
   const supabase = createServiceClient() as any;
+  let previousSlug: string | null = null;
+  if (data.id) {
+    const { data: existing } = await supabase
+      .from("packages")
+      .select("slug")
+      .eq("id", data.id)
+      .maybeSingle();
+    previousSlug = existing?.slug ?? null;
+  }
 
   const rpcPayload = {
     ...data,
@@ -61,6 +70,9 @@ export async function savePackage(
   revalidateTag(tags.packages.slugs(), "max");
   revalidateTag(tags.packages.featured(), "max");
   revalidateTag(tags.packages.bySlug(slug), "max");
+  if (previousSlug && previousSlug !== slug) {
+    revalidateTag(tags.packages.bySlug(previousSlug), "max");
+  }
 
   return { slug };
 }

@@ -32,8 +32,8 @@ export function PremadeTranslationsTab({ pkgId, formValues, initialTranslations 
         ? [{ key: `tier_${i}_highlights`, label: `${tier.tier_name} tier — highlights`, englishValue: tier.highlights.join("\n"), multiline: true }]
         : []
     ),
-    ...formValues.included.map((text, i) => ({ key: `inclusion_included_${i}`, label: `Included: ${text.slice(0, 40)}`, englishValue: text })),
-    ...formValues.not_included.map((text, i) => ({ key: `inclusion_not_included_${i}`, label: `Not included: ${text.slice(0, 40)}`, englishValue: text })),
+    ...formValues.included.map((item, i) => ({ key: `inclusion_included_${i}`, label: `Included: ${item.text.slice(0, 40)}`, englishValue: item.text })),
+    ...formValues.not_included.map((item, i) => ({ key: `inclusion_not_included_${i}`, label: `Not included: ${item.text.slice(0, 40)}`, englishValue: item.text })),
   ];
 
   async function handleSave() {

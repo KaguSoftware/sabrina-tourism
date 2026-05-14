@@ -13,13 +13,15 @@ import { BasicsTab } from "./tabs/BasicsTab";
 import { ImageryTab } from "./tabs/ImageryTab";
 import { ItineraryTab } from "./tabs/ItineraryTab";
 import { InclusionsTab } from "./tabs/InclusionsTab";
+import { PricingTab } from "./tabs/PricingTab";
 import { DailyTranslationsTab } from "./tabs/TranslationsTab";
 import type { TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
 
-const TABS = ["Basics", "Imagery", "Itinerary", "Inclusions", "Translations"] as const;
+const TABS = ["Basics", "Pricing", "Imagery", "Itinerary", "Inclusions", "Translations"] as const;
 type Tab = typeof TABS[number];
 const TAB_LABEL_KEYS: Record<Tab, string> = {
   Basics: "basics",
+  Pricing: "pricing",
   Imagery: "imagery",
   Itinerary: "itinerary",
   Inclusions: "inclusions",
@@ -44,9 +46,15 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
       hero_image: pkg.hero_image ?? "",
       card_image: pkg.card_image ?? "",
       stops: sorted(pkg.daily_package_stops ?? []).map((s) => ({ place: s.place, description: s.description })),
-      included: sorted(pkg.daily_package_included ?? []).map((i) => ({ text: i.text })),
+      included: sorted(pkg.daily_package_included ?? []).map((i) => ({ text: i.text, icon: i.icon ?? null })),
+      not_included: sorted(pkg.daily_package_not_included ?? []).map((i) => ({ text: i.text, icon: i.icon ?? null })),
       gallery: sorted(pkg.daily_package_gallery ?? []).map((g) => ({ url: g.url })),
       is_published: pkg.is_published,
+      season: (pkg.season ?? null) as DailyFormValues["season"],
+      price_1_person: pkg.price_1_person ?? null,
+      price_2_people: pkg.price_2_people ?? null,
+      price_3_people: pkg.price_3_people ?? null,
+      price_baby: pkg.price_baby ?? null,
     };
   }
   return {
@@ -54,7 +62,9 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
     region: "Istanbul", vehicle: "", driver: "",
     price: 0, currency: "USD", short_description: "",
     hero_image: "", card_image: "",
-    stops: [], included: [], gallery: [], is_published: false,
+    stops: [], included: [], not_included: [], gallery: [], is_published: false,
+    season: null,
+    price_1_person: null, price_2_people: null, price_3_people: null, price_baby: null,
   };
 }
 
@@ -134,6 +144,7 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
         <div className="pt-8">
           {errorMessages.length > 0 && <ErrorCallout errors={errorMessages} />}
           {activeTab === "Basics" && <BasicsTab />}
+          {activeTab === "Pricing" && <PricingTab />}
           {activeTab === "Imagery" && <ImageryTab />}
           {activeTab === "Itinerary" && <ItineraryTab />}
           {activeTab === "Inclusions" && <InclusionsTab />}
