@@ -3,7 +3,19 @@ import { useState, useRef, useEffect } from "react";
 
 export function InfoTooltip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
+  const [align, setAlign] = useState<"center" | "left" | "right">("center");
   const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!open || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const tooltipW = 200;
+    const spaceLeft = rect.left;
+    const spaceRight = window.innerWidth - rect.right;
+    if (spaceLeft < tooltipW / 2) setAlign("left");
+    else if (spaceRight < tooltipW / 2) setAlign("right");
+    else setAlign("center");
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -17,6 +29,20 @@ export function InfoTooltip({ text }: { text: string }) {
       document.removeEventListener("touchstart", handleOutside);
     };
   }, [open]);
+
+  const popoverPos =
+    align === "left"
+      ? "left-0"
+      : align === "right"
+      ? "right-0"
+      : "left-1/2 -translate-x-1/2";
+
+  const arrowPos =
+    align === "left"
+      ? "left-3"
+      : align === "right"
+      ? "right-3"
+      : "left-1/2 -translate-x-1/2";
 
   return (
     <span ref={ref} className="relative inline-flex items-center">
@@ -36,9 +62,9 @@ export function InfoTooltip({ text }: { text: string }) {
         </svg>
       </button>
       {open && (
-        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2.5 z-50 w-56 px-3.5 py-2.5 rounded bg-navy text-cream/90 text-[11.5px] font-sans leading-relaxed shadow-xl pointer-events-none animate-in fade-in duration-150">
+        <span className={`absolute bottom-full ${popoverPos} mb-2.5 z-50 w-50 max-w-[calc(100vw-2rem)] px-3 py-2.5 rounded bg-navy text-cream text-[12px] font-sans font-normal normal-case tracking-normal leading-relaxed shadow-xl pointer-events-none animate-in fade-in duration-150`}>
           {text}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-navy" />
+          <span className={`absolute top-full ${arrowPos} w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-navy`} />
         </span>
       )}
     </span>
