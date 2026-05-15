@@ -100,7 +100,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
                 {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
                 <Mono style={{ color: C.ochre }}>{f.k.toUpperCase()}</Mono>
               </View>
-              <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 14, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
+              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.cream, lineHeight: 1.5 }}>{f.v}</Text>
             </View>
           ))}
         </View>

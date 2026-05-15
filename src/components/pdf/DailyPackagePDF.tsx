@@ -125,7 +125,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
                 {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
                 <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
               </View>
-              <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5 }}>{f.v}</Text>
             </View>
           ))}
         </View>

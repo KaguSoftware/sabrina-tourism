@@ -123,7 +123,7 @@ function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; wa
               {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
               <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
             </View>
-            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(13, fonts.displayScale), color: C.cream, lineHeight: 1.3 }}>{tx(f.v, fonts.rtl)}</Text>
+            <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5 }}>{tx(f.v, fonts.rtl)}</Text>
           </View>
         ))}
       </View>
