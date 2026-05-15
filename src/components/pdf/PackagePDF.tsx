@@ -26,7 +26,7 @@ function Wordmark({ light = false }: { light?: boolean }) {
   return <Image src={light ? LOGO_LIGHT : LOGO_DARK} style={{ width: 80, height: 28, objectFit: "contain" }} />;
 }
 function Mono({ children, style = {} }: { children: React.ReactNode; style?: object }) {
-  return <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;
+  return <Text style={{ fontFamily: F.mono, fontWeight: 500, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;
 }
 function PageFooter({ left, page, total }: { left: string; page: number; total: number }) {
   return (

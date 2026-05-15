@@ -15,37 +15,37 @@ export function registerFonts() {
   const jp = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-jp/files");
   const sc = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-sc/files");
 
-  // Fraunces — variable TTF, same file the website uses, all glyphs including Turkish
+  // Fraunces — static TTFs per weight (variable font ignores fontWeight in @react-pdf)
   Font.register({
     family: "Fraunces",
     fonts: [
-      { src: path.join(pf, "Fraunces-Variable.ttf"),       fontWeight: 300, fontStyle: "normal" },
-      { src: path.join(pf, "Fraunces-VariableItalic.ttf"), fontWeight: 300, fontStyle: "italic" },
-      { src: path.join(pf, "Fraunces-Variable.ttf"),       fontWeight: 400, fontStyle: "normal" },
-      { src: path.join(pf, "Fraunces-VariableItalic.ttf"), fontWeight: 400, fontStyle: "italic" },
-      { src: path.join(pf, "Fraunces-Variable.ttf"),       fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(pf, "Fraunces-VariableItalic.ttf"), fontWeight: 700, fontStyle: "italic" },
-      { src: path.join(pf, "Fraunces-Variable.ttf"),       fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(pf, "Fraunces-VariableItalic.ttf"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Light.ttf"),        fontWeight: 300, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-LightItalic.ttf"),  fontWeight: 300, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Regular.ttf"),      fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-Italic.ttf"),       fontWeight: 400, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Bold.ttf"),         fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-BoldItalic.ttf"),   fontWeight: 700, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Black.ttf"),        fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-BlackItalic.ttf"),  fontWeight: 900, fontStyle: "italic" },
     ],
   });
 
-  // Inter — variable TTF, same font the website uses, all glyphs including Turkish
+  // Inter — static TTFs per weight (variable font ignores fontWeight in @react-pdf)
   Font.register({
     family: "Inter",
     fonts: [
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 300, fontStyle: "normal" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 300, fontStyle: "italic" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 400, fontStyle: "normal" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 400, fontStyle: "italic" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 500, fontStyle: "normal" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 500, fontStyle: "italic" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 600, fontStyle: "normal" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 600, fontStyle: "italic" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 700, fontStyle: "italic" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(pf, "Inter-Variable.ttf"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Regular.ttf"),  fontWeight: 300, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Regular.ttf"),  fontWeight: 300, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Regular.ttf"),  fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Regular.ttf"),  fontWeight: 400, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Medium.ttf"),   fontWeight: 500, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Medium.ttf"),   fontWeight: 500, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-SemiBold.ttf"), fontWeight: 600, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-SemiBold.ttf"), fontWeight: 600, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Bold.ttf"),     fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Bold.ttf"),     fontWeight: 700, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Bold.ttf"),     fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Bold.ttf"),     fontWeight: 900, fontStyle: "italic" },
     ],
   });
 

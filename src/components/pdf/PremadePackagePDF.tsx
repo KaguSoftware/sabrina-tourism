@@ -41,7 +41,7 @@ function Wordmark({ light = false }: { light?: boolean }) {
 
 function Mono({ children, style = {}, fonts }: { children: React.ReactNode; style?: object; fonts: FontSet }) {
   return (
-    <Text style={{ fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>
+    <Text style={{ fontFamily: fonts.mono, fontWeight: 500, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>
       {children}
     </Text>
   );
