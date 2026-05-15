@@ -113,7 +113,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <Reveal delay={140}>
             <div className="flex flex-wrap items-center gap-2 mb-5">
               <Kicker className="kicker--light">
-                {pkg.region.toUpperCase()} · DAY EXPERIENCE
+                {pkg.region} · DAY EXPERIENCE
               </Kicker>
               {pkg.season && (
                 <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-ochre/90 text-navy px-2.5 py-1 rounded-full">

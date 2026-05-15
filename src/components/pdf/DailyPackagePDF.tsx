@@ -6,7 +6,7 @@ import {
 } from "@react-pdf/renderer";
 import type { DailyPackage } from "@/lib/daily/types";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
+import { C, MARGIN, getFontsForLocale, upper, type FontSet } from "@/lib/pdf/theme";
 import { visualRTL } from "@/lib/pdf/rtl";
 import { PdfIcon } from "@/lib/pdf/icons";
 
@@ -41,7 +41,7 @@ function Mono({ children, style = {}, fonts }: { children: React.ReactNode; styl
 function PageFooter({ left, page, total, fonts }: { left: string; page: number; total: number; fonts: FontSet }) {
   return (
     <View style={{ position: "absolute", bottom: 32, left: MARGIN, right: MARGIN, flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10 }}>
-      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{left.toUpperCase()}</Mono>
+      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{upper(left)}</Mono>
       <Wordmark />
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
@@ -79,8 +79,8 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const heroSrc = abs(pkg.heroImage, baseUrl);
 
   const kicker = pkg.season
-    ? `${pkg.region.toUpperCase()} · DAILY PACKAGE · ${pkg.season.toUpperCase()}`
-    : `${pkg.region.toUpperCase()} · DAILY PACKAGE`;
+    ? `${upper(pkg.region)} · DAILY PACKAGE · ${upper(pkg.season)}`
+    : `${upper(pkg.region)} · DAILY PACKAGE`;
 
   const facts: Array<{ k: string; v: string; icon: string | null }> = [
     { k: "Timeframe", v: `${pkg.startTime} – ${pkg.endTime}`, icon: "clock" },
@@ -197,7 +197,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
               {pricingRows.map((row, i) => (
                 <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
                   <PdfIcon name={row.icon} size={18} color={C.ochre} />
-                  <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{row.label.toUpperCase()}</Text>
+                  <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(row.label)}</Text>
                   <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(row.value, pkg.currency ?? "USD")}</Text>
                 </View>
               ))}

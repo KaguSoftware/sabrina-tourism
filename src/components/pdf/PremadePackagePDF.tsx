@@ -6,7 +6,7 @@ import {
 } from "@react-pdf/renderer";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
+import { C, MARGIN, getFontsForLocale, upper, type FontSet } from "@/lib/pdf/theme";
 import { visualRTL } from "@/lib/pdf/rtl";
 import { PdfIcon } from "@/lib/pdf/icons";
 
@@ -54,7 +54,7 @@ function PageFooter({ left, page, total, fonts }: { left: string; page: number; 
       flexDirection: "row", justifyContent: "space-between", alignItems: "center",
       borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10,
     }}>
-      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{left.toUpperCase()}</Mono>
+      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{upper(left)}</Mono>
       <Wordmark />
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
@@ -99,9 +99,9 @@ function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; wa
     { k: "Available",  v: pkg.availableFrom && pkg.availableTo ? `${fmtMonth(pkg.availableFrom)} – ${fmtMonth(pkg.availableTo)}` : "—", icon: "calendar" },
   );
   const factCount = facts.length;
-  const regionPart = (pkg.region ?? "").toUpperCase();
+  const regionPart = upper(pkg.region ?? "");
   const kicker = pkg.season
-    ? `${regionPart} · GROUP PACKAGE · ${pkg.season.toUpperCase()}`
+    ? `${regionPart} · GROUP PACKAGE · ${upper(pkg.season)}`
     : `${regionPart} · GROUP PACKAGE`;
 
   return (
@@ -209,7 +209,7 @@ function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSe
         {slots.map((slot, i) => (
           <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
             <PdfIcon name={slot.icon} size={18} color={C.ochre} />
-            <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{slot.label.toUpperCase()}</Text>
+            <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(slot.label)}</Text>
             <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(slot.value, currency)}</Text>
           </View>
         ))}

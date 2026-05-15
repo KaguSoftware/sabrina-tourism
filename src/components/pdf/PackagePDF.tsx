@@ -6,7 +6,7 @@ import {
 } from "@react-pdf/renderer";
 import type { Package } from "@/lib/packages/types";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { C, F, MARGIN } from "@/lib/pdf/theme";
+import { C, F, MARGIN, upper } from "@/lib/pdf/theme";
 import { PdfIcon } from "@/lib/pdf/icons";
 
 const LOGO_LIGHT = path.join(process.cwd(), "public/logo_1_sabrina_cropped.png");
@@ -31,7 +31,7 @@ function Mono({ children, style = {} }: { children: React.ReactNode; style?: obj
 function PageFooter({ left, page, total }: { left: string; page: number; total: number }) {
   return (
     <View style={{ position: "absolute", bottom: 32, left: MARGIN, right: MARGIN, flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10 }}>
-      <Mono style={{ color: C.inkSoft }}>{left.toUpperCase()}</Mono>
+      <Mono style={{ color: C.inkSoft }}>{upper(left)}</Mono>
       <Wordmark />
       <Mono style={{ color: C.inkSoft }}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
@@ -80,8 +80,8 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
   );
   const factCount = facts.length;
   const kicker = pkg.season
-    ? `${pkg.region.toUpperCase()} · PACKAGE · ${pkg.season.toUpperCase()}`
-    : `${pkg.region.toUpperCase()} · PACKAGE`;
+    ? `${upper(pkg.region)} · PACKAGE · ${upper(pkg.season)}`
+    : `${upper(pkg.region)} · PACKAGE`;
 
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
@@ -115,7 +115,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
       {/* ── Itinerary ─────────────────────────────────────────── */}
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
+          <Mono style={{ color: C.cream }}>{upper(pkg.name)}</Mono>
           <Wordmark />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 26 }}>
@@ -139,7 +139,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
       {/* ── Inclusions ────────────────────────────────────────── */}
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
+          <Mono style={{ color: C.cream }}>{upper(pkg.name)}</Mono>
           <Wordmark />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 24, paddingBottom: 24, backgroundColor: C.navy }}>

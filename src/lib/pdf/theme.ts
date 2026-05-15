@@ -31,12 +31,16 @@ export interface FontSet {
   displayScale: number;
 }
 
+/** Turkish-aware toUpperCase — data (city/region names) is always Turkish, so İ/I is always correct. */
+export function upper(text: string): string {
+  return text.toLocaleUpperCase("tr");
+}
+
 // Returns the right font set for a given locale.
 // Arabic and CJK scripts need dedicated fonts — Latin fonts can't render them.
 export function getFontsForLocale(locale: string): FontSet {
   switch (locale) {
     case "ar":
-      // IBM Plex Sans Arabic — same font as project1; scale down display sizes to prevent overflow
       return { display: "IBMPlexSansArabic", body: "IBMPlexSansArabic", mono: "IBMPlexSansArabic", rtl: true, displayScale: 0.65 };
     case "ja":
       return { display: "Noto Sans JP", body: "Noto Sans JP", mono: "Noto Sans JP", rtl: false, displayScale: 0.85 };

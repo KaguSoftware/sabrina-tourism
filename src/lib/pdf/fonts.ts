@@ -6,7 +6,7 @@ let registered = false;
 export function registerFonts() {
   if (registered) return;
   registered = true;
-  // bump this comment to force re-registration after font changes: v3
+  // bump this comment to force re-registration after font changes: v4
 
   const fr = path.join(process.cwd(), "node_modules/@fontsource/fraunces/files");
   const it = path.join(process.cwd(), "node_modules/@fontsource/inter/files");
@@ -16,36 +16,36 @@ export function registerFonts() {
   const jp = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-jp/files");
   const sc = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-sc/files");
 
-  // Fraunces — display serif (Latin locales)
+  // Fraunces — display serif (latin-ext covers Turkish ğ ş ı İ ö ü ç)
   Font.register({
     family: "Fraunces",
     fonts: [
-      { src: path.join(fr, "fraunces-latin-300-normal.woff"), fontWeight: 300, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-300-italic.woff"), fontWeight: 300, fontStyle: "italic" },
-      { src: path.join(fr, "fraunces-latin-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-400-italic.woff"), fontWeight: 400, fontStyle: "italic" },
-      { src: path.join(fr, "fraunces-latin-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-900-normal.woff"), fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-900-italic.woff"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(fr, "fraunces-latin-ext-300-normal.woff"), fontWeight: 300, fontStyle: "normal" },
+      { src: path.join(fr, "fraunces-latin-ext-300-italic.woff"), fontWeight: 300, fontStyle: "italic" },
+      { src: path.join(fr, "fraunces-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(fr, "fraunces-latin-ext-400-italic.woff"), fontWeight: 400, fontStyle: "italic" },
+      { src: path.join(fr, "fraunces-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(fr, "fraunces-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(fr, "fraunces-latin-ext-900-italic.woff"), fontWeight: 900, fontStyle: "italic" },
     ],
   });
 
-  // Inter — body sans (Latin) — include weight 300 and italic fallbacks for use as display fallback
+  // Inter — body sans (latin-ext covers Turkish ğ ş ı İ ö ü ç)
   Font.register({
     family: "Inter",
     fonts: [
-      { src: path.join(it, "inter-latin-400-normal.woff"), fontWeight: 300, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-400-normal.woff"), fontWeight: 300, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-400-normal.woff"), fontWeight: 400, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-500-normal.woff"), fontWeight: 500, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-500-normal.woff"), fontWeight: 500, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-600-normal.woff"), fontWeight: 600, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-600-normal.woff"), fontWeight: 600, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-600-normal.woff"), fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-600-normal.woff"), fontWeight: 700, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-600-normal.woff"), fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-600-normal.woff"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 300, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 300, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-500-normal.woff"), fontWeight: 500, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-500-normal.woff"), fontWeight: 500, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 600, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 600, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 700, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 900, fontStyle: "italic" },
     ],
   });
 
