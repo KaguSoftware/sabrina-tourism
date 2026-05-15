@@ -29,7 +29,15 @@
     "hotelsMenuHeading": "Curated stays in every region.",
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
-    "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye"
+    "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye",
+    "regions": {
+      "istanbul": "Istanbul",
+      "cappadocia": "Cappadocia",
+      "aegean": "Aegean",
+      "mediterranean": "Mediterranean",
+      "blackSea": "Black Sea",
+      "easternAnatolia": "Eastern Anatolia"
+    }
   },
   "footer": {
     "reservations": "الحجوزات",
@@ -588,5 +596,58 @@
     "twoPeople": "شخصان",
     "threePeople": "٣ أشخاص",
     "baby": "رضيع"
+  },
+  "packageDetail": {
+    "routeInBrief": "The route, in brief",
+    "dayByDay": "Day by day",
+    "theItinerary": "The itinerary.",
+    "chooseYourTier": "Choose your tier",
+    "threeWaysToTravel": "Three ways to travel this route.",
+    "essentialSignature": "Essential & Signature",
+    "essentialSignatureDesc": "Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "essentialSignatureDescShort": "Small-group departures on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "private": "Private",
+    "privateDesc": "Exclusively yours. Dates, pace, and add-ons set around your group. No shared vehicles, no shared guides — just your party and our team.",
+    "inPhotographs": "In photographs",
+    "imagesFromTheRoute": "Images from the route.",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "downloadPdf": "Download PDF",
+    "reserve": "Reserve",
+    "messagePreview": "Message preview",
+    "allFixedDatePackages": "All fixed-date packages",
+    "groupPackage": "Group Package",
+    "duration": "Duration",
+    "region": "Region",
+    "groupSize": "Group size",
+    "available": "Available",
+    "tier": "tier",
+    "tierLabel": "Tier",
+    "vehicle": "Vehicle",
+    "stay": "Stay",
+    "group": "Group",
+    "guide": "Guide",
+    "meals": "Meals",
+    "hotel": "Hotel",
+    "startingFrom": "Starting from",
+    "perPerson": "per person",
+    "departureDate": "Departure date",
+    "numberOfGuests": "Number of guests",
+    "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
+    "startDate": "Start date",
+    "required": "required",
+    "tierStickyLabel": "{tier} tier"
+  },
+  "packageFilters": {
+    "group": "Group",
+    "date": "Date",
+    "region": "Region",
+    "all": "All",
+    "anyDate": "Any date"
+  },
+  "daily": {
+    "dayItinerary": "جدول اليوم",
+    "whatsIncluded": "ما هو مشمول",
+    "whatsNotIncluded": "ما هو غير مشمول"
   }
 }

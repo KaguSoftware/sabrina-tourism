@@ -1,4 +1,4 @@
-# Meridian & Co.
+# Sabrina Turizm
 
 Boutique tourism website for Sabrina Turizm — a concierge agency offering private tours and chauffeur services across Türkiye. Built as a full-stack Next.js application with a CMS-backed admin panel, dynamic package catalogue, and a Supabase database.
 

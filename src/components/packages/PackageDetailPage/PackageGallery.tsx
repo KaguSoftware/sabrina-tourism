@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -12,13 +13,14 @@ export function PackageGallery({
   gallery: string[];
   onOpen: (index: number) => void;
 }) {
+  const t = useTranslations("packageDetail");
   return (
     <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
       <div className="mb-14">
-        <Reveal><Kicker>In photographs</Kicker></Reveal>
+        <Reveal><Kicker>{t("inPhotographs")}</Kicker></Reveal>
         <Reveal delay={120}>
           <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
-            Images from the route.
+            {t("imagesFromTheRoute")}
           </GoldUnderlineHeading>
         </Reveal>
       </div>

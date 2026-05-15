@@ -1,10 +1,12 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { REGIONS, PEOPLE_OPTIONS } from "./constants";
 import type { FilterBarProps } from "./types";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 
 
 export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarProps) {
+  const t = useTranslations("packageFilters");
 
   return (
     <div className="relative z-7 sm:sticky sm:top-18 sm:z-40 border-y border-rule">
@@ -12,7 +14,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
       <div className="sm:hidden max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-3 flex flex-col gap-5">
         {/* Group */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Group</span>
+          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("group")}</span>
           <div className="flex flex-wrap gap-2 justify-center">
             {PEOPLE_OPTIONS.map((opt) => {
               const active = filters.people === Number(opt.value);
@@ -42,15 +44,16 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
         </div>
         {/* Date */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Date</span>
-          <DatePicker value={filters.date} onChange={(v) => onChange({ date: v })} placeholder="Any date" />
+          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("date")}</span>
+          <DatePicker value={filters.date} onChange={(v) => onChange({ date: v })} placeholder={t("anyDate")} />
         </div>
         {/* Region — wrapping pills */}
         <div className="flex flex-col gap-2">
-          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Region</span>
+          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("region")}</span>
           <div className="flex flex-wrap gap-2 justify-center">
             {(["All", ...REGIONS] as const).map((r) => {
               const isAll = r === "All";
+              const label = isAll ? t("all") : r;
               const active = isAll ? filters.region.length === 0 : filters.region.includes(r as typeof REGIONS[number]);
               return (
                 <button
@@ -77,7 +80,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
                     border: active ? "none" : "1.5px solid #c99a3f",
                   }}
                 >
-                  {r}
+                  {label}
                 </button>
               );
             })}
@@ -90,7 +93,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
         {/* Row 1: Group + Date */}
         <div className="flex items-center justify-center gap-5">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Group</span>
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("group")}</span>
             <div className="flex gap-2">
               {PEOPLE_OPTIONS.map((opt) => {
                 const active = filters.people === Number(opt.value);
@@ -120,8 +123,8 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
           </div>
           <span className="w-px h-6 bg-rule" aria-hidden="true" />
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Date</span>
-            <DatePicker value={filters.date} onChange={(v) => onChange({ date: v })} placeholder="Any date" />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("date")}</span>
+            <DatePicker value={filters.date} onChange={(v) => onChange({ date: v })} placeholder={t("anyDate")} />
           </div>
         </div>
         {/* Row 2: Region centered */}
@@ -130,6 +133,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
           <div className="flex gap-2 flex-wrap justify-center">
             {(["All", ...REGIONS] as const).map((r) => {
               const isAll = r === "All";
+              const label = isAll ? t("all") : r;
               const active = isAll ? filters.region.length === 0 : filters.region.includes(r as typeof REGIONS[number]);
               return (
                 <button
@@ -156,7 +160,7 @@ export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarPro
                     border: active ? "none" : "1.5px solid #c99a3f",
                   }}
                 >
-                  {r}
+                  {label}
                 </button>
               );
             })}

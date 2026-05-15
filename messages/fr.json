@@ -29,7 +29,15 @@
     "hotelsMenuHeading": "Des hébergements choisis dans chaque région.",
     "otherHotel": "& {count} autre hôtel",
     "otherHotels": "& {count} autres hôtels",
-    "partneredPropertiesAcrossTurkey": "{count} établissements partenaires en Türkiye"
+    "partneredPropertiesAcrossTurkey": "{count} établissements partenaires en Türkiye",
+    "regions": {
+      "istanbul": "Istanbul",
+      "cappadocia": "Cappadoce",
+      "aegean": "Égée",
+      "mediterranean": "Méditerranée",
+      "blackSea": "Mer Noire",
+      "easternAnatolia": "Anatolie orientale"
+    }
   },
   "footer": {
     "reservations": "Réservations",
@@ -324,5 +332,58 @@
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
     }
+  },
+  "packageDetail": {
+    "routeInBrief": "The route, in brief",
+    "dayByDay": "Day by day",
+    "theItinerary": "The itinerary.",
+    "chooseYourTier": "Choose your tier",
+    "threeWaysToTravel": "Three ways to travel this route.",
+    "essentialSignature": "Essential & Signature",
+    "essentialSignatureDesc": "Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "essentialSignatureDescShort": "Small-group departures on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "private": "Private",
+    "privateDesc": "Exclusively yours. Dates, pace, and add-ons set around your group. No shared vehicles, no shared guides — just your party and our team.",
+    "inPhotographs": "In photographs",
+    "imagesFromTheRoute": "Images from the route.",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "downloadPdf": "Download PDF",
+    "reserve": "Reserve",
+    "messagePreview": "Message preview",
+    "allFixedDatePackages": "All fixed-date packages",
+    "groupPackage": "Group Package",
+    "duration": "Duration",
+    "region": "Region",
+    "groupSize": "Group size",
+    "available": "Available",
+    "tier": "tier",
+    "tierLabel": "Tier",
+    "vehicle": "Vehicle",
+    "stay": "Stay",
+    "group": "Group",
+    "guide": "Guide",
+    "meals": "Meals",
+    "hotel": "Hotel",
+    "startingFrom": "Starting from",
+    "perPerson": "per person",
+    "departureDate": "Departure date",
+    "numberOfGuests": "Number of guests",
+    "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
+    "startDate": "Start date",
+    "required": "required",
+    "tierStickyLabel": "{tier} tier"
+  },
+  "packageFilters": {
+    "group": "Group",
+    "date": "Date",
+    "region": "Region",
+    "all": "All",
+    "anyDate": "Any date"
+  },
+  "daily": {
+    "dayItinerary": "Programme de la journée",
+    "whatsIncluded": "Ce qui est inclus",
+    "whatsNotIncluded": "Ce qui n'est pas inclus"
   }
 }

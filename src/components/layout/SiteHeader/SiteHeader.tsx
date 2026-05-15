@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { NAV_ITEMS } from "./constants";
-import { NavHotel } from "./NavHotel";
+import { NavHotel, type Region } from "./NavHotel";
 import { NavTours } from "./NavTours";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
+import type { HotelPublic } from "@/lib/db/hotels";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher/LanguageSwitcher";
 import Image from "next/image";
@@ -78,7 +79,11 @@ function DropdownNavItem({
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({
+  hotelsByRegion,
+}: {
+  hotelsByRegion: Record<Region, HotelPublic[]>;
+}) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("nav");
@@ -150,7 +155,7 @@ export function SiteHeader() {
             >
               {t("driver")}
             </Link>
-            <NavHotel currentPath={pathname} transparent={transparent} />
+            <NavHotel currentPath={pathname} transparent={transparent} hotelsByRegion={hotelsByRegion} />
           </nav>
 
           {/* Desktop CTA + Language switcher */}

@@ -4,14 +4,27 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
-import { HOTELS } from "@/lib/regions/hotels";
+import type { HotelPublic } from "@/lib/db/hotels";
+
+export type Region = (typeof REGIONS)[number];
+
+/** Maps each REGIONS value to its nav.regions translation key */
+const REGION_TO_NAV_KEY: Record<Region, string> = {
+  Istanbul: "istanbul",
+  Cappadocia: "cappadocia",
+  Aegean: "aegean",
+  Mediterranean: "mediterranean",
+  "Black Sea": "blackSea",
+  "Eastern Anatolia": "easternAnatolia",
+};
 
 interface NavHotelProps {
   currentPath: string;
   transparent: boolean;
+  hotelsByRegion: Record<Region, HotelPublic[]>;
 }
 
-export function NavHotel({ currentPath, transparent }: NavHotelProps) {
+export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelProps) {
   const locale = useLocale();
   const t = useTranslations("nav");
   const pfx = locale === "en" ? "" : `/${locale}`;
@@ -28,7 +41,10 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
   }
 
   const isActive = currentPath.startsWith("/regions");
-  const totalProperties = REGIONS.reduce((sum, r) => sum + HOTELS[r].length, 0);
+  const totalProperties = REGIONS.reduce(
+    (sum, r) => sum + (hotelsByRegion[r]?.length ?? 0),
+    0
+  );
 
   return (
     <div
@@ -89,9 +105,10 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
           {/* Six region cards in a 3×2 grid */}
           <div className="grid grid-cols-3 divide-x divide-y divide-rule">
             {REGIONS.map((region) => {
-              const hotelList = HOTELS[region];
+              const hotelList = hotelsByRegion[region] ?? [];
               const first = hotelList[0];
               const remaining = hotelList.length - 1;
+              const regionKey = REGION_TO_NAV_KEY[region];
 
               return (
                 <Link
@@ -100,31 +117,41 @@ export function NavHotel({ currentPath, transparent }: NavHotelProps) {
                   className="group relative flex flex-col gap-3 p-5 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
                   role="menuitem"
                 >
-                  <div className="relative w-full aspect-16/10 overflow-hidden border border-rule">
-                    <Image
-                      src={first.images[0]}
-                      alt={first.name}
-                      fill
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                      sizes="240px"
-                    />
-                  </div>
+                  {first ? (
+                    <>
+                      <div className="relative w-full aspect-16/10 overflow-hidden border border-rule">
+                        <Image
+                          src={first.images[0]}
+                          alt={first.name}
+                          fill
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                          sizes="240px"
+                        />
+                      </div>
 
-                  <div>
-                    <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted group-hover:text-ochre transition-colors duration-300">
-                      {region}
-                    </p>
-                    <p className="relative inline-block mt-1.5 font-display font-normal text-[15px] leading-[1.2] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 truncate after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
-                      {first.name}
-                    </p>
-                    {remaining > 0 && (
-                      <p className="mt-1 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
-                        {remaining === 1
-                          ? t("otherHotel", { count: remaining })
-                          : t("otherHotels", { count: remaining })}
+                      <div>
+                        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted group-hover:text-ochre transition-colors duration-300">
+                          {t(`regions.${regionKey}`)}
+                        </p>
+                        <p className="relative inline-block mt-1.5 font-display font-normal text-[15px] leading-[1.2] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 truncate after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                          {first.name}
+                        </p>
+                        {remaining > 0 && (
+                          <p className="mt-1 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
+                            {remaining === 1
+                              ? t("otherHotel", { count: remaining })
+                              : t("otherHotels", { count: remaining })}
+                          </p>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted">
+                        {t(`regions.${regionKey}`)}
                       </p>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </Link>
               );
             })}

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -24,6 +25,8 @@ export function PackageCTAStrip({
   onPeopleChange: (v: string) => void;
   onTierChange: (v: string) => void;
 }) {
+  const t = useTranslations("packageDetail");
+  const tCommon = useTranslations("common");
   const today = new Date().toISOString().split("T")[0];
   const [submitted, setSubmitted] = useState(false);
   const dateMissing = submitted && !date;
@@ -40,7 +43,7 @@ export function PackageCTAStrip({
   return (
     <section className="pt-[clamp(12px,2vw,24px)] pb-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative z-20">
       <div className="max-w-[1320px] mx-auto">
-        <Reveal><Kicker>Reserve</Kicker></Reveal>
+        <Reveal><Kicker>{t("reserve")}</Kicker></Reveal>
         <Reveal delay={120}>
           <GoldUnderlineHeading as="h2" className="text-[clamp(40px,6vw,84px)] mt-6 mb-7 tracking-[-0.02em]">
             {packageName}, {tierName} tier.
@@ -62,14 +65,14 @@ export function PackageCTAStrip({
             {/* Date */}
             <div className="flex flex-col gap-2">
               <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">
-                Start date {dateMissing && <span className="text-terracotta normal-case tracking-normal">— required</span>}
+                {t("startDate")} {dateMissing && <span className="text-terracotta normal-case tracking-normal">— {t("required")}</span>}
               </span>
               <DatePicker value={date} onChange={onDateChange} min={today} error={dateMissing} />
             </div>
 
             {/* People */}
             <div className="flex flex-col gap-2">
-              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Group size</span>
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("groupSize")}</span>
               <div className="flex flex-wrap gap-2">
                 {PEOPLE_OPTIONS.map((opt) => {
                   const active = people === opt.value;
@@ -98,7 +101,7 @@ export function PackageCTAStrip({
         {/* Tier */}
         <Reveal delay={220}>
           <div className="flex flex-col gap-2 mb-10 max-w-140">
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">Tier</span>
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("tierLabel")}</span>
             <div className="flex flex-wrap gap-2">
               {TIER_LABELS.map((t) => {
                 const active = tierName === t;
@@ -126,7 +129,7 @@ export function PackageCTAStrip({
         {/* Message preview */}
         <Reveal delay={240}>
           <div className="mb-10 max-w-160">
-            <Kicker className="mb-3">Message preview</Kicker>
+            <Kicker className="mb-3">{t("messagePreview")}</Kicker>
             <pre className="font-mono text-[12px] leading-[1.7] text-ink-soft whitespace-pre-wrap p-4 border-l-2 border-ochre/50 bg-ochre/5">
               {previewMsg}
             </pre>
@@ -144,7 +147,7 @@ export function PackageCTAStrip({
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
             className="inline-flex items-center gap-4 px-10 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] group"
           >
-            <span>Reserve via WhatsApp</span>
+            <span>{tCommon("reserveWhatsapp")}</span>
             <span className="text-[16px] transition-transform duration-300 group-hover:translate-x-1.5">→</span>
           </button>
         </Reveal>

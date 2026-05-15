@@ -11,7 +11,7 @@ import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarous
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
 import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
@@ -79,6 +79,7 @@ function useStopGlow(count: number) {
 
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const locale = useLocale();
+  const t = useTranslations("daily");
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
   const [guests, setGuests] = useState(1);
@@ -177,7 +178,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
 
           {/* Schedule timeline */}
           <Reveal>
-            <Kicker className="mb-6">Day Itinerary</Kicker>
+            <Kicker className="mb-6">{t("dayItinerary")}</Kicker>
           </Reveal>
           <ol className="relative border-l border-rule pl-8 space-y-10 mb-20">
             {pkg.stops.map((stop, i) => {
@@ -205,7 +206,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
             <div>
               <Reveal>
-                <Kicker className="mb-6">What&apos;s Included</Kicker>
+                <Kicker className="mb-6">{t("whatsIncluded")}</Kicker>
               </Reveal>
               <ul className="space-y-3">
                 {pkg.included.map((item, i) => (
@@ -222,7 +223,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             </div>
             <div>
               <Reveal>
-                <Kicker className="mb-6">What&apos;s Not Included</Kicker>
+                <Kicker className="mb-6">{t("whatsNotIncluded")}</Kicker>
               </Reveal>
               <ul className="space-y-3">
                 {(pkg.notIncluded?.length

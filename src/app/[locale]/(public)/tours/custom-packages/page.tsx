@@ -8,6 +8,8 @@ export const revalidate = 604800;
 import { CustomTourWizard } from "@/components/custom-tour/CustomTourWizard";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";
+import { getAllHotels } from "@/lib/db/hotels";
+import type { HotelPublic } from "@/lib/db/hotels";
 
 export const metadata = {
   title: "Custom Tour Package — Sabrina Turizm",
@@ -17,11 +19,18 @@ export const metadata = {
 };
 
 export default async function CustomPackagesPage() {
-  const [hero, airportRows, vehicleRows] = await Promise.all([
+  const [hero, airportRows, vehicleRows, allHotels] = await Promise.all([
     getSiteContent("tours_hero"),
     getAirports(),
     getVehicles(),
+    getAllHotels(),
   ]);
+
+  const hotelsByRegion = allHotels.reduce<Record<string, HotelPublic[]>>((acc, hotel) => {
+    if (!acc[hotel.region]) acc[hotel.region] = [];
+    acc[hotel.region].push(hotel);
+    return acc;
+  }, {});
 
   const airports = airportRows.map((a) => ({
     code: a.code,
@@ -73,7 +82,7 @@ export default async function CustomPackagesPage() {
 
       <div className="relative z-10">
         <Suspense fallback={<div className="min-h-screen" />}>
-          <CustomTourWizard airports={airports} vehicles={vehicles} />
+          <CustomTourWizard airports={airports} vehicles={vehicles} hotelsByRegion={hotelsByRegion} />
         </Suspense>
       </div>
     </>
