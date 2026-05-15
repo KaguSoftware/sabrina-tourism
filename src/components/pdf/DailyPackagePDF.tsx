@@ -79,7 +79,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const heroSrc = abs(pkg.heroImage, baseUrl);
 
   const kicker = pkg.season
-    ? `${pkg.region.toUpperCase()} · ${pkg.season.toUpperCase()} · DAILY PACKAGE`
+    ? `${pkg.region.toUpperCase()} · DAILY PACKAGE · ${pkg.season.toUpperCase()}`
     : `${pkg.region.toUpperCase()} · DAILY PACKAGE`;
 
   const facts: Array<{ k: string; v: string; icon: string | null }> = [

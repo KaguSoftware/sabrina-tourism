@@ -101,7 +101,7 @@ function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; wa
   const factCount = facts.length;
   const regionPart = (pkg.region ?? "").toUpperCase();
   const kicker = pkg.season
-    ? `${regionPart} · ${pkg.season.toUpperCase()} · GROUP PACKAGE`
+    ? `${regionPart} · GROUP PACKAGE · ${pkg.season.toUpperCase()}`
     : `${regionPart} · GROUP PACKAGE`;
 
   return (

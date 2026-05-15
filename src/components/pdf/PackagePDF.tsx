@@ -80,7 +80,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
   );
   const factCount = facts.length;
   const kicker = pkg.season
-    ? `${pkg.region.toUpperCase()} · ${pkg.season.toUpperCase()} · PACKAGE`
+    ? `${pkg.region.toUpperCase()} · PACKAGE · ${pkg.season.toUpperCase()}`
     : `${pkg.region.toUpperCase()} · PACKAGE`;
 
   return (
