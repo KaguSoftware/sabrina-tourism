@@ -91,7 +91,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
           <Mono style={{ color: C.ochre, marginBottom: 10 }}>{kicker}</Mono>
           <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 54, lineHeight: 1, letterSpacing: -1, color: C.ink }}>{pkg.name}</Text>
-          <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 17, lineHeight: 1.4, color: C.inkSoft, marginTop: 10 }}>{pkg.shortDescription}</Text>
+          <Text style={{ fontFamily: F.body, fontSize: 11, lineHeight: 1.5, color: C.inkSoft, marginTop: 10 }}>{pkg.shortDescription}</Text>
         </View>
         <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", flexWrap: "wrap", backgroundColor: C.navy }}>
           {facts.map((f, i) => (

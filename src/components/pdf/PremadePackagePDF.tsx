@@ -112,7 +112,7 @@ function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; wa
         <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(54, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>
           {tx(pkg.name, fonts.rtl)}
         </Text>
-        <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(17, fonts.displayScale), lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>
+        <Text style={{ fontFamily: fonts.body, fontSize: 11, lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>
           {tx(pkg.shortDescription, fonts.rtl)}
         </Text>
       </View>
@@ -149,7 +149,7 @@ function Itinerary({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSet }
         <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(50, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>
           The itinerary.
         </Text>
-        <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(14, fonts.displayScale), color: C.inkSoft, marginTop: 6, lineHeight: 1.5 }}>
+        <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, marginTop: 6, lineHeight: 1.5 }}>
           {tx(pkg.shortDescription, fonts.rtl)}
         </Text>
       </View>

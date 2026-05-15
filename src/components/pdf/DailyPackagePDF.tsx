@@ -116,7 +116,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
           <Mono style={{ color: C.ochre, marginBottom: 10 }} fonts={fonts}>{kicker}</Mono>
           <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(54, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>{tx(pkg.name, fonts.rtl)}</Text>
-          <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(17, fonts.displayScale), lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>{tx(pkg.shortDescription, fonts.rtl)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>{tx(pkg.shortDescription, fonts.rtl)}</Text>
         </View>
         <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", backgroundColor: C.navy }}>
           {facts.map((f, i) => (
