@@ -1,8 +1,12 @@
 import React from "react";
+import path from "node:path";
 import {
   Document, Page, View, Text, Image,
   Svg, Polygon,
 } from "@react-pdf/renderer";
+
+const LOGO_LIGHT = path.join(process.cwd(), "public/logo-light.png");
+const LOGO_DARK = path.join(process.cwd(), "public/logo-dark.png");
 import type { Package } from "@/lib/packages/types";
 import { registerFonts } from "@/lib/pdf/fonts";
 import { C, F, MARGIN } from "@/lib/pdf/theme";
@@ -19,7 +23,7 @@ function abs(src: string, base: string) { return src.startsWith("http") ? src : 
 function fmtMonth(iso: string) { return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" }); }
 
 function Wordmark({ light = false }: { light?: boolean }) {
-  return <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>SABRINA TURIZM</Text>;
+  return <Image src={light ? LOGO_LIGHT : LOGO_DARK} style={{ width: 80, height: 28, objectFit: "contain" }} />;
 }
 function Mono({ children, style = {} }: { children: React.ReactNode; style?: object }) {
   return <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;

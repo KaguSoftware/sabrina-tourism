@@ -1,11 +1,9 @@
 import { notFound } from "next/navigation";
-import { getAllDailyPackages, getDailyPackageBySlug } from "@/lib/db/daily-packages";
+import { getDailyPackageBySlug } from "@/lib/db/daily-packages";
 import { DailyDetailPage } from "@/components/daily/DailyDetailPage/DailyDetailPage";
 
-export async function generateStaticParams() {
-  const packages = await getAllDailyPackages({ locale: "en" });
-  return packages.map((pkg) => ({ id: pkg.slug }));
-}
+export const revalidate = 604800;
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,

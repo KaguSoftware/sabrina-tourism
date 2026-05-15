@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
+
+export const revalidate = 604800;
 import { CustomTourWizard } from "@/components/custom-tour/CustomTourWizard";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";

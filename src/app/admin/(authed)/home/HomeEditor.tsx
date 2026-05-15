@@ -5,8 +5,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
-import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
@@ -57,9 +57,9 @@ function Section({
           <p className="font-display text-[18px] font-semibold tracking-tight text-ink">{title}</p>
         </div>
         {open ? (
-          <ChevronUp size={16} className="text-ochre flex-shrink-0" />
+          <ChevronUp size={16} className="text-ochre shrink-0" />
         ) : (
-          <ChevronDown size={16} className="text-ochre flex-shrink-0" />
+          <ChevronDown size={16} className="text-ochre shrink-0" />
         )}
       </button>
       {open && (
@@ -167,7 +167,16 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
 
   return (
     <form onSubmit={handleSubmit(onSubmit, (errs) => { const first = Object.entries(errs).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join("; "); console.error("Form validation failed", errs); toast.error(`Validation: ${first}`); })} noValidate>
-      <div className="space-y-3 mb-24">
+      <div className="flex justify-end mb-6">
+        <button
+          type="submit"
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
+        >
+          {saving ? <Spinner size="sm" /> : "Save home page"}
+        </button>
+      </div>
+      <div className="space-y-3">
 
         {/* Hero */}
         <Section
@@ -206,7 +215,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
             {/* Live preview */}
             <div className="hidden md:block">
               <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-3">Preview</p>
-              <div className="bg-cream-deep border border-rule p-6 space-y-2 min-h-[200px] flex flex-col justify-center">
+              <div className="bg-cream-deep border border-rule p-6 space-y-2 min-h-50 flex flex-col justify-center">
                 <span className="font-mono text-[9px] tracking-[0.28em] uppercase text-teal-deep border-b border-teal-deep pb-1 inline-block">
                   {heroKicker || "—"}
                 </span>
@@ -326,12 +335,6 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
         </Section>
       </div>
 
-      {/* Sticky save */}
-      <div className="fixed bottom-6 right-6 z-30">
-        <GoldButton type="submit" variant="solid">
-          {saving ? "Saving…" : "Save home page"}
-        </GoldButton>
-      </div>
     </form>
   );
 }

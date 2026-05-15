@@ -1,8 +1,12 @@
 import React from "react";
+import path from "node:path";
 import {
   Document, Page, View, Text, Image,
   Svg, Polygon,
 } from "@react-pdf/renderer";
+
+const LOGO_LIGHT = path.join(process.cwd(), "public/logo-light.png");
+const LOGO_DARK = path.join(process.cwd(), "public/logo-dark.png");
 import type { DailyPackage } from "@/lib/daily/types";
 import { registerFonts } from "@/lib/pdf/fonts";
 import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
@@ -26,8 +30,8 @@ const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
 
 function abs(src: string, base: string) { return src.startsWith("http") ? src : `${base}${src}`; }
 
-function Wordmark({ light = false, fonts }: { light?: boolean; fonts: FontSet }) {
-  return <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>SABRINA TURIZM</Text>;
+function Wordmark({ light = false }: { light?: boolean }) {
+  return <Image src={light ? LOGO_LIGHT : LOGO_DARK} style={{ width: 80, height: 28, objectFit: "contain" }} />;
 }
 
 function Mono({ children, style = {}, fonts }: { children: React.ReactNode; style?: object; fonts: FontSet }) {
@@ -38,7 +42,7 @@ function PageFooter({ left, page, total, fonts }: { left: string; page: number; 
   return (
     <View style={{ position: "absolute", bottom: 32, left: MARGIN, right: MARGIN, flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10 }}>
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{left.toUpperCase()}</Mono>
-      <Wordmark fonts={fonts} />
+      <Wordmark />
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
   );
@@ -49,7 +53,7 @@ function HeroBlock({ heroSrc, fonts }: { heroSrc: string; fonts: FontSet }) {
     <>
       <Image src={heroSrc} style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, objectFit: "cover" }} />
       <View style={{ position: "absolute", top: 28, left: MARGIN }}>
-        <Wordmark light fonts={fonts} />
+        <Wordmark light />
       </View>
       <Svg width={PW} height={CUT_RISE + 8} style={{ position: "absolute", top: HERO_H - 8, left: 0 }}>
         <Polygon points={`0,${CUT_RISE + 8} ${PW},8 ${PW},0 0,${CUT_RISE}`} fill={C.ochre} />
@@ -94,10 +98,10 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const pricing = pkg.pricing;
   const pricingRowsAll: Array<{ icon: string; label: string; value: number | null | undefined }> = pricing
     ? [
-        { icon: "user",  label: "1 adult",        value: pricing.onePerson },
-        { icon: "users", label: "2 adults",       value: pricing.twoPeople },
-        { icon: "users", label: "3 adults",       value: pricing.threePeople },
-        { icon: "baby",  label: "Baby (add-on)",  value: pricing.baby },
+        { icon: "user",  label: "Solo",      value: pricing.onePerson },
+        { icon: "users", label: "2 people",  value: pricing.twoPeople },
+        { icon: "users", label: "3 people",  value: pricing.threePeople },
+        { icon: "baby",  label: "Baby",      value: pricing.baby },
       ]
     : [];
   const pricingRows = pricingRowsAll.filter(
@@ -137,7 +141,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
-          <Wordmark fonts={fonts} />
+          <Wordmark />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 26 }}>
           <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>DAY ITINERARY</Mono>
@@ -187,17 +191,17 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
         {pricingRows.length > 0 ? (
           <View style={{ marginHorizontal: MARGIN, marginTop: 22 }}>
             <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 6, marginBottom: 8 }}>
-              <Mono style={{ color: C.ochre }} fonts={fonts}>{`PRICE (PER PERSON, ${(pkg.currency ?? "USD").toUpperCase()})`}</Mono>
+              <Mono style={{ color: C.ochre }} fonts={fonts}>{`GROUP RATES — PER PERSON (${(pkg.currency ?? "USD").toUpperCase()})`}</Mono>
             </View>
-            {pricingRows.map((row, i) => (
-              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 4, borderBottomWidth: i < pricingRows.length - 1 ? 1 : 0, borderBottomColor: C.rule }}>
-                <View style={{ width: 22, flexDirection: "row", alignItems: "center" }}>
-                  <PdfIcon name={row.icon} size={12} color={C.ochre} />
+            <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
+              {pricingRows.map((row, i) => (
+                <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
+                  <PdfIcon name={row.icon} size={18} color={C.ochre} />
+                  <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{row.label.toUpperCase()}</Text>
+                  <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(row.value, pkg.currency ?? "USD")}</Text>
                 </View>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1 }}>{row.label}</Text>
-                <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink }}>{fmtPrice(row.value, pkg.currency ?? "USD")}</Text>
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
         ) : null}
         {waPhone ? (

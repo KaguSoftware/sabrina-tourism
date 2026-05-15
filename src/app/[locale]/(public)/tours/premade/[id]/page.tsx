@@ -1,18 +1,14 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getPremadePackageBySlug, getAllPremadeSlugs } from "@/lib/db/premade-packages";
+import { getPremadePackageBySlug } from "@/lib/db/premade-packages";
 import { PremadePackageDetailPage } from "@/components/premade-packages/PremadePackageDetailPage/PremadePackageDetailPage";
 import type { Metadata } from "next";
 
 export const revalidate = 604800;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ id: string; locale: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = await getAllPremadeSlugs();
-  return slugs.map((slug) => ({ id: slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

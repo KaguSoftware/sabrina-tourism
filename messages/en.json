@@ -473,7 +473,14 @@
       "maxPeople2": "Max people",
       "title": "Title",
       "dayNumber": "Day #",
-      "cardImage": "Card image"
+      "cardImage": "Card image",
+      "season": "Season",
+      "overview": "Overview",
+      "oneAdult": "1 adult",
+      "twoAdults": "2 adults",
+      "threeAdults": "3 adults",
+      "babyInfant": "Baby / Infant",
+      "departureDates": "Departure dates"
     },
     "formHints": {
       "cards200": "~200 chars — used on cards",
@@ -486,7 +493,17 @@
       "bookingParagraph": "Short paragraph shown on the booking page",
       "tierCardBullets": "Bullet points shown on tier card",
       "detailHeroImage": "Used on the detail page top",
-      "listingCardImage": "Optional — used on listing cards. Falls back to hero."
+      "listingCardImage": "Optional — used on listing cards. Falls back to hero.",
+      "pricingDescPremade": "Per-bucket pricing shown on the public page. Leave any blank to hide that bucket.",
+      "pricingDescDaily": "Per-bucket pricing for this daily tour. Leave blank to hide that bucket.",
+      "soloTraveller": "Price for a solo traveller",
+      "doubleOccupancy": "Per person, double occupancy",
+      "tripleOccupancy": "Per person, triple occupancy",
+      "twoTravellers": "Per person, two travellers",
+      "threeTravellers": "Per person, three travellers",
+      "babySupp": "Flat baby supplement (if any)",
+      "overviewParagraphs": "Separate paragraphs with a blank line. First paragraph gets a drop-cap on the public page.",
+      "departurePills": "These appear as pills on the public page"
     },
     "editor": {
       "published": "Published",
@@ -513,7 +530,9 @@
         "washer": "Washing machine",
         "ac": "Air conditioning",
         "tv": "Television"
-      }
+      },
+      "addDeparture": "+ Add departure",
+      "addDestination": "+ Add destination"
     },
     "tabs": {
       "basics": "Basics",
@@ -566,5 +585,13 @@
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
     }
+  },
+  "pricingBlock": {
+    "kicker": "Group rates",
+    "heading": "Price per person",
+    "onePerson": "Solo",
+    "twoPeople": "2 people",
+    "threePeople": "3 people",
+    "baby": "Baby"
   }
 }

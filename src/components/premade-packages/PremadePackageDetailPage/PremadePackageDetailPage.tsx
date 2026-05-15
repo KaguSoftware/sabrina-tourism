@@ -11,8 +11,9 @@ import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 import { useLocale } from "next-intl";
-import * as Lucide from "lucide-react";
+import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
 
 const PackageLightbox = dynamic(
   () =>
@@ -22,11 +23,9 @@ const PackageLightbox = dynamic(
   { ssr: false, loading: () => null },
 );
 
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
+function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
-  const Component = (def
-    ? (Lucide as unknown as Record<string, Lucide.LucideIcon>)[def.lucide]
-    : (Lucide as unknown as Record<string, Lucide.LucideIcon>)[fallback as string]) as Lucide.LucideIcon | undefined;
+  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
   if (!Component) return null;
   return <Component size={16} strokeWidth={1.75} />;
 }
@@ -400,6 +399,13 @@ export function PremadePackageDetailPage({ pkg }: Props) {
               );
             })}
           </ol>
+        </section>
+      )}
+
+      {/* Multi-person pricing */}
+      {pkg.pricing && (
+        <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(48px,6vw,80px)]">
+          <MultiPersonPrices pricing={pkg.pricing} currency={pkg.currency} />
         </section>
       )}
 

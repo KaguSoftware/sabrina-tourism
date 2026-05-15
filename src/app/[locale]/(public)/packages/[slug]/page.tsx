@@ -1,18 +1,14 @@
 import { notFound, redirect } from "next/navigation";
 import { PackageDetailPage } from "@/components/packages/PackageDetailPage/PackageDetailPage";
-import { getAllSlugs, getPackageBySlug } from "@/lib/db/packages";
+import { getPackageBySlug } from "@/lib/db/packages";
 import type { Package } from "@/lib/packages/types";
 
 export const revalidate = 604800;
+export const dynamicParams = true;
 
 interface Props {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ date?: string; people?: string; tier?: string }>;
-}
-
-export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props) {

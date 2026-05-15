@@ -14,7 +14,7 @@ export default async function DailyPage() {
         kicker={t("pages.daily.kicker")}
         title={t("pages.daily.title")}
         description={t("pages.daily.description")}
-        actions={<Button href="/admin/daily/new" variant="solid">{t("pages.daily.new")}</Button>}
+        actions={<Button href="/admin/daily/new" variant="solid" shape="pill">{t("pages.daily.new")}</Button>}
       />
       <DailyTable initialPackages={rows} />
     </>

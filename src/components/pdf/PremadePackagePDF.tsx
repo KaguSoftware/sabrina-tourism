@@ -1,8 +1,12 @@
 import React from "react";
+import path from "node:path";
 import {
   Document, Page, View, Text, Image,
   Svg, Polygon,
 } from "@react-pdf/renderer";
+
+const LOGO_LIGHT = path.join(process.cwd(), "public/logo-light.png");
+const LOGO_DARK = path.join(process.cwd(), "public/logo-dark.png");
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { registerFonts } from "@/lib/pdf/fonts";
 import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
@@ -31,12 +35,8 @@ function fmtMonth(iso: string) {
   return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 }
 
-function Wordmark({ light = false, fonts }: { light?: boolean; fonts: FontSet }) {
-  return (
-    <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>
-      SABRINA TURIZM
-    </Text>
-  );
+function Wordmark({ light = false }: { light?: boolean }) {
+  return <Image src={light ? LOGO_LIGHT : LOGO_DARK} style={{ width: 80, height: 28, objectFit: "contain" }} />;
 }
 
 function Mono({ children, style = {}, fonts }: { children: React.ReactNode; style?: object; fonts: FontSet }) {
@@ -55,7 +55,7 @@ function PageFooter({ left, page, total, fonts }: { left: string; page: number; 
       borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10,
     }}>
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{left.toUpperCase()}</Mono>
-      <Wordmark fonts={fonts} />
+      <Wordmark />
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
   );
@@ -70,7 +70,7 @@ function HeroBlock({ heroSrc, fonts }: { heroSrc: string | null; fonts: FontSet 
         <View style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, backgroundColor: C.navy }} />
       )}
       <View style={{ position: "absolute", top: 28, left: MARGIN }}>
-        <Wordmark light fonts={fonts} />
+        <Wordmark light />
       </View>
       <Svg width={PW} height={CUT_RISE + 8} style={{ position: "absolute", top: HERO_H - 8, left: 0 }}>
         <Polygon points={`0,${CUT_RISE + 8} ${PW},8 ${PW},0 0,${CUT_RISE}`} fill={C.ochre} />
@@ -142,7 +142,7 @@ function Itinerary({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSet }
     <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
       <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
-        <Wordmark fonts={fonts} />
+        <Wordmark />
       </View>
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 28 }}>
         <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>DAY BY DAY</Mono>
@@ -187,33 +187,33 @@ function fmtPrice(amount: number, currency: string): string {
 function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSet }) {
   const pricing = pkg.pricing;
   if (!pricing) return null;
-  const allRows: Array<{ icon: string; label: string; value: number | null | undefined }> = [
-    { icon: "user",  label: "1 adult",         value: pricing.onePerson },
-    { icon: "users", label: "2 adults",        value: pricing.twoPeople },
-    { icon: "users", label: "3 adults",        value: pricing.threePeople },
-    { icon: "baby",  label: "Baby (add-on)",   value: pricing.baby },
+  const allSlots: Array<{ icon: string; label: string; value: number | null | undefined }> = [
+    { icon: "user",  label: "Solo",         value: pricing.onePerson },
+    { icon: "users", label: "2 people",     value: pricing.twoPeople },
+    { icon: "users", label: "3 people",     value: pricing.threePeople },
+    { icon: "baby",  label: "Baby",         value: pricing.baby },
   ];
-  const rows = allRows.filter(
+  const slots = allSlots.filter(
     (r): r is { icon: string; label: string; value: number } => r.value != null,
   );
 
-  if (rows.length === 0) return null;
+  if (slots.length === 0) return null;
   const currency = pkg.currency ?? "USD";
 
   return (
     <View style={{ marginHorizontal: MARGIN, marginTop: 22 }}>
       <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 8, marginBottom: 10 }}>
-        <Mono style={{ color: C.ochre }} fonts={fonts}>PRICE (PER PERSON, {currency.toUpperCase()})</Mono>
+        <Mono style={{ color: C.ochre }} fonts={fonts}>GROUP RATES — PER PERSON ({currency.toUpperCase()})</Mono>
       </View>
-      {rows.map((row, i) => (
-        <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 5, borderBottomWidth: i < rows.length - 1 ? 1 : 0, borderBottomColor: C.rule }}>
-          <View style={{ width: 22, flexDirection: "row", alignItems: "center" }}>
-            <PdfIcon name={row.icon} size={12} color={C.ochre} />
+      <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
+        {slots.map((slot, i) => (
+          <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
+            <PdfIcon name={slot.icon} size={18} color={C.ochre} />
+            <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{slot.label.toUpperCase()}</Text>
+            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(slot.value, currency)}</Text>
           </View>
-          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1 }}>{row.label}</Text>
-          <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 16, color: C.ink }}>{fmtPrice(row.value, currency)}</Text>
-        </View>
-      ))}
+        ))}
+      </View>
     </View>
   );
 }
@@ -223,7 +223,7 @@ function Closing({ pkg, waPhone, fonts }: { pkg: PremadePackagePublic; waPhone: 
     <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
       <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
-        <Wordmark fonts={fonts} />
+        <Wordmark />
       </View>
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 24, paddingBottom: 24, backgroundColor: C.navy, marginTop: 0 }}>
         <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>RESERVE</Mono>

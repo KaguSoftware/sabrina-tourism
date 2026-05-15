@@ -89,7 +89,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
       <div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <Image
-          src="/sabrina_logo_cropped.png"
+          src="/logo-dark.png"
           alt="Sabrina Turizm"
           width="120"
           height="40"

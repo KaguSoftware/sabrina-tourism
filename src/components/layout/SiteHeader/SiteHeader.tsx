@@ -124,19 +124,11 @@ export function SiteHeader() {
             aria-label={t("homeAriaLabel")}
           >
             <Image
-              src="/sabrina_logo_cropped.png"
+              src={transparent ? "/logo-light.png" : "/logo-dark.png"}
               alt="Sabrina Turizm"
               width="140"
               height="48"
               className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
-              style={
-                transparent
-                  ? {}
-                  : {
-                      filter:
-                        "brightness(0) saturate(100%) invert(18%) sepia(40%) saturate(800%) hue-rotate(162deg) brightness(85%)",
-                    }
-              }
             />
           </Link>
 

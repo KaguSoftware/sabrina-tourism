@@ -13,7 +13,7 @@ export default async function AdminHotelsPage() {
         kicker={t("pages.hotels.kicker")}
         title={t("pages.hotels.title")}
         description={t("pages.hotels.description")}
-        actions={<Button href="/admin/hotels/new" variant="solid">{t("pages.hotels.new")}</Button>}
+        actions={<Button href="/admin/hotels/new" variant="solid" shape="pill">{t("pages.hotels.new")}</Button>}
       />
       <HotelsTable initialHotels={hotels} />
     </>

@@ -6,6 +6,7 @@ import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
 import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
 import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
+import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
 import type { Vehicle } from "@/lib/transport/types";
@@ -146,7 +147,7 @@ export function CustomForm({
         </TransportFormField>
 
         <TransportFormField label={t("pickupTimeOptional")} above>
-          <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} className={fieldCls} />
+          <TimePicker value={pickupTime} onChange={setPickupTime} placeholder={t("pickupTimeOptional")} />
         </TransportFormField>
 
         <TransportFormField label={t("dates")} hint={dateMissing ? t("requiredHint") : undefined}>

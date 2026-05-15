@@ -14,7 +14,7 @@ export default async function FixedDatesPage() {
         kicker={t("pages.fixedDates.kicker")}
         title={t("pages.fixedDates.title")}
         description={t("pages.fixedDates.description")}
-        actions={<Button href="/admin/fixed-dates/new" variant="solid">{t("pages.fixedDates.new")}</Button>}
+        actions={<Button href="/admin/fixed-dates/new" variant="solid" shape="pill">{t("pages.fixedDates.new")}</Button>}
       />
       <FixedDatesTable initialPackages={rows} />
     </>

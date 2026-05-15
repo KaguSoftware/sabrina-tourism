@@ -2,21 +2,20 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import * as Lucide from "lucide-react";
+import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
 import { useLocale } from "next-intl";
 
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
+function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
-  const Component = (def
-    ? (Lucide as unknown as Record<string, Lucide.LucideIcon>)[def.lucide]
-    : (Lucide as unknown as Record<string, Lucide.LucideIcon>)[fallback as string]) as Lucide.LucideIcon | undefined;
+  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
   if (!Component) return null;
   return <Component size={16} strokeWidth={1.75} />;
 }
@@ -157,6 +156,13 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           Download PDF
         </a>
       </div>
+
+      {/* Multi-person pricing */}
+      {pkg.pricing && (
+        <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pb-10 pt-4">
+          <MultiPersonPrices pricing={pkg.pricing} currency={pkg.currency} />
+        </div>
+      )}
 
       {/* Content */}
       <div className="relative max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-20 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16" style={{ zIndex: 10 }}>

@@ -469,7 +469,14 @@
       "durationDays": "المدة (أيام)",
       "title": "العنوان",
       "dayNumber": "اليوم #",
-      "cardImage": "صورة البطاقة"
+      "cardImage": "صورة البطاقة",
+      "season": "الموسم",
+      "overview": "نظرة عامة",
+      "oneAdult": "بالغ واحد",
+      "twoAdults": "بالغان",
+      "threeAdults": "٣ بالغين",
+      "babyInfant": "رضيع / طفل صغير",
+      "departureDates": "تواريخ المغادرة"
     },
     "formHints": {
       "cards200": "~200 حرف — يظهر على البطاقات",
@@ -482,7 +489,17 @@
       "bookingParagraph": "فقرة قصيرة تظهر في صفحة الحجز",
       "tierCardBullets": "نقاط تظهر في بطاقة الفئة",
       "detailHeroImage": "تستخدم أعلى صفحة التفاصيل",
-      "listingCardImage": "اختياري — يستخدم في بطاقات القائمة. يعود إلى صورة البطل عند عدم وجوده."
+      "listingCardImage": "اختياري — يستخدم في بطاقات القائمة. يعود إلى صورة البطل عند عدم وجوده.",
+      "pricingDescPremade": "أسعار كل فئة تظهر في الصفحة العامة. اتركها فارغة لإخفاء تلك الفئة.",
+      "pricingDescDaily": "أسعار كل فئة لهذه الجولة اليومية. اتركها فارغة لإخفاء تلك الفئة.",
+      "soloTraveller": "السعر للمسافر المنفرد",
+      "doubleOccupancy": "للشخص الواحد، غرفة مزدوجة",
+      "tripleOccupancy": "للشخص الواحد، غرفة ثلاثية",
+      "twoTravellers": "للشخص الواحد، مسافران",
+      "threeTravellers": "للشخص الواحد، ثلاثة مسافرين",
+      "babySupp": "رسوم الرضيع الثابتة (إن وجدت)",
+      "overviewParagraphs": "افصل الفقرات بسطر فارغ. تحصل الفقرة الأولى على حرف كبير في الصفحة العامة.",
+      "departurePills": "تظهر كعلامات في الصفحة العامة"
     },
     "editor": {
       "published": "منشور",
@@ -509,7 +526,9 @@
         "washer": "غسالة",
         "ac": "تكييف",
         "tv": "تلفزيون"
-      }
+      },
+      "addDeparture": "+ إضافة موعد مغادرة",
+      "addDestination": "+ إضافة وجهة"
     },
     "tabs": {
       "basics": "الأساسيات",
@@ -561,5 +580,13 @@
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
     }
+  },
+  "pricingBlock": {
+    "kicker": "أسعار المجموعات",
+    "heading": "السعر للشخص",
+    "onePerson": "فردي",
+    "twoPeople": "شخصان",
+    "threePeople": "٣ أشخاص",
+    "baby": "رضيع"
   }
 }

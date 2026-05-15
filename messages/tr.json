@@ -471,7 +471,14 @@
       "durationDays": "Süre (gün)",
       "title": "Başlık",
       "dayNumber": "Gün #",
-      "cardImage": "Kart görseli"
+      "cardImage": "Kart görseli",
+      "season": "Sezon",
+      "overview": "Genel Bakış",
+      "oneAdult": "1 yetişkin",
+      "twoAdults": "2 yetişkin",
+      "threeAdults": "3 yetişkin",
+      "babyInfant": "Bebek / Çocuk",
+      "departureDates": "Kalkış Tarihleri"
     },
     "formHints": {
       "cards200": "~200 karakter — kartlarda görünür",
@@ -484,7 +491,17 @@
       "bookingParagraph": "Rezervasyon sayfasında görünen kısa paragraf",
       "tierCardBullets": "Kademe kartında gösterilen maddeler",
       "detailHeroImage": "Detay sayfasının üstünde kullanılır",
-      "listingCardImage": "İsteğe bağlı — liste kartlarında kullanılır. Yoksa hero görseli kullanılır."
+      "listingCardImage": "İsteğe bağlı — liste kartlarında kullanılır. Yoksa hero görseli kullanılır.",
+      "pricingDescPremade": "Her kategori için fiyatlar genel sayfada gösterilir. Bir kategoriyi gizlemek için boş bırakın.",
+      "pricingDescDaily": "Bu günlük tur için kategori fiyatları. Gizlemek için boş bırakın.",
+      "soloTraveller": "Yalnız seyahat eden için fiyat",
+      "doubleOccupancy": "Kişi başı, çift kişilik oda",
+      "tripleOccupancy": "Kişi başı, üç kişilik oda",
+      "twoTravellers": "Kişi başı, iki yolcu",
+      "threeTravellers": "Kişi başı, üç yolcu",
+      "babySupp": "Sabit bebek ücreti (varsa)",
+      "overviewParagraphs": "Paragrafları boş bir satırla ayırın. İlk paragraf genel sayfada büyük harfle başlar.",
+      "departurePills": "Bunlar genel sayfada etiket olarak görünür"
     },
     "editor": {
       "published": "Yayında",
@@ -511,7 +528,9 @@
         "washer": "Çamaşır makinesi",
         "ac": "Klima",
         "tv": "Televizyon"
-      }
+      },
+      "addDeparture": "+ Kalkış ekle",
+      "addDestination": "+ Hedef ekle"
     },
     "tabs": {
       "basics": "Temel bilgiler",
@@ -563,5 +582,13 @@
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
     }
+  },
+  "pricingBlock": {
+    "kicker": "Grup fiyatları",
+    "heading": "Kişi başı fiyat",
+    "onePerson": "Tek kişi",
+    "twoPeople": "2 kişi",
+    "threePeople": "3 kişi",
+    "baby": "Bebek"
   }
 }

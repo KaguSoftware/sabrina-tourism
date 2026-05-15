@@ -1,5 +1,6 @@
 "use client";
 import { useFormContext, useFieldArray } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import { X, Plus } from "lucide-react";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
@@ -10,6 +11,11 @@ import type { PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/sc
 
 export function BasicsTab() {
   const { register, control, watch, setValue, formState: { errors } } = useFormContext<PremadeFormValues>();
+  const tl = useTranslations("admin.formLabels");
+  const th = useTranslations("admin.formHints");
+  const te = useTranslations("admin.editor");
+  const tc = useTranslations("admin.common");
+
   const isPublished = watch("is_published");
 
   const { fields: destFields, append: appendDest, remove: removeDest } = useFieldArray({ control, name: "destinations" as never });
@@ -20,7 +26,7 @@ export function BasicsTab() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="md:col-span-2">
-        <FormField label="Package name" required error={errors.name?.message}>
+        <FormField label={tl("packageName")} required error={errors.name?.message}>
           <Input {...register("name")} placeholder="e.g. Cappadocia Group Departure" />
         </FormField>
       </div>
@@ -28,8 +34,8 @@ export function BasicsTab() {
       {/* Departure dates */}
       <div className="md:col-span-2">
         <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-3">
-          Departure dates
-          <span className="ml-2 text-[9px] normal-case tracking-normal text-muted/60">These appear as pills on the public page</span>
+          {tl("departureDates")}
+          <span className="ml-2 text-[9px] normal-case tracking-normal text-muted/60">{th("departurePills")}</span>
         </p>
         <div className="space-y-3">
           {dateFields.map((field, i) => {
@@ -59,13 +65,13 @@ export function BasicsTab() {
             onClick={() => appendDate({ start_date: "", end_date: "" })}
             className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors mt-1"
           >
-            <Plus size={12} /> Add departure
+            <Plus size={12} /> {te("addDeparture")}
           </button>
         </div>
       </div>
 
       <div className="md:col-span-2">
-        <FormField label="Destinations">
+        <FormField label={tl("destinations")}>
           <div className="space-y-2">
             {destinations.map((_, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -74,19 +80,19 @@ export function BasicsTab() {
               </div>
             ))}
             <button type="button" onClick={() => appendDest("" as never)} className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors">
-              <Plus size={12} /> Add destination
+              <Plus size={12} /> {te("addDestination")}
             </button>
           </div>
         </FormField>
       </div>
 
       <div className="md:col-span-2">
-        <FormField label="Short description" hint="~200 chars — used on cards" required error={errors.short_description?.message}>
+        <FormField label={tl("shortDescription")} hint={th("cards200")} required error={errors.short_description?.message}>
           <Textarea rows={3} {...register("short_description")} />
         </FormField>
       </div>
 
-      <FormField label="Price (starting from)">
+      <FormField label={tl("priceStartingFrom")}>
         <Input
           type="number"
           min="0"
@@ -96,17 +102,17 @@ export function BasicsTab() {
         />
       </FormField>
 
-      <FormField label="Currency">
+      <FormField label={tl("currency")}>
         <Input {...register("currency")} placeholder="e.g. USD" />
       </FormField>
 
       <div className="flex flex-col gap-3">
-        <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium">Published</p>
+        <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium">{tc("published")}</p>
         <Toggle
           checked={isPublished}
           onChange={(v) => setValue("is_published", v, { shouldDirty: true })}
         />
-        {isPublished && <p className="font-mono text-[10px] text-ochre tracking-wide">Visible on the public site.</p>}
+        {isPublished && <p className="font-mono text-[10px] text-ochre tracking-wide">{te("visibleOnPublicSite")}</p>}
       </div>
     </div>
   );

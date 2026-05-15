@@ -7,6 +7,7 @@ import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { saveToursPage } from "./actions";
 import { toursPageSchema, type ToursPageFormValues } from "./schema";
 import type { ToursHeroData } from "@/lib/supabase/types";
@@ -49,6 +50,15 @@ export function ToursPageEditor({ data }: ToursPageEditorProps) {
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-8">
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
+        >
+          {isSubmitting ? <Spinner size="sm" /> : "Save"}
+        </button>
+      </div>
       <FormField label="Kicker" hint="Small label above the heading" required error={errors.kicker?.message}>
         <Input {...register("kicker")} placeholder="e.g. Explore" />
       </FormField>
@@ -74,9 +84,9 @@ export function ToursPageEditor({ data }: ToursPageEditorProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:scale-[0.97] disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
         >
-          {isSubmitting ? "Saving…" : "Save"}
+          {isSubmitting ? <Spinner size="sm" /> : "Save"}
         </button>
       </div>
     </form>

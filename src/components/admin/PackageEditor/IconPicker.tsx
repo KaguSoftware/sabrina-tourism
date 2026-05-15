@@ -1,11 +1,10 @@
 "use client";
 
 import { createElement, useEffect, useRef, useState } from "react";
-import * as LucideIcons from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { INCLUSION_ICONS, getInclusionIcon } from "@/lib/icons/inclusion-icons";
 
-const ICON_REGISTRY = LucideIcons as unknown as Record<string, LucideIcon>;
+const ICON_REGISTRY = LUCIDE_REGISTRY;
 
 function resolveIcon(lucideName: string): LucideIcon | null {
   const Comp = ICON_REGISTRY[lucideName];

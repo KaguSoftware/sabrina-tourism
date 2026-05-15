@@ -1,13 +1,11 @@
-import * as Lucide from "lucide-react";
+import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
 import type { Package } from "@/lib/packages/types";
 
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
+function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
-  const Component = (def
-    ? (Lucide as unknown as Record<string, Lucide.LucideIcon>)[def.lucide]
-    : (Lucide as unknown as Record<string, Lucide.LucideIcon>)[fallback as string]) as Lucide.LucideIcon | undefined;
+  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
   if (!Component) return null;
   return <Component size={16} strokeWidth={1.75} />;
 }
