@@ -98,10 +98,10 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const pricing = pkg.pricing;
   const pricingRowsAll: Array<{ icon: string; label: string; value: number | null | undefined }> = pricing
     ? [
-        { icon: "user",  label: "Solo",      value: pricing.onePerson },
-        { icon: "users", label: "2 people",  value: pricing.twoPeople },
-        { icon: "users", label: "3 people",  value: pricing.threePeople },
-        { icon: "baby",  label: "Baby",      value: pricing.baby },
+        { icon: "user",    label: "Solo",      value: pricing.onePerson },
+        { icon: "users",   label: "2 people",  value: pricing.twoPeople },
+        { icon: "users-3", label: "3 people",  value: pricing.threePeople },
+        { icon: "baby",    label: "Baby",      value: pricing.baby },
       ]
     : [];
   const pricingRows = pricingRowsAll.filter(

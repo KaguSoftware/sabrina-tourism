@@ -188,10 +188,10 @@ function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSe
   const pricing = pkg.pricing;
   if (!pricing) return null;
   const allSlots: Array<{ icon: string; label: string; value: number | null | undefined }> = [
-    { icon: "user",  label: "Solo",         value: pricing.onePerson },
-    { icon: "users", label: "2 people",     value: pricing.twoPeople },
-    { icon: "users", label: "3 people",     value: pricing.threePeople },
-    { icon: "baby",  label: "Baby",         value: pricing.baby },
+    { icon: "user",    label: "Solo",      value: pricing.onePerson },
+    { icon: "users",   label: "2 people",  value: pricing.twoPeople },
+    { icon: "users-3", label: "3 people",  value: pricing.threePeople },
+    { icon: "baby",    label: "Baby",      value: pricing.baby },
   ];
   const slots = allSlots.filter(
     (r): r is { icon: string; label: string; value: number } => r.value != null,
