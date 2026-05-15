@@ -25,4 +25,5 @@ export const tags = {
     vehicles: () => 'transport:vehicles',
   },
   siteContent: (key: string) => `site-content:${key}`,
+  uiTranslations: () => "ui-translations",
 } as const;

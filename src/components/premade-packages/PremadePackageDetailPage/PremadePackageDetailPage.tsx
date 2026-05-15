@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
-import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
@@ -508,7 +507,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
               </GoldUnderlineHeading>
             </Reveal>
           </div>
-          <div className="max-w-3xl">
+          <div className="max-w-3xl mx-auto">
             <HotelCarousel images={pkg.gallery} hotelName={pkg.name} showThumbnails={false} />
           </div>
         </section>
