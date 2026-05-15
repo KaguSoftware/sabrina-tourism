@@ -6,51 +6,50 @@ let registered = false;
 export function registerFonts() {
   if (registered) return;
   registered = true;
-  // bump this comment to force re-registration after font changes: v5
+  // bump this comment to force re-registration after font changes: v6
 
-  const fr = path.join(process.cwd(), "node_modules/@fontsource/fraunces/files");
-  const it = path.join(process.cwd(), "node_modules/@fontsource/inter/files");
+  const pf = path.join(process.cwd(), "public/fonts");
   const jb = path.join(process.cwd(), "node_modules/@fontsource/jetbrains-mono/files");
   const ns = path.join(process.cwd(), "node_modules/@fontsource/noto-sans/files");
   const ar = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-arabic/files");
   const jp = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-jp/files");
   const sc = path.join(process.cwd(), "node_modules/@fontsource/noto-sans-sc/files");
 
-  // Fraunces — display serif (latin-ext covers Turkish ğ ş ı İ ö ü ç)
+  // Fraunces — display serif (full TTF = all glyphs including Turkish)
   Font.register({
     family: "Fraunces",
     fonts: [
-      { src: path.join(fr, "fraunces-latin-ext-300-normal.woff"), fontWeight: 300, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-ext-300-italic.woff"), fontWeight: 300, fontStyle: "italic" },
-      { src: path.join(fr, "fraunces-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-ext-400-italic.woff"), fontWeight: 400, fontStyle: "italic" },
-      { src: path.join(fr, "fraunces-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-ext-700-italic.woff"), fontWeight: 700, fontStyle: "italic" },
-      { src: path.join(fr, "fraunces-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(fr, "fraunces-latin-ext-900-italic.woff"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Light.ttf"),       fontWeight: 300, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-LightItalic.ttf"), fontWeight: 300, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Regular.ttf"),     fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-Italic.ttf"),      fontWeight: 400, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Bold.ttf"),        fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-BoldItalic.ttf"),  fontWeight: 700, fontStyle: "italic" },
+      { src: path.join(pf, "Fraunces-Black.ttf"),       fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(pf, "Fraunces-BlackItalic.ttf"), fontWeight: 900, fontStyle: "italic" },
     ],
   });
 
-  // Inter — body sans (latin-ext covers Turkish ğ ş ı İ ö ü ç)
+  // Inter — body sans (full TTF = all glyphs including Turkish)
   Font.register({
     family: "Inter",
     fonts: [
-      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 300, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 300, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-500-normal.woff"), fontWeight: 500, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-500-normal.woff"), fontWeight: 500, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 600, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 600, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Regular.ttf"),   fontWeight: 300, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Regular.ttf"),   fontWeight: 300, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Regular.ttf"),   fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Regular.ttf"),   fontWeight: 400, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Medium.ttf"),    fontWeight: 500, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Medium.ttf"),    fontWeight: 500, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-SemiBold.ttf"),  fontWeight: 600, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-SemiBold.ttf"),  fontWeight: 600, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Bold.ttf"),      fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Bold.ttf"),      fontWeight: 700, fontStyle: "italic" },
+      { src: path.join(pf, "Inter-Bold.ttf"),      fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(pf, "Inter-Bold.ttf"),      fontWeight: 900, fontStyle: "italic" },
     ],
   });
 
-  // JetBrains Mono — labels (latin-ext for Turkish)
+  // JetBrains Mono — labels
   Font.register({
     family: "JetBrains Mono",
     fonts: [
