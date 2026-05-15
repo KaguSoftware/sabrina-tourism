@@ -466,17 +466,32 @@ export function TransportationEditor({
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex border-b border-rule">
+      <div className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
         {(["hero", "fleet"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 font-mono text-[10px] tracking-[0.18em] uppercase transition-colors ${
+            className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
+            style={
               activeTab === tab
-                ? "text-ink border-b-2 border-ochre -mb-px"
-                : "text-muted hover:text-ink"
-            }`}
+                ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" }
+                : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }
+            }
+            onMouseEnter={(e) => {
+              if (activeTab !== tab) {
+                (e.currentTarget as HTMLButtonElement).style.background = "#e8dac8";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "#4a4036";
+                (e.currentTarget as HTMLButtonElement).style.color = "#1f1a14";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab) {
+                (e.currentTarget as HTMLButtonElement).style.background = "#efe4d2";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "#c5b99e";
+                (e.currentTarget as HTMLButtonElement).style.color = "#4a4036";
+              }
+            }}
           >
             {tab === "hero" ? "Hero" : "Fleet & airports"}
           </button>
