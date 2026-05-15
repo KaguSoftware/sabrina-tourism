@@ -140,7 +140,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Mono style={{ color: C.cream }}>{upper(pkg.name)}</Mono>
-          <Wordmark />
+          <Wordmark light />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 24, paddingBottom: 24, backgroundColor: C.navy }}>
           <Mono style={{ color: C.ochre, marginBottom: 8 }}>RESERVE</Mono>

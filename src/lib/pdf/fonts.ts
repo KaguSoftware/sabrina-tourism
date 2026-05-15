@@ -6,7 +6,7 @@ let registered = false;
 export function registerFonts() {
   if (registered) return;
   registered = true;
-  // bump this comment to force re-registration after font changes: v4
+  // bump this comment to force re-registration after font changes: v5
 
   const fr = path.join(process.cwd(), "node_modules/@fontsource/fraunces/files");
   const it = path.join(process.cwd(), "node_modules/@fontsource/inter/files");
@@ -25,6 +25,7 @@ export function registerFonts() {
       { src: path.join(fr, "fraunces-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
       { src: path.join(fr, "fraunces-latin-ext-400-italic.woff"), fontWeight: 400, fontStyle: "italic" },
       { src: path.join(fr, "fraunces-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(fr, "fraunces-latin-ext-700-italic.woff"), fontWeight: 700, fontStyle: "italic" },
       { src: path.join(fr, "fraunces-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "normal" },
       { src: path.join(fr, "fraunces-latin-ext-900-italic.woff"), fontWeight: 900, fontStyle: "italic" },
     ],
@@ -42,19 +43,23 @@ export function registerFonts() {
       { src: path.join(it, "inter-latin-ext-500-normal.woff"), fontWeight: 500, fontStyle: "italic" },
       { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 600, fontStyle: "normal" },
       { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 600, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 700, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 700, fontStyle: "italic" },
-      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 900, fontStyle: "normal" },
-      { src: path.join(it, "inter-latin-ext-600-normal.woff"), fontWeight: 900, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "italic" },
+      { src: path.join(it, "inter-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "normal" },
+      { src: path.join(it, "inter-latin-ext-900-normal.woff"), fontWeight: 900, fontStyle: "italic" },
     ],
   });
 
-  // JetBrains Mono — labels
+  // JetBrains Mono — labels (latin-ext for Turkish)
   Font.register({
     family: "JetBrains Mono",
     fonts: [
       { src: path.join(jb, "jetbrains-mono-latin-ext-400-normal.woff"), fontWeight: 400, fontStyle: "normal" },
+      { src: path.join(jb, "jetbrains-mono-latin-ext-400-italic.woff"), fontWeight: 400, fontStyle: "italic" },
       { src: path.join(jb, "jetbrains-mono-latin-ext-500-normal.woff"), fontWeight: 500, fontStyle: "normal" },
+      { src: path.join(jb, "jetbrains-mono-latin-ext-500-italic.woff"), fontWeight: 500, fontStyle: "italic" },
+      { src: path.join(jb, "jetbrains-mono-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "normal" },
+      { src: path.join(jb, "jetbrains-mono-latin-ext-700-normal.woff"), fontWeight: 700, fontStyle: "italic" },
     ],
   });
 
