@@ -70,7 +70,7 @@ export async function SiteFooter() {
         {/* Brand col */}
         <div>
           <Image
-            src="/logo-light.png"
+            src="/logo_1_sabrina_cropped.png"
             alt="Sabrina Turizm"
             width="140"
             height="48"

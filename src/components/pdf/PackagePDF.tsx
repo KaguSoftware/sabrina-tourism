@@ -4,13 +4,13 @@ import {
   Document, Page, View, Text, Image,
   Svg, Polygon,
 } from "@react-pdf/renderer";
-
-const LOGO_LIGHT = path.join(process.cwd(), "public/logo-light.png");
-const LOGO_DARK = path.join(process.cwd(), "public/logo-dark.png");
 import type { Package } from "@/lib/packages/types";
 import { registerFonts } from "@/lib/pdf/fonts";
 import { C, F, MARGIN } from "@/lib/pdf/theme";
 import { PdfIcon } from "@/lib/pdf/icons";
+
+const LOGO_LIGHT = path.join(process.cwd(), "public/logo_1_sabrina_cropped.png");
+const LOGO_DARK = path.join(process.cwd(), "public/logo_2_sabrina_cropped.png");
 
 registerFonts();
 
