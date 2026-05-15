@@ -508,7 +508,9 @@ export function PremadePackageDetailPage({ pkg }: Props) {
               </GoldUnderlineHeading>
             </Reveal>
           </div>
-          <HotelCarousel images={pkg.gallery} hotelName={pkg.name} />
+          <div className="max-w-3xl">
+            <HotelCarousel images={pkg.gallery} hotelName={pkg.name} showThumbnails={false} />
+          </div>
         </section>
       )}
 
