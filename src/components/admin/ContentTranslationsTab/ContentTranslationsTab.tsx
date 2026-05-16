@@ -26,9 +26,10 @@ interface Props {
   translations: TranslationsState;
   onChange: (next: TranslationsState) => void;
   context: string;
+  onSave?: (next: TranslationsState) => Promise<void>;
 }
 
-export function ContentTranslationsTab({ fields, translations, onChange, context }: Props) {
+export function ContentTranslationsTab({ fields, translations, onChange, context, onSave }: Props) {
   const [activeLocale, setActiveLocale] = useState<ContentLocale>("tr");
   const [translating, setTranslating] = useState(false);
 
@@ -69,7 +70,12 @@ export function ContentTranslationsTab({ fields, translations, onChange, context
         ) as Record<ContentLocale, string>;
       }
       onChange(next);
-      toast.success(`Translated all fields to ${LOCALE_LABELS[activeLocale]} (and all other locales)`);
+      if (onSave) {
+        await onSave(next);
+        toast.success("Translated & saved all languages");
+      } else {
+        toast.success(`Translated all fields to all languages`);
+      }
     } finally {
       setTranslating(false);
     }

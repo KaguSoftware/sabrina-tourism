@@ -5,6 +5,15 @@ import fs from "fs/promises";
 import path from "path";
 import Groq from "groq-sdk";
 
+function extractJson(text: string): string {
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenced) return fenced[1].trim();
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start !== -1 && end !== -1) return text.slice(start, end + 1);
+  return text;
+}
+
 import { LOCALES, LOCALE_NAMES, type Locale } from "@/i18n/locales";
 import { loadAllUIMessages, saveUIMessages, saveAllUIMessages } from "@/lib/db/ui-translations";
 
@@ -88,6 +97,7 @@ Rules:
 - Preserve all ← → arrow characters exactly
 - Keep the same tone: friendly, professional, boutique travel brand
 - Return ONLY a valid JSON object with the same keys, no extra text
+- CRITICAL: Never use double-quote characters (") inside string values — use single quotes (') instead. Your output must be valid JSON.
 
 Namespace context: "${namespace}" (UI strings for a Turkish tourism website)
 
@@ -95,14 +105,23 @@ English source:
 ${JSON.stringify(values, null, 2)}`;
 
   try {
-    const chat = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-    });
-
-    const content = chat.choices[0]?.message?.content ?? "{}";
+    let content: string;
+    try {
+      const chat = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2,
+        response_format: { type: "json_object" },
+      });
+      content = chat.choices[0]?.message?.content ?? "{}";
+    } catch {
+      const chat2 = await groq.chat.completions.create({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2,
+      });
+      content = extractJson(chat2.choices[0]?.message?.content ?? "{}");
+    }
     const result = JSON.parse(content) as Record<string, string>;
     return { result };
   } catch (e) {
@@ -129,6 +148,7 @@ Rules:
 - Preserve all ← → arrow characters exactly
 - Keep the same tone: friendly, professional, boutique travel brand
 - Return ONLY a valid JSON object with the same keys, no extra text
+- CRITICAL: Never use double-quote characters (") inside string values — use single quotes (') instead. Your output must be valid JSON.
 
 Namespace context: "${namespace}" (UI strings for a Turkish tourism website)
 
@@ -136,13 +156,23 @@ English source:
 ${JSON.stringify(values, null, 2)}`;
 
       try {
-        const chat = await groq.chat.completions.create({
-          model: "llama-3.3-70b-versatile",
-          messages: [{ role: "user", content: prompt }],
-          temperature: 0.2,
-          response_format: { type: "json_object" },
-        });
-        const content = chat.choices[0]?.message?.content ?? "{}";
+        let content: string;
+        try {
+          const chat = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.2,
+            response_format: { type: "json_object" },
+          });
+          content = chat.choices[0]?.message?.content ?? "{}";
+        } catch {
+          const chat2 = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.2,
+          });
+          content = extractJson(chat2.choices[0]?.message?.content ?? "{}");
+        }
         return { locale, result: JSON.parse(content) as Record<string, string> };
       } catch {
         return { locale, result: {} as Record<string, string> };
