@@ -45,7 +45,7 @@ export function PremadeTranslationsTab({ pkgId, formValues, initialTranslations 
       fields={fields}
       translations={translations}
       onChange={setTranslations}
-      context={`Fixed-date group package: "${formValues.name}"`}
+      context={`Group tour: "${formValues.name}"`}
       onSave={handleSave}
     />
   );
