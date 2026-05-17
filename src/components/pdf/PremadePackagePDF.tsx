@@ -31,9 +31,29 @@ const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
 function abs(src: string, base: string) {
   return src.startsWith("http") ? src : `${base}${src}`;
 }
-function fmtDateLocal(iso: string, locale: string): string {
-  const intlLocale = locale === "ar" ? "ar-EG" : locale === "tr" ? "tr-TR" : "en-GB";
-  return new Date(iso + "T00:00:00").toLocaleDateString(intlLocale, { day: "numeric", month: "long", year: "numeric" });
+function intlLocaleFor(locale: string): string {
+  return locale === "ar" ? "ar-EG" : locale === "tr" ? "tr-TR" : "en-GB";
+}
+function fmtShortDateLocal(iso: string, locale: string): string {
+  const text = new Date(iso + "T00:00:00").toLocaleDateString(intlLocaleFor(locale), { day: "numeric", month: "long" });
+  return locale === "en" ? text.toLowerCase() : text;
+}
+function formatRange(start: string, end: string, locale: string): string {
+  const intl = intlLocaleFor(locale);
+  const s = new Date(start + "T00:00:00");
+  const e = new Date(end + "T00:00:00");
+  const sDay = s.toLocaleDateString(intl, { day: "numeric" });
+  const eDay = e.toLocaleDateString(intl, { day: "numeric" });
+  const sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
+  if (sameMonth) {
+    const monthLabel = s.toLocaleDateString(intl, { month: "long" });
+    return locale === "en" ? `${sDay}–${eDay} ${monthLabel.toLowerCase()}` : `${sDay}–${eDay} ${monthLabel}`;
+  }
+  const sMonth = s.toLocaleDateString(intl, { month: "long" });
+  const eMonth = e.toLocaleDateString(intl, { month: "long" });
+  return locale === "en"
+    ? `${sDay} ${sMonth.toLowerCase()} – ${eDay} ${eMonth.toLowerCase()}`
+    : `${sDay} ${sMonth} – ${eDay} ${eMonth}`;
 }
 function rtlRow(rtl: boolean) {
   return { flexDirection: (rtl ? "row-reverse" : "row") as "row" | "row-reverse" };
@@ -86,9 +106,10 @@ function HeroBlock({ heroSrc, fonts }: { heroSrc: string | null; fonts: FontSet 
   );
 }
 
-function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string; fonts: FontSet; locale: string }) {
-  const heroSrc = pkg.heroImage ? abs(pkg.heroImage, baseUrl) : null;
-  const facts: Array<{ k: string; v: string; icon: string | null }> = [
+type Fact = { k: string; v: string; icon: string | null };
+
+function buildFacts(pkg: PremadePackagePublic, locale: string): Fact[] {
+  const facts: Fact[] = [
     { k: "Duration",   v: pkg.duration ?? "—", icon: "clock" },
     { k: "Region",     v: pkg.region ?? "—", icon: "map-pin" },
   ];
@@ -101,17 +122,79 @@ function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePu
   facts.push(
     { k: "Group size", v: pkg.minPeople != null && pkg.maxPeople != null ? `${pkg.minPeople}–${pkg.maxPeople} guests` : "—", icon: "users" },
   );
-  if (pkg.availableFrom) {
-    facts.push({ k: "From", v: fmtDateLocal(pkg.availableFrom, locale), icon: "calendar" });
+  if (pkg.availableFrom && pkg.availableTo) {
+    facts.push({
+      k: "Available",
+      v: `from ${fmtShortDateLocal(pkg.availableFrom, locale)} till ${fmtShortDateLocal(pkg.availableTo, locale)}`,
+      icon: "calendar",
+    });
   }
-  if (pkg.availableTo) {
-    facts.push({ k: "To", v: fmtDateLocal(pkg.availableTo, locale), icon: "calendar" });
-  }
+  return facts;
+}
+
+function FactsGrid({ facts, fonts }: { facts: Fact[]; fonts: FontSet }) {
   const factCount = facts.length;
+  return (
+    <View style={{ flexDirection: "row", flexWrap: "wrap", backgroundColor: C.navy }}>
+      {facts.map((f, i) => (
+        <View key={i} style={{ width: "33.333%", paddingVertical: 11, paddingHorizontal: 12, borderRightWidth: (i + 1) % 3 !== 0 && i < factCount - 1 ? 1 : 0, borderRightColor: C.navySoft, borderBottomWidth: i < factCount - 3 ? 1 : 0, borderBottomColor: C.navySoft }}>
+          <View style={{ ...rtlRow(fonts.rtl), alignItems: "center", marginBottom: 5, gap: 4 }}>
+            {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
+            <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
+          </View>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5, textAlign: fonts.rtl ? "right" : "left" }}>{tx(f.v, fonts.rtl)}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function MonthGrid({ dates, fonts, locale }: { dates: PremadePackagePublic["dates"]; fonts: FontSet; locale: string }) {
+  if (!dates || dates.length === 0) return null;
+
+  const sorted = [...dates].sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const byMonth = new Map<string, typeof sorted>();
+  for (const d of sorted) {
+    const key = d.startDate.slice(0, 7); // "YYYY-MM"
+    const arr = byMonth.get(key) ?? [];
+    arr.push(d);
+    byMonth.set(key, arr);
+  }
+  const monthKeys = Array.from(byMonth.keys());
+
+  return (
+    <View style={{ marginHorizontal: MARGIN, marginTop: 14, flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
+      {monthKeys.map((key) => {
+        const [y, m] = key.split("-").map(Number);
+        const monthDate = new Date(y, m - 1, 1);
+        const monthLabel = monthDate.toLocaleDateString(intlLocaleFor(locale), { month: "long" });
+        const ranges = byMonth.get(key)!;
+        return (
+          <View key={key} style={{ flex: 1, backgroundColor: C.navy, paddingVertical: 14, paddingHorizontal: 10, gap: 8 }}>
+            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 16, color: C.ochre, textAlign: "center", letterSpacing: 1 }}>
+              {tx(upper(monthLabel), fonts.rtl)}
+            </Text>
+            <View style={{ gap: 4 }}>
+              {ranges.map((r, i) => (
+                <Text key={i} style={{ fontFamily: fonts.body, fontSize: 9, color: C.cream, textAlign: "center", lineHeight: 1.4 }}>
+                  {tx(formatRange(r.startDate, r.endDate, locale), fonts.rtl)}
+                </Text>
+              ))}
+            </View>
+          </View>
+        );
+      })}
+    </View>
+  );
+}
+
+function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string; fonts: FontSet; locale: string }) {
+  const heroSrc = pkg.heroImage ? abs(pkg.heroImage, baseUrl) : null;
   const regionPart = upper(pkg.region ?? "");
   const kicker = pkg.season
     ? `${regionPart} · GROUP PACKAGE · ${upper(pkg.season)}`
     : `${regionPart} · GROUP PACKAGE`;
+  const hasDates = (pkg.dates?.length ?? 0) > 0;
 
   return (
     <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body, paddingTop: HERO_PADDING_TOP }}>
@@ -125,17 +208,14 @@ function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePu
           {tx(pkg.shortDescription, fonts.rtl)}
         </Text>
       </View>
-      <View style={{ marginHorizontal: MARGIN, marginTop: 20, flexDirection: "row", flexWrap: "wrap", backgroundColor: C.navy }}>
-        {facts.map((f, i) => (
-          <View key={i} style={{ width: "33.333%", paddingVertical: 11, paddingHorizontal: 12, borderRightWidth: (i + 1) % 3 !== 0 && i < factCount - 1 ? 1 : 0, borderRightColor: C.navySoft, borderBottomWidth: i < factCount - 3 ? 1 : 0, borderBottomColor: C.navySoft }}>
-            <View style={{ ...rtlRow(fonts.rtl), alignItems: "center", marginBottom: 5, gap: 4 }}>
-              {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
-              <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
-            </View>
-            <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5, textAlign: fonts.rtl ? "right" : "left" }}>{tx(f.v, fonts.rtl)}</Text>
+      {hasDates ? (
+        <>
+          <View style={{ paddingHorizontal: MARGIN, paddingTop: 22 }}>
+            <Mono style={{ color: C.ochre }} fonts={fonts}>DEPARTURES</Mono>
           </View>
-        ))}
-      </View>
+          <MonthGrid dates={pkg.dates} fonts={fonts} locale={locale} />
+        </>
+      ) : null}
       {waPhone ? (
         <View style={{ position: "absolute", bottom: 72, left: MARGIN }}>
           <Text style={{ fontFamily: fonts.body, fontSize: 10, color: C.inkSoft }}>{`WhatsApp ${waPhone}  ·  sabrinaturizm.com`}</Text>
@@ -146,13 +226,14 @@ function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePu
   );
 }
 
-function Itinerary({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSet }) {
+function Itinerary({ pkg, facts, fonts }: { pkg: PremadePackagePublic; facts: Fact[]; fonts: FontSet }) {
   return (
     <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
       <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
         <Wordmark />
       </View>
+      <FactsGrid facts={facts} fonts={fonts} />
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 28 }}>
         <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>DAY BY DAY</Mono>
         <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(50, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>
@@ -318,11 +399,12 @@ function Closing({ pkg, waPhone, fonts }: { pkg: PremadePackagePublic; waPhone: 
 interface Props { pkg: PremadePackagePublic; waPhone?: string; baseUrl?: string; locale?: string }
 
 export function PremadePackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en" }: Props) {
+  const facts = buildFacts(pkg, locale);
   const fonts = getFontsForLocale(locale);
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
       <Cover pkg={pkg} waPhone={waPhone} baseUrl={baseUrl} fonts={fonts} locale={locale} />
-      <Itinerary pkg={pkg} fonts={fonts} />
+      <Itinerary pkg={pkg} facts={facts} fonts={fonts} />
       <Closing pkg={pkg} waPhone={waPhone} fonts={fonts} />
     </Document>
   );

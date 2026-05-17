@@ -8,7 +8,7 @@
     "reserveViaWhatsapp": "احجز عبر واتساب",
     "allItineraries": "جميع البرامج السياحية",
     "customDealPackages": "الباقات المخصصة",
-    "fixedDatePackages": "باقات بتواريخ محددة",
+    "fixedDatePackages": "الجولات الجماعية",
     "dailyPackages": "الباقات اليومية",
     "openMenu": "فتح القائمة",
     "closeMenu": "إغلاق القائمة",
@@ -316,7 +316,7 @@
     "sidebar": {
       "dashboard": "لوحة التحكم",
       "homePage": "الرئيسية",
-      "fixedDate": "جولات بتاريخ ثابت",
+      "fixedDate": "الجولات الجماعية",
       "dailyTours": "الجولات اليومية",
       "toursMainPage": "صفحة الجولات",
       "hotels": "الفنادق",
@@ -351,9 +351,9 @@
       },
       "fixedDates": {
         "kicker": "الكتالوج",
-        "title": "باقات بتواريخ ثابتة",
-        "description": "باقات لها تاريخ مغادرة محدد. اسحب لإعادة الترتيب.",
-        "new": "+ باقة جديدة"
+        "title": "الجولات الجماعية",
+        "description": "جولات جماعية بتواريخ مغادرة محددة. اسحب لإعادة الترتيب.",
+        "new": "+ جولة جديدة"
       },
       "daily": {
         "kicker": "الكتالوج",
@@ -626,7 +626,7 @@
     "downloadPdf": "Download PDF",
     "reserve": "Reserve",
     "messagePreview": "Message preview",
-    "allFixedDatePackages": "All fixed-date packages",
+    "allFixedDatePackages": "كل الجولات الجماعية",
     "groupPackage": "Group Package",
     "duration": "Duration",
     "region": "Region",

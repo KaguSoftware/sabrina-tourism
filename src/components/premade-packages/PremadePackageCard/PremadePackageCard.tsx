@@ -26,7 +26,7 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           <div className="absolute top-4 left-4 bg-navy/80 backdrop-blur-sm px-3 py-2 flex flex-col gap-0.5">
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre">Fixed Dates</span>
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre">Group Tour</span>
             <span className="font-mono text-[11px] tracking-[0.12em] text-cream">
               {formatDate(pkg.startDate)} — {formatDate(pkg.endDate)}
             </span>

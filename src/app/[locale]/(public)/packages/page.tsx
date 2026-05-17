@@ -9,12 +9,12 @@ export const revalidate = 604800;
 export const metadata = {
   title: "Itineraries — Sabrina Turizm",
   description:
-    "Fixed-date packages, daily escapes, and bespoke itineraries through Türkiye.",
+    "Group tours, daily escapes, and bespoke itineraries through Türkiye.",
   alternates: { canonical: "/packages" },
   openGraph: {
     title: "Itineraries — Sabrina Turizm",
     description:
-      "Fixed-date packages, daily escapes, and bespoke itineraries through Türkiye.",
+      "Group tours, daily escapes, and bespoke itineraries through Türkiye.",
     images: [{ url: "/homepage.png", width: 1200, height: 630, alt: "Sabrina Turizm itineraries" }],
   },
 };

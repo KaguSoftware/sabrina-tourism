@@ -57,7 +57,7 @@ export function AllPackagesPage({
         </div>
       </section>
 
-      {/* Fixed-Date Packages */}
+      {/* Group Tours */}
       <section
         id="fixed-dates"
         className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-20 pb-16"
@@ -68,7 +68,7 @@ export function AllPackagesPage({
             as="h2"
             className="text-[clamp(32px,4.5vw,56px)] mt-4 mb-4 tracking-[-0.025em]"
           >
-            Fixed-Date Packages
+            Group Tours
           </GoldUnderlineHeading>
           <p className="text-ink-soft max-w-[60ch] mb-10 leading-[1.6]">
             Curated multi-day itineraries with pre-selected hotels and

@@ -8,7 +8,7 @@
     "reserveViaWhatsapp": "WhatsApp ile Rezervasyon",
     "allItineraries": "Tüm Güzergahlar",
     "customDealPackages": "Özel Paketler",
-    "fixedDatePackages": "Sabit Tarihli Paketler",
+    "fixedDatePackages": "Grup Turları",
     "dailyPackages": "Günlük Paketler",
     "openMenu": "Menüyü Aç",
     "closeMenu": "Menüyü Kapat",
@@ -318,7 +318,7 @@
     "sidebar": {
       "dashboard": "Panel",
       "homePage": "Ana Sayfa",
-      "fixedDate": "Sabit Tarihli Turlar",
+      "fixedDate": "Grup Turları",
       "dailyTours": "Günlük Turlar",
       "toursMainPage": "Turlar Sayfası",
       "hotels": "Oteller",
@@ -353,9 +353,9 @@
       },
       "fixedDates": {
         "kicker": "Katalog",
-        "title": "Sabit Tarihli Paketler",
-        "description": "Belirli kalkış tarihli paketler. Sıralamak için sürükle.",
-        "new": "+ Yeni paket"
+        "title": "Grup Turları",
+        "description": "Sabit kalkış tarihli grup turları. Sıralamak için sürükle.",
+        "new": "+ Yeni tur"
       },
       "daily": {
         "kicker": "Katalog",
@@ -628,7 +628,7 @@
     "downloadPdf": "Download PDF",
     "reserve": "Reserve",
     "messagePreview": "Message preview",
-    "allFixedDatePackages": "All fixed-date packages",
+    "allFixedDatePackages": "Tüm grup turları",
     "groupPackage": "Group Package",
     "duration": "Duration",
     "region": "Region",

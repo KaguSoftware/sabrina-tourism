@@ -177,8 +177,8 @@ export function PremadeEditor({
       <form onSubmit={onSubmit} noValidate>
         <div className="flex items-start justify-between gap-6 pb-6 border-b border-rule mb-0">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">Fixed-Date Package</p>
-            <h1 className="text-[28px] text-ink leading-tight" style={{ fontFamily: "var(--font-fraunces)" }}>{name || "New package"}</h1>
+            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">Group Tour</p>
+            <h1 className="text-[28px] text-ink leading-tight" style={{ fontFamily: "var(--font-fraunces)" }}>{name || "New tour"}</h1>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0 pt-1"><SaveButton /></div>
         </div>

@@ -8,7 +8,7 @@
     "reserveViaWhatsapp": "Reserve via WhatsApp",
     "allItineraries": "All Itineraries",
     "customDealPackages": "Custom Deal Packages",
-    "fixedDatePackages": "Fixed-Date Packages",
+    "fixedDatePackages": "Group Tours",
     "dailyPackages": "Daily Packages",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -318,7 +318,7 @@
     "sidebar": {
       "dashboard": "Dashboard",
       "homePage": "Home",
-      "fixedDate": "Fixed-Date Tours",
+      "fixedDate": "Group Tours",
       "dailyTours": "Daily Tours",
       "toursMainPage": "Tours Page",
       "hotels": "Hotels",
@@ -353,9 +353,9 @@
       },
       "fixedDates": {
         "kicker": "Catalogue",
-        "title": "Fixed-Date Packages",
-        "description": "Packages with a set departure date. Drag to reorder.",
-        "new": "+ New package"
+        "title": "Group Tours",
+        "description": "Group tours with fixed departure dates. Drag to reorder.",
+        "new": "+ New tour"
       },
       "daily": {
         "kicker": "Catalogue",
@@ -631,7 +631,7 @@
     "downloadPdf": "Download PDF",
     "reserve": "Reserve",
     "messagePreview": "Message preview",
-    "allFixedDatePackages": "All fixed-date packages",
+    "allFixedDatePackages": "All group tours",
     "groupPackage": "Group Package",
     "duration": "Duration",
     "region": "Region",
