@@ -1,5 +1,5 @@
 "use server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { REGIONS } from "@/lib/packages/constants";
@@ -8,13 +8,13 @@ import { REGIONS } from "@/lib/packages/constants";
 function db(): any { return createServiceClient(); }
 
 function revalidateAll(regions?: ReadonlyArray<string | null | undefined>) {
-  revalidateTag(tags.hotels.all(), "max");
-  revalidateTag(tags.hotels.featured(), "max");
+  updateTag(tags.hotels.all());
+  updateTag(tags.hotels.featured());
   const seen = new Set<string>();
   for (const r of regions ?? []) {
     if (r && !seen.has(r)) {
       seen.add(r);
-      revalidateTag(tags.hotels.byRegion(r), "max");
+      updateTag(tags.hotels.byRegion(r));
     }
   }
 }

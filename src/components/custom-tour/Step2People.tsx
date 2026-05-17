@@ -74,6 +74,70 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
         <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mt-1">
           {state.people === 1 ? t("guest") : t("guests")}
         </span>
+
+        {state.people === 1 && (
+          <label className="mt-6 flex items-center gap-3 bg-cream-warm border border-rule rounded-xl px-4 py-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={state.singleRoom}
+              onChange={(e) => onChange({ singleRoom: e.target.checked })}
+              className="accent-ochre w-4 h-4"
+            />
+            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">
+              {t("singleRoomOccupancy")}
+            </span>
+          </label>
+        )}
+
+        <div className="mt-6 w-full max-w-sm flex flex-col items-stretch gap-2">
+          {state.children.map((child, idx) => (
+            <div
+              key={child.id}
+              className="flex items-center gap-3 bg-cream-warm border border-rule rounded-xl px-4 py-2"
+            >
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted shrink-0">
+                {t("childAge")}
+              </span>
+              <input
+                type="number"
+                min={0}
+                max={17}
+                value={child.age}
+                onChange={(e) => {
+                  const nextChildren = state.children.map((c, i) =>
+                    i === idx ? { ...c, age: e.target.value } : c
+                  );
+                  onChange({ children: nextChildren });
+                }}
+                className="flex-1 bg-transparent outline-none border border-ochre/40 rounded-md px-2 py-1 text-ink font-mono text-sm focus:border-ochre transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  onChange({ children: state.children.filter((_, i) => i !== idx) });
+                }}
+                aria-label={t("removeChild")}
+                className="w-7 h-7 flex items-center justify-center text-ink hover:text-ochre transition-colors"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              onChange({
+                children: [
+                  ...state.children,
+                  { id: crypto.randomUUID(), age: "" },
+                ],
+              });
+            }}
+            className="mt-2 font-mono text-[11px] tracking-[0.22em] uppercase text-ink border border-ochre rounded-xl px-4 py-2 hover:bg-navy hover:text-ochre transition-colors duration-200"
+          >
+            {t("addChildren")}
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-center gap-3">

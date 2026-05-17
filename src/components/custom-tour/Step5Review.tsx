@@ -82,7 +82,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         .map((e) => e.count > 1 ? `${e.count}× ${e.vehicle.label}` : e.vehicle.label)
         .join(" + ");
   const vehicleReviewValue = state.noDriverNeeded
-    ? t("noDriver")
+    ? t("noTransfer")
     : state.airportTransferOnly
     ? t("airportTransferOnly")
     : vehicleSummary;
@@ -118,6 +118,13 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         ? t("whatsappGuideValue", { type: guideType, language: guideLanguage })
         : t("notNeeded"),
     }),
+    state.children.length > 0
+      ? whatsappT("childrenSuffix", {
+          count: state.children.length,
+          ages: state.children.map((c) => c.age).filter(Boolean).join(", "),
+        })
+      : "",
+    state.singleRoom ? whatsappT("singleRoomSuffix") : "",
     t("whatsappConfirmQuote"),
   ].filter(Boolean).join(" ");
 
@@ -147,6 +154,18 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         <Row label={t("finishDate")} value={formatDate(state.endDate, locale)} />
         <Row label={t("duration")} value={duration} />
         <Row label={t("guests")} value={`${state.people} ${state.people === 1 ? t("person") : t("people")}`} />
+        {state.children.length > 0 && (
+          <Row
+            label={t("children")}
+            value={t("childrenSummary", {
+              count: state.children.length,
+              ages: state.children.map((c) => c.age).filter(Boolean).join(", "),
+            })}
+          />
+        )}
+        {state.singleRoom && (
+          <Row label={t("singleRoomOccupancy")} value={t("yes")} />
+        )}
         <Row
           label={t("vehicle")}
           value={vehicleReviewValue}

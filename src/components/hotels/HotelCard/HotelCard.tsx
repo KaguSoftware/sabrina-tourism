@@ -8,9 +8,11 @@ interface HotelCardProps {
   hotel: HotelPublic;
   selected?: boolean;
   onSelect?: () => void;
+  /** When true, the card omits its own lift/scale transform so a parent can animate the card + adjacent elements as one unit. Border, ring, and selected-badge indicators are preserved. */
+  flat?: boolean;
 }
 
-export function HotelCard({ hotel, selected, onSelect }: HotelCardProps) {
+export function HotelCard({ hotel, selected, onSelect, flat }: HotelCardProps) {
   const image = hotel.images[0] ?? hotel.bedroomImage;
   const regionSlug = REGION_SLUGS[hotel.region as keyof typeof REGION_SLUGS] ?? hotel.region.toLowerCase().replace(/\s+/g, "-");
   const starCount = Math.min(5, Math.max(0, hotel.stars));
@@ -78,12 +80,16 @@ export function HotelCard({ hotel, selected, onSelect }: HotelCardProps) {
   );
 
   if (onSelect) {
+    const selectedClasses = flat
+      ? "border-ochre ring-2 ring-ochre ring-offset-2 shadow-[0_8px_32px_-6px_rgba(201,154,63,0.55)]"
+      : "border-ochre ring-2 ring-ochre ring-offset-2 shadow-[0_8px_32px_-6px_rgba(201,154,63,0.55)] scale-[1.02]";
+    const idleClasses = flat
+      ? "border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none"
+      : "border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]";
     return (
       <div
         className={`group overflow-hidden border transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] bg-[#fcf5ec] ${
-          selected
-            ? "border-ochre ring-2 ring-ochre ring-offset-2 shadow-[0_8px_32px_-6px_rgba(201,154,63,0.55)] scale-[1.02]"
-            : "border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)] hover:[box-shadow:14px_20px_0_-2px_#1b4d5c]"
+          selected ? selectedClasses : idleClasses
         }`}
       >
         <button

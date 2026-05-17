@@ -1,12 +1,12 @@
 "use server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 
 function revalidateAll(slug?: string) {
-  revalidateTag(tags.premade.all(), "max");
-  revalidateTag(tags.premade.slugs(), "max");
-  if (slug) revalidateTag(tags.premade.bySlug(slug), "max");
+  updateTag(tags.premade.all());
+  updateTag(tags.premade.slugs());
+  if (slug) updateTag(tags.premade.bySlug(slug));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

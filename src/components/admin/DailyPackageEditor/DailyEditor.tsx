@@ -54,8 +54,9 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
       season: (pkg.season ?? null) as DailyFormValues["season"],
       price_1_person: pkg.price_1_person ?? null,
       price_2_people: pkg.price_2_people ?? null,
-      price_3_people: pkg.price_3_people ?? null,
       price_baby: pkg.price_baby ?? null,
+      price_single_room_supplement: pkg.price_single_room_supplement ?? null,
+      price_per_child: pkg.price_per_child ?? null,
     };
   }
   return {
@@ -65,7 +66,7 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
     hero_image: "", card_image: "",
     stops: [], included: [], not_included: [], gallery: [], is_published: false,
     season: null,
-    price_1_person: null, price_2_people: null, price_3_people: null, price_baby: null,
+    price_1_person: null, price_2_people: null, price_baby: null, price_single_room_supplement: null, price_per_child: null,
   };
 }
 

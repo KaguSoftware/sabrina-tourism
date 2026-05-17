@@ -27,12 +27,16 @@ export function PricingTab() {
           <Input type="number" min={0} step="0.01" {...register("price_2_people", numberOpts)} placeholder="e.g. 200" />
         </FormField>
 
-        <FormField label={tl("threeAdults")} hint={th("threeTravellers")}>
-          <Input type="number" min={0} step="0.01" {...register("price_3_people", numberOpts)} placeholder="e.g. 170" />
-        </FormField>
-
         <FormField label={tl("babyInfant")} hint={th("babySupp")}>
           <Input type="number" min={0} step="0.01" {...register("price_baby", numberOpts)} placeholder="e.g. 0" />
+        </FormField>
+
+        <FormField label="Single-room supplement" hint="Extra charge added per person for single-room occupancy.">
+          <Input type="number" min={0} step="0.01" {...register("price_single_room_supplement", numberOpts)} placeholder="e.g. 80" />
+        </FormField>
+
+        <FormField label="Per-child price" hint="Shown next to each child age in the reservation form.">
+          <Input type="number" min={0} step="0.01" {...register("price_per_child", numberOpts)} placeholder="e.g. 90" />
         </FormField>
       </div>
     </div>

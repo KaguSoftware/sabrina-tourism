@@ -27,18 +27,41 @@ export function PackageCTAStrip({
 }) {
   const t = useTranslations("packageDetail");
   const tCommon = useTranslations("common");
+  const tWa = useTranslations("whatsapp");
   const today = new Date().toISOString().split("T")[0];
   const [submitted, setSubmitted] = useState(false);
+  const [singleRoom, setSingleRoom] = useState(false);
+  const [children, setChildren] = useState<Array<{ id: string; age: string }>>([]);
   const dateMissing = submitted && !date;
 
-  const previewMsg = `Hey Sabrina — I'd like to reserve "${packageName}" at the ${tierName} tier for ${people || "TBD"} guest(s), starting ${date || "TBD"}. Could you confirm availability?`;
+  const isOneGuest = people === "1";
+  const childrenAges = children.map((c) => c.age || "?");
+  const childrenSuffix =
+    children.length > 0
+      ? tWa("childrenSuffix", { count: children.length, ages: childrenAges.join(", ") })
+      : "";
+  const singleRoomSuffix = isOneGuest && singleRoom ? tWa("singleRoomSuffix") : "";
+
+  const previewMsg = `Hey Sabrina — I'd like to reserve "${packageName}" at the ${tierName} tier for ${people || "TBD"} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${date || "TBD"}. Could you confirm availability?`;
 
   const waHref = packageMessage({
     name: packageName,
     tier: tierName,
     date: date || "TBD",
     count: people || "TBD",
+    childrenAges: children.length > 0 ? childrenAges : undefined,
+    singleRoom: isOneGuest && singleRoom ? true : undefined,
   });
+
+  const addChild = () => {
+    setChildren((arr) => [...arr, { id: crypto.randomUUID(), age: "" }]);
+  };
+  const removeChild = (id: string) => {
+    setChildren((arr) => arr.filter((c) => c.id !== id));
+  };
+  const updateChildAge = (id: string, age: string) => {
+    setChildren((arr) => arr.map((c) => (c.id === id ? { ...c, age } : c)));
+  };
 
   return (
     <section className="pt-[clamp(12px,2vw,24px)] pb-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative z-20">
@@ -95,6 +118,55 @@ export function PackageCTAStrip({
                 })}
               </div>
             </div>
+          </div>
+        </Reveal>
+
+        {/* Single-room occupancy (only when 1 guest) */}
+        {isOneGuest && (
+          <Reveal delay={210}>
+            <div className="mb-6 max-w-140">
+              <label className="inline-flex items-center gap-2.5 cursor-pointer font-mono text-[12px] tracking-[0.06em] text-ink-soft">
+                <input
+                  type="checkbox"
+                  checked={singleRoom}
+                  onChange={(e) => setSingleRoom(e.target.checked)}
+                  className="accent-ochre w-4 h-4"
+                />
+                <span>{t("singleRoomOccupancy")}</span>
+              </label>
+            </div>
+          </Reveal>
+        )}
+
+        {/* Children */}
+        <Reveal delay={215}>
+          <div className="mb-8 max-w-140 flex flex-col gap-2">
+            {children.map((child) => (
+              <div key={child.id} className="flex items-center gap-3">
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted min-w-[3ch]">{t("childAge")}</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={17}
+                  value={child.age}
+                  onChange={(e) => updateChildAge(child.id, e.target.value)}
+                  className="w-20 border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeChild(child.id)}
+                  aria-label={t("removeChild")}
+                  className="text-ink-soft hover:text-ochre transition-colors text-[18px] leading-none px-2"
+                >×</button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addChild}
+              className="self-start font-mono text-[12px] tracking-[0.06em] text-ochre hover:text-navy transition-colors mt-1"
+            >
+              {t("addChildren")}
+            </button>
           </div>
         </Reveal>
 

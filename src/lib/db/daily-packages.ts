@@ -12,8 +12,9 @@ export interface DailyInclusionItemPublic {
 export interface DailyPricingPublic {
   onePerson: number | null;
   twoPeople: number | null;
-  threePeople: number | null;
   baby: number | null;
+  singleRoomSupplement?: number | null;
+  pricePerChild?: number | null;
 }
 
 export interface DailyPackagePublic {
@@ -60,8 +61,9 @@ export interface DailyPackageRaw {
   updated_at: string;
   price_1_person: number | null;
   price_2_people: number | null;
-  price_3_people: number | null;
   price_baby: number | null;
+  price_single_room_supplement: number | null;
+  price_per_child: number | null;
   daily_package_stops: Array<{ id: string; stop_time: string; place: string; description: string; sort_order: number }>;
   daily_package_included: Array<{ id: string; text: string; icon: string | null; sort_order: number }>;
   daily_package_not_included: Array<{ id: string; package_id?: string; text: string; icon: string | null; text_translations?: unknown; sort_order: number }>;
@@ -112,11 +114,12 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
     })),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     groupImages: sortBy(row.daily_package_gallery ?? []).map((g: any) => g.url),
-    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_3_people ?? row.price_baby) != null ? {
+    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_baby ?? row.price_single_room_supplement ?? row.price_per_child) != null ? {
       onePerson: row.price_1_person ?? null,
       twoPeople: row.price_2_people ?? null,
-      threePeople: row.price_3_people ?? null,
       baby: row.price_baby ?? null,
+      singleRoomSupplement: row.price_single_room_supplement ?? null,
+      pricePerChild: row.price_per_child ?? null,
     } : null,
   };
 }

@@ -38,7 +38,7 @@ export function CustomTourWizard({ airports, vehicles, hotelsByRegion }: Props) 
   useEffect(() => {
     try {
       const saved = window.sessionStorage.getItem(CUSTOM_TOUR_DRAFT_KEY);
-      if (saved) setState(JSON.parse(saved));
+      if (saved) setState({ ...INITIAL_STATE, ...JSON.parse(saved) });
     } catch {
       // ignore corrupt draft
     }

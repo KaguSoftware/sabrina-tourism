@@ -2,7 +2,7 @@
   "nav": {
     "home": "الرئيسية",
     "tours": "الجولات",
-    "driver": "السائق",
+    "driver": "النقل",
     "hotels": "الفنادق",
     "whatsapp": "واتساب",
     "reserveViaWhatsapp": "احجز عبر واتساب",
@@ -54,23 +54,23 @@
     "blackSea": "البحر الأسود",
     "easternAnatolia": "شرق الأناضول",
     "airportTransfer": "نقل المطار",
-    "privateDriver": "سائق خاص",
-    "driver": "سائق",
+    "privateDriver": "نقل خاص",
+    "driver": "النقل",
     "allPackages": "جميع الباقات",
     "privacyPolicy": "سياسة الخصوصية",
     "termsConditions": "الشروط والأحكام",
     "cancellationPolicy": "سياسة الإلغاء",
-    "tagline": "سياحة فاخرة وسائق خاص",
+    "tagline": "سياحة فاخرة ونقل خاص",
     "location": "كاراكوي، إسطنبول",
     "copyright": "© 2026 Sabrina Turizm. جميع الحقوق محفوظة.",
     "legal2": "مسجلة في تركيا · ترخيص TÜRSAB رقم XXXXXXX · رقم الضريبة XXXXXXX",
     "madeIn": "صُنع في إسطنبول."
   },
   "transport": {
-    "kicker": "سائق خاص",
+    "kicker": "نقل خاص",
     "tabs": {
       "airport": "نقل المطار",
-      "custom": "سائق خاص"
+      "custom": "نقل خاص"
     },
     "form": {
       "airport": "المطار",
@@ -113,7 +113,7 @@
       "bagsNeeded": "الحقائب: {total}/{bags} — {needed} مكان إضافي مطلوب.",
       "bagsNeededPlural": "الحقائب: {total}/{bags} — {needed} أماكن إضافية مطلوبة.",
       "messagePreview": "معاينة الرسالة",
-      "driverHours": "⚠ يعمل السائق عادةً 8-10 ساعات يوميًا. أي ساعات إضافية تستلزم رسومًا إضافية.",
+      "driverHours": "⚠ ساعات عمل النقل عادةً 8-10 ساعات يوميًا. أي ساعات إضافية تستلزم رسومًا إضافية.",
       "reserveWhatsapp": "احجز عبر واتساب",
       "requiredHint": "مطلوب",
       "bagsPerVehicle": "حتى {n} حقائب لكل مركبة",
@@ -131,7 +131,7 @@
       "destinationsStopsTextareaPlaceholder": "List your stops, e.g. Cappadocia → Konya → Antalya",
       "fitsUpToUseMulti": "Fits up to {n} — use multi-vehicle below",
       "noVehicleSelected": "no vehicle selected",
-      "privateDriverIntro": "Hey Sabrina — I'd like a private driver.",
+      "privateDriverIntro": "Hey Sabrina — I'd like a private transfer.",
       "pickupSummary": "Pickup: {value}.",
       "pickupTimeSummary": " Pickup time: {value}.",
       "destinationsSummary": " Destinations: {value}.",
@@ -142,7 +142,7 @@
       "guideSummary": " Travel guide: {type} in {language}.",
       "couldYouQuote": " Could you quote?",
       "vehicleCapacityError": "{label} fits up to {n} passengers.",
-      "privateChauffeurIntro": "Hey Sabrina — I'd like a private chauffeur.",
+      "privateChauffeurIntro": "Hey Sabrina — I'd like a private transfer.",
       "airportBothWaysIntro": "Hey Sabrina — I'd like a both-ways airport transfer at {airport} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
       "airportReturnSummary": "Drop-off to {airport} on {date} at {time}{flight}.",
       "airportOneWayIntro": "Hey Sabrina — I'd like a {direction} {airport} on {date} at {time} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
@@ -204,7 +204,11 @@
       "back": "→ رجوع",
       "next": "التالي ←",
       "increaseGuests": "زيادة الضيوف",
-      "decreaseGuests": "تقليل الضيوف"
+      "decreaseGuests": "تقليل الضيوف",
+      "singleRoomOccupancy": "إقامة في غرفة فردية",
+      "addChildren": "+ إضافة أطفال",
+      "childAge": "العمر",
+      "removeChild": "إزالة الطفل"
     },
     "step3": {
       "kicker": "الخطوة 3 من 5",
@@ -222,13 +226,13 @@
       "heading": "المركبة",
       "back": "→ رجوع",
       "next": "التالي ←",
-      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking driver.",
-      "airportTransferOnly": "سائق للنقل من/إلى المطار فقط",
-      "airportTransferOnlyHint": "أحتاج إلى سائق فقط للاستقبال أو التوصيل في المطار، وليس للجولة بأكملها.",
+      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking transfer.",
+      "airportTransferOnly": "النقل للمطار فقط",
+      "airportTransferOnlyHint": "أحتاج إلى نقل فقط للاستقبال أو التوصيل في المطار، وليس للجولة بأكملها.",
       "flightArrivalTime": "تاريخ وصول الرحلة",
       "flightArrivalTimeClock": "وقت الوصول",
       "selectDate": "اختر تاريخًا",
-      "noDriverNeeded": "No driver needed",
+      "noDriverNeeded": "لا حاجة للنقل",
       "noDriverHint": "Skip vehicle selection if you already have transport arranged.",
       "tooSmall": "Too small",
       "fitsUpTo": "Fits up to {n} passengers",
@@ -239,7 +243,7 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "driverHours": "⚠ ساعات عمل النقل عادةً 8-10 ساعات يوميًا. أي ساعات إضافية تستلزم رسومًا إضافية.",
       "largeGroupNotice": "مجموعة كبيرة — أكثر من {n} راكب",
       "largeGroupHint": "مجموعتك تتجاوز سعة مركبة واحدة. استخدم أزرار +/− على كل سيارة لبناء تشكيلة المركبات.",
       "seatCoverage": "المقاعد المغطاة",
@@ -261,7 +265,7 @@
       "hotels": "الفنادق",
       "vehicle": "المركبة",
       "travelGuide": "المرشد السياحي",
-      "noDriver": "لا حاجة لسائق",
+      "noDriver": "لا حاجة للنقل",
       "airportTransferOnly": "نقل المطار فقط",
       "notNeeded": "غير مطلوب",
       "night": "{n} ليلة",
@@ -279,12 +283,19 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "children": "الأطفال",
+      "childrenSummary": "{count} — الأعمار {ages}",
+      "singleRoomOccupancy": "إقامة في غرفة فردية",
+      "yes": "نعم",
+      "noTransfer": "لا حاجة للنقل"
     }
   },
   "whatsapp": {
     "generic": "مرحباً سابرينا — أود البدء في الحديث عن رحلة إلى تركيا.",
-    "customTourIntro": "مرحباً سابرينا — أود حجز باقة جولة مخصصة."
+    "customTourIntro": "مرحباً سابرينا — أود حجز باقة جولة مخصصة.",
+    "childrenSuffix": "، مع {count} طفل (الأعمار: {ages})",
+    "singleRoomSuffix": "، إقامة في غرفة فردية"
   },
   "common": {
     "back": "→ رجوع",
@@ -304,10 +315,10 @@
     },
     "sidebar": {
       "dashboard": "لوحة التحكم",
-      "homePage": "الصفحة الرئيسية",
-      "fixedDate": "رحلات بتواريخ ثابتة",
+      "homePage": "الرئيسية",
+      "fixedDate": "جولات بتاريخ ثابت",
       "dailyTours": "الجولات اليومية",
-      "toursMainPage": "صفحة الجولات الرئيسية",
+      "toursMainPage": "صفحة الجولات",
       "hotels": "الفنادق",
       "transportation": "النقل",
       "translations": "الترجمات",
@@ -468,7 +479,7 @@
       "startTime": "وقت البدء",
       "endTime": "وقت الانتهاء",
       "vehicle": "المركبة",
-      "driverGuide": "السائق / المرشد",
+      "driverGuide": "النقل / المرشد",
       "price": "السعر",
       "time": "الوقت",
       "place": "المكان",
@@ -594,7 +605,7 @@
     "heading": "السعر للشخص",
     "onePerson": "فردي",
     "twoPeople": "شخصان",
-    "threePeople": "٣ أشخاص",
+    "singleRoomSupplement": "+ {amount} رسم غرفة فردية",
     "baby": "رضيع"
   },
   "packageDetail": {
@@ -636,7 +647,12 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "singleRoomOccupancy": "إقامة في غرفة فردية",
+    "singleRoomOccupancyWithPrice": "إقامة في غرفة فردية (+{amount})",
+    "addChildren": "+ إضافة أطفال",
+    "childAge": "العمر",
+    "removeChild": "إزالة الطفل"
   },
   "packageFilters": {
     "group": "Group",

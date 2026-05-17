@@ -34,8 +34,9 @@ export const DailySchema = z.object({
   // Pricing buckets
   price_1_person: z.number().min(0).nullable().optional(),
   price_2_people: z.number().min(0).nullable().optional(),
-  price_3_people: z.number().min(0).nullable().optional(),
   price_baby: z.number().min(0).nullable().optional(),
+  price_single_room_supplement: z.number().min(0).nullable().optional(),
+  price_per_child: z.number().min(0).nullable().optional(),
 });
 
 export type DailyFormValues = z.infer<typeof DailySchema>;

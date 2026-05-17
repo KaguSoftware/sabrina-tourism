@@ -1,14 +1,15 @@
 "use server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { PremadeSchema, type PremadeFormValues } from "./schema";
 
-function revalidateAll(slug?: string) {
-  revalidateTag(tags.premade.all(), "max");
-  revalidateTag(tags.premade.slugs(), "max");
-  if (slug) revalidateTag(tags.premade.bySlug(slug), "max");
+function revalidateAll(slug?: string, previousSlug?: string | null) {
+  updateTag(tags.premade.all());
+  updateTag(tags.premade.slugs());
+  if (slug) updateTag(tags.premade.bySlug(slug));
+  if (previousSlug && previousSlug !== slug) updateTag(tags.premade.bySlug(previousSlug));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,12 +62,30 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     currency: data.currency || 'USD',
     price_1_person: data.price_1_person ?? null,
     price_2_people: data.price_2_people ?? null,
-    price_3_people: data.price_3_people ?? null,
     price_baby: data.price_baby ?? null,
+    price_single_room_supplement: data.price_single_room_supplement ?? null,
+    price_per_child: data.price_per_child ?? null,
   };
 
   if (pkgId) {
-    const { error } = await supabase.from("premade_packages").update(coreFields).eq("id", pkgId);
+    // Recompute slug from the (possibly renamed) name; ensure uniqueness against other rows
+    if (slug !== storedSlug) {
+      let candidate = slug; let n = 2;
+      while (true) {
+        const { data: ex } = await supabase
+          .from("premade_packages")
+          .select("id")
+          .eq("slug", candidate)
+          .neq("id", pkgId)
+          .maybeSingle();
+        if (!ex) { slug = candidate; break; }
+        candidate = `${slug}-${n++}`;
+      }
+    }
+    const { error } = await supabase
+      .from("premade_packages")
+      .update({ ...coreFields, slug })
+      .eq("id", pkgId);
     if (error) return { error: error.message };
   } else {
     let candidate = slug; let n = 2;
@@ -173,6 +192,6 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     await supabase.from("premade_package_inclusions").insert(inclusionRows);
   }
 
-  revalidateAll(storedSlug ?? slug);
+  revalidateAll(slug, storedSlug);
   return { id: pkgId };
 }

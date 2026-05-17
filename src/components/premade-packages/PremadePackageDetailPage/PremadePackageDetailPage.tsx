@@ -88,11 +88,37 @@ interface ReserveSectionProps {
 function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSelectedDateIdx, selectedDate, locale }: ReserveSectionProps) {
   const t = useTranslations("packageDetail");
   const tCommon = useTranslations("common");
+  const tWa = useTranslations("whatsapp");
   const [people, setPeople] = useState(2);
+  const [singleRoom, setSingleRoom] = useState(false);
+  const [children, setChildren] = useState<Array<{ id: string; age: string }>>([]);
+
+  const singleRoomSupplement = pkg.pricing?.singleRoomSupplement ?? null;
+  const pricePerChild = pkg.pricing?.pricePerChild ?? null;
+  const singleRoomLabel =
+    singleRoomSupplement != null
+      ? t("singleRoomOccupancyWithPrice", { amount: `${pkg.currency} ${singleRoomSupplement}` })
+      : t("singleRoomOccupancy");
 
   const dateLabel = `${formatDate(selectedDate.startDate, locale)} → ${formatDate(selectedDate.endDate, locale)}`;
-  const previewMsg = `Hey Sabrina — I'd like to reserve "${pkg.name}" at the ${tier} tier for ${people} guest(s), starting ${dateLabel}. Could you confirm availability?`;
+  const childrenAges = children.map((c) => c.age || "?");
+  const childrenSuffix =
+    children.length > 0
+      ? tWa("childrenSuffix", { count: children.length, ages: childrenAges.join(", ") })
+      : "";
+  const singleRoomSuffix = people === 1 && singleRoom ? tWa("singleRoomSuffix") : "";
+  const previewMsg = `Hey Sabrina — I'd like to reserve "${pkg.name}" at the ${tier} tier for ${people} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${dateLabel}. Could you confirm availability?`;
   const waHref = waLink(previewMsg);
+
+  const addChild = () => {
+    setChildren((arr) => [...arr, { id: crypto.randomUUID(), age: "" }]);
+  };
+  const removeChild = (id: string) => {
+    setChildren((arr) => arr.filter((c) => c.id !== id));
+  };
+  const updateChildAge = (id: string, age: string) => {
+    setChildren((arr) => arr.map((c) => (c.id === id ? { ...c, age } : c)));
+  };
 
   return (
     <section className="pt-[clamp(12px,2vw,24px)] pb-[clamp(80px,12vw,160px)] px-[clamp(20px,4vw,56px)] relative z-20">
@@ -157,6 +183,60 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
                 >+</button>
               </div>
             </div>
+          </div>
+        </Reveal>
+
+        {/* Single-room occupancy (only when 1 guest) */}
+        {people === 1 && (
+          <Reveal delay={210}>
+            <div className="mb-6 max-w-140">
+              <label className="inline-flex items-center gap-2.5 cursor-pointer font-mono text-[12px] tracking-[0.06em] text-ink-soft">
+                <input
+                  type="checkbox"
+                  checked={singleRoom}
+                  onChange={(e) => setSingleRoom(e.target.checked)}
+                  className="accent-ochre w-4 h-4"
+                />
+                <span>{singleRoomLabel}</span>
+              </label>
+            </div>
+          </Reveal>
+        )}
+
+        {/* Children */}
+        <Reveal delay={215}>
+          <div className="mb-8 max-w-140 flex flex-col gap-2">
+            {children.map((child) => (
+              <div key={child.id} className="flex items-center gap-3">
+                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted min-w-[3ch]">{t("childAge")}</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={17}
+                  value={child.age}
+                  onChange={(e) => updateChildAge(child.id, e.target.value)}
+                  className="w-20 border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
+                />
+                {pricePerChild != null && (
+                  <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre">
+                    + {pkg.currency} {pricePerChild.toLocaleString()}
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeChild(child.id)}
+                  aria-label={t("removeChild")}
+                  className="text-ink-soft hover:text-ochre transition-colors text-[18px] leading-none px-2"
+                >×</button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addChild}
+              className="self-start font-mono text-[12px] tracking-[0.06em] text-ochre hover:text-navy transition-colors mt-1"
+            >
+              {t("addChildren")}
+            </button>
           </div>
         </Reveal>
 
@@ -522,11 +602,12 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                 <Kicker>{t("included")}</Kicker>
                 <ul className="list-none p-0 mt-6">
                   {pkg.included.map((x, i) => (
-                    <li key={i} className="flex items-center gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                      <span className="text-ochre flex-shrink-0 w-4 flex items-center justify-center">
+                    <li key={i} className="flex items-center gap-3 py-3.5 border-b border-rule text-[15px] text-ink-soft">
+                      <span aria-hidden="true" className="text-ochre font-mono w-4 text-center shrink-0">+</span>
+                      <span className="flex-1">{x.text}</span>
+                      <span className="text-ochre shrink-0 w-4 flex items-center justify-center">
                         <InclusionIcon name={x.icon} fallback="Check" />
                       </span>
-                      {x.text}
                     </li>
                   ))}
                 </ul>
@@ -537,11 +618,12 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                 <Kicker>{t("notIncluded")}</Kicker>
                 <ul className="list-none p-0 mt-6">
                   {pkg.notIncluded.map((x, i) => (
-                    <li key={i} className="flex items-center gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                      <span className="text-muted flex-shrink-0 w-4 flex items-center justify-center">
+                    <li key={i} className="flex items-center gap-3 py-3.5 border-b border-rule text-[15px] text-ink-soft">
+                      <span aria-hidden="true" className="text-muted font-mono w-4 text-center shrink-0">−</span>
+                      <span className="flex-1">{x.text}</span>
+                      <span className="text-muted shrink-0 w-4 flex items-center justify-center">
                         <InclusionIcon name={x.icon} fallback="X" />
                       </span>
-                      {x.text}
                     </li>
                   ))}
                 </ul>

@@ -2,7 +2,7 @@
   "nav": {
     "home": "Home",
     "tours": "Tours",
-    "driver": "Driver",
+    "driver": "Transfer",
     "hotels": "Hotels",
     "whatsapp": "WhatsApp",
     "reserveViaWhatsapp": "Reserve via WhatsApp",
@@ -54,23 +54,23 @@
     "blackSea": "Black Sea",
     "easternAnatolia": "Eastern Anatolia",
     "airportTransfer": "Airport transfer",
-    "privateDriver": "Private driver",
-    "driver": "Driver",
+    "privateDriver": "Private transfer",
+    "driver": "Transfer",
     "allPackages": "All packages",
     "privacyPolicy": "Privacy Policy",
     "termsConditions": "Terms & Conditions",
     "cancellationPolicy": "Cancellation Policy",
-    "tagline": "Boutique tourism & private chauffeur",
+    "tagline": "Boutique tourism & private transfer",
     "location": "Karaköy, Istanbul",
     "copyright": "© 2026 Sabrina Turizm. All rights reserved.",
     "legal2": "Registered in Türkiye · TÜRSAB licence no. XXXXXXX · Tax no. XXXXXXX",
     "madeIn": "Made in Istanbul."
   },
   "transport": {
-    "kicker": "Private driver",
+    "kicker": "Private transfer",
     "tabs": {
       "airport": "Airport Transfer",
-      "custom": "Private Driver"
+      "custom": "Private Transfer"
     },
     "form": {
       "airport": "Airport",
@@ -113,7 +113,7 @@
       "bagsNeeded": "Bags: {total}/{bags} — {needed} more bag slot needed.",
       "bagsNeededPlural": "Bags: {total}/{bags} — {needed} more bag slots needed.",
       "messagePreview": "Message preview",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "driverHours": "⚠ Transfer working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
       "reserveWhatsapp": "Reserve via WhatsApp",
       "requiredHint": "Required",
       "bagsPerVehicle": "Up to {n} bags per vehicle",
@@ -131,7 +131,7 @@
       "destinationsStopsTextareaPlaceholder": "List your stops, e.g. Cappadocia → Konya → Antalya",
       "fitsUpToUseMulti": "Fits up to {n} — use multi-vehicle below",
       "noVehicleSelected": "no vehicle selected",
-      "privateDriverIntro": "Hey Sabrina — I'd like a private driver.",
+      "privateDriverIntro": "Hey Sabrina — I'd like a private transfer.",
       "pickupSummary": "Pickup: {value}.",
       "pickupTimeSummary": " Pickup time: {value}.",
       "destinationsSummary": " Destinations: {value}.",
@@ -142,7 +142,7 @@
       "guideSummary": " Travel guide: {type} in {language}.",
       "couldYouQuote": " Could you quote?",
       "vehicleCapacityError": "{label} fits up to {n} passengers.",
-      "privateChauffeurIntro": "Hey Sabrina — I'd like a private chauffeur.",
+      "privateChauffeurIntro": "Hey Sabrina — I'd like a private transfer.",
       "airportBothWaysIntro": "Hey Sabrina — I'd like a both-ways airport transfer at {airport} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
       "airportReturnSummary": "Drop-off to {airport} on {date} at {time}{flight}.",
       "airportOneWayIntro": "Hey Sabrina — I'd like a {direction} {airport} on {date} at {time} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
@@ -205,7 +205,11 @@
       "back": "← Back",
       "next": "Next →",
       "increaseGuests": "Increase guests",
-      "decreaseGuests": "Decrease guests"
+      "decreaseGuests": "Decrease guests",
+      "singleRoomOccupancy": "Single-room occupancy",
+      "addChildren": "+ Add children",
+      "childAge": "Age",
+      "removeChild": "Remove child"
     },
     "step3": {
       "kicker": "Step 3 of 5",
@@ -223,13 +227,13 @@
       "heading": "Vehicle",
       "back": "← Back",
       "next": "Next →",
-      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking driver.",
-      "airportTransferOnly": "Chauffeur for airport transfer only",
-      "airportTransferOnlyHint": "I only need a chauffeur for airport pickup or drop-off, not for the full tour.",
+      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking transfer.",
+      "airportTransferOnly": "Transfer for airport only",
+      "airportTransferOnlyHint": "I only need a transfer for airport pickup or drop-off, not for the full tour.",
       "flightArrivalTime": "Flight arrival date",
       "flightArrivalTimeClock": "Arrival time",
       "selectDate": "Select a date",
-      "noDriverNeeded": "No driver needed",
+      "noDriverNeeded": "No transfer needed",
       "noDriverHint": "Skip vehicle selection if you already have transport arranged.",
       "tooSmall": "Too small",
       "fitsUpTo": "Fits up to {n} passengers",
@@ -240,7 +244,7 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "driverHours": "⚠ Transfer working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
       "largeGroupNotice": "Large group — over {n} passengers",
       "largeGroupHint": "Your group exceeds the capacity of a single vehicle. Use the +/− buttons on each car to build your fleet mix.",
       "seatCoverage": "Seats covered",
@@ -263,7 +267,7 @@
       "hotels": "Hotels",
       "vehicle": "Vehicle",
       "travelGuide": "Travel Guide",
-      "noDriver": "No driver needed",
+      "noDriver": "No transfer needed",
       "airportTransferOnly": "Airport transfer only",
       "notNeeded": "Not needed",
       "night": "{n} night",
@@ -281,12 +285,19 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "children": "Children",
+      "childrenSummary": "{count} — ages {ages}",
+      "singleRoomOccupancy": "Single-room occupancy",
+      "yes": "Yes",
+      "noTransfer": "No transfer needed"
     }
   },
   "whatsapp": {
     "generic": "Hey Sabrina — I'd like to start a conversation about a trip to Türkiye.",
-    "customTourIntro": "Hey Sabrina — I'd like to book a custom tour package."
+    "customTourIntro": "Hey Sabrina — I'd like to book a custom tour package.",
+    "childrenSuffix": ", with {count} child(ren) (ages {ages})",
+    "singleRoomSuffix": ", single-room occupancy"
   },
   "common": {
     "back": "← Back",
@@ -306,12 +317,12 @@
     },
     "sidebar": {
       "dashboard": "Dashboard",
-      "homePage": "Home page",
-      "fixedDate": "Fixed-Date",
+      "homePage": "Home",
+      "fixedDate": "Fixed-Date Tours",
       "dailyTours": "Daily Tours",
-      "toursMainPage": "Tours main page",
+      "toursMainPage": "Tours Page",
       "hotels": "Hotels",
-      "transportation": "Transportation",
+      "transportation": "Transfer",
       "translations": "Translations",
       "concierge": "Concierge",
       "signOut": "Sign out",
@@ -470,7 +481,7 @@
       "startTime": "Start time",
       "endTime": "End time",
       "vehicle": "Vehicle",
-      "driverGuide": "Driver / Guide",
+      "driverGuide": "Transfer / Guide",
       "price": "Price",
       "time": "Time",
       "place": "Place",
@@ -597,9 +608,9 @@
   "pricingBlock": {
     "kicker": "Group rates",
     "heading": "Price per person",
-    "onePerson": "Solo",
+    "onePerson": "Single",
     "twoPeople": "2 people",
-    "threePeople": "3 people",
+    "singleRoomSupplement": "+ {amount} single-room supplement",
     "baby": "Baby"
   },
   "packageDetail": {
@@ -641,7 +652,12 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "singleRoomOccupancy": "Single-room occupancy",
+    "singleRoomOccupancyWithPrice": "Single-room occupancy (+{amount})",
+    "addChildren": "+ Add children",
+    "childAge": "Age",
+    "removeChild": "Remove child"
   },
   "packageFilters": {
     "group": "Group",

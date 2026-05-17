@@ -31,8 +31,12 @@ const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
 function abs(src: string, base: string) {
   return src.startsWith("http") ? src : `${base}${src}`;
 }
-function fmtMonth(iso: string) {
-  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+function fmtDateLocal(iso: string, locale: string): string {
+  const intlLocale = locale === "ar" ? "ar-EG" : locale === "tr" ? "tr-TR" : "en-GB";
+  return new Date(iso + "T00:00:00").toLocaleDateString(intlLocale, { day: "numeric", month: "long", year: "numeric" });
+}
+function rtlRow(rtl: boolean) {
+  return { flexDirection: (rtl ? "row-reverse" : "row") as "row" | "row-reverse" };
 }
 
 function Wordmark({ light = false }: { light?: boolean }) {
@@ -82,7 +86,7 @@ function HeroBlock({ heroSrc, fonts }: { heroSrc: string | null; fonts: FontSet 
   );
 }
 
-function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string; fonts: FontSet }) {
+function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePublic; waPhone: string; baseUrl: string; fonts: FontSet; locale: string }) {
   const heroSrc = pkg.heroImage ? abs(pkg.heroImage, baseUrl) : null;
   const facts: Array<{ k: string; v: string; icon: string | null }> = [
     { k: "Duration",   v: pkg.duration ?? "—", icon: "clock" },
@@ -96,8 +100,13 @@ function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; wa
   }
   facts.push(
     { k: "Group size", v: pkg.minPeople != null && pkg.maxPeople != null ? `${pkg.minPeople}–${pkg.maxPeople} guests` : "—", icon: "users" },
-    { k: "Available",  v: pkg.availableFrom && pkg.availableTo ? `${fmtMonth(pkg.availableFrom)} – ${fmtMonth(pkg.availableTo)}` : "—", icon: "calendar" },
   );
+  if (pkg.availableFrom) {
+    facts.push({ k: "From", v: fmtDateLocal(pkg.availableFrom, locale), icon: "calendar" });
+  }
+  if (pkg.availableTo) {
+    facts.push({ k: "To", v: fmtDateLocal(pkg.availableTo, locale), icon: "calendar" });
+  }
   const factCount = facts.length;
   const regionPart = upper(pkg.region ?? "");
   const kicker = pkg.season
@@ -119,11 +128,11 @@ function Cover({ pkg, waPhone, baseUrl, fonts }: { pkg: PremadePackagePublic; wa
       <View style={{ marginHorizontal: MARGIN, marginTop: 20, flexDirection: "row", flexWrap: "wrap", backgroundColor: C.navy }}>
         {facts.map((f, i) => (
           <View key={i} style={{ width: "33.333%", paddingVertical: 11, paddingHorizontal: 12, borderRightWidth: (i + 1) % 3 !== 0 && i < factCount - 1 ? 1 : 0, borderRightColor: C.navySoft, borderBottomWidth: i < factCount - 3 ? 1 : 0, borderBottomColor: C.navySoft }}>
-            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 5, gap: 4 }}>
+            <View style={{ ...rtlRow(fonts.rtl), alignItems: "center", marginBottom: 5, gap: 4 }}>
               {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
               <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
             </View>
-            <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5 }}>{tx(f.v, fonts.rtl)}</Text>
+            <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5, textAlign: fonts.rtl ? "right" : "left" }}>{tx(f.v, fonts.rtl)}</Text>
           </View>
         ))}
       </View>
@@ -188,16 +197,15 @@ function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSe
   const pricing = pkg.pricing;
   if (!pricing) return null;
   const allSlots: Array<{ icon: string; label: string; value: number | null | undefined }> = [
-    { icon: "user",    label: "Solo",      value: pricing.onePerson },
+    { icon: "user",    label: "Single",    value: pricing.onePerson },
     { icon: "users",   label: "2 people",  value: pricing.twoPeople },
-    { icon: "users-3", label: "3 people",  value: pricing.threePeople },
     { icon: "baby",    label: "Baby",      value: pricing.baby },
   ];
   const slots = allSlots.filter(
     (r): r is { icon: string; label: string; value: number } => r.value != null,
   );
 
-  if (slots.length === 0) return null;
+  if (slots.length === 0 && pricing.singleRoomSupplement == null) return null;
   const currency = pkg.currency ?? "USD";
 
   return (
@@ -205,15 +213,22 @@ function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSe
       <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 8, marginBottom: 10 }}>
         <Mono style={{ color: C.ochre }} fonts={fonts}>GROUP RATES — PER PERSON ({currency.toUpperCase()})</Mono>
       </View>
-      <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
-        {slots.map((slot, i) => (
-          <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
-            <PdfIcon name={slot.icon} size={18} color={C.ochre} />
-            <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(slot.label)}</Text>
-            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(slot.value, currency)}</Text>
-          </View>
-        ))}
-      </View>
+      {slots.length > 0 ? (
+        <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
+          {slots.map((slot, i) => (
+            <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
+              <PdfIcon name={slot.icon} size={18} color={C.ochre} />
+              <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(slot.label)}</Text>
+              <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(slot.value, currency)}</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+      {pricing.singleRoomSupplement != null ? (
+        <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, marginTop: 8, textAlign: fonts.rtl ? "left" : "right" }}>
+          {`+ ${fmtPrice(pricing.singleRoomSupplement, currency)} single-room supplement`}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -266,11 +281,14 @@ function Closing({ pkg, waPhone, fonts }: { pkg: PremadePackagePublic; waPhone: 
             <Mono style={{ color: C.ochre }} fonts={fonts}>INCLUDED</Mono>
           </View>
           {pkg.included.map((it, i) => (
-            <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 6 }}>
-              <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
-                <PdfIcon name={it.icon ?? "circle-plus"} size={11} color={C.ochre} />
+            <View key={i} style={{ ...rtlRow(fonts.rtl), alignItems: "center", paddingVertical: 6 }}>
+              <View style={{ width: 14, alignItems: "center" }}>
+                <Text style={{ fontFamily: fonts.body, fontSize: 13, color: C.ochre }}>+</Text>
               </View>
-              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5 }}>{tx(it.text, fonts.rtl)}</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.5, paddingHorizontal: 6, textAlign: fonts.rtl ? "right" : "left" }}>{tx(it.text, fonts.rtl)}</Text>
+              <View style={{ width: 14, alignItems: "center" }}>
+                <PdfIcon name={it.icon ?? "circle"} size={11} color={C.ochre} />
+              </View>
             </View>
           ))}
         </View>
@@ -279,11 +297,14 @@ function Closing({ pkg, waPhone, fonts }: { pkg: PremadePackagePublic; waPhone: 
             <Mono style={{ color: C.inkSoft }} fonts={fonts}>NOT INCLUDED</Mono>
           </View>
           {pkg.notIncluded.map((it, i) => (
-            <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 6 }}>
-              <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
-                <PdfIcon name={it.icon ?? "circle-minus"} size={11} color={C.inkSoft} />
+            <View key={i} style={{ ...rtlRow(fonts.rtl), alignItems: "center", paddingVertical: 6 }}>
+              <View style={{ width: 14, alignItems: "center" }}>
+                <Text style={{ fontFamily: fonts.body, fontSize: 13, color: C.inkSoft }}>−</Text>
               </View>
-              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5 }}>{tx(it.text, fonts.rtl)}</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.5, paddingHorizontal: 6, textAlign: fonts.rtl ? "right" : "left" }}>{tx(it.text, fonts.rtl)}</Text>
+              <View style={{ width: 14, alignItems: "center" }}>
+                <PdfIcon name={it.icon ?? "circle"} size={11} color={C.inkSoft} />
+              </View>
             </View>
           ))}
         </View>
@@ -300,7 +321,7 @@ export function PremadePackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "e
   const fonts = getFontsForLocale(locale);
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
-      <Cover pkg={pkg} waPhone={waPhone} baseUrl={baseUrl} fonts={fonts} />
+      <Cover pkg={pkg} waPhone={waPhone} baseUrl={baseUrl} fonts={fonts} locale={locale} />
       <Itinerary pkg={pkg} fonts={fonts} />
       <Closing pkg={pkg} waPhone={waPhone} fonts={fonts} />
     </Document>

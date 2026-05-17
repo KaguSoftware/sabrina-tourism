@@ -15,6 +15,8 @@ export interface CustomTourState {
   guideNeeded: boolean;
   guideType: "assistant" | "certified guide";
   guideLanguage: string;
+  singleRoom: boolean;
+  children: { id: string; age: string }[];
 }
 
 export const INITIAL_STATE: CustomTourState = {
@@ -33,6 +35,8 @@ export const INITIAL_STATE: CustomTourState = {
   guideNeeded: false,
   guideType: "assistant",
   guideLanguage: "English",
+  singleRoom: false,
+  children: [],
 };
 
 export const CUSTOM_TOUR_DRAFT_KEY = "sabrina-custom-tour-draft";

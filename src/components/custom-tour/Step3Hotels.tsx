@@ -92,11 +92,19 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
                 {hotels.map((hotel) => {
                   const isSelected = selectedHotelId(region, sectionIndex) === hotel.id;
                   return (
-                    <div key={`${region}:${hotel.id}`} className="flex flex-col">
+                    <div
+                      key={`${region}:${hotel.id}`}
+                      className={`flex flex-col transition-all duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] origin-center ${
+                        isSelected
+                          ? "scale-[1.02] -translate-y-1.5"
+                          : "hover:transform-[perspective(1000px)_rotateY(-4deg)_rotateX(3deg)_translateY(-6px)]"
+                      }`}
+                    >
                       <HotelCard
                         hotel={hotel}
                         selected={isSelected}
                         onSelect={() => selectHotel(region, hotel.id)}
+                        flat
                       />
                       <Link
                         href={`/regions/${regionSlug}/${hotel.slug}?from=custom-tour`}
@@ -104,7 +112,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
                         onClick={() => {
                           window.sessionStorage.setItem(CUSTOM_TOUR_DRAFT_KEY, JSON.stringify(state));
                         }}
-                        className="inline-flex w-full items-center justify-center gap-2 bg-navy px-4 py-3 font-mono text-[12px] font-semibold tracking-[0.16em] uppercase shadow-[3px_4px_0_-1px_#c99a3f] transition-all duration-200 hover:-translate-y-0.5 hover:bg-navy-soft hover:shadow-[5px_6px_0_-1px_#c99a3f]"
+                        className="inline-flex w-full items-center justify-center gap-2 bg-navy px-4 py-3 font-mono text-[12px] font-semibold tracking-[0.16em] uppercase shadow-[3px_4px_0_-1px_#c99a3f] transition-colors duration-200 hover:bg-navy-soft"
                       >
                         {t("viewDetails")}
                         <em className="not-italic inline-block transition-transform duration-300">

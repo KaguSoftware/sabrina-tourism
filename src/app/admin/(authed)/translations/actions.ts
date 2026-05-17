@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import fs from "fs/promises";
 import path from "path";
 import Groq from "groq-sdk";
@@ -50,7 +50,7 @@ export async function saveMessages(
   if (!LOCALES.includes(locale)) return { error: "Invalid locale" };
   const { error } = await saveUIMessages(locale, messages);
   if (error) return { error };
-  revalidateTag("ui-translations", "max");
+  updateTag("ui-translations");
   return {};
 }
 
@@ -59,7 +59,7 @@ export async function saveAllMessages(
 ): Promise<{ error?: string }> {
   const { error } = await saveAllUIMessages(allMessages);
   if (error) return { error };
-  revalidateTag("ui-translations", "max");
+  updateTag("ui-translations");
   return {};
 }
 
@@ -76,7 +76,7 @@ export async function seedTranslationsFromFiles(): Promise<{ error?: string }> {
   }
   const { error } = await saveAllUIMessages(all);
   if (error) return { error };
-  revalidateTag("ui-translations", "max");
+  updateTag("ui-translations");
   return {};
 }
 

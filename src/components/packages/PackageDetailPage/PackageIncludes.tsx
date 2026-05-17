@@ -20,11 +20,12 @@ export function PackageIncludes({ included, notIncluded }: Pick<Package, "includ
           <Kicker>{t("included")}</Kicker>
           <ul className="list-none p-0 mt-6">
             {included.map((x, i) => (
-              <li key={i} className="flex items-center gap-4 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                <span className="text-ochre flex-shrink-0 w-4 flex items-center justify-center">
+              <li key={i} className="flex items-center gap-3 py-3.5 border-b border-rule text-[15px] text-ink-soft">
+                <span aria-hidden="true" className="text-ochre font-mono w-4 text-center shrink-0">+</span>
+                <span className="flex-1">{x.text}</span>
+                <span className="text-ochre shrink-0 w-4 flex items-center justify-center">
                   <InclusionIcon name={x.icon} fallback="Check" />
                 </span>
-                {x.text}
               </li>
             ))}
           </ul>

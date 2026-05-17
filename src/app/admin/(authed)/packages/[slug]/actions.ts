@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
@@ -66,12 +66,12 @@ export async function savePackage(
 
   const slug = (returnedSlug as string) ?? finalSlug;
 
-  revalidateTag(tags.packages.all(), "max");
-  revalidateTag(tags.packages.slugs(), "max");
-  revalidateTag(tags.packages.featured(), "max");
-  revalidateTag(tags.packages.bySlug(slug), "max");
+  updateTag(tags.packages.all());
+  updateTag(tags.packages.slugs());
+  updateTag(tags.packages.featured());
+  updateTag(tags.packages.bySlug(slug));
   if (previousSlug && previousSlug !== slug) {
-    revalidateTag(tags.packages.bySlug(previousSlug), "max");
+    updateTag(tags.packages.bySlug(previousSlug));
   }
 
   return { slug };

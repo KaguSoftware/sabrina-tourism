@@ -87,8 +87,9 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
       season: (pkg.season ?? null) as PremadeFormValues["season"],
       price_1_person: pkg.price_1_person ?? null,
       price_2_people: pkg.price_2_people ?? null,
-      price_3_people: pkg.price_3_people ?? null,
       price_baby: pkg.price_baby ?? null,
+      price_single_room_supplement: pkg.price_single_room_supplement ?? null,
+      price_per_child: pkg.price_per_child ?? null,
     };
   }
   return {
@@ -105,7 +106,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
     overview: "", tiers: [], itinerary: [],
     included: [], not_included: [],
     price: null, currency: "USD",
-    price_1_person: null, price_2_people: null, price_3_people: null, price_baby: null,
+    price_1_person: null, price_2_people: null, price_baby: null, price_single_room_supplement: null, price_per_child: null,
   };
 }
 
