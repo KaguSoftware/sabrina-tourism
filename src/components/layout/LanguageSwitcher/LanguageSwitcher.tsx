@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Globe } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/routing";
+import { usePathname } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
-import { LOCALE_LABELS } from "@/i18n/locales";
+import { DEFAULT_LOCALE, LOCALE_LABELS } from "@/i18n/locales";
 
 const LOCALE_FLAGS: Record<string, string> = {
   en: "🇬🇧",
@@ -26,7 +26,6 @@ function localeLabel(loc: string) {
 export function LanguageSwitcher({ transparent }: { transparent?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("languageSwitcher");
-  const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -43,7 +42,11 @@ export function LanguageSwitcher({ transparent }: { transparent?: boolean }) {
   function switchLocale(next: string) {
     if (next === locale) return;
     setOpen(false);
-    router.push(pathname, { locale: next });
+    document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000`;
+    const target = next === DEFAULT_LOCALE
+      ? pathname
+      : `/${next}${pathname === "/" ? "" : pathname}`;
+    window.location.assign(target || "/");
   }
 
   const currentLabel = localeLabel(locale);
