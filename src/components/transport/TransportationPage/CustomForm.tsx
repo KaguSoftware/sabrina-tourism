@@ -61,7 +61,8 @@ export function CustomForm({
   const setGuideLanguage = setGuideLanguageProp ?? setLocalGuideLanguage;
 
   const today = new Date().toISOString().split("T")[0];
-  const vClass = vehicles.find((v) => v.id === vehicleId);
+  const availableVehicles = vehicles.filter((v) => v.id === "van");
+  const vClass = availableVehicles.find((v) => v.id === vehicleId) ?? vehicles.find((v) => v.id === vehicleId);
 
   function maxCapacity(v: typeof vClass) {
     if (!v) return Infinity;
@@ -187,8 +188,8 @@ export function CustomForm({
             {capacityError && <p className="text-[12px] text-terracotta">{capacityError}</p>}
           </div>
           <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {vehicles.map((v) => {
-              const cap = maxCapacity(vehicles.find((x) => x.id === v.id));
+            {availableVehicles.map((v) => {
+              const cap = maxCapacity(availableVehicles.find((x) => x.id === v.id));
               const overCapacity = pax > cap;
               return (
                 <button
@@ -256,7 +257,7 @@ export function CustomForm({
               )}
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {vehicles.map((v) => {
+              {availableVehicles.map((v) => {
                 const cap = maxCapacity(v);
                 const qty = vehicleQty[v.id] ?? 0;
                 return (

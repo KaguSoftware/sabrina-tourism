@@ -138,6 +138,9 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
       </p>
 
       {/* Date range picker */}
+      <h3 className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted mb-5">
+        {t("selectDates")} <span className="text-terracotta">*</span>
+      </h3>
       <div
         ref={dateWrapperRef}
         className="mb-12 w-fit border border-rule hover:border-ochre focus-within:border-ochre transition-colors duration-200 px-3 pt-2 pb-3 cursor-pointer"
