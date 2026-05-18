@@ -171,7 +171,7 @@ function MonthGrid({ dates, fonts, locale }: { dates: PremadePackagePublic["date
         const ranges = byMonth.get(key)!;
         return (
           <View key={key} style={{ flex: 1, backgroundColor: C.navy, paddingVertical: 14, paddingHorizontal: 10, gap: 8 }}>
-            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 16, color: C.ochre, textAlign: "center", letterSpacing: 1 }}>
+            <Text style={{ fontFamily: fonts.display, fontWeight: 700, fontSize: 16, color: C.ochre, textAlign: "center", letterSpacing: 1 }}>
               {tx(upper(monthLabel), fonts.rtl)}
             </Text>
             <View style={{ gap: 4 }}>
@@ -231,7 +231,7 @@ function Itinerary({ pkg, facts, fonts }: { pkg: PremadePackagePublic; facts: Fa
     <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
       <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
-        <Wordmark />
+        <Wordmark light />
       </View>
       <FactsGrid facts={facts} fonts={fonts} />
       <View style={{ paddingHorizontal: MARGIN, paddingTop: 28 }}>
