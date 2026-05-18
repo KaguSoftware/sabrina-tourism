@@ -8,6 +8,7 @@ import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
+import { ImagePresetPicker } from "@/components/admin/ImagePresetPicker/ImagePresetPicker";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { SiteContentTranslationsTab } from "@/components/admin/SiteContentTranslationsTab";
 import type { TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
@@ -111,6 +112,10 @@ export function ToursPageEditor({ data, initialTranslations }: ToursPageEditorPr
               onChange={(p) => setValue("hero_image", p)}
               folder="tours-page"
               aspectRatio="16/9"
+            />
+            <ImagePresetPicker
+              value={heroImage ?? ""}
+              onChange={(u) => setValue("hero_image", u, { shouldDirty: true })}
             />
           </FormField>
 

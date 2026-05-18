@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import type { ContentLocale } from "./ai";
@@ -87,7 +87,7 @@ export async function saveDailyTranslations(
     }
   }
 
-  revalidateTag(tags.daily.all(), "max");
+  updateTag(tags.daily.all());
   return {};
 }
 
@@ -156,7 +156,7 @@ export async function savePremadeTranslations(
     if (item) await supabase.from("premade_package_inclusions").update({ text_translations: val }).eq("id", item.id);
   }
 
-  revalidateTag(tags.premade.all(), "max");
+  updateTag(tags.premade.all());
   return {};
 }
 
@@ -209,7 +209,7 @@ export async function saveHotelTranslations(
     if (room) await supabase.from("hotel_room_types").update(update).eq("id", room.id);
   }
 
-  revalidateTag(tags.hotels.all(), "max");
+  updateTag(tags.hotels.all());
   return {};
 }
 
@@ -418,6 +418,6 @@ export async function saveSiteContentTranslations(
     .update({ data_translations: byLocale })
     .eq("id", key);
   if (error) return { error: error.message };
-  revalidateTag(tags.siteContent(key), "max");
+  updateTag(tags.siteContent(key));
   return {};
 }

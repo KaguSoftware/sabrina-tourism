@@ -15,24 +15,25 @@ export function HeroPanorama({
   kicker,
 }: HeroPanoramaProps) {
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
+    <section className="relative aspect-[1716/917] max-h-screen w-full flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-[-1]">
         <Image
-          src="/tours.png"
+          src="/Istanbul_Alternative1.webp"
           alt="Hero panorama"
           fill
           sizes="100vw"
-          className="object-cover object-right md:object-center"
+          className="object-contain object-center"
           priority
           fetchPriority="high"
         />
+        <div className="absolute inset-0 bg-cream/50" aria-hidden="true" />
       </div>
 
       {/* Content */}
-      <div className="relative z-5 max-w-[920px] w-full">
+      <div className="relative z-5 inline-block max-w-230">
         <div
-          className="md:hidden absolute -inset-x-3 -inset-y-6 bg-black/20 rounded-2xl"
+          className="absolute -inset-x-6 -inset-y-8 bg-black/20 rounded-2xl"
           aria-hidden="true"
         />
         <Reveal>
@@ -50,7 +51,7 @@ export function HeroPanorama({
           </h1>
         </Reveal>
         <Reveal delay={300}>
-          <p className="text-[clamp(16px,1.5vw,19px)] leading-[1.6] text-teal-deep/80 max-w-130 mb-11">
+          <p className="text-[clamp(16px,1.5vw,19px)] leading-[1.6] text-navy max-w-130 mb-11">
             {sub}
           </p>
         </Reveal>

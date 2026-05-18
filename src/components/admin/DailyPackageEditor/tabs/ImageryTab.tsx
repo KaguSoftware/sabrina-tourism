@@ -4,6 +4,7 @@ import { X, Plus } from "lucide-react";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
+import { ImagePresetPicker } from "@/components/admin/ImagePresetPicker/ImagePresetPicker";
 import { getPublicUrl } from "@/lib/supabase/storage";
 import type { DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
 
@@ -23,6 +24,10 @@ function HeroImageField({ name, label, folder }: { name: "hero_image" | "card_im
         <ImageUploader value={null} onChange={(p) => { if (p) setValue(name, p); }} folder={folder} aspectRatio="16/9" />
       )}
       <Input {...register(name)} placeholder="Or paste URL…" className="mt-2" />
+      <ImagePresetPicker
+        value={url}
+        onChange={(u) => setValue(name, u, { shouldDirty: true })}
+      />
     </FormField>
   );
 }

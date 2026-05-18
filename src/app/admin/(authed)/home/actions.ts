@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { updateTag, revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { homeContentSchema, type HomeContentFormValues } from "./schema";
@@ -42,6 +42,7 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
   for (const row of upserts) {
     updateTag(tags.siteContent(row.id));
   }
+  revalidatePath("/", "layout");
 
   return {};
 }

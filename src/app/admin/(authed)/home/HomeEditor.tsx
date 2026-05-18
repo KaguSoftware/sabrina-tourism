@@ -12,6 +12,7 @@ import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { Select } from "@/components/admin/Input/Select";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
+import { ImagePresetPicker } from "@/components/admin/ImagePresetPicker/ImagePresetPicker";
 import { SiteContentTranslationsTab } from "@/components/admin/SiteContentTranslationsTab";
 import type { TranslatableField, TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
 import { saveHomeContent } from "./actions";
@@ -289,6 +290,10 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
                       onChange={(path) => setValue("hero.hero_image", path)}
                       folder="pages/home"
                       aspectRatio="16/7"
+                    />
+                    <ImagePresetPicker
+                      value={watch("hero.hero_image") ?? ""}
+                      onChange={(u) => setValue("hero.hero_image", u, { shouldDirty: true })}
                     />
                   </FormField>
                 </div>

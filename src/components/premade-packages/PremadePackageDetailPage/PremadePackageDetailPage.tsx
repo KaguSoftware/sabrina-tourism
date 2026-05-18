@@ -357,20 +357,6 @@ export function PremadePackageDetailPage({ pkg }: Props) {
         </div>
       </section>
 
-      {/* PDF download */}
-      <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-8 flex justify-end">
-        <a
-          href={`/api/pdf/premade/${pkg.slug}?locale=${locale}`}
-          download
-          className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase border border-ochre text-ochre px-4 py-2.5 hover:bg-ochre hover:text-navy transition-colors duration-200"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          {t("downloadPdf")}
-        </a>
-      </div>
-
       {/* Overview — route brief + description */}
       {(pkg.overview || pkg.region) && (
         <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)] grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-[clamp(40px,6vw,100px)]">
@@ -420,9 +406,21 @@ export function PremadePackageDetailPage({ pkg }: Props) {
           <div className="mb-14">
             <Reveal><Kicker>{t("dayByDay")}</Kicker></Reveal>
             <Reveal delay={120}>
-              <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
-                {t("theItinerary")}
-              </GoldUnderlineHeading>
+              <div className="mt-4 flex items-end justify-between gap-6 flex-wrap">
+                <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] tracking-[-0.02em]">
+                  {t("theItinerary")}
+                </GoldUnderlineHeading>
+                <a
+                  href={`/api/pdf/premade/${pkg.slug}?locale=${locale}`}
+                  download
+                  className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase border border-ochre text-ochre px-4 py-2.5 hover:bg-ochre hover:text-navy transition-colors duration-200"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  {t("downloadPdf")}
+                </a>
+              </div>
             </Reveal>
           </div>
           <ol className="list-none p-0 relative">

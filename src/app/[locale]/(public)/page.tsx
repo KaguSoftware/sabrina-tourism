@@ -35,8 +35,9 @@ async function FeaturedHotelsSection({ heading }: { heading: string }) {
 
 const SectionFallback = () => <div className="min-h-[40vh]" />;
 
-export default async function HomePage() {
-  const content = await getSiteContentBatch(HOME_KEYS);
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const content = await getSiteContentBatch(HOME_KEYS, locale);
 
   const hero = content.home_hero;
   const about = content.home_about;

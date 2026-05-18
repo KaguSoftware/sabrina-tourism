@@ -19,9 +19,10 @@ export const metadata = {
   },
 };
 
-export default async function PackagesPage() {
+export default async function PackagesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const [hero, fixedDatePackages] = await Promise.all([
-    getSiteContent("tours_hero"),
+    getSiteContent("tours_hero", locale),
     getAllPremadePackages(),
   ]);
 

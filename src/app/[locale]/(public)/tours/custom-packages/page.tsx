@@ -18,9 +18,10 @@ export const metadata = {
   alternates: { canonical: "/tours/custom-packages" },
 };
 
-export default async function CustomPackagesPage() {
+export default async function CustomPackagesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const [hero, airportRows, vehicleRows, allHotels] = await Promise.all([
-    getSiteContent("tours_hero"),
+    getSiteContent("tours_hero", locale),
     getAirports(),
     getVehicles(),
     getAllHotels(),
