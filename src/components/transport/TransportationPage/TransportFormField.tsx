@@ -15,7 +15,7 @@ export function TransportFormField({
   above,
   tooltip,
 }: {
-  label: string;
+  label: React.ReactNode;
   children: React.ReactNode;
   hint?: string;
   hintError?: string;

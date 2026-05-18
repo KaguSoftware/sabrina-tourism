@@ -6,6 +6,7 @@ import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
 import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
 import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
+import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
@@ -153,28 +154,45 @@ export function CustomForm({
           <TimePicker value={pickupTime} onChange={setPickupTime} placeholder={t("pickupTimeOptional")} />
         </TransportFormField>
 
-        <TransportFormField label={t("dates")} hint={dateMissing ? t("requiredHint") : undefined}>
-          <DateRangePicker
-            start={startDate}
-            end={endDate}
-            onChange={(s, e) => { setStartDate(s); setEndDate(oneDay ? s : e); }}
-            min={today}
-            error={dateMissing}
-            placeholder={t("dateRangePlaceholder")}
-          />
-          <label className="flex items-center gap-2 mt-2 cursor-pointer w-fit">
-            <input
-              type="checkbox"
-              checked={oneDay}
-              onChange={(e) => {
-                setOneDay(e.target.checked);
-                if (e.target.checked && startDate) setEndDate(startDate);
-                if (!e.target.checked) setEndDate("");
-              }}
-              className="h-3.5 w-3.5 accent-ochre"
+        <TransportFormField
+          label={
+            <span className="flex items-center justify-between w-full">
+              <span>{t("dates")}{dateMissing ? "" : ""}</span>
+              <label className="flex items-center gap-1.5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={oneDay}
+                  onChange={(e) => {
+                    setOneDay(e.target.checked);
+                    if (e.target.checked && startDate) setEndDate(startDate);
+                    if (!e.target.checked) setEndDate("");
+                  }}
+                  className="h-3 w-3 accent-ochre"
+                />
+                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">1 day</span>
+              </label>
+            </span>
+          }
+          hint={dateMissing ? t("requiredHint") : undefined}
+        >
+          {oneDay ? (
+            <DatePicker
+              value={startDate}
+              onChange={(d) => { setStartDate(d); setEndDate(d); }}
+              min={today}
+              error={dateMissing}
+              placeholder={t("selectDate")}
             />
-            <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">1 day</span>
-          </label>
+          ) : (
+            <DateRangePicker
+              start={startDate}
+              end={endDate}
+              onChange={(s, e) => { setStartDate(s); setEndDate(e); }}
+              min={today}
+              error={dateMissing}
+              placeholder={t("dateRangePlaceholder")}
+            />
+          )}
         </TransportFormField>
 
         {/* Row 2: Passengers, Luggage, Destinations */}
