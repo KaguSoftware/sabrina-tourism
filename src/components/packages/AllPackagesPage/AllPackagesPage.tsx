@@ -7,13 +7,13 @@ import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { PremadePackageCard } from "@/components/premade-packages/PremadePackageCard/PremadePackageCard";
 import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPackageCard";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
-import type { DailyPackage } from "@/lib/daily/types";
+import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
 interface AllPackagesPageProps {
   pageHeading: string;
   pageLede: string;
   fixedDatePackages: PremadePackagePublic[];
-  dailyPackages: DailyPackage[];
+  dailyPackages: DailyPackagePublic[];
 }
 
 export function AllPackagesPage({

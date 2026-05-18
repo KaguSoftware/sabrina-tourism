@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "请输入大件行李箱或托运行李的数量，以便确认车辆有足够的行李空间。",
+      "tooltipChildSeat": "我们将免费为您安装适合孩子年龄和体重的儿童安全座椅。请在 WhatsApp 消息中注明孩子的年龄。",
+      "tooltipMeetAndGreet": "司机将在到达大厅举牌迎接您，协助搬运行李并直接引导您前往车辆——省心省力。",
+      "tooltipGuideNeeded": "为您的接送行程添加持证导游，导游将全程陪同乘车并提供讲解与协助。",
+      "tooltipGuideAssistant": "提供方向指引、旅游建议和基础翻译的英语助理，适合短途行程。",
+      "tooltipGuideCertified": "文化部认证导游，具备深厚的历史文化知识，部分景点要求持证导游陪同。"
     },
     "chauffeur": {
       "pickup": "接送地点",
@@ -331,7 +337,8 @@
       "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
-    }
+    },
+    "contactWhatsapp": "通过WhatsApp联系我们"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -385,5 +392,16 @@
     "dayItinerary": "行程安排",
     "whatsIncluded": "包含项目",
     "whatsNotIncluded": "不包含项目"
+  },
+  "packageList": {
+    "kicker": "行程",
+    "itinerary": "行程",
+    "itineraries": "行程",
+    "inRegion": "在{region}",
+    "noMatchesKicker": "无匹配结果",
+    "noMatchesHeading": "暂无符合筛选条件的行程。",
+    "noMatchesBody": "请尝试调整筛选条件，或告诉我们您的设想，我们将从头为您定制。",
+    "clearFilters": "清除筛选",
+    "contactWhatsapp": "通过WhatsApp联系我们"
   }
 }

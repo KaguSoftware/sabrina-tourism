@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "Geben Sie die Anzahl der großen Koffer oder aufgegebenen Gepäckstücke an. So stellen wir sicher, dass ausreichend Platz im Fahrzeug vorhanden ist.",
+      "tooltipChildSeat": "Wir montieren kostenlos einen alters- und gewichtsgerechten Kindersitz. Bitte geben Sie das Alter Ihres Kindes in der WhatsApp-Nachricht an.",
+      "tooltipMeetAndGreet": "Ein Fahrer erwartet Sie mit einem Namensschild in der Ankunftshalle, hilft mit dem Gepäck und begleitet Sie direkt zum Fahrzeug.",
+      "tooltipGuideNeeded": "Fügen Sie Ihrer Fahrt einen lizenzierten Reiseführer hinzu. Er begleitet Sie während der gesamten Fahrt im Fahrzeug.",
+      "tooltipGuideAssistant": "Ein englischsprachiger Assistent für Orientierung, Empfehlungen und leichte Übersetzung. Ideal für kürzere Fahrten.",
+      "tooltipGuideCertified": "Ein vom Kulturministerium lizenzierter Reiseführer mit tiefem historischen und kulturellen Wissen. An einigen Sehenswürdigkeiten erforderlich."
     },
     "chauffeur": {
       "pickup": "Abholung",
@@ -331,7 +337,8 @@
       "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
-    }
+    },
+    "contactWhatsapp": "Kontaktieren Sie uns auf WhatsApp"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -385,5 +392,16 @@
     "dayItinerary": "Tagesreiseplan",
     "whatsIncluded": "Was ist inbegriffen",
     "whatsNotIncluded": "Was ist nicht inbegriffen"
+  },
+  "packageList": {
+    "kicker": "Reiserouten",
+    "itinerary": "Reiseroute",
+    "itineraries": "Reiserouten",
+    "inRegion": "in {region}",
+    "noMatchesKicker": "Keine Treffer",
+    "noMatchesHeading": "Keine Reiseroute passt zu diesen Filtern — noch nicht.",
+    "noMatchesBody": "Passen Sie Ihre Filter an oder schildern Sie uns Ihre Vorstellung und wir gestalten sie von Grund auf.",
+    "clearFilters": "Filter löschen",
+    "contactWhatsapp": "Kontaktieren Sie uns auf WhatsApp"
   }
 }

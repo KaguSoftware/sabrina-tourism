@@ -10,6 +10,7 @@ import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
 import type { Vehicle } from "@/lib/transport/types";
+import { InfoTooltip } from "@/components/primitives/InfoTooltip/InfoTooltip";
 
 interface CustomFormProps {
   vehicleId: string | null;
@@ -305,9 +306,12 @@ export function CustomForm({
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">
               {t("guideNeeded")}
             </span>
+            <InfoTooltip text={t("tooltipGuideNeeded")} />
           </label>
 
-          <TransportFormField label={t("guideType")}>
+          <TransportFormField label={t("guideType")} tooltip={
+            guideType === "assistant" ? t("tooltipGuideAssistant") : t("tooltipGuideCertified")
+          }>
             <select
               value={guideType}
               onChange={(e) => setGuideType(e.target.value as GuideType)}

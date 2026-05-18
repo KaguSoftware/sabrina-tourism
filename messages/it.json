@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "Inserisci il numero di valigie grandi o bagagli da stiva. Lo usiamo per verificare che il veicolo abbia spazio sufficiente.",
+      "tooltipChildSeat": "Installeremo gratuitamente un seggiolino appropriato per l'età e il peso di tuo figlio. Indica l'età del bambino nel messaggio WhatsApp.",
+      "tooltipMeetAndGreet": "Un autista ti aspetterà nella sala arrivi con un cartello col tuo nome, ti aiuterà con i bagagli e ti accompagnerà direttamente al veicolo.",
+      "tooltipGuideNeeded": "Aggiungi una guida turistica autorizzata al tuo transfer. Ti accompagnerà nel veicolo per tutta la durata del viaggio.",
+      "tooltipGuideAssistant": "Un assistente di lingua inglese per orientamento, consigli e traduzioni di base. Ideale per i trasferimenti brevi.",
+      "tooltipGuideCertified": "Una guida autorizzata dal Ministero della Cultura con profonde conoscenze storiche e culturali. Richiesta in alcuni siti."
     },
     "chauffeur": {
       "pickup": "Punto di ritiro",
@@ -331,7 +337,8 @@
       "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
-    }
+    },
+    "contactWhatsapp": "Contattaci su WhatsApp"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -385,5 +392,16 @@
     "dayItinerary": "Itinerario del giorno",
     "whatsIncluded": "Cosa è incluso",
     "whatsNotIncluded": "Cosa non è incluso"
+  },
+  "packageList": {
+    "kicker": "Itinerari",
+    "itinerary": "itinerario",
+    "itineraries": "itinerari",
+    "inRegion": "in {region}",
+    "noMatchesKicker": "Nessun risultato",
+    "noMatchesHeading": "Nessun itinerario corrisponde a quei filtri — per ora.",
+    "noMatchesBody": "Prova a modificare i filtri o raccontaci cosa immagini e lo creiamo da zero.",
+    "clearFilters": "Cancella filtri",
+    "contactWhatsapp": "Contattaci su WhatsApp"
   }
 }

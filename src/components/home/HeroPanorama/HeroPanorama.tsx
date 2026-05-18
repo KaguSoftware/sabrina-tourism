@@ -6,6 +6,8 @@ interface HeroPanoramaProps {
   headlineEm: string;
   sub: string;
   kicker: string;
+  ctaBrowse: string;
+  ctaChauffeur: string;
 }
 
 export function HeroPanorama({
@@ -13,6 +15,8 @@ export function HeroPanorama({
   headlineEm,
   sub,
   kicker,
+  ctaBrowse,
+  ctaChauffeur,
 }: HeroPanoramaProps) {
   return (
     <section className="relative aspect-[1716/917] max-h-screen w-full flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
@@ -58,10 +62,10 @@ export function HeroPanorama({
         <Reveal delay={460}>
           <div className="flex gap-4 flex-wrap">
             <GoldButton href="/packages" variant="solid">
-              Browse tours
+              {ctaBrowse}
             </GoldButton>
             <GoldButton href="/transportation" variant="ghost-navy">
-              Book a chauffeur →
+              {ctaChauffeur}
             </GoldButton>
           </div>
         </Reveal>

@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "Укажите количество больших чемоданов или сданного багажа. Используем это для подтверждения достаточного места в автомобиле.",
+      "tooltipChildSeat": "Мы бесплатно установим детское кресло, подходящее по возрасту и весу. Пожалуйста, укажите возраст ребёнка в сообщении WhatsApp.",
+      "tooltipMeetAndGreet": "Водитель встретит вас в зале прилёта с табличкой, поможет с багажом и проводит прямо к автомобилю — без поиска и лишних хлопот.",
+      "tooltipGuideNeeded": "Добавьте лицензированного гида к вашему трансферу. Гид будет сопровождать вас в автомобиле на протяжении всей поездки.",
+      "tooltipGuideAssistant": "Англоязычный ассистент для навигации, рекомендаций и базового перевода. Идеально для коротких поездок.",
+      "tooltipGuideCertified": "Гид с лицензией Министерства культуры, обладающий глубокими историческими и культурными знаниями. Обязателен на некоторых объектах."
     },
     "chauffeur": {
       "pickup": "Подача",
@@ -331,7 +337,8 @@
       "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
-    }
+    },
+    "contactWhatsapp": "Свяжитесь с нами в WhatsApp"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -385,5 +392,16 @@
     "dayItinerary": "Дневной маршрут",
     "whatsIncluded": "Что включено",
     "whatsNotIncluded": "Что не включено"
+  },
+  "packageList": {
+    "kicker": "Маршруты",
+    "itinerary": "маршрут",
+    "itineraries": "маршрута",
+    "inRegion": "в регионе {region}",
+    "noMatchesKicker": "Нет совпадений",
+    "noMatchesHeading": "Ни один маршрут не подходит под эти фильтры — пока.",
+    "noMatchesBody": "Попробуйте изменить фильтры или расскажите нам, что вы представляете, и мы создадим маршрут с нуля.",
+    "clearFilters": "Очистить фильтры",
+    "contactWhatsapp": "Свяжитесь с нами в WhatsApp"
   }
 }

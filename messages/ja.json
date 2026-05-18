@@ -152,7 +152,13 @@
       "flightSummary": "便名：{value}。",
       "childSeatSummary": "チャイルドシートが必要。",
       "meetAndGreetSummary": "出迎えサービスを希望。",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "大きなスーツケースや預け入れ手荷物の数を入力してください。車内に十分なスペースがあるか確認するために使用します。",
+      "tooltipChildSeat": "お子様の年齢と体重に合ったチャイルドシートを無料で設置します。WhatsAppメッセージにお子様の年齢をご記入ください。",
+      "tooltipMeetAndGreet": "ドライバーが名前プレートを持って到着ロビーでお待ちし、荷物をお手伝いして車まで直接ご案内します。",
+      "tooltipGuideNeeded": "公認ガイドを送迎に追加できます。ガイドは車内で同行し、ご旅行中のサポートをします。",
+      "tooltipGuideAssistant": "案内・おすすめスポット・基本的な通訳ができる英語話者のアシスタント。短い旅程に最適です。",
+      "tooltipGuideCertified": "文化省認定ガイド。深い歴史・文化知識を持ち、一部の観光地では入場に必要な場合があります。"
     },
     "chauffeur": {
       "pickup": "ピックアップ場所",
@@ -331,7 +337,8 @@
       "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
-    }
+    },
+    "contactWhatsapp": "WhatsAppでお問い合わせ"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -385,5 +392,16 @@
     "dayItinerary": "日程",
     "whatsIncluded": "含まれるもの",
     "whatsNotIncluded": "含まれないもの"
+  },
+  "packageList": {
+    "kicker": "旅程",
+    "itinerary": "旅程",
+    "itineraries": "旅程",
+    "inRegion": "{region}内",
+    "noMatchesKicker": "一致なし",
+    "noMatchesHeading": "そのフィルターに合う旅程はまだありません。",
+    "noMatchesBody": "フィルターを調整するか、ご希望をお聞かせいただければゼロから作成します。",
+    "clearFilters": "フィルターをクリア",
+    "contactWhatsapp": "WhatsAppでお問い合わせ"
   }
 }

@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "Büyük bavul veya kontrol bagaj sayısını girin. Araçta yeterli bagaj alanı olduğunu doğrulamak için kullanırız.",
+      "tooltipChildSeat": "Çocuğunuzun yaş ve kilosuna uygun güvenlik koltuğunu ücretsiz olarak yerleştiririz. Lütfen WhatsApp mesajında çocuğunuzun yaşını belirtin.",
+      "tooltipMeetAndGreet": "Sürücünüz isim tabelasıyla geliş salonunda sizi karşılar, bagajlarınıza yardımcı olur ve sizi doğrudan araca eşlik eder.",
+      "tooltipGuideNeeded": "Transferinize lisanslı bir rehber ekleyin. Rehber yolculuk boyunca araçta yanınızda olur.",
+      "tooltipGuideAssistant": "Yönlendirme, öneri ve temel çeviri konusunda yardımcı olan İngilizce konuşan asistan. Kısa turlar için idealdir.",
+      "tooltipGuideCertified": "Kültür Bakanlığı lisanslı, derin tarih ve kültür bilgisine sahip rehber. Bazı tarihi alanlara girişte gereklidir."
     },
     "chauffeur": {
       "pickup": "Alış Noktası",
@@ -466,6 +472,8 @@
       "duration": "Süre",
       "minPeople": "Minimum kişi",
       "maxPeople": "Maksimum kişi",
+      "minPeople2": "Minimum kişi",
+      "maxPeople2": "Maksimum kişi",
       "availableFrom": "Başlangıç tarihi",
       "availableTo": "Bitiş tarihi",
       "tierName": "Kademe adı",
@@ -561,6 +569,7 @@
       "overview": "Genel bakış",
       "itinerary": "Program",
       "tiers": "Kademeler",
+      "pricing": "Fiyatlandırma",
       "inclusions": "Dahil olanlar",
       "imagery": "Görseller",
       "accommodation": "Konaklama",
@@ -568,6 +577,7 @@
     }
   },
   "legal": {
+    "contactWhatsapp": "WhatsApp'tan bize ulaşın",
     "privacy": {
       "eyebrow": "Legal",
       "title": "Privacy Policy",
@@ -667,5 +677,16 @@
     "dayItinerary": "Günlük Program",
     "whatsIncluded": "Dahil Olanlar",
     "whatsNotIncluded": "Dahil Olmayanlar"
+  },
+  "packageList": {
+    "kicker": "Güzergahlar",
+    "itinerary": "güzergah",
+    "itineraries": "güzergah",
+    "inRegion": "{region} bölgesinde",
+    "noMatchesKicker": "Sonuç yok",
+    "noMatchesHeading": "Bu filtrelere uyan güzergah bulunamadı.",
+    "noMatchesBody": "Filtrelerinizi ayarlayın ya da hayal ettiğinizi bize anlatın, sıfırdan çizelim.",
+    "clearFilters": "Filtreleri temizle",
+    "contactWhatsapp": "WhatsApp ile iletişime geçin"
   }
 }

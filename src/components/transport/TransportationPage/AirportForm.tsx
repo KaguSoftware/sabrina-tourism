@@ -11,6 +11,7 @@ import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
 import type { Airport, Vehicle } from "@/lib/transport/types";
+import { InfoTooltip } from "@/components/primitives/InfoTooltip/InfoTooltip";
 
 interface AirportFormProps {
   vehicleId: string | null;
@@ -341,6 +342,7 @@ export function AirportForm({
             <input type="checkbox" checked={meetAndGreet} onChange={(e) => setMeetAndGreet(e.target.checked)}
               className="w-4 h-4 accent-ochre" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">{t("meetAndGreet")}</span>
+            <InfoTooltip text={t("tooltipMeetAndGreet")} />
           </label>
         </div>
 
@@ -349,12 +351,15 @@ export function AirportForm({
             <input type="checkbox" checked={guideNeeded} onChange={(e) => setGuideNeeded(e.target.checked)}
               className="w-4 h-4 accent-ochre" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">{t("guideNeeded")}</span>
+            <InfoTooltip text={t("tooltipGuideNeeded")} />
           </label>
         </div>
 
         {guideNeeded && (
           <>
-            <TransportFormField label={t("guideType")}>
+            <TransportFormField label={t("guideType")} tooltip={
+              guideType === "assistant" ? t("tooltipGuideAssistant") : t("tooltipGuideCertified")
+            }>
               <select value={guideType} onChange={(e) => setGuideType(e.target.value as GuideType)} className={selectCls}>
                 <option value="assistant">{t("guideAssistant")}</option>
                 <option value="certified guide">{t("guideCertified")}</option>

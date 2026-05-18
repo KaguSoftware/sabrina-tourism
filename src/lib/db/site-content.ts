@@ -23,6 +23,24 @@ function mergeLocale<T extends Record<string, unknown>>(
   for (const [k, v] of Object.entries(overrides)) {
     if (v != null && v !== '') merged[k] = v;
   }
+
+  // Re-apply step_N_heading / step_N_body overrides into the steps array
+  if (Array.isArray(merged.steps)) {
+    merged.steps = (merged.steps as Record<string, unknown>[]).map((step, i) => {
+      const heading = overrides[`step_${i}_heading`];
+      const body = overrides[`step_${i}_body`];
+      return {
+        ...step,
+        ...(heading != null && heading !== '' ? { heading } : {}),
+        ...(body != null && body !== '' ? { body } : {}),
+      };
+    });
+    // Remove the flat keys so they don't pollute the shape
+    for (const k of Object.keys(merged)) {
+      if (/^step_\d+_(heading|body)$/.test(k)) delete merged[k];
+    }
+  }
+
   return merged as T;
 }
 

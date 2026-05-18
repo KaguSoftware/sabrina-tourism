@@ -177,49 +177,17 @@ function SuitcaseIcon({ animate }: { animate: boolean }) {
 
 function WhatsAppIcon({ animate }: { animate: boolean }) {
     return (
-        <svg
-            viewBox="0 0 120 120"
-            className="w-[100px] h-[100px]"
+        <img
+            src="/logo-whatsapp.svg"
+            alt=""
             aria-hidden="true"
-        >
-            <rect x="10" y="24" width="88" height="62" rx="12" fill="#1b4d5c" />
-            <circle cx="60" cy="55" r="22" fill="#25d366" />
-            <path
-                d="M60 37 C49.5 37 41 45.5 41 56 C41 59.5 42 62.8 43.8 65.5 L42 72 L49 70.3 C51.6 71.8 54.7 72.7 58 72.7 C68.5 72.7 77 64.2 77 53.7 C77 43.2 68.5 37 60 37Z"
-                fill="white"
-                strokeDasharray="300"
-                strokeDashoffset={animate ? 0 : 300}
-                style={{
-                    transition: animate
-                        ? "stroke-dashoffset 1100ms ease 200ms"
-                        : undefined,
-                }}
-            />
-            <path
-                d="M53 49.5 C53 49.5 51.5 52 52 54 C52.5 56 55 58.5 57 60 C59 61.5 62 63 64 63 C66 63 67.5 61.5 67.5 61.5 L65.5 58 L62.5 59 L60 56.5 L61 54 L58 51.5 Z"
-                fill="#25d366"
-            />
-            <rect
-                x="18"
-                y="96"
-                width="24"
-                height="8"
-                rx="2"
-                fill="#c99a3f"
-                opacity={animate ? 1 : 0}
-                style={{ transition: "opacity 400ms ease 600ms" }}
-            />
-            <rect
-                x="48"
-                y="96"
-                width="54"
-                height="8"
-                rx="2"
-                fill="#c99a3f"
-                opacity={animate ? 0.5 : 0}
-                style={{ transition: "opacity 400ms ease 700ms" }}
-            />
-        </svg>
+            className="w-[100px] h-[100px]"
+            style={{
+                opacity: animate ? 1 : 0,
+                transform: animate ? "scale(1)" : "scale(0.8)",
+                transition: "opacity 600ms ease, transform 600ms cubic-bezier(0.34,1.56,0.64,1)",
+            }}
+        />
     );
 }
 

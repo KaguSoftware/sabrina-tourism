@@ -23,6 +23,7 @@ import type {
   HomeHowItWorksData,
   HomeFeaturedHeadingData,
   HomeFeaturedHotelsHeadingData,
+  HomeGroupPackagesData,
   HomeQuoteData,
 } from "@/lib/supabase/types";
 
@@ -34,6 +35,7 @@ interface HomeEditorProps {
   howItWorks: HomeHowItWorksData;
   featured: HomeFeaturedHeadingData;
   featuredHotels: HomeFeaturedHotelsHeadingData;
+  groupPackages: HomeGroupPackagesData;
   quote: HomeQuoteData;
   initialTranslations: Record<string, TranslationsState>;
 }
@@ -86,7 +88,7 @@ function CharCount({ value, max }: { value: string; max: number }) {
   );
 }
 
-export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, quote, initialTranslations }: HomeEditorProps) {
+export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, groupPackages, quote, initialTranslations }: HomeEditorProps) {
   const [activeTab, setActiveTab] = useState<HomeTab>("edit");
   const [openSection, setOpenSection] = useState<string>("hero");
   const [saving, setSaving] = useState(false);
@@ -98,10 +100,13 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
       headline_em: hero.headline_em ?? "",
       sub: hero.sub ?? "",
       hero_image: hero.hero_image ?? null,
+      cta_browse: hero.cta_browse ?? "Browse tours",
+      cta_chauffeur: hero.cta_chauffeur ?? "Book a chauffeur →",
     },
     about: {
       heading: about.heading ?? "",
       body: about.body ?? "",
+      kicker: about.kicker ?? "About — Est. 2014",
     },
     how_it_works: {
       section_heading: howItWorks.section_heading ?? "",
@@ -119,9 +124,17 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
     featured: {
       section_heading: featured.section_heading ?? "",
       featured_slugs: featured.featured_slugs ?? [],
+      kicker: featured.kicker ?? "Our Daily Packages",
+      cta_label: featured.cta_label ?? "See all daily packages",
     },
     featured_hotels: {
       section_heading: featuredHotels.section_heading ?? "",
+      kicker: featuredHotels.kicker ?? "Featured hotels",
+      cta_label: featuredHotels.cta_label ?? "See all hotels",
+    },
+    group_packages: {
+      kicker: groupPackages.kicker ?? "Our Group Packages",
+      cta_label: groupPackages.cta_label ?? "See all group packages",
     },
     quote: {
       quote: quote.quote ?? "",
@@ -182,14 +195,43 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
         { key: "headline_top", label: "Headline top", englishValue: watch("hero.headline_top") },
         { key: "headline_em", label: "Headline em", englishValue: watch("hero.headline_em") },
         { key: "sub", label: "Sub", englishValue: watch("hero.sub"), multiline: true },
+        { key: "cta_browse", label: "CTA — Browse tours", englishValue: watch("hero.cta_browse") ?? "Browse tours" },
+        { key: "cta_chauffeur", label: "CTA — Book a chauffeur", englishValue: watch("hero.cta_chauffeur") ?? "Book a chauffeur →" },
       ],
     },
     {
       contentKey: "home_about",
       label: "About strip",
       fields: [
+        { key: "kicker", label: "Kicker", englishValue: watch("about.kicker") ?? "About — Est. 2014" },
         { key: "heading", label: "Heading", englishValue: watch("about.heading"), multiline: true },
         { key: "body", label: "Body", englishValue: watch("about.body"), multiline: true },
+      ],
+    },
+    {
+      contentKey: "home_group_packages",
+      label: "Group packages section",
+      fields: [
+        { key: "kicker", label: "Kicker", englishValue: watch("group_packages.kicker") ?? "Our Group Packages" },
+        { key: "cta_label", label: "CTA link label", englishValue: watch("group_packages.cta_label") ?? "See all group packages" },
+      ],
+    },
+    {
+      contentKey: "home_featured_heading",
+      label: "Featured daily packages section",
+      fields: [
+        { key: "kicker", label: "Kicker", englishValue: watch("featured.kicker") ?? "Our Daily Packages" },
+        { key: "section_heading", label: "Section heading", englishValue: watch("featured.section_heading") },
+        { key: "cta_label", label: "CTA link label", englishValue: watch("featured.cta_label") ?? "See all daily packages" },
+      ],
+    },
+    {
+      contentKey: "home_featured_hotels_heading",
+      label: "Featured hotels section",
+      fields: [
+        { key: "kicker", label: "Kicker", englishValue: watch("featured_hotels.kicker") ?? "Featured hotels" },
+        { key: "section_heading", label: "Section heading", englishValue: watch("featured_hotels.section_heading") },
+        { key: "cta_label", label: "CTA link label", englishValue: watch("featured_hotels.cta_label") ?? "See all hotels" },
       ],
     },
     {
@@ -201,20 +243,6 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
           { key: `step_${i}_heading`, label: `Step ${i + 1} heading`, englishValue: watch(`how_it_works.steps.${i}.heading`) },
           { key: `step_${i}_body`, label: `Step ${i + 1} body`, englishValue: watch(`how_it_works.steps.${i}.body`), multiline: true },
         ]),
-      ],
-    },
-    {
-      contentKey: "home_featured_heading",
-      label: "Featured heading",
-      fields: [
-        { key: "section_heading", label: "Section heading", englishValue: watch("featured.section_heading") },
-      ],
-    },
-    {
-      contentKey: "home_featured_hotels_heading",
-      label: "Featured hotels heading",
-      fields: [
-        { key: "section_heading", label: "Section heading", englishValue: watch("featured_hotels.section_heading") },
       ],
     },
     {
@@ -284,6 +312,12 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
                       <CharCount value={heroSub} max={140} />
                     </div>
                   </FormField>
+                  <FormField label="CTA — Browse tours button">
+                    <Input {...register("hero.cta_browse")} placeholder="Browse tours" />
+                  </FormField>
+                  <FormField label="CTA — Book a chauffeur button">
+                    <Input {...register("hero.cta_chauffeur")} placeholder="Book a chauffeur →" />
+                  </FormField>
                   <FormField label="Hero background image">
                     <ImageUploader
                       value={watch("hero.hero_image") ?? null}
@@ -325,6 +359,9 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
               open={openSection === "about"}
               onToggle={() => toggleSection("about")}
             >
+              <FormField label="Kicker">
+                <Input {...register("about.kicker")} placeholder="About — Est. 2014" />
+              </FormField>
               <FormField label="Heading" required error={errors.about?.heading?.message}>
                 <Textarea rows={2} {...register("about.heading")} />
               </FormField>
@@ -376,33 +413,60 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
               </div>
             </Section>
 
-            {/* Featured heading */}
+            {/* Group packages section */}
             <Section
               kicker="Section 4"
-              title="Featured section heading"
+              title="Group packages section"
+              open={openSection === "group_packages"}
+              onToggle={() => toggleSection("group_packages")}
+            >
+              <FormField label="Kicker">
+                <Input {...register("group_packages.kicker")} placeholder="Our Group Packages" />
+              </FormField>
+              <FormField label="CTA link label">
+                <Input {...register("group_packages.cta_label")} placeholder="See all group packages" />
+              </FormField>
+            </Section>
+
+            {/* Featured daily packages heading */}
+            <Section
+              kicker="Section 5"
+              title="Featured daily packages section"
               open={openSection === "featured"}
               onToggle={() => toggleSection("featured")}
             >
+              <FormField label="Kicker">
+                <Input {...register("featured.kicker")} placeholder="Our Daily Packages" />
+              </FormField>
               <FormField label="Section heading" required error={errors.featured?.section_heading?.message}>
                 <Input {...register("featured.section_heading")} />
+              </FormField>
+              <FormField label="CTA link label">
+                <Input {...register("featured.cta_label")} placeholder="See all daily packages" />
               </FormField>
             </Section>
 
             {/* Featured hotels heading */}
             <Section
-              kicker="Section 5"
-              title="Featured hotels heading"
+              kicker="Section 6"
+              title="Featured hotels section"
               open={openSection === "featured_hotels"}
               onToggle={() => toggleSection("featured_hotels")}
             >
+              <FormField label="Kicker">
+                <Input {...register("featured_hotels.kicker")} placeholder="Featured hotels" />
+              </FormField>
               <FormField label="Section heading" required error={errors.featured_hotels?.section_heading?.message}>
                 <Input {...register("featured_hotels.section_heading")} />
+              </FormField>
+              <FormField label="CTA link label">
+                <Input {...register("featured_hotels.cta_label")} placeholder="See all hotels" />
               </FormField>
             </Section>
 
             {/* Quote */}
             <Section
-              kicker="Section 6"
+              kicker="Section 7"
               title="Quote strip"
               open={openSection === "quote"}
               onToggle={() => toggleSection("quote")}
