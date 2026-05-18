@@ -305,6 +305,12 @@
     "label": "Язык",
     "switchTo": "Switch to {locale}"
   },
+  "currencySwitcher": {
+    "label": "Выбрать валюту",
+    "switchTo": "Перейти на {currency}",
+    "liveRates": "Текущие курсы · обновлено {time}",
+    "ratesUnavailable": "Отображение в EUR (курсы недоступны)"
+  },
   "legal": {
     "privacy": {
       "eyebrow": "Legal",

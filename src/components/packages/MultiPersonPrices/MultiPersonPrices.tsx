@@ -1,8 +1,10 @@
 "use client";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { User, Baby } from "lucide-react";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
+import { useCurrency } from "@/lib/currency/context";
+import { formatPrice as formatCurrency } from "@/lib/currency/format";
 
 interface Pricing {
   onePerson: number | null;
@@ -13,15 +15,7 @@ interface Pricing {
 
 interface MultiPersonPricesProps {
   pricing: Pricing;
-  currency: string;
-}
-
-function formatPrice(amount: number, currency: string) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  currency?: string;
 }
 
 const TWO_PEOPLE_ICON = () => (
@@ -33,8 +27,11 @@ const TWO_PEOPLE_ICON = () => (
   </svg>
 );
 
-export function MultiPersonPrices({ pricing, currency }: MultiPersonPricesProps) {
+export function MultiPersonPrices({ pricing }: MultiPersonPricesProps) {
   const t = useTranslations("pricingBlock");
+  const locale = useLocale();
+  const { currency, rates } = useCurrency();
+  const formatPrice = (amount: number) => formatCurrency(amount, currency, rates, locale);
 
   const slots = [
     { key: "onePerson", label: t("onePerson"), price: pricing.onePerson, icon: <User className="w-full h-full" strokeWidth={1.75} /> },
@@ -48,7 +45,7 @@ export function MultiPersonPrices({ pricing, currency }: MultiPersonPricesProps)
   if (slots.length === 0 && !showSupplement) return null;
 
   const supplementText = showSupplement
-    ? t("singleRoomSupplement", { amount: formatPrice(supplement as number, currency) })
+    ? t("singleRoomSupplement", { amount: formatPrice(supplement as number) })
     : "";
 
   return (
@@ -71,7 +68,7 @@ export function MultiPersonPrices({ pricing, currency }: MultiPersonPricesProps)
                   {slot.label}
                 </p>
                 <p className="font-display text-[26px] font-semibold tracking-tight text-ink leading-none">
-                  {formatPrice(slot.price!, currency)}
+                  {formatPrice(slot.price!)}
                 </p>
               </div>
             ))}

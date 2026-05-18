@@ -27,7 +27,7 @@ export function HeroPanorama({
           alt="Hero panorama"
           fill
           sizes="100vw"
-          className="object-contain object-center"
+          className="object-cover object-center"
           priority
           fetchPriority="high"
         />

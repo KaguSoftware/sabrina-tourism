@@ -318,6 +318,12 @@
     "label": "Dil",
     "switchTo": "Switch to {locale}"
   },
+  "currencySwitcher": {
+    "label": "Para birimi seç",
+    "switchTo": "{currency} para birimine geç",
+    "liveRates": "Canlı kurlar · güncellendi {time}",
+    "ratesUnavailable": "EUR gösteriliyor (kurlar mevcut değil)"
+  },
   "admin": {
     "language": {
       "label": "Admin dili"

@@ -305,6 +305,12 @@
     "label": "语言",
     "switchTo": "Switch to {locale}"
   },
+  "currencySwitcher": {
+    "label": "选择货币",
+    "switchTo": "切换到 {currency}",
+    "liveRates": "实时汇率 · 更新于 {time}",
+    "ratesUnavailable": "以欧元显示（汇率不可用）"
+  },
   "legal": {
     "privacy": {
       "eyebrow": "Legal",

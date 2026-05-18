@@ -305,6 +305,12 @@
     "label": "Sprache",
     "switchTo": "Switch to {locale}"
   },
+  "currencySwitcher": {
+    "label": "Währung wählen",
+    "switchTo": "Zu {currency} wechseln",
+    "liveRates": "Live-Kurse · aktualisiert {time}",
+    "ratesUnavailable": "Anzeige in EUR (Kurse nicht verfügbar)"
+  },
   "legal": {
     "privacy": {
       "eyebrow": "Legal",
