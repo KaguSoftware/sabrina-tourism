@@ -127,17 +127,27 @@ export async function savePremadeTranslations(
     if (day) await supabase.from("premade_package_itinerary_days").update(update).eq("id", day.id);
   }
 
-  // Tiers highlights — keyed as tier_{idx}_highlights
+  // Tiers — keyed as tier_{idx}_{field}
+  const TIER_FIELDS = ["tier_name", "vehicle_class", "group_size", "meals_included", "guide_languages", "highlights"] as const;
+  const tierUpdates: Record<string, Record<string, unknown>> = {};
   for (const [key, val] of Object.entries(translations)) {
-    const m = key.match(/^tier_(\d+)_highlights$/);
-    if (!m) continue;
+    for (const field of TIER_FIELDS) {
+      const m = key.match(new RegExp(`^tier_(\\d+)_${field}$`));
+      if (!m) continue;
+      if (!tierUpdates[m[1]]) tierUpdates[m[1]] = {};
+      tierUpdates[m[1]][`${field}_translations`] = val;
+    }
+  }
+  if (Object.keys(tierUpdates).length) {
     const { data: tiers } = await supabase
       .from("premade_package_tiers")
       .select("id")
       .eq("package_id", pkgId)
       .order("sort_order");
-    const tier = tiers?.[parseInt(m[1])];
-    if (tier) await supabase.from("premade_package_tiers").update({ highlights_translations: val }).eq("id", tier.id);
+    for (const [idx, update] of Object.entries(tierUpdates)) {
+      const tier = tiers?.[parseInt(idx)];
+      if (tier) await supabase.from("premade_package_tiers").update(update).eq("id", tier.id);
+    }
   }
 
   // Inclusions — keyed as inclusion_{idx}
@@ -300,11 +310,16 @@ export async function loadPremadeTranslations(pkgId: string): Promise<ContentTra
 
   const { data: tiers } = await supabase
     .from("premade_package_tiers")
-    .select("highlights_translations")
+    .select("tier_name_translations, vehicle_class_translations, group_size_translations, meals_included_translations, guide_languages_translations, highlights_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
 
   (tiers ?? []).forEach((t: Record<string, unknown>, i: number) => {
+    if (t.tier_name_translations) result[`tier_${i}_tier_name`] = t.tier_name_translations as Record<ContentLocale, string>;
+    if (t.vehicle_class_translations) result[`tier_${i}_vehicle_class`] = t.vehicle_class_translations as Record<ContentLocale, string>;
+    if (t.group_size_translations) result[`tier_${i}_group_size`] = t.group_size_translations as Record<ContentLocale, string>;
+    if (t.meals_included_translations) result[`tier_${i}_meals_included`] = t.meals_included_translations as Record<ContentLocale, string>;
+    if (t.guide_languages_translations) result[`tier_${i}_guide_languages`] = t.guide_languages_translations as Record<ContentLocale, string>;
     if (t.highlights_translations) result[`tier_${i}_highlights`] = t.highlights_translations as Record<ContentLocale, string>;
   });
 

@@ -10,7 +10,9 @@ import { DAILY_PACKAGES } from "@/lib/daily/data";
 import { PackagePDF } from "@/components/pdf/PackagePDF";
 import { PremadePackagePDF } from "@/components/pdf/PremadePackagePDF";
 import { DailyPackagePDF } from "@/components/pdf/DailyPackagePDF";
+import { VoucherPDF } from "@/components/pdf/VoucherPDF";
 import type { Package } from "@/lib/packages/types";
+import type { VoucherPayload } from "@/app/admin/(authed)/vouchers/schema";
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
@@ -82,4 +84,11 @@ export async function renderPremadePdf(slug: string, baseUrl: string, waPhone: s
 
 export async function renderDailyPdf(slug: string, baseUrl: string, waPhone: string, locale = 'en') {
   return _renderDailyPdf(slug, baseUrl, waPhone, locale);
+}
+
+export async function renderVoucherPdf(payload: VoucherPayload): Promise<ArrayBuffer> {
+  const stream = await renderToStream(
+    createElement(VoucherPDF, { payload }) as ReactElement<DocumentProps>,
+  );
+  return streamToBytes(stream);
 }

@@ -330,6 +330,7 @@
       "toursMainPage": "Turlar Sayfası",
       "hotels": "Oteller",
       "transportation": "Transfer",
+      "vouchers": "Vauçerler",
       "translations": "Çeviriler",
       "concierge": "Concierge",
       "signOut": "Çıkış yap",
@@ -390,6 +391,11 @@
         "kicker": "Admin",
         "title": "Çeviriler",
         "description": "İngilizce, Arapça ve Türkçe arayüz metinlerini yönet. İngilizceden otomatik çevirmek için AI kullan."
+      },
+      "vouchers": {
+        "kicker": "Concierge",
+        "title": "Vauçer oluşturucu",
+        "description": "Bir paket seç, rezervasyon bilgilerini doldur ve markalı PDF vauçeri indir. Başka dilde indirmek için 'AI ile Çevir' butonunu kullan."
       }
     },
     "common": {

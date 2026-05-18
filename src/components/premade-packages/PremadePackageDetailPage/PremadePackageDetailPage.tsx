@@ -388,7 +388,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                 <p
                   className={`text-[clamp(16px,1.4vw,19px)] leading-[1.7] text-ink-soft mb-6 max-w-[60ch] ${
                     i === 0
-                      ? "first-letter:font-display first-letter:italic first-letter:text-[4em] first-letter:leading-[0.85] first-letter:float-left first-letter:pr-3.5 first-letter:pt-2 first-letter:text-ochre"
+                      ? "first-letter:font-display first-letter:italic first-letter:text-[4em] first-letter:leading-[0.85] ltr:first-letter:float-left rtl:first-letter:float-right ltr:first-letter:pr-3.5 rtl:first-letter:pl-3.5 first-letter:pt-2 first-letter:text-ochre"
                       : ""
                   }`}
                 >

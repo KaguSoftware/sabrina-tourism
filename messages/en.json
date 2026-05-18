@@ -333,6 +333,7 @@
       "hotels": "Hotels",
       "hotelsPage": "Hotels Page",
       "transportation": "Transfer",
+      "vouchers": "Vouchers",
       "translations": "Translations",
       "concierge": "Concierge",
       "signOut": "Sign out",
@@ -393,6 +394,11 @@
         "kicker": "Admin",
         "title": "Translations",
         "description": "Manage UI strings for English, Arabic, and Turkish. Use AI to auto-translate from English."
+      },
+      "vouchers": {
+        "kicker": "Concierge",
+        "title": "Voucher generator",
+        "description": "Pick a package, fill the booking details, and download a branded PDF voucher. Use 'Translate with AI' to render in another language."
       }
     },
     "common": {

@@ -26,11 +26,18 @@ export function PremadeTranslationsTab({ pkgId, formValues, initialTranslations 
       { key: `day_${i}_title`, label: `Day ${day.day_number} — title`, englishValue: day.title },
       ...(day.description ? [{ key: `day_${i}_description`, label: `Day ${day.day_number} — description`, englishValue: day.description, multiline: true }] : []),
     ]),
-    ...formValues.tiers.flatMap((tier, i) =>
-      tier.highlights.length > 0
+    ...formValues.tiers.flatMap((tier, i) => [
+      { key: `tier_${i}_tier_name`, label: `${tier.tier_name} tier — name`, englishValue: tier.tier_name },
+      { key: `tier_${i}_vehicle_class`, label: `${tier.tier_name} tier — vehicle`, englishValue: tier.vehicle_class },
+      { key: `tier_${i}_group_size`, label: `${tier.tier_name} tier — group size`, englishValue: tier.group_size },
+      { key: `tier_${i}_meals_included`, label: `${tier.tier_name} tier — meals`, englishValue: tier.meals_included },
+      ...(tier.guide_languages.length > 0
+        ? [{ key: `tier_${i}_guide_languages`, label: `${tier.tier_name} tier — guide languages`, englishValue: tier.guide_languages.join("\n"), multiline: true }]
+        : []),
+      ...(tier.highlights.length > 0
         ? [{ key: `tier_${i}_highlights`, label: `${tier.tier_name} tier — highlights`, englishValue: tier.highlights.join("\n"), multiline: true }]
-        : []
-    ),
+        : []),
+    ]),
     ...formValues.included.map((item, i) => ({ key: `inclusion_included_${i}`, label: `Included: ${item.text.slice(0, 40)}`, englishValue: item.text })),
     ...formValues.not_included.map((item, i) => ({ key: `inclusion_not_included_${i}`, label: `Not included: ${item.text.slice(0, 40)}`, englishValue: item.text })),
   ];

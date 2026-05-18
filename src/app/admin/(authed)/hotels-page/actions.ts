@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { updateTag, revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { hotelsPageSchema, type HotelsPageFormValues } from "./schema";
@@ -20,5 +20,7 @@ export async function saveHotelsPage(raw: HotelsPageFormValues): Promise<{ error
   if (error) return { error: error.message };
 
   updateTag(tags.siteContent("hotels_page"));
+  revalidatePath("/", "layout");
+  revalidatePath("/admin/hotels-page");
   return {};
 }

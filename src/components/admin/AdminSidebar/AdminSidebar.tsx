@@ -14,6 +14,7 @@ import {
   CalendarRange,
   Sun,
   Languages,
+  ReceiptText,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth/actions";
@@ -29,6 +30,7 @@ const NAV_ITEMS = [
   { href: "/admin/hotels", labelKey: "hotels", icon: Hotel, exact: false },
   { href: "/admin/hotels-page", labelKey: "hotelsPage", icon: FileText, exact: false },
   { href: "/admin/transportation", labelKey: "transportation", icon: Car, exact: false },
+  { href: "/admin/vouchers", labelKey: "vouchers", icon: ReceiptText, exact: false },
   { href: "/admin/translations", labelKey: "translations", icon: Languages, exact: false },
 ];
 

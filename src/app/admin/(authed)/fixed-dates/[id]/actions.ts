@@ -144,7 +144,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   // Replace tiers — preserve existing translations
   const { data: existingTiers } = await supabase
     .from("premade_package_tiers")
-    .select("sort_order, highlights_translations")
+    .select("sort_order, tier_name_translations, vehicle_class_translations, group_size_translations, meals_included_translations, guide_languages_translations, highlights_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
   await supabase.from("premade_package_tiers").delete().eq("package_id", pkgId);
@@ -161,6 +161,11 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
         meals_included: t.meals_included,
         highlights: t.highlights,
         sort_order: i,
+        tier_name_translations: existingTiers?.[i]?.tier_name_translations ?? null,
+        vehicle_class_translations: existingTiers?.[i]?.vehicle_class_translations ?? null,
+        group_size_translations: existingTiers?.[i]?.group_size_translations ?? null,
+        meals_included_translations: existingTiers?.[i]?.meals_included_translations ?? null,
+        guide_languages_translations: existingTiers?.[i]?.guide_languages_translations ?? null,
         highlights_translations: existingTiers?.[i]?.highlights_translations ?? null,
       }))
     );
