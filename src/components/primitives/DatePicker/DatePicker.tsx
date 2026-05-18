@@ -114,7 +114,7 @@ export function DatePicker({
   }
 
   const triggerCls = [
-    "w-full flex items-center justify-between gap-2 bg-transparent border-0 border-b py-2.5 text-left transition-colors duration-200 focus:outline-none cursor-pointer",
+    "w-full flex items-center gap-2 bg-transparent border-0 border-b py-2.5 text-left transition-colors duration-200 focus:outline-none cursor-pointer",
     error ? "border-terracotta" : value ? "border-ochre" : "border-rule",
     className ?? "",
   ].join(" ");
@@ -181,14 +181,14 @@ export function DatePicker({
   return (
     <div className="relative">
       <button ref={triggerRef} type="button" className={triggerCls} onClick={openPicker}>
-        <span className={`font-sans text-[16px] ${value ? "text-ink" : "text-muted"}`}>
-          {value ? formatDisplay(value) : placeholder}
-        </span>
         <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className={`shrink-0 ${value ? "text-ochre" : "text-muted"}`}>
           <rect x="0.75" y="2.75" width="13.5" height="11.5" rx="1.25" stroke="currentColor" strokeWidth="1.1" />
           <path d="M0.75 6h13.5" stroke="currentColor" strokeWidth="1.1" />
           <path d="M4.5 1v3M10.5 1v3" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
         </svg>
+        <span className={`font-sans text-[16px] ${value ? "text-ink" : "text-muted"}`}>
+          {value ? formatDisplay(value) : placeholder}
+        </span>
       </button>
       {typeof window !== "undefined" && createPortal(panel, document.body)}
     </div>
