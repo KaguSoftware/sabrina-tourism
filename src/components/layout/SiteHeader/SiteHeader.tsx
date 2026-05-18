@@ -10,6 +10,7 @@ import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import type { HotelPublic } from "@/lib/db/hotels";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher/LanguageSwitcher";
+import { CurrencySwitcher } from "@/components/layout/CurrencySwitcher/CurrencySwitcher";
 import Image from "next/image";
 
 function DropdownNavItem({
@@ -161,6 +162,7 @@ export function SiteHeader({
           {/* Desktop CTA + Language switcher */}
           <div className="hidden md:flex items-center gap-4">
             <LanguageSwitcher transparent={transparent} />
+            <CurrencySwitcher transparent={transparent} />
             <a
               href={genericMessage()}
               target="_blank"
@@ -186,6 +188,7 @@ export function SiteHeader({
 
           <div className="md:hidden flex items-center gap-3">
             <LanguageSwitcher transparent={transparent} />
+            <CurrencySwitcher transparent={transparent} />
             <button
               className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 ${
                 transparent ? "text-cream" : "text-black"

@@ -12,6 +12,8 @@ import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
 import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
 import { useLocale, useTranslations } from "next-intl";
+import { useCurrency } from "@/lib/currency/context";
+import { formatPrice } from "@/lib/currency/format";
 
 function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
@@ -80,6 +82,7 @@ function useStopGlow(count: number) {
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const locale = useLocale();
   const t = useTranslations("daily");
+  const { currency, rates } = useCurrency();
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
   const [guests, setGuests] = useState(1);
@@ -161,7 +164,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
       {/* Multi-person pricing */}
       {pkg.pricing && (
         <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pb-10 pt-4">
-          <MultiPersonPrices pricing={pkg.pricing} currency={pkg.currency} />
+          <MultiPersonPrices pricing={pkg.pricing} />
         </div>
       )}
 
@@ -256,7 +259,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   Ticket Price
                 </p>
                 <p className="font-display text-[42px] leading-none tracking-[-0.02em] text-ochre mb-1">
-                  {pkg.currency} {pkg.price.toLocaleString()}
+                  {formatPrice(pkg.price, currency, rates, locale)}
                 </p>
                 <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted mb-6">
                   per person

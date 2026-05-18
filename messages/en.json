@@ -319,6 +319,12 @@
     "label": "Language",
     "switchTo": "Switch to {locale}"
   },
+  "currencySwitcher": {
+    "label": "Select currency",
+    "switchTo": "Switch to {currency}",
+    "liveRates": "Live rates · updated {time}",
+    "ratesUnavailable": "Showing EUR (rates unavailable)"
+  },
   "admin": {
     "language": {
       "label": "Admin language"

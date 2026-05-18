@@ -318,6 +318,12 @@
     "label": "اللغة",
     "switchTo": "التبديل إلى {locale}"
   },
+  "currencySwitcher": {
+    "label": "اختر العملة",
+    "switchTo": "التبديل إلى {currency}",
+    "liveRates": "أسعار مباشرة · تم التحديث {time}",
+    "ratesUnavailable": "عرض باليورو (الأسعار غير متاحة)"
+  },
   "admin": {
     "language": {
       "label": "لغة لوحة الإدارة"

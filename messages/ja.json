@@ -305,6 +305,12 @@
     "label": "言語",
     "switchTo": "{locale}に切り替える"
   },
+  "currencySwitcher": {
+    "label": "通貨を選択",
+    "switchTo": "{currency}に切り替える",
+    "liveRates": "リアルタイムレート · {time}に更新",
+    "ratesUnavailable": "EURで表示（レートを取得できません）"
+  },
   "legal": {
     "privacy": {
       "eyebrow": "Legal",

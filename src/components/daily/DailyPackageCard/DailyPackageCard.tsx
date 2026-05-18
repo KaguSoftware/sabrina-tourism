@@ -1,8 +1,14 @@
+"use client";
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
 import type { DailyPackagePublic } from "@/lib/db/daily-packages";
+import { useCurrency } from "@/lib/currency/context";
+import { formatPrice } from "@/lib/currency/format";
 
 export function DailyPackageCard({ pkg }: { pkg: DailyPackagePublic }) {
+  const locale = useLocale();
+  const { currency, rates } = useCurrency();
   return (
     <BaseCard
       href={`/tours/daily/${pkg.slug ?? pkg.id}`}
@@ -57,7 +63,7 @@ export function DailyPackageCard({ pkg }: { pkg: DailyPackagePublic }) {
       </div>
       <div className="mt-auto flex items-center justify-between">
         <p className="font-display italic text-[20px] text-ochre">
-          {pkg.currency} {pkg.price.toLocaleString()}
+          {formatPrice(pkg.price, currency, rates, locale)}
           <span className="font-sans not-italic text-[13px] text-muted ml-1">
             / person
           </span>

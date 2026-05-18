@@ -1,6 +1,10 @@
+"use client";
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
+import { useCurrency } from "@/lib/currency/context";
+import { formatPrice } from "@/lib/currency/format";
 
 function formatDate(iso: string): string {
   return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -11,6 +15,8 @@ interface PremadePackageCardProps {
 }
 
 export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
+  const locale = useLocale();
+  const { currency, rates } = useCurrency();
   return (
     <BaseCard
       href={`/tours/premade/${pkg.slug}`}
@@ -59,7 +65,7 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
       <div className="mt-auto flex items-center justify-between">
         {pkg.price != null ? (
           <p className="font-display italic text-[20px] text-ochre">
-            ${pkg.price.toLocaleString()}
+            {formatPrice(pkg.price, currency, rates, locale)}
             <span className="font-sans not-italic text-[13px] text-muted ml-1">/ person</span>
           </p>
         ) : <div />}

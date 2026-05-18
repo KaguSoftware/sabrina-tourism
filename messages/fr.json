@@ -305,6 +305,12 @@
     "label": "Langue",
     "switchTo": "Passer à {locale}"
   },
+  "currencySwitcher": {
+    "label": "Choisir la devise",
+    "switchTo": "Passer à {currency}",
+    "liveRates": "Taux en direct · mis à jour {time}",
+    "ratesUnavailable": "Affichage en EUR (taux indisponibles)"
+  },
   "legal": {
     "privacy": {
       "eyebrow": "Legal",

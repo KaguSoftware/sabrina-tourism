@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useCurrency } from "@/lib/currency/context";
+import { formatPrice, parseEurAmount } from "@/lib/currency/format";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
@@ -41,6 +43,12 @@ export function AirportForm({
   setGuideLanguage: setGuideLanguageProp,
 }: AirportFormProps) {
   const t = useTranslations("transport.form");
+  const formLocale = useLocale();
+  const { currency, rates } = useCurrency();
+  const displayFromPrice = (raw: string) => {
+    const eur = parseEurAmount(raw);
+    return eur === null ? raw : `From ${formatPrice(eur, currency, rates, formLocale)}`;
+  };
   const [airport, setAirport] = useState(airports[0]?.label ?? "");
   const [direction, setDirection] = useState<"pickup" | "dropoff" | "both">("pickup");
 
@@ -213,7 +221,7 @@ export function AirportForm({
       <div className="flex flex-col sm:flex-row gap-6 items-start relative z-8">
         <div className="flex flex-col gap-1.5 min-w-40">
           <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("vehicleClass")}</span>
-          {vClass && !needsMultiVehicle && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}
+          {vClass && !needsMultiVehicle && <span className="text-[12px] text-muted">{vClass.capacity} · {displayFromPrice(vClass.from)}</span>}
           {vehicleMissing && <p className="text-[12px] text-terracotta">{t("vehicleMissing")}</p>}
         </div>
         <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -240,7 +248,7 @@ export function AirportForm({
                 )}
                 <FleetIllustration vehicleId={v.id} className="w-full h-24" selected={vehicleId === v.id} />
                 <span className="font-display font-normal text-[15px] tracking-tight">{v.label}</span>
-                <span className={`font-mono text-[10px] tracking-[0.18em] uppercase text-ochre`}>{v.from}</span>
+                <span className={`font-mono text-[10px] tracking-[0.18em] uppercase text-ochre`}>{displayFromPrice(v.from)}</span>
                 <span className={`text-[11px] text-muted`}>{v.capacity}</span>
               </button>
             );
