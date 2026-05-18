@@ -25,6 +25,7 @@ export const homeContentSchema = z.object({
   how_it_works: z.object({
     section_heading: z.string(),
     steps: z.array(stepSchema),
+    cta_label: z.string().optional(),
   }),
   featured: z.object({
     section_heading: z.string(),
@@ -38,6 +39,7 @@ export const homeContentSchema = z.object({
     cta_label: z.string().optional(),
   }),
   group_packages: z.object({
+    section_heading: z.string().optional(),
     kicker: z.string().optional(),
     cta_label: z.string().optional(),
   }),

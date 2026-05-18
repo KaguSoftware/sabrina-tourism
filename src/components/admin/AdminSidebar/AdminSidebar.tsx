@@ -27,6 +27,7 @@ const NAV_ITEMS = [
   { href: "/admin/daily", labelKey: "dailyTours", icon: Sun, exact: false },
   { href: "/admin/tours-page", labelKey: "toursMainPage", icon: FileText, exact: false },
   { href: "/admin/hotels", labelKey: "hotels", icon: Hotel, exact: false },
+  { href: "/admin/hotels-page", labelKey: "hotelsPage", icon: FileText, exact: false },
   { href: "/admin/transportation", labelKey: "transportation", icon: Car, exact: false },
   { href: "/admin/translations", labelKey: "translations", icon: Languages, exact: false },
 ];

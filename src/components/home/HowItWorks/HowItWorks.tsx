@@ -237,9 +237,10 @@ function StepCard({ step, index }: { step: Step; index: number }) {
 interface HowItWorksProps {
     sectionHeading: string;
     steps: Step[];
+    ctaLabel: string;
 }
 
-export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
+export function HowItWorks({ sectionHeading, steps, ctaLabel }: HowItWorksProps) {
     return (
         <section className="relative z-10 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}
@@ -345,7 +346,7 @@ export function HowItWorks({ sectionHeading, steps }: HowItWorksProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Start a conversation
+                        {ctaLabel}
                     </GoldButton>
                 </Reveal>
             </div>

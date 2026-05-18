@@ -30,6 +30,7 @@ export interface HomeHowItWorksStep {
 export interface HomeHowItWorksData {
   section_heading: string;
   steps: HomeHowItWorksStep[];
+  cta_label?: string;
 }
 
 export interface HomeQuoteData {
@@ -45,6 +46,7 @@ export interface HomeFeaturedHeadingData {
 }
 
 export interface HomeGroupPackagesData {
+  section_heading?: string;
   kicker?: string;
   cta_label?: string;
 }
@@ -52,6 +54,14 @@ export interface HomeGroupPackagesData {
 export interface ToursHeroData {
   page_heading: string;
   page_lede: string;
+}
+
+export interface HotelsPageData {
+  kicker?: string;
+  page_heading?: string;
+  page_lede?: string;
+  property_singular?: string;
+  property_plural?: string;
 }
 
 export interface TransportHeroData {
@@ -80,7 +90,8 @@ export type SiteContentKey =
   | 'home_featured_hotels_heading'
   | 'home_group_packages'
   | 'tours_hero'
-  | 'transport_hero';
+  | 'transport_hero'
+  | 'hotels_page';
 
 export interface SiteContentDataMap {
   home_hero: HomeHeroData;
@@ -92,6 +103,7 @@ export interface SiteContentDataMap {
   home_group_packages: HomeGroupPackagesData;
   tours_hero: ToursHeroData;
   transport_hero: TransportHeroData;
+  hotels_page: HotelsPageData;
 }
 
 export interface SiteContentRow {

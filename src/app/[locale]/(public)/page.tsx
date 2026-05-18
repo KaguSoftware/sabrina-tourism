@@ -24,9 +24,9 @@ const HOME_KEYS = [
   "home_quote",
 ] as const;
 
-async function SignatureSection({ kicker, ctaLabel, locale }: { kicker: string; ctaLabel: string; locale: string }) {
+async function SignatureSection({ heading, kicker, ctaLabel, locale }: { heading: string; kicker: string; ctaLabel: string; locale: string }) {
   const groupPackages = await getAllPremadePackages({ locale });
-  return <SignatureDestinations packages={groupPackages.slice(0, 3)} kicker={kicker} ctaLabel={ctaLabel} />;
+  return <SignatureDestinations packages={groupPackages.slice(0, 3)} heading={heading} kicker={kicker} ctaLabel={ctaLabel} />;
 }
 
 async function FeaturedHotelsSection({ heading, kicker, ctaLabel, locale }: { heading: string; kicker: string; ctaLabel: string; locale: string }) {
@@ -64,6 +64,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <AboutStrip heading={about.heading} body={about.body} kicker={about.kicker ?? "About — Est. 2014"} />
       <Suspense fallback={<SectionFallback />}>
         <SignatureSection
+          heading={groupPackages.section_heading ?? "Four corners of the country."}
           kicker={groupPackages.kicker ?? "Our Group Packages"}
           ctaLabel={groupPackages.cta_label ?? "See all group packages"}
           locale={locale}
@@ -85,6 +86,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </Suspense>
       <HowItWorks
         sectionHeading={howItWorks.section_heading}
+        ctaLabel={howItWorks.cta_label ?? "Start a conversation"}
         steps={howItWorks.steps.map((s) => ({
           ...s,
           icon: (["compass", "suitcase", "whatsapp"].includes(s.icon) ? s.icon : "compass") as Step["icon"],

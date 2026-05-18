@@ -110,6 +110,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
     },
     how_it_works: {
       section_heading: howItWorks.section_heading ?? "",
+      cta_label: howItWorks.cta_label ?? "Start a conversation",
       steps: (howItWorks.steps?.length ? howItWorks.steps : [
         { num: "01", heading: "", body: "", icon: "compass" as const },
         { num: "02", heading: "", body: "", icon: "suitcase" as const },
@@ -133,6 +134,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
       cta_label: featuredHotels.cta_label ?? "See all hotels",
     },
     group_packages: {
+      section_heading: groupPackages.section_heading ?? "Four corners of the country.",
       kicker: groupPackages.kicker ?? "Our Group Packages",
       cta_label: groupPackages.cta_label ?? "See all group packages",
     },
@@ -411,6 +413,9 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
                   </div>
                 ))}
               </div>
+              <FormField label="CTA label">
+                <Input {...register("how_it_works.cta_label")} placeholder="Start a conversation" />
+              </FormField>
             </Section>
 
             {/* Group packages section */}
@@ -420,6 +425,9 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
               open={openSection === "group_packages"}
               onToggle={() => toggleSection("group_packages")}
             >
+              <FormField label="Section heading">
+                <Input {...register("group_packages.section_heading")} placeholder="Four corners of the country." />
+              </FormField>
               <FormField label="Kicker">
                 <Input {...register("group_packages.kicker")} placeholder="Our Group Packages" />
               </FormField>

@@ -3,6 +3,7 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCard } from "@/components/hotels/HotelCard/HotelCard";
 import { getAllHotels } from "@/lib/db/hotels";
+import { getSiteContent } from "@/lib/db/site-content";
 
 export const revalidate = 604800;
 
@@ -17,8 +18,18 @@ export const metadata = {
   },
 };
 
-export default async function HotelsPage() {
-  const hotels = await getAllHotels();
+export default async function HotelsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const [hotels, pageContent] = await Promise.all([
+    getAllHotels(),
+    getSiteContent("hotels_page", locale),
+  ]);
+
+  const kicker = pageContent?.kicker ?? "Our hotels";
+  const heading = pageContent?.page_heading ?? "Curated stays across Türkiye";
+  const lede = pageContent?.page_lede ?? "Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.";
+  const singular = pageContent?.property_singular ?? "property";
+  const plural = pageContent?.property_plural ?? "properties";
 
   return (
     <>
@@ -26,19 +37,19 @@ export default async function HotelsPage() {
       <section className="relative z-10 pt-[clamp(80px,10vw,140px)] pb-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)]">
         <div className="max-w-[1320px] mx-auto">
           <Reveal>
-            <Kicker>Our hotels</Kicker>
+            <Kicker>{kicker}</Kicker>
           </Reveal>
           <Reveal delay={120}>
             <GoldUnderlineHeading
               as="h1"
               className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch]"
             >
-              Curated stays across Türkiye
+              {heading}
             </GoldUnderlineHeading>
           </Reveal>
           <Reveal delay={200}>
             <p className="mt-6 text-[clamp(15px,1.3vw,18px)] text-ink-soft leading-[1.6] max-w-[52ch]">
-              Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.
+              {lede}
             </p>
           </Reveal>
         </div>
@@ -51,7 +62,7 @@ export default async function HotelsPage() {
             <span className="text-ochre font-display italic text-[18px] mr-1">
               {hotels.length}
             </span>
-            {hotels.length === 1 ? "property" : "properties"}
+            {hotels.length === 1 ? singular : plural}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
