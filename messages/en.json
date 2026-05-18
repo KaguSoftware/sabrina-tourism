@@ -126,6 +126,7 @@
       "pickupTimeOptional": "Pickup time",
       "dates": "Dates *",
       "dateRangePlaceholder": "Select start → end date",
+      "selectDate": "Select a date",
       "destinationsStops": "Destinations & stops",
       "destinationsStopsPlaceholder": "e.g. Cappadocia → Konya → Antalya",
       "destinationsStopsTextareaPlaceholder": "List your stops, e.g. Cappadocia → Konya → Antalya",

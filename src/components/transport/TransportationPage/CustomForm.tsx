@@ -154,27 +154,21 @@ export function CustomForm({
           <TimePicker value={pickupTime} onChange={setPickupTime} placeholder={t("pickupTimeOptional")} />
         </TransportFormField>
 
-        <TransportFormField
-          label={
-            <span className="flex items-center justify-between w-full">
-              <span>{t("dates")}{dateMissing ? "" : ""}</span>
-              <label className="flex items-center gap-1.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={oneDay}
-                  onChange={(e) => {
-                    setOneDay(e.target.checked);
-                    if (e.target.checked && startDate) setEndDate(startDate);
-                    if (!e.target.checked) setEndDate("");
-                  }}
-                  className="h-3 w-3 accent-ochre"
-                />
-                <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">1 day</span>
-              </label>
-            </span>
-          }
-          hint={dateMissing ? t("requiredHint") : undefined}
-        >
+        <div className="flex flex-col gap-2.5">
+          <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("dates")}</span>
+          <label className="flex items-center gap-1.5 cursor-pointer w-fit">
+            <input
+              type="checkbox"
+              checked={oneDay}
+              onChange={(e) => {
+                setOneDay(e.target.checked);
+                if (e.target.checked && startDate) setEndDate(startDate);
+                if (!e.target.checked) setEndDate("");
+              }}
+              className="h-3 w-3 accent-ochre"
+            />
+            <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">1 day</span>
+          </label>
           {oneDay ? (
             <DatePicker
               value={startDate}
@@ -193,7 +187,8 @@ export function CustomForm({
               placeholder={t("dateRangePlaceholder")}
             />
           )}
-        </TransportFormField>
+          {dateMissing && <span className="text-[12px] text-terracotta">{t("requiredHint")}</span>}
+        </div>
 
         {/* Row 2: Passengers, Luggage, Destinations */}
         <TransportFormField label={t("passengers")}>
