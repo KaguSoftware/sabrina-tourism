@@ -26,7 +26,7 @@ export function formatPrice(
 ): string {
   const display = getDisplayCurrency(currency, rates);
   const value = convert(amountEur, display, rates);
-  const fractionDigits = ZERO_DECIMAL_CURRENCIES.includes(display) ? 0 : 0;
+  const fractionDigits = ZERO_DECIMAL_CURRENCIES.includes(display) ? 0 : 2;
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: display,
