@@ -3,6 +3,8 @@ export interface PackageMessageContext {
   tier: string;
   date: string;
   count: string | number;
+  childrenAges?: string[];
+  singleRoom?: boolean;
 }
 
 export interface TransferMessageContext {

@@ -9,9 +9,10 @@ interface HotelCarouselProps {
   hotelName: string;
   roomTypes?: RoomType[];
   activeRoomIndex?: number;
+  showThumbnails?: boolean;
 }
 
-export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex }: HotelCarouselProps) {
+export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, showThumbnails = true }: HotelCarouselProps) {
   const [current, setCurrent] = useState(0);
   const prevRef = useRef(activeRoomIndex);
 
@@ -89,7 +90,7 @@ export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex }:
       </div>
 
       {/* Thumbnail strip */}
-      {images.length > 1 && (
+      {showThumbnails && images.length > 1 && (
         <div className="flex gap-2 mt-2">
           {images.map((src, i) => (
             <button

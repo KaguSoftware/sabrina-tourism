@@ -8,7 +8,7 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { href: "/packages", label: "All Itineraries" },
       { href: "/tours/custom-packages", label: "Custom Deal Packages" },
-      { href: "/tours/fixed-dates", label: "Fixed-Date Packages" },
+      { href: "/tours/fixed-dates", label: "Group Tours" },
       { href: "/tours/daily-packages", label: "Daily Packages" },
     ],
   },

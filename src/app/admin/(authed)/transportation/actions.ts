@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import {
@@ -21,7 +21,7 @@ export async function saveTransportHero(raw: TransportHeroFormValues): Promise<{
 
   if (error) return { error: error.message };
 
-  revalidateTag(tags.siteContent("transport_hero"), "max");
+  updateTag(tags.siteContent("transport_hero"));
   return {};
 }
 
@@ -112,7 +112,7 @@ export async function saveFleet(raw: FleetFormValues): Promise<{ error?: string 
     }
   }
 
-  revalidateTag(tags.transport.airports(), "max");
-  revalidateTag(tags.transport.vehicles(), "max");
+  updateTag(tags.transport.airports());
+  updateTag(tags.transport.vehicles());
   return {};
 }

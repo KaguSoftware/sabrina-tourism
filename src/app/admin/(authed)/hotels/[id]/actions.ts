@@ -1,19 +1,19 @@
 "use server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { HotelSchema, type HotelFormValues } from "./schema";
 
 function revalidateAll(slug?: string, regions?: ReadonlyArray<string | null | undefined>) {
-  revalidateTag(tags.hotels.all(), "max");
-  revalidateTag(tags.hotels.featured(), "max");
-  if (slug) revalidateTag(tags.hotels.bySlug(slug), "max");
+  updateTag(tags.hotels.all());
+  updateTag(tags.hotels.featured());
+  if (slug) updateTag(tags.hotels.bySlug(slug));
   const seen = new Set<string>();
   for (const r of regions ?? []) {
     if (r && !seen.has(r)) {
       seen.add(r);
-      revalidateTag(tags.hotels.byRegion(r), "max");
+      updateTag(tags.hotels.byRegion(r));
     }
   }
 }

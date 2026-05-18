@@ -2,13 +2,13 @@
   "nav": {
     "home": "Ana Sayfa",
     "tours": "Turlar",
-    "driver": "Şoför",
+    "driver": "Transfer",
     "hotels": "Oteller",
     "whatsapp": "WhatsApp",
     "reserveViaWhatsapp": "WhatsApp ile Rezervasyon",
     "allItineraries": "Tüm Güzergahlar",
     "customDealPackages": "Özel Paketler",
-    "fixedDatePackages": "Sabit Tarihli Paketler",
+    "fixedDatePackages": "Grup Turları",
     "dailyPackages": "Günlük Paketler",
     "openMenu": "Menüyü Aç",
     "closeMenu": "Menüyü Kapat",
@@ -29,7 +29,15 @@
     "hotelsMenuHeading": "Her bölgede özenle seçilmiş konaklamalar.",
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
-    "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye"
+    "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye",
+    "regions": {
+      "istanbul": "İstanbul",
+      "cappadocia": "Kapadokya",
+      "aegean": "Ege",
+      "mediterranean": "Akdeniz",
+      "blackSea": "Karadeniz",
+      "easternAnatolia": "Doğu Anadolu"
+    }
   },
   "footer": {
     "reservations": "Rezervasyonlar",
@@ -46,23 +54,23 @@
     "blackSea": "Karadeniz",
     "easternAnatolia": "Doğu Anadolu",
     "airportTransfer": "Havalimanı Transferi",
-    "privateDriver": "Özel Şoför",
-    "driver": "Şoför",
+    "privateDriver": "Özel Transfer",
+    "driver": "Transfer",
     "allPackages": "Tüm Paketler",
     "privacyPolicy": "Gizlilik Politikası",
     "termsConditions": "Şartlar ve Koşullar",
     "cancellationPolicy": "İptal Politikası",
-    "tagline": "Butik turizm ve özel şoför",
+    "tagline": "Butik turizm ve özel transfer",
     "location": "Karaköy, İstanbul",
     "copyright": "© 2026 Sabrina Turizm. Tüm hakları saklıdır.",
     "legal2": "Türkiye'de Kayıtlı · TÜRSAB lisans no. XXXXXXX · Vergi no. XXXXXXX",
     "madeIn": "İstanbul'da Yapıldı."
   },
   "transport": {
-    "kicker": "Özel Şoför",
+    "kicker": "Özel Transfer",
     "tabs": {
       "airport": "Havalimanı Transferi",
-      "custom": "Özel Şoför"
+      "custom": "Özel Transfer"
     },
     "form": {
       "airport": "Havalimanı",
@@ -105,7 +113,7 @@
       "bagsNeeded": "Bagaj: {total}/{bags} — {needed} bagaj yeri daha gerekli.",
       "bagsNeededPlural": "Bagaj: {total}/{bags} — {needed} bagaj yeri daha gerekli.",
       "messagePreview": "Mesaj Önizlemesi",
-      "driverHours": "⚠ Şoför çalışma saatleri genellikle günde 8-10 saattir. Aşılan süreler için ek ücret talep edilebilir.",
+      "driverHours": "⚠ Transfer çalışma saatleri genellikle günde 8-10 saattir. Aşılan süreler için ek ücret talep edilebilir.",
       "reserveWhatsapp": "WhatsApp ile Rezervasyon",
       "requiredHint": "Zorunlu",
       "bagsPerVehicle": "Araç başına en fazla {n} bagaj",
@@ -123,7 +131,7 @@
       "destinationsStopsTextareaPlaceholder": "Duraklarınızı yazın, örn. Kapadokya → Konya → Antalya",
       "fitsUpToUseMulti": "{n} kişiye kadar — aşağıdan çoklu araç kullanın",
       "noVehicleSelected": "araç seçilmedi",
-      "privateDriverIntro": "Merhaba Sabrina — özel şoför istiyorum.",
+      "privateDriverIntro": "Merhaba Sabrina — özel transfer istiyorum.",
       "pickupSummary": "Alış: {value}.",
       "pickupTimeSummary": " Alış saati: {value}.",
       "destinationsSummary": " Rota: {value}.",
@@ -134,7 +142,7 @@
       "guideSummary": " Rehber: {language} dilinde {type}.",
       "couldYouQuote": " Fiyat verebilir misiniz?",
       "vehicleCapacityError": "{label} en fazla {n} yolcu alabilir.",
-      "privateChauffeurIntro": "Merhaba Sabrina — özel şoför istiyorum.",
+      "privateChauffeurIntro": "Merhaba Sabrina — özel transfer istiyorum.",
       "airportBothWaysIntro": "Hey Sabrina — I'd like a both-ways airport transfer at {airport} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
       "airportReturnSummary": "Drop-off to {airport} on {date} at {time}{flight}.",
       "airportOneWayIntro": "Hey Sabrina — I'd like a {direction} {airport} on {date} at {time} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
@@ -203,7 +211,11 @@
       "back": "← Geri",
       "next": "İleri →",
       "increaseGuests": "Misafir artır",
-      "decreaseGuests": "Misafir azalt"
+      "decreaseGuests": "Misafir azalt",
+      "singleRoomOccupancy": "Tek kişilik oda konaklaması",
+      "addChildren": "+ Çocuk ekle",
+      "childAge": "Yaş",
+      "removeChild": "Çocuğu kaldır"
     },
     "step3": {
       "kicker": "Adım 3 / 5",
@@ -221,13 +233,13 @@
       "heading": "Araç",
       "back": "← Geri",
       "next": "İleri →",
-      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking driver.",
-      "airportTransferOnly": "Sadece havalimanı transferi için şoför",
-      "airportTransferOnlyHint": "Yalnızca havalimanı alış veya bırakma için şoföre ihtiyacım var, tam tur için değil.",
+      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking transfer.",
+      "airportTransferOnly": "Sadece havalimanı transferi",
+      "airportTransferOnlyHint": "Yalnızca havalimanı alış veya bırakma için transfere ihtiyacım var, tam tur için değil.",
       "flightArrivalTime": "Uçuş varış tarihi",
       "flightArrivalTimeClock": "Varış saati",
       "selectDate": "Tarih seçin",
-      "noDriverNeeded": "No driver needed",
+      "noDriverNeeded": "Transfer gerekmiyor",
       "noDriverHint": "Skip vehicle selection if you already have transport arranged.",
       "tooSmall": "Too small",
       "fitsUpTo": "Fits up to {n} passengers",
@@ -238,7 +250,7 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "driverHours": "⚠ Transfer çalışma saatleri genellikle günde 8-10 saattir. Aşılan süreler için ek ücret talep edilebilir.",
       "largeGroupNotice": "Büyük grup — {n} kişiyi aşıyor",
       "largeGroupHint": "Grubunuz tek bir aracın kapasitesini aşıyor. Her araç için +/− butonlarını kullanarak araç kombinasyonunuzu oluşturun.",
       "seatCoverage": "Kaplanan koltuklar",
@@ -261,7 +273,7 @@
       "hotels": "Oteller",
       "vehicle": "Araç",
       "travelGuide": "Seyahat Rehberi",
-      "noDriver": "Şoför gerekmiyor",
+      "noDriver": "Transfer gerekmiyor",
       "airportTransferOnly": "Yalnızca havalimanı transferi",
       "notNeeded": "Gerekmiyor",
       "night": "{n} gece",
@@ -279,12 +291,19 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "children": "Çocuklar",
+      "childrenSummary": "{count} — yaşlar {ages}",
+      "singleRoomOccupancy": "Tek kişilik oda konaklaması",
+      "yes": "Evet",
+      "noTransfer": "Transfer gerekmiyor"
     }
   },
   "whatsapp": {
     "generic": "Merhaba Sabrina — Türkiye'ye bir seyahat hakkında konuşmak istiyorum.",
-    "customTourIntro": "Merhaba Sabrina — Özel bir tur paketi rezervasyonu yapmak istiyorum."
+    "customTourIntro": "Merhaba Sabrina — Özel bir tur paketi rezervasyonu yapmak istiyorum.",
+    "childrenSuffix": ", {count} çocukla (yaşlar: {ages})",
+    "singleRoomSuffix": ", tek kişilik oda konaklaması"
   },
   "common": {
     "back": "← Geri",
@@ -304,12 +323,12 @@
     },
     "sidebar": {
       "dashboard": "Panel",
-      "homePage": "Ana sayfa",
-      "fixedDate": "Sabit Tarihli",
+      "homePage": "Ana Sayfa",
+      "fixedDate": "Grup Turları",
       "dailyTours": "Günlük Turlar",
-      "toursMainPage": "Turlar ana sayfası",
+      "toursMainPage": "Turlar Sayfası",
       "hotels": "Oteller",
-      "transportation": "Ulaşım",
+      "transportation": "Transfer",
       "translations": "Çeviriler",
       "concierge": "Concierge",
       "signOut": "Çıkış yap",
@@ -340,9 +359,9 @@
       },
       "fixedDates": {
         "kicker": "Katalog",
-        "title": "Sabit Tarihli Paketler",
-        "description": "Belirli kalkış tarihli paketler. Sıralamak için sürükle.",
-        "new": "+ Yeni paket"
+        "title": "Grup Turları",
+        "description": "Sabit kalkış tarihli grup turları. Sıralamak için sürükle.",
+        "new": "+ Yeni tur"
       },
       "daily": {
         "kicker": "Katalog",
@@ -468,7 +487,7 @@
       "startTime": "Başlangıç saati",
       "endTime": "Bitiş saati",
       "vehicle": "Araç",
-      "driverGuide": "Sürücü / Rehber",
+      "driverGuide": "Transfer / Rehber",
       "price": "Fiyat",
       "time": "Saat",
       "place": "Yer",
@@ -477,7 +496,14 @@
       "durationDays": "Süre (gün)",
       "title": "Başlık",
       "dayNumber": "Gün #",
-      "cardImage": "Kart görseli"
+      "cardImage": "Kart görseli",
+      "season": "Sezon",
+      "overview": "Genel Bakış",
+      "oneAdult": "1 yetişkin",
+      "twoAdults": "2 yetişkin",
+      "threeAdults": "3 yetişkin",
+      "babyInfant": "Bebek / Çocuk",
+      "departureDates": "Kalkış Tarihleri"
     },
     "formHints": {
       "cards200": "~200 karakter — kartlarda görünür",
@@ -490,7 +516,17 @@
       "bookingParagraph": "Rezervasyon sayfasında görünen kısa paragraf",
       "tierCardBullets": "Kademe kartında gösterilen maddeler",
       "detailHeroImage": "Detay sayfasının üstünde kullanılır",
-      "listingCardImage": "İsteğe bağlı — liste kartlarında kullanılır. Yoksa hero görseli kullanılır."
+      "listingCardImage": "İsteğe bağlı — liste kartlarında kullanılır. Yoksa hero görseli kullanılır.",
+      "pricingDescPremade": "Her kategori için fiyatlar genel sayfada gösterilir. Bir kategoriyi gizlemek için boş bırakın.",
+      "pricingDescDaily": "Bu günlük tur için kategori fiyatları. Gizlemek için boş bırakın.",
+      "soloTraveller": "Yalnız seyahat eden için fiyat",
+      "doubleOccupancy": "Kişi başı, çift kişilik oda",
+      "tripleOccupancy": "Kişi başı, üç kişilik oda",
+      "twoTravellers": "Kişi başı, iki yolcu",
+      "threeTravellers": "Kişi başı, üç yolcu",
+      "babySupp": "Sabit bebek ücreti (varsa)",
+      "overviewParagraphs": "Paragrafları boş bir satırla ayırın. İlk paragraf genel sayfada büyük harfle başlar.",
+      "departurePills": "Bunlar genel sayfada etiket olarak görünür"
     },
     "editor": {
       "published": "Yayında",
@@ -517,7 +553,9 @@
         "washer": "Çamaşır makinesi",
         "ac": "Klima",
         "tv": "Televizyon"
-      }
+      },
+      "addDeparture": "+ Kalkış ekle",
+      "addDestination": "+ Hedef ekle"
     },
     "tabs": {
       "basics": "Temel bilgiler",
@@ -569,5 +607,71 @@
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
     }
+  },
+  "pricingBlock": {
+    "kicker": "Grup fiyatları",
+    "heading": "Kişi başı fiyat",
+    "onePerson": "Tek kişi",
+    "twoPeople": "2 kişi",
+    "singleRoomSupplement": "+ {amount} tek kişilik oda ek ücreti",
+    "baby": "Bebek"
+  },
+  "packageDetail": {
+    "routeInBrief": "The route, in brief",
+    "dayByDay": "Day by day",
+    "theItinerary": "The itinerary.",
+    "chooseYourTier": "Choose your tier",
+    "threeWaysToTravel": "Three ways to travel this route.",
+    "essentialSignature": "Essential & Signature",
+    "essentialSignatureDesc": "Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "essentialSignatureDescShort": "Small-group departures on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "private": "Private",
+    "privateDesc": "Exclusively yours. Dates, pace, and add-ons set around your group. No shared vehicles, no shared guides — just your party and our team.",
+    "inPhotographs": "In photographs",
+    "imagesFromTheRoute": "Images from the route.",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "downloadPdf": "Download PDF",
+    "reserve": "Reserve",
+    "messagePreview": "Message preview",
+    "allFixedDatePackages": "Tüm grup turları",
+    "groupPackage": "Group Package",
+    "duration": "Duration",
+    "region": "Region",
+    "groupSize": "Group size",
+    "available": "Available",
+    "tier": "tier",
+    "tierLabel": "Tier",
+    "vehicle": "Vehicle",
+    "stay": "Stay",
+    "group": "Group",
+    "guide": "Guide",
+    "meals": "Meals",
+    "hotel": "Hotel",
+    "startingFrom": "Starting from",
+    "perPerson": "per person",
+    "departureDate": "Departure date",
+    "numberOfGuests": "Number of guests",
+    "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
+    "startDate": "Start date",
+    "required": "required",
+    "tierStickyLabel": "{tier} tier",
+    "singleRoomOccupancy": "Tek kişilik oda konaklaması",
+    "singleRoomOccupancyWithPrice": "Tek kişilik oda konaklaması (+{amount})",
+    "addChildren": "+ Çocuk ekle",
+    "childAge": "Yaş",
+    "removeChild": "Çocuğu kaldır"
+  },
+  "packageFilters": {
+    "group": "Group",
+    "date": "Date",
+    "region": "Region",
+    "all": "All",
+    "anyDate": "Any date"
+  },
+  "daily": {
+    "dayItinerary": "Günlük Program",
+    "whatsIncluded": "Dahil Olanlar",
+    "whatsNotIncluded": "Dahil Olmayanlar"
   }
 }

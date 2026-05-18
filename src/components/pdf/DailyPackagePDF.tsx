@@ -1,13 +1,17 @@
 import React from "react";
+import path from "node:path";
 import {
   Document, Page, View, Text, Image,
   Svg, Polygon,
 } from "@react-pdf/renderer";
 import type { DailyPackage } from "@/lib/daily/types";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { C, MARGIN, getFontsForLocale, type FontSet } from "@/lib/pdf/theme";
+import { C, MARGIN, getFontsForLocale, upper, type FontSet } from "@/lib/pdf/theme";
 import { visualRTL } from "@/lib/pdf/rtl";
 import { PdfIcon } from "@/lib/pdf/icons";
+
+const LOGO_LIGHT = path.join(process.cwd(), "public/logo_1_sabrina_cropped.png");
+const LOGO_DARK = path.join(process.cwd(), "public/logo_2_sabrina_cropped.png");
 
 registerFonts();
 
@@ -25,20 +29,23 @@ const CUT_RISE = 32;
 const HERO_PADDING_TOP = HERO_H + CUT_RISE + 4;
 
 function abs(src: string, base: string) { return src.startsWith("http") ? src : `${base}${src}`; }
+function rtlRow(rtl: boolean) {
+  return { flexDirection: (rtl ? "row-reverse" : "row") as "row" | "row-reverse" };
+}
 
-function Wordmark({ light = false, fonts }: { light?: boolean; fonts: FontSet }) {
-  return <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>SABRINA TURIZM</Text>;
+function Wordmark({ light = false }: { light?: boolean }) {
+  return <Image src={light ? LOGO_LIGHT : LOGO_DARK} style={{ width: 80, height: 28, objectFit: "contain" }} />;
 }
 
 function Mono({ children, style = {}, fonts }: { children: React.ReactNode; style?: object; fonts: FontSet }) {
-  return <Text style={{ fontFamily: fonts.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;
+  return <Text style={{ fontFamily: fonts.mono, fontWeight: 500, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;
 }
 
 function PageFooter({ left, page, total, fonts }: { left: string; page: number; total: number; fonts: FontSet }) {
   return (
     <View style={{ position: "absolute", bottom: 32, left: MARGIN, right: MARGIN, flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10 }}>
-      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{left.toUpperCase()}</Mono>
-      <Wordmark fonts={fonts} />
+      <Mono style={{ color: C.inkSoft }} fonts={fonts}>{upper(left)}</Mono>
+      <Wordmark />
       <Mono style={{ color: C.inkSoft }} fonts={fonts}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
   );
@@ -49,7 +56,7 @@ function HeroBlock({ heroSrc, fonts }: { heroSrc: string; fonts: FontSet }) {
     <>
       <Image src={heroSrc} style={{ position: "absolute", top: 0, left: 0, width: PW, height: HERO_H, objectFit: "cover" }} />
       <View style={{ position: "absolute", top: 28, left: MARGIN }}>
-        <Wordmark light fonts={fonts} />
+        <Wordmark light />
       </View>
       <Svg width={PW} height={CUT_RISE + 8} style={{ position: "absolute", top: HERO_H - 8, left: 0 }}>
         <Polygon points={`0,${CUT_RISE + 8} ${PW},8 ${PW},0 0,${CUT_RISE}`} fill={C.ochre} />
@@ -75,8 +82,8 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const heroSrc = abs(pkg.heroImage, baseUrl);
 
   const kicker = pkg.season
-    ? `${pkg.region.toUpperCase()} · ${pkg.season.toUpperCase()} · DAILY PACKAGE`
-    : `${pkg.region.toUpperCase()} · DAILY PACKAGE`;
+    ? `${upper(pkg.region)} · DAILY PACKAGE · ${upper(pkg.season)}`
+    : `${upper(pkg.region)} · DAILY PACKAGE`;
 
   const facts: Array<{ k: string; v: string; icon: string | null }> = [
     { k: "Timeframe", v: `${pkg.startTime} – ${pkg.endTime}`, icon: "clock" },
@@ -94,15 +101,15 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const pricing = pkg.pricing;
   const pricingRowsAll: Array<{ icon: string; label: string; value: number | null | undefined }> = pricing
     ? [
-        { icon: "user",  label: "1 adult",        value: pricing.onePerson },
-        { icon: "users", label: "2 adults",       value: pricing.twoPeople },
-        { icon: "users", label: "3 adults",       value: pricing.threePeople },
-        { icon: "baby",  label: "Baby (add-on)",  value: pricing.baby },
+        { icon: "user",    label: "Single",    value: pricing.onePerson },
+        { icon: "users",   label: "2 people",  value: pricing.twoPeople },
+        { icon: "baby",    label: "Baby",      value: pricing.baby },
       ]
     : [];
   const pricingRows = pricingRowsAll.filter(
     (r): r is { icon: string; label: string; value: number } => r.value != null,
   );
+  const singleRoomSupplement = pricing?.singleRoomSupplement ?? null;
 
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
@@ -112,16 +119,16 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
           <Mono style={{ color: C.ochre, marginBottom: 10 }} fonts={fonts}>{kicker}</Mono>
           <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: ds(54, fonts.displayScale), lineHeight: 1.1, color: C.ink }}>{tx(pkg.name, fonts.rtl)}</Text>
-          <Text style={{ fontFamily: fonts.display, fontStyle: "italic", fontWeight: 300, fontSize: ds(17, fonts.displayScale), lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>{tx(pkg.shortDescription, fonts.rtl)}</Text>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, lineHeight: 1.5, color: C.inkSoft, marginTop: 8 }}>{tx(pkg.shortDescription, fonts.rtl)}</Text>
         </View>
         <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", backgroundColor: C.navy }}>
           {facts.map((f, i) => (
             <View key={i} style={{ flex: 1, paddingVertical: 16, paddingHorizontal: 14, borderRightWidth: i < factCount - 1 ? 1 : 0, borderRightColor: C.navySoft }}>
-              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 6, gap: 4 }}>
+              <View style={{ ...rtlRow(fonts.rtl), alignItems: "center", marginBottom: 6, gap: 4 }}>
                 {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
                 <Mono style={{ color: C.ochre }} fonts={fonts}>{f.k.toUpperCase()}</Mono>
               </View>
-              <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 13, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
+              <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5, textAlign: fonts.rtl ? "right" : "left" }}>{tx(f.v, fonts.rtl)}</Text>
             </View>
           ))}
         </View>
@@ -137,7 +144,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: fonts.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Mono style={{ color: C.cream }} fonts={fonts}>{tx(pkg.name, fonts.rtl)}</Mono>
-          <Wordmark fonts={fonts} />
+          <Wordmark />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 26 }}>
           <Mono style={{ color: C.ochre, marginBottom: 8 }} fonts={fonts}>DAY ITINERARY</Mono>
@@ -162,11 +169,14 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
               <Mono style={{ color: C.ochre }} fonts={fonts}>INCLUDED</Mono>
             </View>
             {pkg.included.map((it, i) => (
-              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 5 }}>
-                <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
-                  <PdfIcon name={it.icon ?? "circle-plus"} size={11} color={C.ochre} />
+              <View key={i} style={{ ...rtlRow(fonts.rtl), alignItems: "center", paddingVertical: 5 }}>
+                <View style={{ width: 14, alignItems: "center" }}>
+                  <Text style={{ fontFamily: fonts.body, fontSize: 13, color: C.ochre }}>+</Text>
                 </View>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.45 }}>{tx(it.text, fonts.rtl)}</Text>
+                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1, lineHeight: 1.45, paddingHorizontal: 6, textAlign: fonts.rtl ? "right" : "left" }}>{tx(it.text, fonts.rtl)}</Text>
+                <View style={{ width: 14, alignItems: "center" }}>
+                  <PdfIcon name={it.icon ?? "circle"} size={11} color={C.ochre} />
+                </View>
               </View>
             ))}
           </View>
@@ -175,29 +185,39 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
               <Mono style={{ color: C.inkSoft }} fonts={fonts}>NOT INCLUDED</Mono>
             </View>
             {pkg.notIncluded.map((it, i) => (
-              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 5 }}>
-                <View style={{ width: 16, flexDirection: "row", alignItems: "center" }}>
-                  <PdfIcon name={it.icon ?? "circle-minus"} size={11} color={C.inkSoft} />
+              <View key={i} style={{ ...rtlRow(fonts.rtl), alignItems: "center", paddingVertical: 5 }}>
+                <View style={{ width: 14, alignItems: "center" }}>
+                  <Text style={{ fontFamily: fonts.body, fontSize: 13, color: C.inkSoft }}>−</Text>
                 </View>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.45 }}>{tx(it.text, fonts.rtl)}</Text>
+                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.inkSoft, flex: 1, lineHeight: 1.45, paddingHorizontal: 6, textAlign: fonts.rtl ? "right" : "left" }}>{tx(it.text, fonts.rtl)}</Text>
+                <View style={{ width: 14, alignItems: "center" }}>
+                  <PdfIcon name={it.icon ?? "circle"} size={11} color={C.inkSoft} />
+                </View>
               </View>
             ))}
           </View>
         </View>
-        {pricingRows.length > 0 ? (
+        {pricingRows.length > 0 || singleRoomSupplement != null ? (
           <View style={{ marginHorizontal: MARGIN, marginTop: 22 }}>
             <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 6, marginBottom: 8 }}>
-              <Mono style={{ color: C.ochre }} fonts={fonts}>{`PRICE (PER PERSON, ${(pkg.currency ?? "USD").toUpperCase()})`}</Mono>
+              <Mono style={{ color: C.ochre }} fonts={fonts}>{`GROUP RATES — PER PERSON (${(pkg.currency ?? "USD").toUpperCase()})`}</Mono>
             </View>
-            {pricingRows.map((row, i) => (
-              <View key={i} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 4, borderBottomWidth: i < pricingRows.length - 1 ? 1 : 0, borderBottomColor: C.rule }}>
-                <View style={{ width: 22, flexDirection: "row", alignItems: "center" }}>
-                  <PdfIcon name={row.icon} size={12} color={C.ochre} />
-                </View>
-                <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.ink, flex: 1 }}>{row.label}</Text>
-                <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink }}>{fmtPrice(row.value, pkg.currency ?? "USD")}</Text>
+            {pricingRows.length > 0 ? (
+              <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
+                {pricingRows.map((row, i) => (
+                  <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
+                    <PdfIcon name={row.icon} size={18} color={C.ochre} />
+                    <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(row.label)}</Text>
+                    <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(row.value, pkg.currency ?? "USD")}</Text>
+                  </View>
+                ))}
               </View>
-            ))}
+            ) : null}
+            {singleRoomSupplement != null ? (
+              <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, marginTop: 8, textAlign: fonts.rtl ? "left" : "right" }}>
+                {`+ ${fmtPrice(singleRoomSupplement, pkg.currency ?? "USD")} single-room supplement`}
+              </Text>
+            ) : null}
           </View>
         ) : null}
         {waPhone ? (

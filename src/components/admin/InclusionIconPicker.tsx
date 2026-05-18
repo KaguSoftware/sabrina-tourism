@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import * as LucideIcons from "lucide-react";
+import { LUCIDE_REGISTRY } from "@/lib/icons/lucide-registry";
 import { INCLUSION_ICONS, getInclusionIcon } from "@/lib/icons/inclusion-icons";
 
 interface Props {
@@ -10,8 +10,7 @@ interface Props {
   size?: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ICON_REGISTRY = LucideIcons as unknown as Record<string, any>;
+const ICON_REGISTRY = LUCIDE_REGISTRY;
 
 function renderLucide(lucideName: string, size = 16) {
   const Cmp = ICON_REGISTRY[lucideName];

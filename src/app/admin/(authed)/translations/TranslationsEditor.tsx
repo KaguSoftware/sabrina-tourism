@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { Sparkles, Save, ChevronDown, ChevronUp } from "lucide-react";
-import { saveMessages, translateWithAI } from "./actions";
+import { saveAllMessages, translateAllLocalesWithAI } from "./actions";
 
 import { LOCALES, LOCALE_LABELS, isRTL, type Locale } from "@/i18n/locales";
 
@@ -64,6 +64,7 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
 
   const nsFlat = getNamespaceFlat(messages, ns);
   const enKeys = Object.keys(nsFlat.en);
+  const nonEnglish = LOCALES.filter((l) => l !== "en") as Locale[];
 
   function handleChange(key: string, value: string) {
     const fullKey = `${ns}.${key}`;
@@ -75,21 +76,32 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
     onMessagesChange({ ...messages, [activeLocale]: updated });
   }
 
-  async function handleTranslate() {
+  async function handleTranslateAndSaveAll() {
     setTranslating(true);
     try {
-      // Translate current locale using EN as source
-      const { result, error } = await translateWithAI(ns, nsFlat.en, activeLocale);
+      const { results, error } = await translateAllLocalesWithAI(ns, nsFlat.en);
       if (error) { toast.error(error); return; }
-      if (!result) return;
+      if (!results) return;
 
-      // Merge translated keys back into the locale messages
-      let updated = messages[activeLocale] as Record<string, unknown>;
-      for (const [k, v] of Object.entries(result)) {
-        updated = setNested(updated, `${ns}.${k}`, v);
+      // Merge all locale results into messages state
+      let next = { ...messages };
+      for (const locale of nonEnglish) {
+        let updated = messages[locale] as Record<string, unknown>;
+        for (const [k, v] of Object.entries(results[locale] ?? {})) {
+          updated = setNested(updated, `${ns}.${k}`, v);
+        }
+        next = { ...next, [locale]: updated };
       }
-      onMessagesChange({ ...messages, [activeLocale]: updated });
-      toast.success(`Translated "${ns}" to ${LOCALE_LABELS[activeLocale]}`);
+      onMessagesChange(next);
+
+      // Save all locale files at once
+      const { error: saveError } = await saveAllMessages(
+        Object.fromEntries(
+          nonEnglish.map((l) => [l, next[l] as Record<string, unknown>])
+        ) as Record<Locale, Record<string, unknown>>
+      );
+      if (saveError) toast.error(saveError);
+      else toast.success(`Translated & saved "${ns}" to all ${nonEnglish.length} languages`);
     } finally {
       setTranslating(false);
     }
@@ -98,12 +110,13 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
   async function handleSave() {
     setSaving(true);
     try {
-      const { error } = await saveMessages(
-        activeLocale,
-        messages[activeLocale] as Record<string, unknown>
+      const { error } = await saveAllMessages(
+        Object.fromEntries(
+          nonEnglish.map((l) => [l, messages[l] as Record<string, unknown>])
+        ) as Record<Locale, Record<string, unknown>>
       );
       if (error) toast.error(error);
-      else toast.success(`Saved ${LOCALE_LABELS[activeLocale]} translations`);
+      else toast.success(`Saved all languages`);
     } finally {
       setSaving(false);
     }
@@ -145,21 +158,21 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
             <div className="ml-auto flex gap-2">
               <button
                 type="button"
-                onClick={handleTranslate}
-                disabled={translating}
+                onClick={handleTranslateAndSaveAll}
+                disabled={translating || saving}
                 className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.16em] uppercase px-3 py-1.5 border border-ochre text-ochre hover:bg-ochre/10 transition-colors duration-150 disabled:opacity-50"
               >
                 <Sparkles size={12} />
-                {translating ? "Translating…" : "Translate with AI"}
+                {translating ? "Translating all…" : "Translate all with AI"}
               </button>
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={saving}
+                disabled={saving || translating}
                 className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.16em] uppercase px-3 py-1.5 bg-navy text-ochre hover:bg-navy/80 transition-colors duration-150 disabled:opacity-50"
               >
                 <Save size={12} />
-                {saving ? "Saving…" : "Save"}
+                {saving ? "Saving…" : "Save all"}
               </button>
             </div>
           </div>

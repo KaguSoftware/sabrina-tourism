@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { toursPageSchema, type ToursPageFormValues } from "./schema";
@@ -19,6 +19,6 @@ export async function saveToursPage(raw: ToursPageFormValues): Promise<{ error?:
 
   if (error) return { error: error.message };
 
-  revalidateTag(tags.siteContent("tours_hero"), "max");
+  updateTag(tags.siteContent("tours_hero"));
   return {};
 }

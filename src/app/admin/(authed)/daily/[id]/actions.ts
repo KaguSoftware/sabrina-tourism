@@ -1,13 +1,13 @@
 "use server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { DailySchema, type DailyFormValues } from "./schema";
 
 function revalidateAll(slug?: string) {
-  revalidateTag(tags.daily.all(), "max");
-  if (slug) revalidateTag(tags.daily.bySlug(slug), "max");
+  updateTag(tags.daily.all());
+  if (slug) updateTag(tags.daily.bySlug(slug));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,8 +50,9 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     is_published: data.is_published,
     price_1_person: data.price_1_person ?? null,
     price_2_people: data.price_2_people ?? null,
-    price_3_people: data.price_3_people ?? null,
     price_baby: data.price_baby ?? null,
+    price_single_room_supplement: data.price_single_room_supplement ?? null,
+    price_per_child: data.price_per_child ?? null,
   };
 
   if (pkgId) {

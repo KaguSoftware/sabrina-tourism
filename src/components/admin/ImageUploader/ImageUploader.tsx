@@ -4,6 +4,7 @@ import { useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { createBrowserClient } from "@/lib/supabase/browser";
 import { getPublicUrl } from "@/lib/supabase/storage";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 
 const BUCKET = "media";
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
@@ -132,7 +133,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
           aria-label="Upload image"
         >
           {uploading ? (
-            <div className="w-6 h-6 border-2 border-ochre border-t-transparent rounded-full animate-spin" />
+            <Spinner size="sm" />
           ) : (
             <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted text-center px-4">
               Drop image or click to upload

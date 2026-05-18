@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { NAV_ITEMS } from "./constants";
-import { NavHotel } from "./NavHotel";
+import { NavHotel, type Region } from "./NavHotel";
 import { NavTours } from "./NavTours";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
+import type { HotelPublic } from "@/lib/db/hotels";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher/LanguageSwitcher";
 import Image from "next/image";
@@ -78,7 +79,11 @@ function DropdownNavItem({
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({
+  hotelsByRegion,
+}: {
+  hotelsByRegion: Record<Region, HotelPublic[]>;
+}) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("nav");
@@ -124,19 +129,11 @@ export function SiteHeader() {
             aria-label={t("homeAriaLabel")}
           >
             <Image
-              src="/sabrina_logo_cropped.png"
+              src={transparent ? "/logo_1_sabrina_cropped.png" : "/logo_2_sabrina_cropped.png"}
               alt="Sabrina Turizm"
               width="140"
               height="48"
               className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
-              style={
-                transparent
-                  ? {}
-                  : {
-                      filter:
-                        "brightness(0) saturate(100%) invert(18%) sepia(40%) saturate(800%) hue-rotate(162deg) brightness(85%)",
-                    }
-              }
             />
           </Link>
 
@@ -158,7 +155,7 @@ export function SiteHeader() {
             >
               {t("driver")}
             </Link>
-            <NavHotel currentPath={pathname} transparent={transparent} />
+            <NavHotel currentPath={pathname} transparent={transparent} hotelsByRegion={hotelsByRegion} />
           </nav>
 
           {/* Desktop CTA + Language switcher */}

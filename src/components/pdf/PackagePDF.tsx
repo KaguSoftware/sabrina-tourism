@@ -1,12 +1,16 @@
 import React from "react";
+import path from "node:path";
 import {
   Document, Page, View, Text, Image,
   Svg, Polygon,
 } from "@react-pdf/renderer";
 import type { Package } from "@/lib/packages/types";
 import { registerFonts } from "@/lib/pdf/fonts";
-import { C, F, MARGIN } from "@/lib/pdf/theme";
+import { C, F, MARGIN, upper } from "@/lib/pdf/theme";
 import { PdfIcon } from "@/lib/pdf/icons";
+
+const LOGO_LIGHT = path.join(process.cwd(), "public/logo_1_sabrina_cropped.png");
+const LOGO_DARK = path.join(process.cwd(), "public/logo_2_sabrina_cropped.png");
 
 registerFonts();
 
@@ -19,15 +23,15 @@ function abs(src: string, base: string) { return src.startsWith("http") ? src : 
 function fmtMonth(iso: string) { return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { month: "short", year: "numeric" }); }
 
 function Wordmark({ light = false }: { light?: boolean }) {
-  return <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 13, color: light ? C.cream : C.ochre, letterSpacing: 0.5 }}>SABRINA TURIZM</Text>;
+  return <Image src={light ? LOGO_LIGHT : LOGO_DARK} style={{ width: 80, height: 28, objectFit: "contain" }} />;
 }
 function Mono({ children, style = {} }: { children: React.ReactNode; style?: object }) {
-  return <Text style={{ fontFamily: F.mono, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;
+  return <Text style={{ fontFamily: F.mono, fontWeight: 500, fontSize: 9, letterSpacing: 1.4, color: C.inkSoft, ...style }}>{children}</Text>;
 }
 function PageFooter({ left, page, total }: { left: string; page: number; total: number }) {
   return (
     <View style={{ position: "absolute", bottom: 32, left: MARGIN, right: MARGIN, flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderTopWidth: 1, borderTopColor: C.rule, paddingTop: 10 }}>
-      <Mono style={{ color: C.inkSoft }}>{left.toUpperCase()}</Mono>
+      <Mono style={{ color: C.inkSoft }}>{upper(left)}</Mono>
       <Wordmark />
       <Mono style={{ color: C.inkSoft }}>{`${String(page).padStart(2, "0")} / ${String(total).padStart(2, "0")}`}</Mono>
     </View>
@@ -76,8 +80,8 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
   );
   const factCount = facts.length;
   const kicker = pkg.season
-    ? `${pkg.region.toUpperCase()} · ${pkg.season.toUpperCase()} · PACKAGE`
-    : `${pkg.region.toUpperCase()} · PACKAGE`;
+    ? `${upper(pkg.region)} · PACKAGE · ${upper(pkg.season)}`
+    : `${upper(pkg.region)} · PACKAGE`;
 
   return (
     <Document title={pkg.name} author="Sabrina Turizm">
@@ -87,7 +91,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 20 }}>
           <Mono style={{ color: C.ochre, marginBottom: 10 }}>{kicker}</Mono>
           <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 54, lineHeight: 1, letterSpacing: -1, color: C.ink }}>{pkg.name}</Text>
-          <Text style={{ fontFamily: F.display, fontStyle: "italic", fontWeight: 300, fontSize: 17, lineHeight: 1.4, color: C.inkSoft, marginTop: 10 }}>{pkg.shortDescription}</Text>
+          <Text style={{ fontFamily: F.body, fontSize: 11, lineHeight: 1.5, color: C.inkSoft, marginTop: 10 }}>{pkg.shortDescription}</Text>
         </View>
         <View style={{ marginHorizontal: MARGIN, marginTop: 24, flexDirection: "row", flexWrap: "wrap", backgroundColor: C.navy }}>
           {facts.map((f, i) => (
@@ -96,7 +100,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
                 {f.icon ? <PdfIcon name={f.icon} size={9} color={C.ochre} /> : null}
                 <Mono style={{ color: C.ochre }}>{f.k.toUpperCase()}</Mono>
               </View>
-              <Text style={{ fontFamily: F.display, fontWeight: 300, fontSize: 14, color: C.cream, lineHeight: 1.2 }}>{f.v}</Text>
+              <Text style={{ fontFamily: F.body, fontSize: 11, color: C.cream, lineHeight: 1.5 }}>{f.v}</Text>
             </View>
           ))}
         </View>
@@ -111,7 +115,7 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
       {/* ── Itinerary ─────────────────────────────────────────── */}
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
+          <Mono style={{ color: C.cream }}>{upper(pkg.name)}</Mono>
           <Wordmark />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 26 }}>
@@ -135,8 +139,8 @@ export function PackagePDF({ pkg, waPhone = "", baseUrl = "" }: Props) {
       {/* ── Inclusions ────────────────────────────────────────── */}
       <Page size="A4" style={{ backgroundColor: C.creamDeep, fontFamily: F.body }}>
         <View style={{ backgroundColor: C.navy, paddingHorizontal: MARGIN, paddingVertical: 18, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Mono style={{ color: C.cream }}>{pkg.name.toUpperCase()}</Mono>
-          <Wordmark />
+          <Mono style={{ color: C.cream }}>{upper(pkg.name)}</Mono>
+          <Wordmark light />
         </View>
         <View style={{ paddingHorizontal: MARGIN, paddingTop: 24, paddingBottom: 24, backgroundColor: C.navy }}>
           <Mono style={{ color: C.ochre, marginBottom: 8 }}>RESERVE</Mono>

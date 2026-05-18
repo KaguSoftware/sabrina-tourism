@@ -580,7 +580,7 @@ const SITE_CONTENT = [
     data: {
       heading:
         "We do not run a booking site. We run a small atelier of guides, drivers and friends across seven regions.",
-      body: "Meridian & Co. is a boutique agency working with a hand-picked roster of fewer than thirty private guides and chauffeurs. We do not aggregate, we do not sell rooms in bulk, and we do not take more than two parties to the same town in the same week. Every itinerary is drawn by a person who has driven the road, eaten in the kitchen, and stayed the night.",
+      body: "sabrina-turizm is a boutique agency working with a hand-picked roster of fewer than thirty private guides and chauffeurs. We do not aggregate, we do not sell rooms in bulk, and we do not take more than two parties to the same town in the same week. Every itinerary is drawn by a person who has driven the road, eaten in the kitchen, and stayed the night.",
     },
   },
   {
@@ -614,7 +614,7 @@ const SITE_CONTENT = [
     data: {
       quote:
         "The kind of trip you remember in fragments — a particular afternoon light on the Bosphorus, the quiet of a cave at five in the morning, a fisherman's lunch you didn't expect.",
-      attribution: "— Condé Nast Traveller, on a Meridian itinerary",
+      attribution: "— Condé Nast Traveller, on a sabrina itinerary",
     },
   },
   {
@@ -659,7 +659,7 @@ async function listStorageFolder(prefix: string): Promise<Set<string>> {
 /** Upload a single file; skip if already present in existingPaths. */
 async function uploadImage(
   localFilename: string, // e.g. "/istanbul-hero1.png"
-  storagePath: string,   // e.g. "packages/istanbul-classics/istanbul-hero1.png"
+  storagePath: string, // e.g. "packages/istanbul-classics/istanbul-hero1.png"
   existingPaths: Set<string>
 ): Promise<{ skipped: boolean }> {
   if (existingPaths.has(storagePath)) return { skipped: true };
@@ -676,12 +676,12 @@ async function uploadImage(
     ext === ".png"
       ? "image/png"
       : ext === ".jpg" || ext === ".jpeg"
-        ? "image/jpeg"
-        : ext === ".svg"
-          ? "image/svg+xml"
-          : ext === ".webp"
-            ? "image/webp"
-            : "application/octet-stream";
+      ? "image/jpeg"
+      : ext === ".svg"
+      ? "image/svg+xml"
+      : ext === ".webp"
+      ? "image/webp"
+      : "application/octet-stream";
 
   const { error } = await supabase.storage
     .from(BUCKET)
@@ -733,14 +733,16 @@ async function main() {
     const data = { ...row.data } as Record<string, unknown>;
     if (row.id === "home_hero") data.image = "pages/home/home.png";
     if (row.id === "tours_hero") data.image = "pages/tours/tours.png";
-    if (row.id === "transport_hero") data.image = "pages/transport/chauffer.png";
+    if (row.id === "transport_hero")
+      data.image = "pages/transport/chauffer.png";
     return { id: row.id, data };
   });
 
   const { error: scError } = await supabase
     .from("site_content")
     .upsert(siteContentRows, { onConflict: "id" });
-  if (scError) throw new Error(`site_content upsert failed: ${scError.message}`);
+  if (scError)
+    throw new Error(`site_content upsert failed: ${scError.message}`);
   console.log(`✓ Seeded site_content (${siteContentRows.length})`);
 
   // -------------------------------------------------------------------------
@@ -758,12 +760,13 @@ async function main() {
       { onConflict: "code" }
     );
   if (airportError)
-    throw new Error(`transport_airports upsert failed: ${airportError.message}`);
+    throw new Error(
+      `transport_airports upsert failed: ${airportError.message}`
+    );
   console.log(`✓ Seeded transport_airports (${AIRPORTS.length})`);
 
-  const { data: existingVehicleRows, error: existingVehicleError } = await supabase
-    .from("transport_vehicles")
-    .select("vehicle_id,label");
+  const { data: existingVehicleRows, error: existingVehicleError } =
+    await supabase.from("transport_vehicles").select("vehicle_id,label");
   if (existingVehicleError)
     throw new Error(
       `transport_vehicles read failed: ${existingVehicleError.message}`
@@ -979,10 +982,7 @@ async function main() {
   for (const pkg of PACKAGES) {
     const packageId = pkgIdMap[pkg.slug];
     if (!packageId) continue;
-    await supabase
-      .from("package_gallery")
-      .delete()
-      .eq("package_id", packageId);
+    await supabase.from("package_gallery").delete().eq("package_id", packageId);
   }
 
   const galleryRows: {

@@ -39,8 +39,9 @@ export interface PremadeInclusionItemPublic {
 export interface PremadePricingPublic {
   onePerson: number | null;
   twoPeople: number | null;
-  threePeople: number | null;
   baby: number | null;
+  singleRoomSupplement?: number | null;
+  pricePerChild?: number | null;
 }
 
 export interface PremadePackagePublic {
@@ -106,8 +107,9 @@ export interface PremadePackageRaw {
   currency: string | null;
   price_1_person: number | null;
   price_2_people: number | null;
-  price_3_people: number | null;
   price_baby: number | null;
+  price_single_room_supplement: number | null;
+  price_per_child: number | null;
   premade_package_gallery: Array<{ id: string; url: string; sort_order: number }>;
   premade_package_dates: Array<{ id: string; start_date: string; end_date: string; sort_order: number }>;
   premade_package_itinerary_days: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
@@ -219,11 +221,12 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     overview: overviewTranslated ?? overviewEn,
     price: row.price ?? null,
     currency: row.currency ?? 'USD',
-    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_3_people ?? row.price_baby) != null ? {
+    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_baby ?? row.price_single_room_supplement ?? row.price_per_child) != null ? {
       onePerson: row.price_1_person ?? null,
       twoPeople: row.price_2_people ?? null,
-      threePeople: row.price_3_people ?? null,
       baby: row.price_baby ?? null,
+      singleRoomSupplement: row.price_single_room_supplement ?? null,
+      pricePerChild: row.price_per_child ?? null,
     } : null,
     tiers,
     itinerary,

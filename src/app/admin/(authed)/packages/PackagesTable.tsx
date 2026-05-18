@@ -21,6 +21,7 @@ import { useTranslations } from "next-intl";
 
 import { reorderPackages, setFeatured, setPublished, deletePackage, duplicatePackage } from "./actions";
 import { SortableRow } from "./PackagesTableRow";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -45,17 +46,19 @@ function ConfirmDialog({
   open,
   onClose,
   onConfirm,
+  deleting,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  deleting?: boolean;
 }) {
   const t = useTranslations("admin");
   if (!open) return null;
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={deleting ? undefined : onClose}
     >
       <div
         className="bg-cream border border-rule rounded-none p-8 max-w-sm w-full mx-4 shadow-xl"
@@ -70,15 +73,17 @@ function ConfirmDialog({
         <div className="flex gap-3 justify-end">
           <button
             onClick={onClose}
-            className="inline-flex items-center px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-ink-soft hover:text-ink transition-colors"
+            disabled={deleting}
+            className="inline-flex items-center px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-ink-soft hover:text-ink transition-colors disabled:opacity-40"
           >
             {t("common.cancel")}
           </button>
           <button
             onClick={onConfirm}
-            className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-transparent text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 active:scale-[0.97]"
+            disabled={deleting}
+            className="inline-flex items-center justify-center gap-2 min-w-20 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-transparent text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 active:opacity-80 disabled:opacity-60"
           >
-            {t("common.delete")}
+            {deleting ? <Spinner size="sm" /> : t("common.delete")}
           </button>
         </div>
       </div>
@@ -95,6 +100,7 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
   const router = useRouter();
   const [packages, setPackages] = useState(initialPackages);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -136,12 +142,13 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
     const id = deleteTarget;
-    setDeleteTarget(null);
-    setPackages((prev) => prev.filter((p) => p.id !== id));
+    setDeleting(true);
     const result = await deletePackage(id);
-    if (result.error) { setPackages(packages); toast.error(result.error); }
-    else toast.success("Tour deleted.");
-  }, [deleteTarget, packages]);
+    setDeleting(false);
+    setDeleteTarget(null);
+    if (result.error) { toast.error(result.error); }
+    else { setPackages((prev) => prev.filter((p) => p.id !== id)); toast.success("Tour deleted."); }
+  }, [deleteTarget]);
 
   const handleDuplicate = useCallback(async (id: string) => {
     const result = await duplicatePackage(id);
@@ -157,7 +164,7 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
         </p>
         <Link
           href="/admin/packages/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:scale-[0.97]"
+          className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:opacity-80"
         >
           {t("pages.packages.new")}
         </Link>
@@ -171,6 +178,7 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
+        deleting={deleting}
       />
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="overflow-x-auto">

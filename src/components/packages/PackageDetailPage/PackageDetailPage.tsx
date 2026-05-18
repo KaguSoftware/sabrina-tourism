@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { PackageHero } from "./PackageHero";
 import { PackageOverview } from "./PackageOverview";
 import { PackageItinerary } from "./PackageItinerary";
@@ -18,6 +19,7 @@ const PackageLightbox = dynamic(
 const VALID_TIERS = ["Essential", "Signature", "Private"];
 
 export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTier = "" }: PackageDetailPageProps) {
+  const t = useTranslations("packageDetail");
   const initialTier = VALID_TIERS.includes(seedTier) ? seedTier : "Signature";
   const [tier, setTier] = useState(initialTier);
   const [openDay, setOpenDay] = useState(1);
@@ -66,23 +68,13 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
       <div ref={heroRef}>
         <PackageHero pkg={pkg} />
       </div>
-      <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-8 flex justify-end">
-        <a
-          href={`/api/pdf/package/${pkg.slug}`}
-          download
-          className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] uppercase border border-ochre text-ochre px-4 py-2.5 hover:bg-ochre hover:text-navy transition-colors duration-200"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          Download PDF
-        </a>
-      </div>
       <PackageOverview pkg={pkg} />
       <PackageItinerary
         itinerary={pkg.itinerary}
         openDay={openDay}
         onToggle={(day) => setOpenDay(openDay === day ? -1 : day)}
+        pdfUrl={`/api/pdf/package/${pkg.slug}`}
+        pdfLabel={t("downloadPdf")}
       />
       <PackageTierSelector
         tiers={pkg.tiers}
@@ -109,7 +101,7 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
       >
         <div className="flex flex-col min-w-0">
           <span className="text-cream font-display text-[15px] tracking-tight truncate">{pkg.name}</span>
-          <span className="text-ochre font-mono text-[10px] tracking-[0.18em] uppercase">{tier} tier</span>
+          <span className="text-ochre font-mono text-[10px] tracking-[0.18em] uppercase">{tier} {t("tier")}</span>
         </div>
         <button
           type="button"
@@ -117,7 +109,7 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
           style={{ backgroundColor: "#c99a3f", color: "#0b1a2e" }}
           className="shrink-0 bg-ochre text-navy px-5 py-3 font-mono text-[12px] tracking-[0.14em] uppercase font-medium transition-colors duration-200 hover:bg-gold"
         >
-          Reserve →
+          {t("reserve")} →
         </button>
       </div>
 

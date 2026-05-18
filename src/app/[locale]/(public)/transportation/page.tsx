@@ -10,9 +10,10 @@ export const metadata = {
     "Mercedes E-Class, V-Class and S-Class. English-speaking, licensed chauffeurs across Türkiye. Airport transfers and custom routes.",
 };
 
-export default async function TransportationRoute() {
+export default async function TransportationRoute({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const [hero, airportRows, vehicleRows] = await Promise.all([
-    getSiteContent("transport_hero"),
+    getSiteContent("transport_hero", locale),
     getAirports(),
     getVehicles(),
   ]);

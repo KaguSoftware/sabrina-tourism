@@ -2,21 +2,20 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import * as Lucide from "lucide-react";
+import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: keyof typeof Lucide }) {
+function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
-  const Component = (def
-    ? (Lucide as unknown as Record<string, Lucide.LucideIcon>)[def.lucide]
-    : (Lucide as unknown as Record<string, Lucide.LucideIcon>)[fallback as string]) as Lucide.LucideIcon | undefined;
+  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
   if (!Component) return null;
   return <Component size={16} strokeWidth={1.75} />;
 }
@@ -80,6 +79,7 @@ function useStopGlow(count: number) {
 
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const locale = useLocale();
+  const t = useTranslations("daily");
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
   const [guests, setGuests] = useState(1);
@@ -114,7 +114,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <Reveal delay={140}>
             <div className="flex flex-wrap items-center gap-2 mb-5">
               <Kicker className="kicker--light">
-                {pkg.region.toUpperCase()} · DAY EXPERIENCE
+                {pkg.region} · DAY EXPERIENCE
               </Kicker>
               {pkg.season && (
                 <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-ochre/90 text-navy px-2.5 py-1 rounded-full">
@@ -158,6 +158,13 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
         </a>
       </div>
 
+      {/* Multi-person pricing */}
+      {pkg.pricing && (
+        <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pb-10 pt-4">
+          <MultiPersonPrices pricing={pkg.pricing} currency={pkg.currency} />
+        </div>
+      )}
+
       {/* Content */}
       <div className="relative max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-20 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16" style={{ zIndex: 10 }}>
         {/* Left column */}
@@ -171,7 +178,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
 
           {/* Schedule timeline */}
           <Reveal>
-            <Kicker className="mb-6">Day Itinerary</Kicker>
+            <Kicker className="mb-6">{t("dayItinerary")}</Kicker>
           </Reveal>
           <ol className="relative border-l border-rule pl-8 space-y-10 mb-20">
             {pkg.stops.map((stop, i) => {
@@ -199,7 +206,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
             <div>
               <Reveal>
-                <Kicker className="mb-6">What&apos;s Included</Kicker>
+                <Kicker className="mb-6">{t("whatsIncluded")}</Kicker>
               </Reveal>
               <ul className="space-y-3">
                 {pkg.included.map((item, i) => (
@@ -216,7 +223,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             </div>
             <div>
               <Reveal>
-                <Kicker className="mb-6">What&apos;s Not Included</Kicker>
+                <Kicker className="mb-6">{t("whatsNotIncluded")}</Kicker>
               </Reveal>
               <ul className="space-y-3">
                 {(pkg.notIncluded?.length

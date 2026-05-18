@@ -2,13 +2,13 @@
   "nav": {
     "home": "Home",
     "tours": "Tours",
-    "driver": "Driver",
+    "driver": "Transfer",
     "hotels": "Hotels",
     "whatsapp": "WhatsApp",
     "reserveViaWhatsapp": "Reserve via WhatsApp",
     "allItineraries": "All Itineraries",
     "customDealPackages": "Custom Deal Packages",
-    "fixedDatePackages": "Fixed-Date Packages",
+    "fixedDatePackages": "Group Tours",
     "dailyPackages": "Daily Packages",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -29,7 +29,15 @@
     "hotelsMenuHeading": "Curated stays in every region.",
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
-    "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye"
+    "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye",
+    "regions": {
+      "istanbul": "Istanbul",
+      "cappadocia": "Cappadocia",
+      "aegean": "Aegean",
+      "mediterranean": "Mediterranean",
+      "blackSea": "Black Sea",
+      "easternAnatolia": "Eastern Anatolia"
+    }
   },
   "footer": {
     "reservations": "Reservations",
@@ -46,23 +54,23 @@
     "blackSea": "Black Sea",
     "easternAnatolia": "Eastern Anatolia",
     "airportTransfer": "Airport transfer",
-    "privateDriver": "Private driver",
-    "driver": "Driver",
+    "privateDriver": "Private transfer",
+    "driver": "Transfer",
     "allPackages": "All packages",
     "privacyPolicy": "Privacy Policy",
     "termsConditions": "Terms & Conditions",
     "cancellationPolicy": "Cancellation Policy",
-    "tagline": "Boutique tourism & private chauffeur",
+    "tagline": "Boutique tourism & private transfer",
     "location": "Karaköy, Istanbul",
     "copyright": "© 2026 Sabrina Turizm. All rights reserved.",
     "legal2": "Registered in Türkiye · TÜRSAB licence no. XXXXXXX · Tax no. XXXXXXX",
     "madeIn": "Made in Istanbul."
   },
   "transport": {
-    "kicker": "Private driver",
+    "kicker": "Private transfer",
     "tabs": {
       "airport": "Airport Transfer",
-      "custom": "Private Driver"
+      "custom": "Private Transfer"
     },
     "form": {
       "airport": "Airport",
@@ -105,7 +113,7 @@
       "bagsNeeded": "Bags: {total}/{bags} — {needed} more bag slot needed.",
       "bagsNeededPlural": "Bags: {total}/{bags} — {needed} more bag slots needed.",
       "messagePreview": "Message preview",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "driverHours": "⚠ Transfer working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
       "reserveWhatsapp": "Reserve via WhatsApp",
       "requiredHint": "Required",
       "bagsPerVehicle": "Up to {n} bags per vehicle",
@@ -123,7 +131,7 @@
       "destinationsStopsTextareaPlaceholder": "List your stops, e.g. Cappadocia → Konya → Antalya",
       "fitsUpToUseMulti": "Fits up to {n} — use multi-vehicle below",
       "noVehicleSelected": "no vehicle selected",
-      "privateDriverIntro": "Hey Sabrina — I'd like a private driver.",
+      "privateDriverIntro": "Hey Sabrina — I'd like a private transfer.",
       "pickupSummary": "Pickup: {value}.",
       "pickupTimeSummary": " Pickup time: {value}.",
       "destinationsSummary": " Destinations: {value}.",
@@ -134,7 +142,7 @@
       "guideSummary": " Travel guide: {type} in {language}.",
       "couldYouQuote": " Could you quote?",
       "vehicleCapacityError": "{label} fits up to {n} passengers.",
-      "privateChauffeurIntro": "Hey Sabrina — I'd like a private chauffeur.",
+      "privateChauffeurIntro": "Hey Sabrina — I'd like a private transfer.",
       "airportBothWaysIntro": "Hey Sabrina — I'd like a both-ways airport transfer at {airport} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
       "airportReturnSummary": "Drop-off to {airport} on {date} at {time}{flight}.",
       "airportOneWayIntro": "Hey Sabrina — I'd like a {direction} {airport} on {date} at {time} for {passengers} passenger(s), {vehicle}. Area / Hotel: {destination}.",
@@ -203,7 +211,11 @@
       "back": "← Back",
       "next": "Next →",
       "increaseGuests": "Increase guests",
-      "decreaseGuests": "Decrease guests"
+      "decreaseGuests": "Decrease guests",
+      "singleRoomOccupancy": "Single-room occupancy",
+      "addChildren": "+ Add children",
+      "childAge": "Age",
+      "removeChild": "Remove child"
     },
     "step3": {
       "kicker": "Step 3 of 5",
@@ -221,13 +233,13 @@
       "heading": "Vehicle",
       "back": "← Back",
       "next": "Next →",
-      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking driver.",
-      "airportTransferOnly": "Chauffeur for airport transfer only",
-      "airportTransferOnlyHint": "I only need a chauffeur for airport pickup or drop-off, not for the full tour.",
+      "sub": "Choose your preferred vehicle class. All options include a licensed, English-speaking transfer.",
+      "airportTransferOnly": "Transfer for airport only",
+      "airportTransferOnlyHint": "I only need a transfer for airport pickup or drop-off, not for the full tour.",
       "flightArrivalTime": "Flight arrival date",
       "flightArrivalTimeClock": "Arrival time",
       "selectDate": "Select a date",
-      "noDriverNeeded": "No driver needed",
+      "noDriverNeeded": "No transfer needed",
       "noDriverHint": "Skip vehicle selection if you already have transport arranged.",
       "tooSmall": "Too small",
       "fitsUpTo": "Fits up to {n} passengers",
@@ -238,7 +250,7 @@
       "guideAssistant": "Assistant",
       "guideCertified": "Certified guide",
       "language": "Language",
-      "driverHours": "⚠ Driver working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
+      "driverHours": "⚠ Transfer working hours are typically 8–10 hours per day. Any additional hours beyond that will incur an extra charge.",
       "largeGroupNotice": "Large group — over {n} passengers",
       "largeGroupHint": "Your group exceeds the capacity of a single vehicle. Use the +/− buttons on each car to build your fleet mix.",
       "seatCoverage": "Seats covered",
@@ -261,7 +273,7 @@
       "hotels": "Hotels",
       "vehicle": "Vehicle",
       "travelGuide": "Travel Guide",
-      "noDriver": "No driver needed",
+      "noDriver": "No transfer needed",
       "airportTransferOnly": "Airport transfer only",
       "notNeeded": "Not needed",
       "night": "{n} night",
@@ -279,12 +291,19 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "children": "Children",
+      "childrenSummary": "{count} — ages {ages}",
+      "singleRoomOccupancy": "Single-room occupancy",
+      "yes": "Yes",
+      "noTransfer": "No transfer needed"
     }
   },
   "whatsapp": {
     "generic": "Hey Sabrina — I'd like to start a conversation about a trip to Türkiye.",
-    "customTourIntro": "Hey Sabrina — I'd like to book a custom tour package."
+    "customTourIntro": "Hey Sabrina — I'd like to book a custom tour package.",
+    "childrenSuffix": ", with {count} child(ren) (ages {ages})",
+    "singleRoomSuffix": ", single-room occupancy"
   },
   "common": {
     "back": "← Back",
@@ -304,12 +323,12 @@
     },
     "sidebar": {
       "dashboard": "Dashboard",
-      "homePage": "Home page",
-      "fixedDate": "Fixed-Date",
+      "homePage": "Home",
+      "fixedDate": "Group Tours",
       "dailyTours": "Daily Tours",
-      "toursMainPage": "Tours main page",
+      "toursMainPage": "Tours Page",
       "hotels": "Hotels",
-      "transportation": "Transportation",
+      "transportation": "Transfer",
       "translations": "Translations",
       "concierge": "Concierge",
       "signOut": "Sign out",
@@ -340,9 +359,9 @@
       },
       "fixedDates": {
         "kicker": "Catalogue",
-        "title": "Fixed-Date Packages",
-        "description": "Packages with a set departure date. Drag to reorder.",
-        "new": "+ New package"
+        "title": "Group Tours",
+        "description": "Group tours with fixed departure dates. Drag to reorder.",
+        "new": "+ New tour"
       },
       "daily": {
         "kicker": "Catalogue",
@@ -468,7 +487,7 @@
       "startTime": "Start time",
       "endTime": "End time",
       "vehicle": "Vehicle",
-      "driverGuide": "Driver / Guide",
+      "driverGuide": "Transfer / Guide",
       "price": "Price",
       "time": "Time",
       "place": "Place",
@@ -479,7 +498,14 @@
       "maxPeople2": "Max people",
       "title": "Title",
       "dayNumber": "Day #",
-      "cardImage": "Card image"
+      "cardImage": "Card image",
+      "season": "Season",
+      "overview": "Overview",
+      "oneAdult": "1 adult",
+      "twoAdults": "2 adults",
+      "threeAdults": "3 adults",
+      "babyInfant": "Baby / Infant",
+      "departureDates": "Departure dates"
     },
     "formHints": {
       "cards200": "~200 chars — used on cards",
@@ -492,7 +518,17 @@
       "bookingParagraph": "Short paragraph shown on the booking page",
       "tierCardBullets": "Bullet points shown on tier card",
       "detailHeroImage": "Used on the detail page top",
-      "listingCardImage": "Optional — used on listing cards. Falls back to hero."
+      "listingCardImage": "Optional — used on listing cards. Falls back to hero.",
+      "pricingDescPremade": "Per-bucket pricing shown on the public page. Leave any blank to hide that bucket.",
+      "pricingDescDaily": "Per-bucket pricing for this daily tour. Leave blank to hide that bucket.",
+      "soloTraveller": "Price for a solo traveller",
+      "doubleOccupancy": "Per person, double occupancy",
+      "tripleOccupancy": "Per person, triple occupancy",
+      "twoTravellers": "Per person, two travellers",
+      "threeTravellers": "Per person, three travellers",
+      "babySupp": "Flat baby supplement (if any)",
+      "overviewParagraphs": "Separate paragraphs with a blank line. First paragraph gets a drop-cap on the public page.",
+      "departurePills": "These appear as pills on the public page"
     },
     "editor": {
       "published": "Published",
@@ -519,7 +555,9 @@
         "washer": "Washing machine",
         "ac": "Air conditioning",
         "tv": "Television"
-      }
+      },
+      "addDeparture": "+ Add departure",
+      "addDestination": "+ Add destination"
     },
     "tabs": {
       "basics": "Basics",
@@ -572,5 +610,71 @@
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
     }
+  },
+  "pricingBlock": {
+    "kicker": "Group rates",
+    "heading": "Price per person",
+    "onePerson": "Single",
+    "twoPeople": "2 people",
+    "singleRoomSupplement": "+ {amount} single-room supplement",
+    "baby": "Baby"
+  },
+  "packageDetail": {
+    "routeInBrief": "The route, in brief",
+    "dayByDay": "Day by day",
+    "theItinerary": "The itinerary.",
+    "chooseYourTier": "Choose your tier",
+    "threeWaysToTravel": "Three ways to travel this route.",
+    "essentialSignature": "Essential & Signature",
+    "essentialSignatureDesc": "Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "essentialSignatureDescShort": "Small-group departures on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
+    "private": "Private",
+    "privateDesc": "Exclusively yours. Dates, pace, and add-ons set around your group. No shared vehicles, no shared guides — just your party and our team.",
+    "inPhotographs": "In photographs",
+    "imagesFromTheRoute": "Images from the route.",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "downloadPdf": "Download PDF",
+    "reserve": "Reserve",
+    "messagePreview": "Message preview",
+    "allFixedDatePackages": "All group tours",
+    "groupPackage": "Group Package",
+    "duration": "Duration",
+    "region": "Region",
+    "groupSize": "Group size",
+    "available": "Available",
+    "tier": "tier",
+    "tierLabel": "Tier",
+    "vehicle": "Vehicle",
+    "stay": "Stay",
+    "group": "Group",
+    "guide": "Guide",
+    "meals": "Meals",
+    "hotel": "Hotel",
+    "startingFrom": "Starting from",
+    "perPerson": "per person",
+    "departureDate": "Departure date",
+    "numberOfGuests": "Number of guests",
+    "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
+    "startDate": "Start date",
+    "required": "required",
+    "tierStickyLabel": "{tier} tier",
+    "singleRoomOccupancy": "Single-room occupancy",
+    "singleRoomOccupancyWithPrice": "Single-room occupancy (+{amount})",
+    "addChildren": "+ Add children",
+    "childAge": "Age",
+    "removeChild": "Remove child"
+  },
+  "packageFilters": {
+    "group": "Group",
+    "date": "Date",
+    "region": "Region",
+    "all": "All",
+    "anyDate": "Any date"
+  },
+  "daily": {
+    "dayItinerary": "Day Itinerary",
+    "whatsIncluded": "What's Included",
+    "whatsNotIncluded": "What's Not Included"
   }
 }

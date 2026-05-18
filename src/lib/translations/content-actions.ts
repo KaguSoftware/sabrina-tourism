@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import type { ContentLocale } from "./ai";
@@ -87,7 +87,7 @@ export async function saveDailyTranslations(
     }
   }
 
-  revalidateTag(tags.daily.all(), "max");
+  updateTag(tags.daily.all());
   return {};
 }
 
@@ -156,7 +156,7 @@ export async function savePremadeTranslations(
     if (item) await supabase.from("premade_package_inclusions").update({ text_translations: val }).eq("id", item.id);
   }
 
-  revalidateTag(tags.premade.all(), "max");
+  updateTag(tags.premade.all());
   return {};
 }
 
@@ -209,7 +209,7 @@ export async function saveHotelTranslations(
     if (room) await supabase.from("hotel_room_types").update(update).eq("id", room.id);
   }
 
-  revalidateTag(tags.hotels.all(), "max");
+  updateTag(tags.hotels.all());
   return {};
 }
 
@@ -375,4 +375,49 @@ export async function loadHotelTranslations(hotelId: string): Promise<ContentTra
   });
 
   return result;
+}
+
+/* ── Site content (home, tours page, etc.) ──────────────────────── */
+
+export async function loadSiteContentTranslations(key: string): Promise<ContentTranslations> {
+  const supabase = db();
+  const result: ContentTranslations = {};
+  const { data: row } = await supabase
+    .from("site_content")
+    .select("data_translations")
+    .eq("id", key)
+    .single();
+  if (row?.data_translations && typeof row.data_translations === "object") {
+    // data_translations shape: { tr: { fieldKey: "val" }, ar: { ... }, ... }
+    // Pivot to ContentTranslations: { fieldKey: { tr: "val", ar: "val" } }
+    for (const [locale, fields] of Object.entries(row.data_translations as Record<string, Record<string, string>>)) {
+      for (const [field, value] of Object.entries(fields)) {
+        if (!result[field]) result[field] = {} as Record<ContentLocale, string>;
+        (result[field] as Record<string, string>)[locale] = value;
+      }
+    }
+  }
+  return result;
+}
+
+export async function saveSiteContentTranslations(
+  key: string,
+  translations: ContentTranslations
+): Promise<{ error?: string }> {
+  const supabase = db();
+  // Pivot ContentTranslations back to { locale: { fieldKey: value } }
+  const byLocale: Record<string, Record<string, string>> = {};
+  for (const [field, localeMap] of Object.entries(translations)) {
+    for (const [locale, value] of Object.entries(localeMap)) {
+      if (!byLocale[locale]) byLocale[locale] = {};
+      byLocale[locale][field] = value;
+    }
+  }
+  const { error } = await supabase
+    .from("site_content")
+    .update({ data_translations: byLocale })
+    .eq("id", key);
+  if (error) return { error: error.message };
+  updateTag(tags.siteContent(key));
+  return {};
 }

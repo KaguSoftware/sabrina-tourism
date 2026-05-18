@@ -70,11 +70,11 @@ export async function SiteFooter() {
         {/* Brand col */}
         <div>
           <Image
-            src="/sabrina_logo_cropped.png"
+            src="/logo_1_sabrina_cropped.png"
             alt="Sabrina Turizm"
             width="140"
             height="48"
-            className="h-7 w-auto object-contain brightness-0 invert mb-3"
+            className="h-7 w-auto object-contain mb-3"
           />
           <p className="text-cream/60 text-sm leading-relaxed">
             {t("tagline")}

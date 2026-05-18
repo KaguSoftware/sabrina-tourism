@@ -37,7 +37,7 @@ export default async function AdminPackagesPage() {
         title={t("pages.packages.title")}
         description={t("pages.packages.description")}
         actions={
-          <Button href="/admin/packages/new" variant="solid">
+          <Button href="/admin/packages/new" variant="solid" shape="pill">
             {t("pages.packages.new")}
           </Button>
         }

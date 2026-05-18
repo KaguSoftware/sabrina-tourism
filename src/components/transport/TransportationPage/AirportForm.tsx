@@ -7,6 +7,7 @@ import { FleetIllustration } from "@/components/illustrations/FleetIllustration/
 import { transferMessage } from "@/lib/whatsapp/whatsapp";
 import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
 import type { Airport, Vehicle } from "@/lib/transport/types";
@@ -177,8 +178,7 @@ export function AirportForm({
             <DatePicker value={date} onChange={setDate} min={today} error={dateMissing} />
           </TransportFormField>
           <TransportFormField label={direction === "both" ? t("pickupTime") : t("time")} above hint={timeMissing ? t("requiredHint") : undefined}>
-            <input type="time" value={time} onChange={(e) => setTime(e.target.value)}
-              className={`${fieldCls} ${timeMissing ? "border-terracotta" : ""}`} />
+            <TimePicker value={time} onChange={setTime} placeholder={t("time")} />
           </TransportFormField>
           <TransportFormField label={direction === "both" ? t("pickupFlightNumber") : t("flightNumber")}>
             <input type="text" value={flightNumber} placeholder={t("flightPlaceholder")}
@@ -198,7 +198,7 @@ export function AirportForm({
                 <DatePicker value={returnDate} onChange={setReturnDate} min={date || today} />
               </TransportFormField>
               <TransportFormField label={t("returnTime")} above>
-                <input type="time" value={returnTime} onChange={(e) => setReturnTime(e.target.value)} className={fieldCls} />
+                <TimePicker value={returnTime} onChange={setReturnTime} placeholder={t("returnTime")} />
               </TransportFormField>
               <TransportFormField label={t("returnFlightNumber")}>
                 <input type="text" value={returnFlightNumber} placeholder={t("returnFlightPlaceholder")}
@@ -211,7 +211,7 @@ export function AirportForm({
 
       {/* ── Section 3: Vehicle ── */}
       <div className="flex flex-col sm:flex-row gap-6 items-start relative z-8">
-        <div className="flex flex-col gap-1.5 min-w-[160px]">
+        <div className="flex flex-col gap-1.5 min-w-40">
           <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("vehicleClass")}</span>
           {vClass && !needsMultiVehicle && <span className="text-[12px] text-muted">{vClass.capacity} · {vClass.from}</span>}
           {vehicleMissing && <p className="text-[12px] text-terracotta">{t("vehicleMissing")}</p>}

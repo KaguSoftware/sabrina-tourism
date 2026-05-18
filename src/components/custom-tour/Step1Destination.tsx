@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { DateRangePicker, type DateRangePickerHandle } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
@@ -47,7 +47,17 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
   const today = new Date().toISOString().split("T")[0];
   const dateWrapperRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<DateRangePickerHandle>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [sectionVisible, setSectionVisible] = useState(true);
   const needsDestinationDays = state.destinations.length > 1;
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => setSectionVisible(entry.isIntersecting), { threshold: 0 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
   const selectedTripDays = getSelectedTripDays(state.startDate, state.endDate);
   const destinationDayTotal = state.destinations.reduce((sum, id) => {
     const days = parseInt((state.destinationDays ?? {})[id] ?? "", 10);
@@ -110,8 +120,15 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
     state.destinations.length > 0 &&
     hasDestinationDays;
 
+  const daysLeftCount = selectedTripDays !== null ? selectedTripDays - destinationDayTotal : 0;
+  const daysLeftMsg = destinationDaysOver
+    ? t("daysOver")
+    : daysLeftCount === 1
+      ? t("daysLeft", { n: daysLeftCount })
+      : t("daysLeftPlural", { n: daysLeftCount });
+
   return (
-    <div>
+    <div ref={sectionRef}>
       <Kicker>{t("kicker")}</Kicker>
       <GoldUnderlineHeading as="h2" className="text-[clamp(28px,3.5vw,44px)] mt-4 mb-3 tracking-tight text-ink">
         {t("heading")}
@@ -276,19 +293,34 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
           </div>
           {(destinationDaysOver || destinationDaysUnder) && (
             <p
-              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase ${destinationDaysOver
+              className={`mt-4 border px-4 py-3 font-mono text-[12px] tracking-[0.14em] uppercase hidden md:block ${destinationDaysOver
                   ? "border-terracotta bg-terracotta/10 text-terracotta"
                   : "border-ochre bg-ochre/12 text-ink"
                 }`}
             >
-              {destinationDaysOver
-                ? t("daysOver")
-                : selectedTripDays - destinationDayTotal === 1
-                  ? t("daysLeft", { n: selectedTripDays - destinationDayTotal })
-                  : t("daysLeftPlural", { n: selectedTripDays - destinationDayTotal })}
+              {daysLeftMsg}
             </p>
           )}
         </div>
+      )}
+
+      {/* Mobile sticky days-left overlay */}
+      {(destinationDaysOver || destinationDaysUnder) && (
+        <div
+          className={`md:hidden fixed bottom-0 left-0 right-0 z-40 border-t px-5 py-3.5 font-mono text-[12px] tracking-[0.14em] uppercase text-center backdrop-blur-sm transition-transform duration-300 ${
+            sectionVisible ? "translate-y-0" : "translate-y-full"
+          } ${destinationDaysOver
+            ? "border-terracotta bg-terracotta/90 text-cream"
+            : "border-ochre bg-cream/95 text-ink"
+          }`}
+        >
+          {daysLeftMsg}
+        </div>
+      )}
+
+      {/* Extra bottom padding on mobile when overlay is shown */}
+      {(destinationDaysOver || destinationDaysUnder) && (
+        <div className="md:hidden h-14" aria-hidden="true" />
       )}
 
       <div className="flex items-center justify-center gap-4">

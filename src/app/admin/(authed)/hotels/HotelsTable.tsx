@@ -9,22 +9,23 @@ import { GripVertical, Pencil, Copy, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { reorderHotels, setHotelPublished, deleteHotel, duplicateHotel } from "./actions";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 
 export interface AdminHotelRow { id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number; }
 
 const REGIONS = ["Istanbul","Cappadocia","Aegean","Mediterranean","Black Sea","Eastern Anatolia"] as const;
 
-function ConfirmDialog({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: () => void }) {
+function ConfirmDialog({ open, onClose, onConfirm, deleting }: { open: boolean; onClose: () => void; onConfirm: () => void; deleting?: boolean }) {
   const t = useTranslations("admin");
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={deleting ? undefined : onClose}>
       <div className="bg-cream border border-rule p-8 max-w-sm w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink font-semibold mb-3">{t("confirm.deleteHotelTitle")}</p>
         <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">{t("confirm.deleteHotelBody")}</p>
         <div className="flex gap-3 justify-end">
-          <button onClick={onClose} className="px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-soft hover:text-ink transition-colors">{t("common.cancel")}</button>
-          <button onClick={onConfirm} className="px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200">{t("common.delete")}</button>
+          <button onClick={onClose} disabled={deleting} className="px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase text-ink-soft hover:text-ink transition-colors disabled:opacity-40">{t("common.cancel")}</button>
+          <button onClick={onConfirm} disabled={deleting} className="inline-flex items-center justify-center gap-2 min-w-20 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 disabled:opacity-60">{deleting ? <Spinner size="sm" /> : t("common.delete")}</button>
         </div>
       </div>
     </div>
@@ -67,6 +68,7 @@ export function HotelsTable({ initialHotels }: { initialHotels: AdminHotelRow[] 
   const router = useRouter();
   const [hotels, setHotels] = useState(initialHotels);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const handleDragEnd = useCallback(async (event: DragEndEvent) => {
@@ -90,12 +92,14 @@ export function HotelsTable({ initialHotels }: { initialHotels: AdminHotelRow[] 
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
-    const id = deleteTarget; setDeleteTarget(null);
-    setHotels((prev) => prev.filter((h) => h.id !== id));
+    const id = deleteTarget;
+    setDeleting(true);
     const result = await deleteHotel(id);
-    if (result.error) { setHotels(hotels); toast.error(result.error); }
-    else toast.success("Hotel deleted.");
-  }, [deleteTarget, hotels]);
+    setDeleting(false);
+    setDeleteTarget(null);
+    if (result.error) { toast.error(result.error); }
+    else { setHotels((prev) => prev.filter((h) => h.id !== id)); toast.success("Hotel deleted."); }
+  }, [deleteTarget]);
 
   const handleDuplicate = useCallback(async (id: string) => {
     const result = await duplicateHotel(id);
@@ -116,7 +120,7 @@ export function HotelsTable({ initialHotels }: { initialHotels: AdminHotelRow[] 
 
   return (
     <>
-      <ConfirmDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} onConfirm={handleConfirmDelete} />
+      <ConfirmDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} onConfirm={handleConfirmDelete} deleting={deleting} />
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={hotels.map((h) => h.id)} strategy={verticalListSortingStrategy}>
           {hotelsByRegion.map(({ region, items }) => (

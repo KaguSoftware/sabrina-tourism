@@ -9,19 +9,20 @@ export const revalidate = 604800;
 export const metadata = {
   title: "Itineraries — Sabrina Turizm",
   description:
-    "Fixed-date packages, daily escapes, and bespoke itineraries through Türkiye.",
+    "Group tours, daily escapes, and bespoke itineraries through Türkiye.",
   alternates: { canonical: "/packages" },
   openGraph: {
     title: "Itineraries — Sabrina Turizm",
     description:
-      "Fixed-date packages, daily escapes, and bespoke itineraries through Türkiye.",
+      "Group tours, daily escapes, and bespoke itineraries through Türkiye.",
     images: [{ url: "/homepage.png", width: 1200, height: 630, alt: "Sabrina Turizm itineraries" }],
   },
 };
 
-export default async function PackagesPage() {
+export default async function PackagesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const [hero, fixedDatePackages] = await Promise.all([
-    getSiteContent("tours_hero"),
+    getSiteContent("tours_hero", locale),
     getAllPremadePackages(),
   ]);
 

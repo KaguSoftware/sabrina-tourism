@@ -12,8 +12,9 @@ export interface DailyInclusionItem {
 export interface DailyPricing {
   onePerson: number | null;
   twoPeople: number | null;
-  threePeople: number | null;
   baby: number | null;
+  singleRoomSupplement?: number | null;
+  pricePerChild?: number | null;
 }
 
 export interface DailyPackage {

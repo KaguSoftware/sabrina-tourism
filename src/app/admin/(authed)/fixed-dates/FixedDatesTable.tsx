@@ -11,6 +11,7 @@ import { GripVertical, Pencil, Copy, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { reorderPremadePackages, setPremadePublished, deletePremadePackage, duplicatePremadePackage } from "./actions";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 
 export interface AdminPremadeRow {
   id: string;
@@ -20,17 +21,17 @@ export interface AdminPremadeRow {
   sortOrder: number;
 }
 
-function ConfirmDialog({ open, onClose, onConfirm }: { open: boolean; onClose: () => void; onConfirm: () => void }) {
+function ConfirmDialog({ open, onClose, onConfirm, deleting }: { open: boolean; onClose: () => void; onConfirm: () => void; deleting?: boolean }) {
   const t = useTranslations("admin");
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={deleting ? undefined : onClose}>
       <div className="bg-cream border border-rule p-8 max-w-sm w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink font-semibold mb-3">{t("confirm.deletePackageTitle")}</p>
         <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">{t("confirm.deletePackageBody")}</p>
         <div className="flex gap-3 justify-end">
-          <button onClick={onClose} className="inline-flex items-center px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-ink-soft hover:text-ink transition-colors">{t("common.cancel")}</button>
-          <button onClick={onConfirm} className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-transparent text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 active:scale-[0.97]">{t("common.delete")}</button>
+          <button onClick={onClose} disabled={deleting} className="inline-flex items-center px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-ink-soft hover:text-ink transition-colors disabled:opacity-40">{t("common.cancel")}</button>
+          <button onClick={onConfirm} disabled={deleting} className="inline-flex items-center justify-center gap-2 min-w-20 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-transparent text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 active:opacity-80 disabled:opacity-60">{deleting ? <Spinner size="sm" /> : t("common.delete")}</button>
         </div>
       </div>
     </div>
@@ -78,6 +79,7 @@ export function FixedDatesTable({ initialPackages }: { initialPackages: AdminPre
   const router = useRouter();
   const [packages, setPackages] = useState(initialPackages);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -103,12 +105,13 @@ export function FixedDatesTable({ initialPackages }: { initialPackages: AdminPre
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
     const id = deleteTarget;
-    setDeleteTarget(null);
-    setPackages((prev) => prev.filter((p) => p.id !== id));
+    setDeleting(true);
     const result = await deletePremadePackage(id);
-    if (result.error) { setPackages(packages); toast.error(result.error); }
-    else toast.success("Package deleted.");
-  }, [deleteTarget, packages]);
+    setDeleting(false);
+    setDeleteTarget(null);
+    if (result.error) { toast.error(result.error); }
+    else { setPackages((prev) => prev.filter((p) => p.id !== id)); toast.success("Package deleted."); }
+  }, [deleteTarget]);
 
   const handleDuplicate = useCallback(async (id: string) => {
     const result = await duplicatePremadePackage(id);
@@ -120,14 +123,14 @@ export function FixedDatesTable({ initialPackages }: { initialPackages: AdminPre
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-6">
         <p className="text-[24px] text-ink-soft italic" style={{ fontFamily: "var(--font-fraunces)" }}>{t("pages.fixedDates.title")}</p>
-        <Link href="/admin/fixed-dates/new" className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:scale-[0.97]">{t("pages.fixedDates.new")}</Link>
+        <Link href="/admin/fixed-dates/new" className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:opacity-80">{t("pages.fixedDates.new")}</Link>
       </div>
     );
   }
 
   return (
     <>
-      <ConfirmDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} onConfirm={handleConfirmDelete} />
+      <ConfirmDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} onConfirm={handleConfirmDelete} deleting={deleting} />
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">

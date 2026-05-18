@@ -27,9 +27,10 @@ export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, air
       {/* HERO */}
       <section className="relative z-5 min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] overflow-hidden text-cream">
         <div className="absolute inset-0 z-[-1]">
-          <Image src="/driver.png" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 70%" }} priority />
+          <Image src="/driver.webp" alt="Chauffeur hero" fill className="object-cover object-right md:object-right" style={{ objectPosition: "right 100%" }} priority />
         </div>
         <div className="absolute inset-0 bg-white/70 md:bg-transparent" />
+        <div className="absolute inset-0 bg-cream/50" aria-hidden="true" />
         <div aria-hidden="true" className="hidden sm:block deco-hatch" style={{ top: 0, right: 0, width: 380, height: 380, color: "rgba(201,154,63,0.1)", zIndex: 1 }} />
         <div aria-hidden="true" className="hidden sm:block deco-hatch" style={{ bottom: 0, left: 0, width: 300, height: 300, color: "rgba(255,255,255,0.04)", zIndex: 1 }} />
         <div aria-hidden="true" className="hidden sm:block absolute right-[-160px] bottom-[-160px] z-1">

@@ -1,18 +1,18 @@
-# Meridian & Co.
+# Sabrina Turizm
 
-Boutique tourism website for Meridian & Co. — a concierge agency offering private tours and chauffeur services across Türkiye. Built as a full-stack Next.js application with a CMS-backed admin panel, dynamic package catalogue, and a Supabase database.
+Boutique tourism website for Sabrina Turizm — a concierge agency offering private tours and chauffeur services across Türkiye. Built as a full-stack Next.js application with a CMS-backed admin panel, dynamic package catalogue, and a Supabase database.
 
 ## Tech stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router, Turbopack) |
-| UI | React 19, Tailwind CSS v4 |
+| Layer           | Technology                           |
+| --------------- | ------------------------------------ |
+| Framework       | Next.js 16 (App Router, Turbopack)   |
+| UI              | React 19, Tailwind CSS v4            |
 | Database & Auth | Supabase (Postgres + Auth + Storage) |
-| Language | TypeScript (strict) |
-| Forms | react-hook-form + Zod |
-| Drag & drop | @dnd-kit |
-| Deployment | Vercel |
+| Language        | TypeScript (strict)                  |
+| Forms           | react-hook-form + Zod                |
+| Drag & drop     | @dnd-kit                             |
+| Deployment      | Vercel                               |
 
 ## Local setup
 

@@ -9,6 +9,7 @@ import { savePremadePackage } from "@/app/admin/(authed)/fixed-dates/[id]/action
 import { PremadeSchema, type PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
 import type { PremadePackageRaw } from "@/lib/db/premade-packages";
 import { ErrorCallout } from "@/components/admin/PackageEditor/primitives";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { BasicsTab } from "./tabs/BasicsTab";
 import { ImageryTab } from "./tabs/ImageryTab";
 import { AccommodationTab } from "./tabs/AccommodationTab";
@@ -86,8 +87,9 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
       season: (pkg.season ?? null) as PremadeFormValues["season"],
       price_1_person: pkg.price_1_person ?? null,
       price_2_people: pkg.price_2_people ?? null,
-      price_3_people: pkg.price_3_people ?? null,
       price_baby: pkg.price_baby ?? null,
+      price_single_room_supplement: pkg.price_single_room_supplement ?? null,
+      price_per_child: pkg.price_per_child ?? null,
     };
   }
   return {
@@ -104,7 +106,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
     overview: "", tiers: [], itinerary: [],
     included: [], not_included: [],
     price: null, currency: "USD",
-    price_1_person: null, price_2_people: null, price_3_people: null, price_baby: null,
+    price_1_person: null, price_2_people: null, price_baby: null, price_single_room_supplement: null, price_per_child: null,
   };
 }
 
@@ -165,8 +167,8 @@ export function PremadeEditor({
   });
 
   const SaveButton = ({ label = "Save" }: { label?: string }) => (
-    <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:scale-[0.97] disabled:opacity-60">
-      {saving ? "Saving…" : label}
+    <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center">
+      {saving ? <Spinner size="sm" /> : label}
     </button>
   );
 
@@ -175,8 +177,8 @@ export function PremadeEditor({
       <form onSubmit={onSubmit} noValidate>
         <div className="flex items-start justify-between gap-6 pb-6 border-b border-rule mb-0">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">Fixed-Date Package</p>
-            <h1 className="text-[28px] text-ink leading-tight" style={{ fontFamily: "var(--font-fraunces)" }}>{name || "New package"}</h1>
+            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">Group Tour</p>
+            <h1 className="text-[28px] text-ink leading-tight" style={{ fontFamily: "var(--font-fraunces)" }}>{name || "New tour"}</h1>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0 pt-1"><SaveButton /></div>
         </div>
@@ -209,11 +211,9 @@ export function PremadeEditor({
           )}
         </div>
 
-        {isDirty && activeTab !== "Translations" && (
-          <div className="sticky bottom-0 left-0 right-0 z-20 border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex justify-end mt-12">
-            <SaveButton label="Save changes" />
-          </div>
-        )}
+        <div className={`sticky bottom-0 left-0 right-0 z-20 border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex justify-end mt-12 transition-opacity duration-200 ${isDirty && activeTab !== "Translations" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+          <SaveButton label="Save changes" />
+        </div>
       </form>
     </FormProvider>
   );

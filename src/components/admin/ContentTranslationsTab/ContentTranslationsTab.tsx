@@ -26,11 +26,24 @@ interface Props {
   translations: TranslationsState;
   onChange: (next: TranslationsState) => void;
   context: string;
+  onSave?: (next: TranslationsState) => Promise<void>;
 }
 
-export function ContentTranslationsTab({ fields, translations, onChange, context }: Props) {
+export function ContentTranslationsTab({ fields, translations, onChange, context, onSave }: Props) {
   const [activeLocale, setActiveLocale] = useState<ContentLocale>("tr");
   const [translating, setTranslating] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  async function handleSave() {
+    if (!onSave) return;
+    setSaving(true);
+    try {
+      await onSave(translations);
+      toast.success("Translations saved");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   function getVal(fieldKey: string, locale: ContentLocale): string {
     return translations[fieldKey]?.[locale] ?? "";
@@ -69,7 +82,12 @@ export function ContentTranslationsTab({ fields, translations, onChange, context
         ) as Record<ContentLocale, string>;
       }
       onChange(next);
-      toast.success(`Translated all fields to ${LOCALE_LABELS[activeLocale]} (and all other locales)`);
+      if (onSave) {
+        await onSave(next);
+        toast.success("Translated & saved all languages");
+      } else {
+        toast.success(`Translated all fields to all languages`);
+      }
     } finally {
       setTranslating(false);
     }
@@ -89,15 +107,27 @@ export function ContentTranslationsTab({ fields, translations, onChange, context
             </p>
           )}
         </div>
-        <button
-          type="button"
-          onClick={handleTranslateAll}
-          disabled={translating}
-          className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase px-4 py-2.5 border border-ochre text-ochre hover:bg-ochre/10 transition-colors duration-150 disabled:opacity-50 self-start sm:self-auto"
-        >
-          <Sparkles size={13} />
-          {translating ? "Translating all fields…" : "Translate all with AI"}
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={handleTranslateAll}
+            disabled={translating || saving}
+            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase px-4 py-2.5 border border-ochre text-ochre hover:bg-ochre/10 transition-colors duration-150 disabled:opacity-50"
+          >
+            <Sparkles size={13} />
+            {translating ? "Translating all fields…" : "Translate all with AI"}
+          </button>
+          {onSave && (
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving || translating}
+              className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase px-5 py-2.5 font-medium bg-ochre text-navy hover:bg-gold transition-colors duration-150 disabled:opacity-50 min-w-28 justify-center"
+            >
+              {saving ? "Saving…" : "Save"}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Locale tabs */}

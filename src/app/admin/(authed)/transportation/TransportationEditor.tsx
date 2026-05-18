@@ -19,6 +19,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, X, Plus } from "lucide-react";
+import { Spinner } from "@/components/admin/Spinner/Spinner";
 
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
@@ -81,6 +82,15 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-8 pt-8">
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
+        >
+          {isSubmitting ? <Spinner size="sm" /> : "Save"}
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <FormField label="Heading top" required error={errors.hero_heading_top?.message}>
           <Input {...register("hero_heading_top")} placeholder="e.g. Travel in" />
@@ -111,9 +121,9 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:scale-[0.97] disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
         >
-          {isSubmitting ? "Saving…" : "Save"}
+          {isSubmitting ? <Spinner size="sm" /> : "Save"}
         </button>
       </div>
     </form>
@@ -146,7 +156,7 @@ function SortableAirportRow({
         type="button"
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink touch-none flex-shrink-0"
+        className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink touch-none shrink-0"
         aria-label="Drag to reorder"
       >
         <GripVertical size={15} />
@@ -166,7 +176,7 @@ function SortableAirportRow({
       <button
         type="button"
         onClick={onRemove}
-        className="text-ink-soft hover:text-terracotta transition-colors flex-shrink-0 p-1"
+        className="text-ink-soft hover:text-terracotta transition-colors shrink-0 p-1"
         aria-label="Remove airport"
       >
         <X size={14} />
@@ -202,7 +212,7 @@ function SortableVehicleRow({
           type="button"
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink touch-none flex-shrink-0"
+          className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink touch-none shrink-0"
           aria-label="Drag to reorder"
         >
           <GripVertical size={15} />
@@ -220,7 +230,7 @@ function SortableVehicleRow({
         <button
           type="button"
           onClick={onRemove}
-          className="text-ink-soft hover:text-terracotta transition-colors flex-shrink-0 p-1"
+          className="text-ink-soft hover:text-terracotta transition-colors shrink-0 p-1"
           aria-label="Remove vehicle"
         >
           <X size={14} />
@@ -335,6 +345,15 @@ function FleetTab({
 
   return (
     <form onSubmit={onSubmit} noValidate className="pt-8 space-y-10">
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
+        >
+          {isSubmitting ? <Spinner size="sm" /> : "Save"}
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Airports */}
         <div>
@@ -424,9 +443,9 @@ function FleetTab({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:scale-[0.97] disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
         >
-          {isSubmitting ? "Saving…" : "Save"}
+          {isSubmitting ? <Spinner size="sm" /> : "Save"}
         </button>
       </div>
     </form>
@@ -447,17 +466,32 @@ export function TransportationEditor({
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex border-b border-rule">
+      <div className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
         {(["hero", "fleet"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-3 font-mono text-[10px] tracking-[0.18em] uppercase transition-colors ${
+            className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
+            style={
               activeTab === tab
-                ? "text-ink border-b-2 border-ochre -mb-px"
-                : "text-muted hover:text-ink"
-            }`}
+                ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" }
+                : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }
+            }
+            onMouseEnter={(e) => {
+              if (activeTab !== tab) {
+                (e.currentTarget as HTMLButtonElement).style.background = "#e8dac8";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "#4a4036";
+                (e.currentTarget as HTMLButtonElement).style.color = "#1f1a14";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab) {
+                (e.currentTarget as HTMLButtonElement).style.background = "#efe4d2";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "#c5b99e";
+                (e.currentTarget as HTMLButtonElement).style.color = "#4a4036";
+              }
+            }}
           >
             {tab === "hero" ? "Hero" : "Fleet & airports"}
           </button>

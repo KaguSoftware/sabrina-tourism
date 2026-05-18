@@ -10,13 +10,15 @@ import { Step5Review } from "./Step5Review";
 import { CUSTOM_TOUR_DRAFT_KEY, INITIAL_STATE } from "./types";
 import type { CustomTourState } from "./types";
 import type { Airport, Vehicle } from "@/lib/transport/types";
+import type { HotelPublic } from "@/lib/db/hotels";
 
 interface Props {
   airports: Airport[];
   vehicles: Vehicle[];
+  hotelsByRegion: Record<string, HotelPublic[]>;
 }
 
-export function CustomTourWizard({ airports, vehicles }: Props) {
+export function CustomTourWizard({ airports, vehicles, hotelsByRegion }: Props) {
   const wizardHeaderRef = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState(0);
   const [state, setState] = useState<CustomTourState>(INITIAL_STATE);
@@ -36,7 +38,7 @@ export function CustomTourWizard({ airports, vehicles }: Props) {
   useEffect(() => {
     try {
       const saved = window.sessionStorage.getItem(CUSTOM_TOUR_DRAFT_KEY);
-      if (saved) setState(JSON.parse(saved));
+      if (saved) setState({ ...INITIAL_STATE, ...JSON.parse(saved) });
     } catch {
       // ignore corrupt draft
     }
@@ -75,7 +77,7 @@ export function CustomTourWizard({ airports, vehicles }: Props) {
           <Step2People state={state} onChange={patch} onNext={next} onBack={back} />
         )}
         {step === 2 && (
-          <Step3Hotels state={state} onChange={patch} onNext={next} onBack={back} />
+          <Step3Hotels state={state} onChange={patch} onNext={next} onBack={back} hotelsByRegion={hotelsByRegion} />
         )}
         {step === 3 && (
           <Step4Vehicle state={state} onChange={patch} onNext={next} onBack={back} airports={airports} vehicles={vehicles} />
