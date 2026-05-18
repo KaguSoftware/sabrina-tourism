@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { AllPackagesPage } from "@/components/packages/AllPackagesPage/AllPackagesPage";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAllPremadePackages } from "@/lib/db/premade-packages";
-import { DAILY_PACKAGES } from "@/lib/daily/data";
+import { getAllDailyPackages } from "@/lib/db/daily-packages";
 
 export const revalidate = 604800;
 
@@ -21,9 +21,10 @@ export const metadata = {
 
 export default async function PackagesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const [hero, fixedDatePackages] = await Promise.all([
+  const [hero, fixedDatePackages, dailyPackages] = await Promise.all([
     getSiteContent("tours_hero", locale),
-    getAllPremadePackages(),
+    getAllPremadePackages({ locale }),
+    getAllDailyPackages({ locale }),
   ]);
 
   return (
@@ -32,7 +33,7 @@ export default async function PackagesPage({ params }: { params: Promise<{ local
         pageHeading={hero.page_heading}
         pageLede={hero.page_lede}
         fixedDatePackages={fixedDatePackages}
-        dailyPackages={DAILY_PACKAGES}
+        dailyPackages={dailyPackages}
       />
     </Suspense>
   );

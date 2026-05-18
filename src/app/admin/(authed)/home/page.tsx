@@ -10,17 +10,19 @@ const HOME_KEYS = [
   "home_how_it_works",
   "home_featured_heading",
   "home_featured_hotels_heading",
+  "home_group_packages",
   "home_quote",
 ] as const;
 
 export default async function AdminHomePage() {
   const { t } = await getAdminT();
-  const [hero, about, howItWorks, featured, featuredHotels, quote, ...translationResults] = await Promise.all([
+  const [hero, about, howItWorks, featured, featuredHotels, groupPackages, quote, ...translationResults] = await Promise.all([
     getSiteContent("home_hero"),
     getSiteContent("home_about"),
     getSiteContent("home_how_it_works"),
     getSiteContent("home_featured_heading"),
     getSiteContent("home_featured_hotels_heading"),
+    getSiteContent("home_group_packages"),
     getSiteContent("home_quote"),
     ...HOME_KEYS.map((key) => loadSiteContentTranslations(key)),
   ]);
@@ -42,6 +44,7 @@ export default async function AdminHomePage() {
         howItWorks={howItWorks}
         featured={featured}
         featuredHotels={featuredHotels}
+        groupPackages={groupPackages}
         quote={quote}
         initialTranslations={initialTranslations}
       />

@@ -4,10 +4,10 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPackageCard";
-import type { DailyPackage } from "@/lib/daily/types";
+import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
 interface DailyListPageProps {
-  packages: DailyPackage[];
+  packages: DailyPackagePublic[];
 }
 
 export function DailyListPage({ packages }: DailyListPageProps) {

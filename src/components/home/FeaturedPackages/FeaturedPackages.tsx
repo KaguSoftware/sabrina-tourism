@@ -3,14 +3,16 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPackageCard";
-import type { DailyPackage } from "@/lib/daily/types";
+import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
 interface FeaturedPackagesProps {
   sectionHeading: string;
-  packages: DailyPackage[];
+  packages: DailyPackagePublic[];
+  kicker: string;
+  ctaLabel: string;
 }
 
-export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesProps) {
+export function FeaturedPackages({ sectionHeading, packages, kicker, ctaLabel }: FeaturedPackagesProps) {
     return (
         <section className="relative z-10  py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Diagonal hatch — top-right */}
@@ -55,7 +57,7 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
                 <div className="flex justify-between items-end gap-6 mb-12 flex-wrap">
                     <div>
                         <Reveal>
-                            <Kicker>Our Daily Packages</Kicker>
+                            <Kicker>{kicker}</Kicker>
                         </Reveal>
                         <Reveal delay={120}>
                             <GoldUnderlineHeading
@@ -71,7 +73,7 @@ export function FeaturedPackages({ sectionHeading, packages }: FeaturedPackagesP
                             href="/packages#daily"
                             className="font-mono text-[13px] tracking-[0.16em] uppercase border-b border-ochre pb-1 transition-colors duration-200 hover:text-ochre group"
                         >
-                            See all daily packages{" "}
+                            {ctaLabel}{" "}
                             <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
                                 →
                             </em>

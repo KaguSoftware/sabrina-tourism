@@ -163,7 +163,6 @@ export function CustomForm({
 
         <TransportFormField
           label={t("luggageBags")}
-          tooltip={t("tooltipLuggageBags")}
           hint={vehicleId && !luggageExceedsSingle && !luggageExceedsMulti ? t("bagsPerVehicle", { n: singleLuggageCapacity }) : undefined}
           hintError={
             luggageExceedsMulti

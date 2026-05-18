@@ -8,9 +8,11 @@ import type { HotelPublic } from "@/lib/db/hotels";
 interface FeaturedHotelsProps {
   sectionHeading: string;
   hotels: HotelPublic[];
+  kicker: string;
+  ctaLabel: string;
 }
 
-export function FeaturedHotels({ sectionHeading, hotels }: FeaturedHotelsProps) {
+export function FeaturedHotels({ sectionHeading, hotels, kicker, ctaLabel }: FeaturedHotelsProps) {
   return (
     <section className="relative z-10 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Diagonal hatch — top-left */}
@@ -53,7 +55,7 @@ export function FeaturedHotels({ sectionHeading, hotels }: FeaturedHotelsProps) 
         <div className="flex justify-between items-end gap-6 mb-12 flex-wrap">
           <div>
             <Reveal>
-              <Kicker>Featured hotels</Kicker>
+              <Kicker>{kicker}</Kicker>
             </Reveal>
             <Reveal delay={120}>
               <GoldUnderlineHeading
@@ -69,7 +71,7 @@ export function FeaturedHotels({ sectionHeading, hotels }: FeaturedHotelsProps) 
               href="/regions"
               className="font-mono text-[13px] tracking-[0.16em] uppercase border-b border-ochre pb-1 transition-colors duration-200 hover:text-ochre group"
             >
-              See all hotels{" "}
+              {ctaLabel}{" "}
               <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
                 →
               </em>

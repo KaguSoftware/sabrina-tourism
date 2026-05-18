@@ -11,7 +11,7 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
     return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
   }
 
-  const { hero, about, how_it_works, featured, featured_hotels, quote } = parsed.data;
+  const { hero, about, how_it_works, featured, featured_hotels, group_packages, quote } = parsed.data;
 
   const supabase = createServiceClient();
 
@@ -19,8 +19,9 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
     { id: "home_hero", data: hero },
     { id: "home_about", data: about },
     { id: "home_how_it_works", data: how_it_works },
-    { id: "home_featured_heading", data: { section_heading: featured.section_heading, featured_slugs: featured.featured_slugs } },
+    { id: "home_featured_heading", data: featured },
     { id: "home_featured_hotels_heading", data: featured_hotels },
+    { id: "home_group_packages", data: group_packages },
     { id: "home_quote", data: quote },
   ];
 
