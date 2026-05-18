@@ -108,7 +108,7 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
       onChange(ymd, "");
       setMode("end");
     } else {
-      if (ymd <= start) {
+      if (ymd < start) {
         modeRef.current = "end";
         onChange(ymd, "");
         setMode("end");
@@ -122,12 +122,12 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
     }
   }
 
-  const nights = start && end
-    ? Math.round((parseYMD(end)!.getTime() - parseYMD(start)!.getTime()) / 86_400_000)
+  const days = start && end
+    ? Math.round((parseYMD(end)!.getTime() - parseYMD(start)!.getTime()) / 86_400_000) + 1
     : 0;
 
   const label = start && end
-    ? `${formatShort(start)} → ${formatShort(end)}  ·  ${nights} night${nights !== 1 ? "s" : ""}`
+    ? `${formatShort(start)} → ${formatShort(end)}  ·  ${days} day${days !== 1 ? "s" : ""}`
     : start
     ? `${formatShort(start)} → pick end date`
     : placeholder;
@@ -266,7 +266,7 @@ export const DateRangePicker = forwardRef<DateRangePickerHandle, DateRangePicker
       {/* footer */}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-rule">
         <span className="font-mono text-[10px] tracking-widest uppercase text-muted">
-          {start && end ? `${nights} night${nights !== 1 ? "s" : ""}` : ""}
+          {start && end ? `${days} day${days !== 1 ? "s" : ""}` : ""}
         </span>
         {(start || end) && (
           <button

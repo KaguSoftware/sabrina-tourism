@@ -46,6 +46,7 @@ export function CustomForm({
   const [destinations, setDestinations] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [oneDay, setOneDay] = useState(false);
   const [passengers, setPassengers] = useState(String(initialPassengers));
   const [luggage, setLuggage] = useState("");
   const [localGuideNeeded, setLocalGuideNeeded] = useState(false);
@@ -153,7 +154,27 @@ export function CustomForm({
         </TransportFormField>
 
         <TransportFormField label={t("dates")} hint={dateMissing ? t("requiredHint") : undefined}>
-          <DateRangePicker start={startDate} end={endDate} onChange={(s, e) => { setStartDate(s); setEndDate(e); }} min={today} error={dateMissing} placeholder={t("dateRangePlaceholder")} />
+          <DateRangePicker
+            start={startDate}
+            end={endDate}
+            onChange={(s, e) => { setStartDate(s); setEndDate(oneDay ? s : e); }}
+            min={today}
+            error={dateMissing}
+            placeholder={t("dateRangePlaceholder")}
+          />
+          <label className="flex items-center gap-2 mt-2 cursor-pointer w-fit">
+            <input
+              type="checkbox"
+              checked={oneDay}
+              onChange={(e) => {
+                setOneDay(e.target.checked);
+                if (e.target.checked && startDate) setEndDate(startDate);
+                if (!e.target.checked) setEndDate("");
+              }}
+              className="h-3.5 w-3.5 accent-ochre"
+            />
+            <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">1 day</span>
+          </label>
         </TransportFormField>
 
         {/* Row 2: Passengers, Luggage, Destinations */}
