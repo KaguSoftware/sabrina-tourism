@@ -4,15 +4,14 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { PremadePackageCard } from "@/components/premade-packages/PremadePackageCard/PremadePackageCard";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
-import { SECTION_HEADING } from "./constants";
-
 interface SignatureDestinationsProps {
     packages: PremadePackagePublic[];
+    heading: string;
     kicker: string;
     ctaLabel: string;
 }
 
-export function SignatureDestinations({ packages, kicker, ctaLabel }: SignatureDestinationsProps) {
+export function SignatureDestinations({ packages, heading, kicker, ctaLabel }: SignatureDestinationsProps) {
     return (
         <section className="relative z-10 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Rings — top-right (bigger, more layers) */}
@@ -63,7 +62,7 @@ export function SignatureDestinations({ packages, kicker, ctaLabel }: SignatureD
                                 as="h2"
                                 className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch]"
                             >
-                                {SECTION_HEADING}
+                                {heading}
                             </GoldUnderlineHeading>
                         </Reveal>
                     </div>

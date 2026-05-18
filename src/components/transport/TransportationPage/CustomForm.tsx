@@ -175,7 +175,7 @@ export function CustomForm({
               }}
               className="h-3 w-3 accent-ochre"
             />
-            <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">1 day</span>
+            <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">{t("oneDay")}</span>
           </label>
           {oneDay ? (
             <DatePicker

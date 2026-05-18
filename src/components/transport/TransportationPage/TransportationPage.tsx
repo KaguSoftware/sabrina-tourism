@@ -91,8 +91,8 @@ export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, air
               </button>
             ))}
             <span
-              className="absolute bottom-0 h-0.5 bg-ochre w-1/2 transition-transform duration-[420ms] ease-out"
-              style={{ transform: mode === "airport" ? "translateX(0)" : "translateX(100%)" }}
+              className="absolute bottom-0 h-0.5 bg-ochre w-1/2 transition-[inset-inline-start] duration-[420ms] ease-out"
+              style={{ insetInlineStart: mode === "airport" ? "0%" : "50%" }}
               aria-hidden="true"
             />
           </div>
