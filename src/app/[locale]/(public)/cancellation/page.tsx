@@ -8,6 +8,7 @@ export const metadata = {
 
 export default async function CancellationPage() {
   const t = await getTranslations("legal.cancellation");
+  const tLegal = await getTranslations("legal");
   return (
     <LegalPage
       eyebrow={t("eyebrow")}
@@ -18,6 +19,7 @@ export default async function CancellationPage() {
         { heading: t("section2Heading"), body: t("section2Body") },
         { heading: t("section3Heading"), body: t("section3Body") },
       ]}
+      contactWhatsapp={tLegal("contactWhatsapp")}
     />
   );
 }

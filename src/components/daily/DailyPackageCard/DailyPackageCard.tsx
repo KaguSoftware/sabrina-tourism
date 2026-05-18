@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
-import type { DailyPackage } from "@/lib/daily/types";
+import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
-export function DailyPackageCard({ pkg }: { pkg: DailyPackage }) {
+export function DailyPackageCard({ pkg }: { pkg: DailyPackagePublic }) {
   return (
     <BaseCard
       href={`/tours/daily/${pkg.slug ?? pkg.id}`}

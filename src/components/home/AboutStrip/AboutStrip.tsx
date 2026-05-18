@@ -4,9 +4,10 @@ import { Reveal } from "@/components/primitives/Reveal/Reveal";
 interface AboutStripProps {
   heading: string;
   body: string;
+  kicker: string;
 }
 
-export function AboutStrip({ heading, body }: AboutStripProps) {
+export function AboutStrip({ heading, body, kicker }: AboutStripProps) {
     return (
         <section className="relative z-10 py-[clamp(60px,9vw,120px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background — sits below the plane */}
@@ -61,7 +62,7 @@ export function AboutStrip({ heading, body }: AboutStripProps) {
 
             <div className="max-w-[920px] mx-auto relative z-7">
                 <Reveal>
-                    <Kicker>About — Est. 2014</Kicker>
+                    <Kicker>{kicker}</Kicker>
                 </Reveal>
                 <Reveal delay={120}>
                     <GoldUnderlineHeading

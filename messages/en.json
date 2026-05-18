@@ -577,6 +577,7 @@
     }
   },
   "legal": {
+    "contactWhatsapp": "Contact us on WhatsApp",
     "privacy": {
       "eyebrow": "Legal",
       "title": "Privacy Policy",
@@ -676,5 +677,16 @@
     "dayItinerary": "Day Itinerary",
     "whatsIncluded": "What's Included",
     "whatsNotIncluded": "What's Not Included"
+  },
+  "packageList": {
+    "kicker": "Itineraries",
+    "itinerary": "itinerary",
+    "itineraries": "itineraries",
+    "inRegion": "in {region}",
+    "noMatchesKicker": "No matches",
+    "noMatchesHeading": "No itinerary fits those filters — yet.",
+    "noMatchesBody": "Try adjusting your filters, or tell us what you're imagining and we'll draw it from scratch.",
+    "clearFilters": "Clear filters",
+    "contactWhatsapp": "Contact us via WhatsApp"
   }
 }

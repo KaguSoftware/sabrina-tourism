@@ -337,7 +337,8 @@
       "section2Body": "Once a booking is confirmed, cancellation fees may apply depending on supplier rules, timing, prepaid services, and non-refundable reservations.",
       "section3Heading": "How to cancel",
       "section3Body": "Contact Sabrina Turizm directly by WhatsApp or email with your booking details. We will confirm the applicable cancellation terms for your reservation."
-    }
+    },
+    "contactWhatsapp": "Nous contacter sur WhatsApp"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -391,5 +392,16 @@
     "dayItinerary": "Programme de la journée",
     "whatsIncluded": "Ce qui est inclus",
     "whatsNotIncluded": "Ce qui n'est pas inclus"
+  },
+  "packageList": {
+    "kicker": "Itinéraires",
+    "itinerary": "itinéraire",
+    "itineraries": "itinéraires",
+    "inRegion": "en {region}",
+    "noMatchesKicker": "Aucun résultat",
+    "noMatchesHeading": "Aucun itinéraire ne correspond à ces filtres — pour le moment.",
+    "noMatchesBody": "Essayez d'ajuster vos filtres ou dites-nous ce que vous imaginez et nous le créerons de zéro.",
+    "clearFilters": "Effacer les filtres",
+    "contactWhatsapp": "Nous contacter sur WhatsApp"
   }
 }

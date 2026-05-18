@@ -472,6 +472,8 @@
       "duration": "Süre",
       "minPeople": "Minimum kişi",
       "maxPeople": "Maksimum kişi",
+      "minPeople2": "Minimum kişi",
+      "maxPeople2": "Maksimum kişi",
       "availableFrom": "Başlangıç tarihi",
       "availableTo": "Bitiş tarihi",
       "tierName": "Kademe adı",
@@ -567,6 +569,7 @@
       "overview": "Genel bakış",
       "itinerary": "Program",
       "tiers": "Kademeler",
+      "pricing": "Fiyatlandırma",
       "inclusions": "Dahil olanlar",
       "imagery": "Görseller",
       "accommodation": "Konaklama",
@@ -574,6 +577,7 @@
     }
   },
   "legal": {
+    "contactWhatsapp": "WhatsApp'tan bize ulaşın",
     "privacy": {
       "eyebrow": "Legal",
       "title": "Privacy Policy",
@@ -673,5 +677,16 @@
     "dayItinerary": "Günlük Program",
     "whatsIncluded": "Dahil Olanlar",
     "whatsNotIncluded": "Dahil Olmayanlar"
+  },
+  "packageList": {
+    "kicker": "Güzergahlar",
+    "itinerary": "güzergah",
+    "itineraries": "güzergah",
+    "inRegion": "{region} bölgesinde",
+    "noMatchesKicker": "Sonuç yok",
+    "noMatchesHeading": "Bu filtrelere uyan güzergah bulunamadı.",
+    "noMatchesBody": "Filtrelerinizi ayarlayın ya da hayal ettiğinizi bize anlatın, sıfırdan çizelim.",
+    "clearFilters": "Filtreleri temizle",
+    "contactWhatsapp": "WhatsApp ile iletişime geçin"
   }
 }

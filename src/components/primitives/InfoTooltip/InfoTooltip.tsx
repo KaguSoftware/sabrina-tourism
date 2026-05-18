@@ -1,26 +1,32 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
+
+const TOOLTIP_W = 200;
+const GAP = 10;
 
 export function InfoTooltip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
-  const [align, setAlign] = useState<"center" | "left" | "right">("center");
-  const ref = useRef<HTMLSpanElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const btnRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    if (!open || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const tooltipW = 200;
-    const spaceLeft = rect.left;
-    const spaceRight = window.innerWidth - rect.right;
-    if (spaceLeft < tooltipW / 2) setAlign("left");
-    else if (spaceRight < tooltipW / 2) setAlign("right");
-    else setAlign("center");
-  }, [open]);
+  function calcPos() {
+    if (!btnRef.current) return;
+    const r = btnRef.current.getBoundingClientRect();
+    const top = r.top - GAP;
+    const idealLeft = r.left + r.width / 2 - TOOLTIP_W / 2;
+    const clampedLeft = Math.min(
+      Math.max(idealLeft, 8),
+      window.innerWidth - TOOLTIP_W - 8
+    );
+    setPos({ top, left: clampedLeft });
+  }
 
   useEffect(() => {
     if (!open) return;
+    calcPos();
     function handleOutside(e: MouseEvent | TouchEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (btnRef.current && !btnRef.current.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener("mousedown", handleOutside);
     document.addEventListener("touchstart", handleOutside);
@@ -30,23 +36,15 @@ export function InfoTooltip({ text }: { text: string }) {
     };
   }, [open]);
 
-  const popoverPos =
-    align === "left"
-      ? "left-0"
-      : align === "right"
-      ? "right-0"
-      : "left-1/2 -translate-x-1/2";
-
-  const arrowPos =
-    align === "left"
-      ? "left-3"
-      : align === "right"
-      ? "right-3"
-      : "left-1/2 -translate-x-1/2";
+  const arrowLeft = Math.min(
+    Math.max((btnRef.current?.getBoundingClientRect().left ?? 0) + (btnRef.current?.getBoundingClientRect().width ?? 0) / 2 - pos.left - 5, 8),
+    TOOLTIP_W - 18
+  );
 
   return (
-    <span ref={ref} className="relative inline-flex items-center">
+    <span className="relative inline-flex items-center">
       <button
+        ref={btnRef}
         type="button"
         aria-label="More information"
         onMouseEnter={() => setOpen(true)}
@@ -61,11 +59,18 @@ export function InfoTooltip({ text }: { text: string }) {
           <rect x="5.05" y="5.2" width="1.9" height="4.2" rx="0.95" fill="#c99a3f" />
         </svg>
       </button>
-      {open && (
-        <span className={`absolute bottom-full ${popoverPos} mb-2.5 z-50 w-50 max-w-[calc(100vw-2rem)] px-3 py-2.5 rounded bg-navy text-cream text-[12px] font-sans font-normal normal-case tracking-normal leading-relaxed shadow-xl pointer-events-none animate-in fade-in duration-150`}>
+      {open && typeof document !== "undefined" && createPortal(
+        <span
+          style={{ top: pos.top, left: pos.left, width: TOOLTIP_W, transform: "translateY(calc(-100% - 10px))" }}
+          className="fixed z-[9999] px-3 py-2.5 rounded bg-navy text-cream text-[12px] font-sans font-normal normal-case tracking-normal leading-relaxed shadow-xl pointer-events-none"
+        >
           {text}
-          <span className={`absolute top-full ${arrowPos} w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-navy`} />
-        </span>
+          <span
+            style={{ left: arrowLeft }}
+            className="absolute top-full w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-navy"
+          />
+        </span>,
+        document.body
       )}
     </span>
   );

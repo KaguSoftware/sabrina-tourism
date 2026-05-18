@@ -14,10 +14,13 @@ export const homeContentSchema = z.object({
     headline_em: z.string(),
     sub: z.string(),
     hero_image: z.string().nullable().optional(),
+    cta_browse: z.string().optional(),
+    cta_chauffeur: z.string().optional(),
   }),
   about: z.object({
     heading: z.string(),
     body: z.string(),
+    kicker: z.string().optional(),
   }),
   how_it_works: z.object({
     section_heading: z.string(),
@@ -26,9 +29,17 @@ export const homeContentSchema = z.object({
   featured: z.object({
     section_heading: z.string(),
     featured_slugs: z.array(z.string()),
+    kicker: z.string().optional(),
+    cta_label: z.string().optional(),
   }),
   featured_hotels: z.object({
     section_heading: z.string(),
+    kicker: z.string().optional(),
+    cta_label: z.string().optional(),
+  }),
+  group_packages: z.object({
+    kicker: z.string().optional(),
+    cta_label: z.string().optional(),
   }),
   quote: z.object({
     quote: z.string(),

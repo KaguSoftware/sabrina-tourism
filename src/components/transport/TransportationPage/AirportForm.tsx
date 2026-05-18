@@ -316,7 +316,6 @@ export function AirportForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
         <TransportFormField
           label={t("luggageBags")}
-          tooltip={t("tooltipLuggageBags")}
           hint={vehicleId && !luggageExceedsSingle && !luggageExceedsMulti ? t("bagsPerVehicle", { n: singleLuggageCapacity }) : undefined}
           hintError={
             luggageExceedsMulti
@@ -338,7 +337,6 @@ export function AirportForm({
             <input type="checkbox" checked={childSeat} onChange={(e) => setChildSeat(e.target.checked)}
               className="w-4 h-4 accent-ochre" />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink">{t("childSeat")}</span>
-            <InfoTooltip text={t("tooltipChildSeat")} />
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" checked={meetAndGreet} onChange={(e) => setMeetAndGreet(e.target.checked)}

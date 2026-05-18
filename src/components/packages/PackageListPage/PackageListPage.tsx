@@ -2,6 +2,7 @@
 import { useState, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
@@ -20,6 +21,7 @@ interface PackageListPageProps {
 }
 
 export function PackageListPage({ pageHeading, pageLede, packages, hideFilters = false }: PackageListPageProps) {
+    const t = useTranslations("packageList");
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -93,7 +95,7 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                 {/* Text */}
                 <div className="relative z-5 max-w-[1320px] mx-auto w-full">
                     <Reveal>
-                        <Kicker light>Itineraries</Kicker>
+                        <Kicker light>{t("kicker")}</Kicker>
                     </Reveal>
                     <Reveal delay={120}>
                         <GoldUnderlineHeading
@@ -126,11 +128,11 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                     <span className="text-ochre font-display italic text-[18px] mr-1">
                         {visible.length}
                     </span>
-                    {visible.length === 1 ? "itinerary" : "itineraries"}
-                    {filters.region && (
+                    {visible.length === 1 ? t("itinerary") : t("itineraries")}
+                    {filters.region.length > 0 && (
                         <em className="not-italic text-ink">
                             {" "}
-                            in {filters.region}
+                            {t("inRegion", { region: filters.region.join(", ") })}
                         </em>
                     )}
                 </p>
@@ -152,21 +154,19 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                 ) : (
                     <Reveal>
                         <div className="text-center max-w-[540px] mx-auto py-16 px-6">
-                            <Kicker>No matches</Kicker>
+                            <Kicker>{t("noMatchesKicker")}</Kicker>
                             <h3 className="font-display font-normal text-[clamp(24px,3vw,36px)] tracking-tight mt-4 mb-3">
-                                No itinerary fits those filters — yet.
+                                {t("noMatchesHeading")}
                             </h3>
                             <p className="text-ink-soft mb-8">
-                                Try adjusting your filters, or tell us what
-                                you&#39;re imagining and we&#39;ll draw it from
-                                scratch.
+                                {t("noMatchesBody")}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                 <button
                                     onClick={clearFilters}
                                     className="font-mono text-[12px] tracking-[0.16em] uppercase border border-ochre text-ochre px-6 py-3 transition-colors duration-200 hover:bg-ochre hover:text-navy"
                                 >
-                                    Clear filters
+                                    {t("clearFilters")}
                                 </button>
                                 <GoldButton
                                     href={genericMessage()}
@@ -174,7 +174,7 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    Contact us via WhatsApp
+                                    {t("contactWhatsapp")}
                                 </GoldButton>
                             </div>
                         </div>

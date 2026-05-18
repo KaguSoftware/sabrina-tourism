@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { updateTag, revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import type { ContentLocale } from "./ai";
@@ -419,5 +419,6 @@ export async function saveSiteContentTranslations(
     .eq("id", key);
   if (error) return { error: error.message };
   updateTag(tags.siteContent(key));
+  revalidatePath("/", "layout");
   return {};
 }
