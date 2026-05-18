@@ -127,7 +127,7 @@ export function CustomForm({
     t("destinationsSummary", { value: destinations || "—" }),
     t("datesSummary", {
       start: startDate || "—",
-      end: endDate ? ` to ${endDate}` : "",
+      end: endDate && endDate !== startDate ? ` to ${endDate}` : "",
     }),
     t("passengersSummary", { value: passengers }),
     luggage ? t("luggageSummary", { value: luggage }) : "",
