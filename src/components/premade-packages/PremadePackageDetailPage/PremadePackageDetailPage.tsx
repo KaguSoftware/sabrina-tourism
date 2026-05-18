@@ -13,6 +13,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
 import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
+import { useCurrency } from "@/lib/currency/context";
+import { formatPrice } from "@/lib/currency/format";
 
 function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
   const def = getInclusionIcon(name);
@@ -86,6 +88,8 @@ interface ReserveSectionProps {
 }
 
 function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSelectedDateIdx, selectedDate, locale }: ReserveSectionProps) {
+  const { currency, rates } = useCurrency();
+  const fmt = (amount: number) => formatPrice(amount, currency, rates, locale);
   const t = useTranslations("packageDetail");
   const tCommon = useTranslations("common");
   const tWa = useTranslations("whatsapp");
@@ -97,7 +101,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
   const pricePerChild = pkg.pricing?.pricePerChild ?? null;
   const singleRoomLabel =
     singleRoomSupplement != null
-      ? t("singleRoomOccupancyWithPrice", { amount: `${pkg.currency} ${singleRoomSupplement}` })
+      ? t("singleRoomOccupancyWithPrice", { amount: fmt(singleRoomSupplement) })
       : t("singleRoomOccupancy");
 
   const dateLabel = `${formatDate(selectedDate.startDate, locale)} → ${formatDate(selectedDate.endDate, locale)}`;
@@ -134,7 +138,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
             <div className="mb-8">
               <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted mb-1">{t("startingFrom")}</p>
               <p className="font-display text-[42px] leading-none tracking-[-0.02em] text-ochre mb-1">
-                {pkg.currency} {pkg.price.toLocaleString()}
+                {fmt(pkg.price)}
               </p>
               <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">{t("perPerson")}</p>
             </div>
@@ -219,7 +223,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
                 />
                 {pricePerChild != null && (
                   <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre">
-                    + {pkg.currency} {pricePerChild.toLocaleString()}
+                    + {fmt(pricePerChild)}
                   </span>
                 )}
                 <button
@@ -466,7 +470,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
       {/* Multi-person pricing */}
       {pkg.pricing && (
         <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(48px,6vw,80px)]">
-          <MultiPersonPrices pricing={pkg.pricing} currency={pkg.currency} />
+          <MultiPersonPrices pricing={pkg.pricing} />
         </section>
       )}
 

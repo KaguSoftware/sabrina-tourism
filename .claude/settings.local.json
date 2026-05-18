@@ -64,7 +64,8 @@
       "Bash(Measure-Object)",
       "Bash(Select-Object Count)",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('transport',{}\\).get\\('form',{}\\), indent=2\\)\\)\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(grep -E \"currency|CurrencyS|CurrencyProvider|format\\\\.ts|api[\\\\\\\\/]rates\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
