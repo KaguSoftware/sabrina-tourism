@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "أدخل عدد الحقائب الكبيرة أو المسجّلة. نستخدم هذا للتأكد من وجود مساحة كافية في السيارة.",
+      "tooltipChildSeat": "سنثبّت مقعد أمان مناسب لعمر طفلك ووزنه مجاناً. يرجى ذكر عمر الطفل في رسالة واتساب.",
+      "tooltipMeetAndGreet": "سيستقبلك السائق في صالة الوصول بلافتة تحمل اسمك، يساعدك بالأمتعة ويرافقك مباشرة إلى السيارة.",
+      "tooltipGuideNeeded": "أضف مرشداً سياحياً مرخصاً إلى رحلتك. سيرافقك داخل السيارة طوال الرحلة.",
+      "tooltipGuideAssistant": "مساعد يتحدث الإنجليزية ويساعد في التوجيه والتوصيات والترجمة الخفيفة. مثالي للرحلات القصيرة.",
+      "tooltipGuideCertified": "مرشد مرخص من وزارة الثقافة بمعرفة تاريخية وثقافية عميقة. مطلوب في بعض المواقع الأثرية."
     },
     "chauffeur": {
       "pickup": "نقطة الانطلاق",

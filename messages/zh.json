@@ -152,7 +152,13 @@
       "flightSummary": "Flight: {value}.",
       "childSeatSummary": "Child seat required.",
       "meetAndGreetSummary": "Meet & greet requested.",
-      "flightInline": "Flight: {value}"
+      "flightInline": "Flight: {value}",
+      "tooltipLuggageBags": "请输入大件行李箱或托运行李的数量，以便确认车辆有足够的行李空间。",
+      "tooltipChildSeat": "我们将免费为您安装适合孩子年龄和体重的儿童安全座椅。请在 WhatsApp 消息中注明孩子的年龄。",
+      "tooltipMeetAndGreet": "司机将在到达大厅举牌迎接您，协助搬运行李并直接引导您前往车辆——省心省力。",
+      "tooltipGuideNeeded": "为您的接送行程添加持证导游，导游将全程陪同乘车并提供讲解与协助。",
+      "tooltipGuideAssistant": "提供方向指引、旅游建议和基础翻译的英语助理，适合短途行程。",
+      "tooltipGuideCertified": "文化部认证导游，具备深厚的历史文化知识，部分景点要求持证导游陪同。"
     },
     "chauffeur": {
       "pickup": "接送地点",
