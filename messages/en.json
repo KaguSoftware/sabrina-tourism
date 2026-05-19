@@ -631,10 +631,10 @@
   "pricingBlock": {
     "kicker": "Group rates",
     "heading": "Price per person",
-    "onePerson": "Single",
-    "twoPeople": "2 people",
-    "singleRoomSupplement": "+ {amount} single-room supplement",
-    "baby": "Baby"
+    "doubleRoom": "In double room",
+    "singleRoom": "In single room",
+    "child": "Child",
+    "babiesFree": "Babies under 2 travel free."
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",

@@ -631,10 +631,10 @@
   "pricingBlock": {
     "kicker": "أسعار المجموعات",
     "heading": "السعر للشخص",
-    "onePerson": "فردي",
-    "twoPeople": "شخصان",
-    "singleRoomSupplement": "+ {amount} رسم غرفة فردية",
-    "baby": "رضيع"
+    "doubleRoom": "في غرفة مزدوجة",
+    "singleRoom": "في غرفة فردية",
+    "child": "طفل",
+    "babiesFree": "الرضّع دون سن الثانية يسافرون مجانًا."
   },
   "packageDetail": {
     "routeInBrief": "المسار، باختصار",
