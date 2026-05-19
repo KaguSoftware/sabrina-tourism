@@ -4,17 +4,24 @@ import Link from "next/link";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import { HotelBookingPanel } from "@/components/primitives/HotelBookingPanel/HotelBookingPanel";
+import { AirportTransferPanel } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
+import type { TransferDetails } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
 import type { HotelCardData } from "@/lib/regions/hotels";
+import type { Airport, Vehicle } from "@/lib/transport/types";
 
 interface HotelDetailClientProps {
   hotel: HotelCardData;
   region: string;
   slug: string;
   waPhone?: string;
+  airports: Airport[];
+  vehicles: Vehicle[];
 }
 
-export function HotelDetailClient({ hotel, region, slug, waPhone }: HotelDetailClientProps) {
+export function HotelDetailClient({ hotel, region, slug, waPhone, airports, vehicles }: HotelDetailClientProps) {
   const [selectedRoomIndex, setSelectedRoomIndex] = useState(0);
+  const [airportTransfer, setAirportTransfer] = useState(false);
+  const [savedTransfer, setSavedTransfer] = useState<TransferDetails | null>(null);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-[clamp(40px,6vw,80px)]">
@@ -53,7 +60,7 @@ export function HotelDetailClient({ hotel, region, slug, waPhone }: HotelDetailC
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
               {hotel.amenities.map((a) => (
                 <li key={a} className="flex items-start gap-3">
-                  <span className="mt-1.5 w-1.5 h-1.5 bg-ochre flex-shrink-0" />
+                  <span className="mt-1.5 w-1.5 h-1.5 bg-ochre shrink-0" />
                   <span className="text-[15px] text-ink leading-snug">{a}</span>
                 </li>
               ))}
@@ -87,29 +94,57 @@ export function HotelDetailClient({ hotel, region, slug, waPhone }: HotelDetailC
         </Reveal>
       </div>
 
-      {/* Right — booking panel (sticky) */}
+      {/* Right — booking panel (sticky), transfer panel overlays to the left */}
       <div className="lg:pt-2">
-        <div className="lg:sticky lg:top-8">
-          <Reveal>
-            <HotelBookingPanel
-              hotelName={hotel.name}
-              region={region}
-              roomTypes={hotel.roomTypes}
-              selectedRoomIndex={selectedRoomIndex}
-              onRoomSelect={setSelectedRoomIndex}
-              waPhone={waPhone}
-            />
-          </Reveal>
-          <Reveal delay={80}>
-            <Link
-              href={`/regions/${slug}`}
-              className="mt-4 flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-muted hover:text-ink transition-colors duration-200"
-            >
-              <span>←</span>
-              <span>Back to {region} hotels</span>
-            </Link>
-          </Reveal>
+        <div className="lg:sticky lg:top-8 relative">
+          {/* Airport transfer panel — absolutely positioned to the left, overlays the image */}
+          {airportTransfer && (
+            <div className="hidden lg:block absolute right-full top-0 w-120 mr-4 max-h-[calc(100vh-4rem)] overflow-y-auto z-20">
+              <AirportTransferPanel
+                airports={airports}
+                vehicles={vehicles}
+                hotelName={hotel.name}
+                onSave={setSavedTransfer}
+              />
+            </div>
+          )}
+          {/* Mobile: stacked above the booking panel */}
+          {airportTransfer && (
+            <div className="lg:hidden mb-4">
+              <AirportTransferPanel
+                airports={airports}
+                vehicles={vehicles}
+                hotelName={hotel.name}
+                onSave={setSavedTransfer}
+              />
+            </div>
+          )}
+
+          <div>
+            <Reveal>
+              <HotelBookingPanel
+                hotelName={hotel.name}
+                region={region}
+                roomTypes={hotel.roomTypes}
+                selectedRoomIndex={selectedRoomIndex}
+                onRoomSelect={setSelectedRoomIndex}
+                waPhone={waPhone}
+                airportTransfer={airportTransfer}
+                onAirportTransferChange={setAirportTransfer}
+                transferDetails={savedTransfer}
+              />
+            </Reveal>
+          </div>
         </div>
+        <Reveal delay={80}>
+          <Link
+            href={`/regions/${slug}`}
+            className="mt-4 flex items-center gap-2 font-mono text-[11px] tracking-[0.16em] uppercase text-muted hover:text-ink transition-colors duration-200"
+          >
+            <span>←</span>
+            <span>Back to {region} hotels</span>
+          </Link>
+        </Reveal>
       </div>
 
     </div>
