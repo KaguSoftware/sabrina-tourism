@@ -43,6 +43,9 @@ export function DailyPrices({ adultPrice, childPrice }: DailyPricesProps) {
             </div>
           ))}
         </div>
+        <p className="font-mono text-[10px] tracking-[0.14em] uppercase text-muted text-center mt-5">
+          Babies under 2 travel free.
+        </p>
       </div>
     </Reveal>
   );
