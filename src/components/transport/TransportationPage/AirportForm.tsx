@@ -224,7 +224,7 @@ export function AirportForm({
           {vClass && !needsMultiVehicle && <span className="text-[12px] text-muted">{vClass.capacity} · {displayFromPrice(vClass.from)}</span>}
           {vehicleMissing && <p className="text-[12px] text-terracotta">{t("vehicleMissing")}</p>}
         </div>
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid w-full flex-1 grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-3">
           {vehicles.map((v) => {
             const cap = maxCapacity(vehicles.find((x) => x.id === v.id));
             const overCapacity = pax > cap;
@@ -290,7 +290,7 @@ export function AirportForm({
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-3">
             {vehicles.map((v) => {
               const cap = maxCapacity(v);
               const qty = vehicleQty[v.id] ?? 0;

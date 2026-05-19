@@ -126,7 +126,7 @@ export function SiteHeader({
           {/* Brand */}
           <Link
             href={`${localePfx}/`}
-            className="inline-flex items-center group"
+            className="inline-flex flex-col items-start group"
             aria-label={t("homeAriaLabel")}
           >
             <Image
@@ -136,6 +136,13 @@ export function SiteHeader({
               height="48"
               className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
             />
+            <span
+              className={`mt-0.5 text-[9px] md:text-[10px] tracking-[0.18em] uppercase font-medium transition-colors duration-500 ${
+                transparent ? "text-cream/80" : "text-ink/70"
+              }`}
+            >
+              Tours, Transfers, Hotel
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 relative" aria-label={t("primaryNavigation")}>

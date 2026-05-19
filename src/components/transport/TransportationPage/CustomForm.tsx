@@ -229,7 +229,7 @@ export function CustomForm({
             {vehicleMissing && <p className="text-[12px] text-terracotta">{t("vehicleMissing")}</p>}
             {capacityError && <p className="text-[12px] text-terracotta">{capacityError}</p>}
           </div>
-          <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid w-full flex-1 grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-3">
             {availableVehicles.map((v) => {
               const cap = maxCapacity(availableVehicles.find((x) => x.id === v.id));
               const overCapacity = pax > cap;
@@ -298,7 +298,7 @@ export function CustomForm({
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-3">
               {availableVehicles.map((v) => {
                 const cap = maxCapacity(v);
                 const qty = vehicleQty[v.id] ?? 0;

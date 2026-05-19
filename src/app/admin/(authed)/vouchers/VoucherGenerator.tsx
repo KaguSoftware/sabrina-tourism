@@ -105,6 +105,10 @@ const DEFAULT_VALUES: VoucherPayload = {
   qty: 1,
   unitPrice: 0,
   itemDescriptor: "Boutique tour · scheduled departure · group package",
+  childrenQty: 0,
+  childrenUnitPrice: 0,
+  singleRoomQty: 0,
+  singleRoomUnitPrice: 0,
   paymentNote: DEFAULT_PAYMENT_NOTE_EN,
   footerThanks: DEFAULT_FOOTER_THANKS_EN,
   locale: "en",
@@ -134,6 +138,12 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
   });
 
   const { fields, append, remove } = useFieldArray({ control, name: "guests" });
+
+  // Keep the package quantity in sync with the number of guests. The admin can
+  // still override afterwards by typing into the Qty field.
+  useEffect(() => {
+    setValue("qty", Math.max(1, fields.length));
+  }, [fields.length, setValue]);
   const [loadingPkg, startLoadingPkg] = useTransition();
   const [translating, setTranslating] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -151,7 +161,14 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
   const qty = watch("qty");
   const unitPrice = watch("unitPrice");
   const currency = watch("currency");
-  const grandTotal = (Number(qty) || 0) * (Number(unitPrice) || 0);
+  const childrenQty = watch("childrenQty");
+  const childrenUnitPrice = watch("childrenUnitPrice");
+  const singleRoomQty = watch("singleRoomQty");
+  const singleRoomUnitPrice = watch("singleRoomUnitPrice");
+  const grandTotal =
+    (Number(qty) || 0) * (Number(unitPrice) || 0) +
+    (Number(childrenQty) || 0) * (Number(childrenUnitPrice) || 0) +
+    (Number(singleRoomQty) || 0) * (Number(singleRoomUnitPrice) || 0);
 
   function switchTab(next: VoucherType) {
     if (next === voucherType) return;
@@ -180,6 +197,10 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
     setValue("dropoffDate", "");
     setValue("dropoffTime", "");
     setValue("unitPrice", 0);
+    setValue("childrenQty", 0);
+    setValue("childrenUnitPrice", 0);
+    setValue("singleRoomQty", 0);
+    setValue("singleRoomUnitPrice", 0);
     setValue("itemDescriptor", DESCRIPTOR_BY_TYPE[next]);
     setAvailableDates([]);
     setSelectedDateIdx("");
@@ -846,6 +867,68 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
             {...register("itemDescriptor")}
           />
         </FormField>
+
+        <div className="pt-2 border-t border-rule/60">
+          <p className="text-[12px] tracking-[0.14em] uppercase font-medium text-muted mb-3">
+            Add-ons
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-4 items-end">
+            <p className="text-[13px] text-ink font-medium md:pb-2.5">Children</p>
+            <FormField label="Qty" error={errors.childrenQty?.message}>
+              <Input
+                type="number"
+                min={0}
+                step={1}
+                className="md:w-24"
+                {...register("childrenQty", { setValueAs: (v) => (v === "" || v == null ? 0 : Number(v)) })}
+              />
+            </FormField>
+            <FormField label="Unit price" error={errors.childrenUnitPrice?.message}>
+              <Input
+                type="number"
+                min={0}
+                step={0.01}
+                className="md:w-32"
+                {...register("childrenUnitPrice", { setValueAs: (v) => (v === "" || v == null ? 0 : Number(v)) })}
+              />
+            </FormField>
+            <FormField label="Line total">
+              <Input
+                readOnly
+                className="md:w-36"
+                value={`${CURRENCY_SYMBOL[currency]} ${((Number(childrenQty) || 0) * (Number(childrenUnitPrice) || 0)).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              />
+            </FormField>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-4 items-end mt-3">
+            <p className="text-[13px] text-ink font-medium md:pb-2.5">Single Room Occupancy</p>
+            <FormField label="Qty" error={errors.singleRoomQty?.message}>
+              <Input
+                type="number"
+                min={0}
+                step={1}
+                className="md:w-24"
+                {...register("singleRoomQty", { setValueAs: (v) => (v === "" || v == null ? 0 : Number(v)) })}
+              />
+            </FormField>
+            <FormField label="Unit price" error={errors.singleRoomUnitPrice?.message}>
+              <Input
+                type="number"
+                min={0}
+                step={0.01}
+                className="md:w-32"
+                {...register("singleRoomUnitPrice", { setValueAs: (v) => (v === "" || v == null ? 0 : Number(v)) })}
+              />
+            </FormField>
+            <FormField label="Line total">
+              <Input
+                readOnly
+                className="md:w-36"
+                value={`${CURRENCY_SYMBOL[currency]} ${((Number(singleRoomQty) || 0) * (Number(singleRoomUnitPrice) || 0)).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              />
+            </FormField>
+          </div>
+        </div>
       </section>
 
       {/* NOTES */}

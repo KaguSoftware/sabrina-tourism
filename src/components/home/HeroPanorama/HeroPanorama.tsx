@@ -30,6 +30,8 @@ export function HeroPanorama({
           className="object-cover object-center"
           priority
           fetchPriority="high"
+          quality={100}
+          unoptimized
         />
         <div className="absolute inset-0 bg-cream/50" aria-hidden="true" />
       </div>

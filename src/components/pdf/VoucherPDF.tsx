@@ -100,17 +100,6 @@ function buildTransferSub(iso: string, time: string, locale: Locale): string {
   return parts.join(" · ");
 }
 
-function eyebrowFor(type: VoucherType, L: VoucherLabels): string {
-  switch (type) {
-    case "daily":    return L.eyebrowDaily;
-    case "custom":   return L.eyebrowCustom;
-    case "hotel":    return L.eyebrowHotel;
-    case "transfer": return L.eyebrowTransfer;
-    case "group":
-    default:         return L.eyebrowGroup;
-  }
-}
-
 function staySectionLabel(type: VoucherType, L: VoucherLabels): string {
   if (type === "daily") return L.sectionStayDaily;
   if (type === "transfer") return L.sectionStayTransfer;
@@ -126,7 +115,14 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
   const L = VOUCHER_LABELS[locale];
   const fonts = pickFonts(locale);
   const T = (s: string) => tx(s, fonts.rtl);
-  const total = payload.qty * payload.unitPrice;
+  const lineTotal = payload.qty * payload.unitPrice;
+  const childrenQty = payload.childrenQty ?? 0;
+  const childrenUnitPrice = payload.childrenUnitPrice ?? 0;
+  const childrenTotal = childrenQty * childrenUnitPrice;
+  const singleRoomQty = payload.singleRoomQty ?? 0;
+  const singleRoomUnitPrice = payload.singleRoomUnitPrice ?? 0;
+  const singleRoomTotal = singleRoomQty * singleRoomUnitPrice;
+  const grandTotal = lineTotal + childrenTotal + singleRoomTotal;
   const symbol = CURRENCY_SYMBOL[payload.currency];
 
   return (
@@ -186,9 +182,9 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
             so they repeat on each generated page. */}
         <View
           style={{
-            paddingTop: mm(13),
+            paddingTop: mm(14),
             paddingHorizontal: mm(16),
-            paddingBottom: mm(11),
+            paddingBottom: mm(7),
             flexDirection: "column",
             minHeight: "100%",
           }}
@@ -200,12 +196,12 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
               flexDirection: "row",
               alignItems: "flex-start",
               justifyContent: "space-between",
-              paddingBottom: mm(6),
+              paddingBottom: mm(4),
               borderBottomWidth: 0.6,
               borderBottomColor: COLOR.rule,
             }}
           >
-            <View style={{ flexDirection: "column", gap: mm(3) }}>
+            <View style={{ flexDirection: "column", gap: mm(2) }}>
               <Image src={LOGO_DARK} style={{ height: mm(12), width: mm(40), objectFit: "contain" }} />
               <Text style={{ fontFamily: fonts.body, fontSize: 7.5, letterSpacing: ls(2.4, fonts.rtl), color: COLOR.muted, fontWeight: 500, textTransform: "uppercase" }}>
                 {T(L.tag)}
@@ -229,7 +225,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
           <View
             wrap={false}
             style={{
-              marginTop: mm(6),
+              marginTop: mm(3),
               flexDirection: "row",
               backgroundColor: COLOR.ink,
               position: "relative",
@@ -243,61 +239,6 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
             <RibbonCell k={T(L.accountPayment)} v={T(payload.paymentMethod)} fonts={fonts} last />
           </View>
 
-          {/* ===== HERO ===== */}
-          <View
-            wrap={false}
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              marginTop: mm(6),
-              paddingBottom: mm(2),
-              gap: mm(6),
-            }}
-          >
-            <View style={{ flexDirection: "column" }}>
-              <Text style={{ fontFamily: fonts.body, fontSize: 7, letterSpacing: ls(2.8, fonts.rtl), color: COLOR.muted, textTransform: "uppercase" }}>
-                {T(eyebrowFor(payload.voucherType, L))}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.display,
-                  fontSize: locale === "ar" || locale === "ja" || locale === "zh" ? 22 : 26,
-                  color: COLOR.ink,
-                  lineHeight: 1,
-                  marginTop: mm(2),
-                }}
-              >
-                {T(payload.packageName)}
-              </Text>
-              {/* Hotel line — small gold italic flourish under the package name.
-                  Skip for hotel-type vouchers (packageName already IS the hotel).
-                  No "Hotel:" prefix — the autofill value sometimes already starts
-                  with the word "Hotel" / "الفندق", which would double up. */}
-              {payload.hotelName && payload.voucherType !== "hotel" && (
-                <Text
-                  style={{
-                    fontFamily: fonts.display,
-                    fontSize: 11,
-                    fontStyle: locale === "ar" ? "normal" : "italic",
-                    color: COLOR.gold,
-                    marginTop: mm(1.5),
-                  }}
-                >
-                  {T(payload.hotelName)}
-                </Text>
-              )}
-            </View>
-            <View style={{ flexDirection: "column", alignItems: "flex-end", gap: mm(1) }}>
-              <Text style={{ fontFamily: fonts.display, fontSize: 14, color: COLOR.ink, fontStyle: locale === "ar" ? "normal" : "italic" }}>
-                {T(payload.nightsDays)}
-              </Text>
-              <Text style={{ fontFamily: fonts.body, fontSize: 7, letterSpacing: ls(2.8, fonts.rtl), color: COLOR.muted, textTransform: "uppercase" }}>
-                {T(payload.region)}
-              </Text>
-            </View>
-          </View>
-
           {/* ===== SECTION 01 · GUESTS ===== */}
           <SectionHead num="01" name={T(L.sectionGuests)} fonts={fonts} />
           <GuestsGrid guests={payload.guests} L={L} fonts={fonts} T={T} />
@@ -307,7 +248,6 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
           <SectionHead num="02" name={T(staySectionLabel(payload.voucherType, L))} fonts={fonts} />
           <View
             style={{
-              marginTop: mm(2),
               flexDirection: "row",
               borderWidth: 0.5,
               borderColor: COLOR.rule,
@@ -324,20 +264,20 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
                 />
                 <StayArrow />
                 <StayCell
-                  k={T(L.duration)}
-                  v={T(payload.durationLabel)}
-                  sub={T(payload.packageName)}
-                  fonts={fonts}
-                  align="center"
-                  valueGold
-                />
-                <StayArrow />
-                <StayCell
                   k={T(L.checkOut)}
                   v={T(fmtDate(payload.checkOut, locale))}
                   sub={T(buildStaySub(weekday(payload.checkOut, locale), payload.checkOutTime, L.byTime))}
                   fonts={fonts}
+                  align="center"
+                />
+                <StayArrow />
+                <StayCell
+                  k={T(L.duration)}
+                  v={T(payload.durationLabel)}
+                  sub={T(payload.packageName)}
+                  fonts={fonts}
                   align="right"
+                  valueGold
                 />
               </>
             )}
@@ -384,7 +324,6 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
           </View>
 
           {/* ===== SECTION 03 · PRICE ===== */}
-          <View wrap={false}>
           <SectionHead num="03" name={T(L.sectionPrice)} fonts={fonts} />
           <PriceTable
             L={L}
@@ -394,18 +333,37 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
             descriptor={T(payload.itemDescriptor ?? "")}
             qty={payload.qty}
             unitPrice={fmtMoney(payload.unitPrice, payload.currency)}
-            totalPrice={fmtMoney(total, payload.currency)}
+            totalPrice={fmtMoney(lineTotal, payload.currency)}
+            addons={[
+              ...(childrenQty > 0
+                ? [{
+                    label: T(L.children),
+                    qty: childrenQty,
+                    unitPrice: fmtMoney(childrenUnitPrice, payload.currency),
+                    totalPrice: fmtMoney(childrenTotal, payload.currency),
+                  }]
+                : []),
+              ...(singleRoomQty > 0
+                ? [{
+                    label: T(L.singleRoom),
+                    qty: singleRoomQty,
+                    unitPrice: fmtMoney(singleRoomUnitPrice, payload.currency),
+                    totalPrice: fmtMoney(singleRoomTotal, payload.currency),
+                  }]
+                : []),
+            ]}
+            subtotalPrice={fmtMoney(grandTotal, payload.currency)}
             currency={payload.currency}
             symbol={symbol}
           />
-          </View>
 
           {/* ===== PAYMENT NOTE ===== */}
           <View
             wrap={false}
             style={{
-              marginTop: mm(4),
-              paddingVertical: mm(3.5),
+              marginTop: mm(2.5),
+              paddingTop: mm(2.5),
+              paddingBottom: mm(5),
               paddingHorizontal: mm(6),
               borderTopWidth: 0.5,
               borderBottomWidth: 0.5,
@@ -419,7 +377,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
                 fontStyle: locale === "ar" ? "normal" : "italic",
                 fontSize: 12,
                 color: COLOR.ink,
-                lineHeight: 1.35,
+                lineHeight: 1.18,
                 textAlign: "center",
               }}
             >
@@ -432,14 +390,11 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
             </Text>
           </View>
 
-          {/* spacer pushes footer to bottom */}
-          <View style={{ flexGrow: 1 }} />
-
           {/* ===== FOOTER ===== */}
           <View
             wrap={false}
             style={{
-              marginTop: mm(2),
+              marginTop: mm(1),
               paddingVertical: mm(3),
               paddingHorizontal: mm(5),
               backgroundColor: COLOR.ink,
@@ -558,7 +513,7 @@ function RibbonCell({
     <View
       style={{
         flex: 1,
-        paddingVertical: mm(4.5),
+        paddingVertical: mm(3.5),
         paddingHorizontal: mm(6),
         borderRightWidth: last ? 0 : 0.4,
         borderRightColor: "rgba(200,165,101,0.35)",
@@ -584,7 +539,7 @@ function RibbonCell({
 
 function SectionHead({ num, name, fonts }: { num: string; name: string; fonts: FontsArg }) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: mm(4), marginTop: mm(4), marginBottom: mm(3) }}>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: mm(4), marginTop: mm(3), marginBottom: mm(2) }}>
       <Text style={{ fontFamily: FONT.mono, fontSize: 7.5, color: COLOR.gold, letterSpacing: 0.7 }}>{num}</Text>
       <Text style={{ fontFamily: fonts.body, fontSize: 8, letterSpacing: ls(3, fonts.rtl), color: COLOR.ink, fontWeight: 600, textTransform: "uppercase" }}>
         {name}
@@ -607,9 +562,9 @@ function GuestsGrid({
   fonts: FontsArg;
   T: (s: string) => string;
 }) {
-  // Two-column grid, wrapping.
+  // Flex grid — cards squeeze together to fit in a row, wrap when crammed.
   return (
-    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: mm(6) }}>
+    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: mm(4) }}>
       {guests.map((g, i) => {
         const nameParts = g.name.split(/\s+/);
         const first = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(" ");
@@ -619,12 +574,14 @@ function GuestsGrid({
             key={i}
             wrap={false}
             style={{
-              width: mm(86),
+              flexGrow: 1,
+              flexBasis: mm(55),
+              maxWidth: mm(90),
               borderWidth: 0.5,
               borderColor: COLOR.rule,
               backgroundColor: "rgba(255,255,255,0.35)",
               paddingVertical: mm(4),
-              paddingHorizontal: mm(5),
+              paddingHorizontal: mm(4),
               flexDirection: "column",
               gap: mm(2.5),
               position: "relative",
@@ -653,7 +610,7 @@ function GuestsGrid({
             <View
               style={{
                 flexDirection: "row",
-                gap: mm(4),
+                gap: mm(3),
                 paddingTop: mm(3),
                 borderTopWidth: 0.4,
                 borderTopColor: COLOR.rule,
@@ -699,10 +656,10 @@ function StayCell({
     <View
       style={{
         flex: 1,
-        paddingVertical: mm(4.5),
+        paddingVertical: mm(3.5),
         paddingHorizontal: mm(5),
         flexDirection: "column",
-        gap: mm(1.8),
+        gap: mm(1.5),
         alignItems: align === "center" ? "center" : align === "right" ? "flex-end" : "flex-start",
       }}
     >
@@ -737,6 +694,8 @@ function StayArrow() {
   );
 }
 
+type PriceAddon = { label: string; qty: number; unitPrice: string; totalPrice: string };
+
 function PriceTable({
   L,
   fonts,
@@ -746,6 +705,8 @@ function PriceTable({
   qty,
   unitPrice,
   totalPrice,
+  addons,
+  subtotalPrice,
   currency,
   symbol,
 }: {
@@ -757,37 +718,57 @@ function PriceTable({
   qty: number;
   unitPrice: string;
   totalPrice: string;
+  addons: PriceAddon[];
+  subtotalPrice: string;
   currency: string;
   symbol: string;
 }) {
+  const COL_QTY = mm(20);
+  const COL_UNIT = mm(34);
+  const COL_TOTAL = mm(38);
+  const colDivider = { borderRightWidth: 0.4, borderRightColor: COLOR.rule } as const;
+
   return (
-    <View style={{ marginTop: mm(2) }}>
+    <View
+      style={{
+        borderWidth: 0.6,
+        borderColor: COLOR.rule,
+        backgroundColor: "rgba(255,255,255,0.45)",
+      }}
+    >
       {/* Header */}
       <View
         style={{
           flexDirection: "row",
-          paddingBottom: mm(3),
-          borderBottomWidth: 0.5,
+          backgroundColor: COLOR.ivoryAlt,
+          borderBottomWidth: 0.6,
           borderBottomColor: COLOR.rule,
         }}
       >
-        <Text style={[priceTh(fonts), { flex: 1, paddingLeft: 0 }]}>{T(L.item)}</Text>
-        <Text style={[priceTh(fonts), { width: mm(20), textAlign: "center" }]}>{T(L.qty)}</Text>
-        <Text style={[priceTh(fonts), { width: mm(32), textAlign: "right" }]}>{T(L.unitPrice)}</Text>
-        <Text style={[priceTh(fonts), { width: mm(32), textAlign: "right", paddingRight: 0 }]}>{T(L.total)}</Text>
+        <View style={[{ flex: 1, paddingVertical: mm(2.5) }, colDivider]}>
+          <Text style={priceTh(fonts)}>{T(L.item)}</Text>
+        </View>
+        <View style={[{ width: COL_QTY, paddingVertical: mm(2.5) }, colDivider]}>
+          <Text style={[priceTh(fonts), { textAlign: "center" }]}>{T(L.qty)}</Text>
+        </View>
+        <View style={[{ width: COL_UNIT, paddingVertical: mm(2.5) }, colDivider]}>
+          <Text style={[priceTh(fonts), { textAlign: "right" }]}>{T(L.unitPrice)}</Text>
+        </View>
+        <View style={{ width: COL_TOTAL, paddingVertical: mm(2.5) }}>
+          <Text style={[priceTh(fonts), { textAlign: "right" }]}>{T(L.total)}</Text>
+        </View>
       </View>
+
       {/* Row */}
       <View
         style={{
           flexDirection: "row",
-          alignItems: "center",
-          paddingVertical: mm(4.5),
-          borderBottomWidth: 0.4,
+          alignItems: "stretch",
+          borderBottomWidth: 0.5,
           borderBottomColor: COLOR.rule,
-          borderStyle: "dashed",
         }}
       >
-        <View style={{ flex: 1, flexDirection: "column" }}>
+        <View style={[{ flex: 1, paddingVertical: mm(4.5), paddingHorizontal: mm(4), justifyContent: "center" }, colDivider]}>
           <Text style={{ fontFamily: fonts.display, fontSize: 13, color: COLOR.ink }}>{itemName}</Text>
           {descriptor ? (
             <Text style={{ fontFamily: fonts.body, fontSize: 7.5, color: COLOR.muted, marginTop: mm(1), letterSpacing: ls(0.2, fonts.rtl) }}>
@@ -795,32 +776,88 @@ function PriceTable({
             </Text>
           ) : null}
         </View>
-        <Text style={[priceTdMono, { width: mm(20), textAlign: "center" }]}>{qty}</Text>
-        <Text style={[priceTdMono, { width: mm(32), textAlign: "right" }]}>{unitPrice}</Text>
-        <Text style={[priceTdMono, { width: mm(32), textAlign: "right", paddingRight: 0 }]}>{totalPrice}</Text>
+        <View style={[{ width: COL_QTY, paddingVertical: mm(4.5), justifyContent: "center" }, colDivider]}>
+          <Text style={[priceTdMono, { textAlign: "center" }]}>{qty}</Text>
+        </View>
+        <View style={[{ width: COL_UNIT, paddingVertical: mm(4.5), justifyContent: "center" }, colDivider]}>
+          <Text style={[priceTdMono, { textAlign: "right" }]}>{unitPrice}</Text>
+        </View>
+        <View style={{ width: COL_TOTAL, paddingVertical: mm(4.5), justifyContent: "center" }}>
+          <Text style={[priceTdMono, { textAlign: "right" }]}>{totalPrice}</Text>
+        </View>
       </View>
-      {/* Footer (grand total) */}
+
+      {/* Add-on rows (children, single room occupancy) */}
+      {addons.map((a, idx) => (
+        <View
+          key={idx}
+          style={{
+            flexDirection: "row",
+            alignItems: "stretch",
+            borderBottomWidth: 0.5,
+            borderBottomColor: COLOR.rule,
+          }}
+        >
+          <View style={[{ flex: 1, paddingVertical: mm(3.5), paddingHorizontal: mm(4), justifyContent: "center" }, colDivider]}>
+            <Text style={{ fontFamily: fonts.display, fontSize: 12, color: COLOR.ink }}>{a.label}</Text>
+          </View>
+          <View style={[{ width: COL_QTY, paddingVertical: mm(3.5), justifyContent: "center" }, colDivider]}>
+            <Text style={[priceTdMono, { textAlign: "center" }]}>{a.qty}</Text>
+          </View>
+          <View style={[{ width: COL_UNIT, paddingVertical: mm(3.5), justifyContent: "center" }, colDivider]}>
+            <Text style={[priceTdMono, { textAlign: "right" }]}>{a.unitPrice}</Text>
+          </View>
+          <View style={{ width: COL_TOTAL, paddingVertical: mm(3.5), justifyContent: "center" }}>
+            <Text style={[priceTdMono, { textAlign: "right" }]}>{a.totalPrice}</Text>
+          </View>
+        </View>
+      ))}
+
+      {/* Subtotal */}
       <View
         style={{
           flexDirection: "row",
-          alignItems: "flex-end",
-          paddingTop: mm(5),
-          borderTopWidth: 0.6,
-          borderTopColor: COLOR.ink,
-          marginTop: 0,
+          alignItems: "stretch",
+          borderBottomWidth: 0.5,
+          borderBottomColor: COLOR.rule,
+          backgroundColor: "rgba(176,137,71,0.04)",
         }}
       >
-        <View style={{ flex: 1, flexDirection: "row", alignItems: "baseline", gap: 4 }}>
-          <Text style={{ fontFamily: fonts.body, fontSize: 8, letterSpacing: ls(3.2, fonts.rtl), color: COLOR.ink, fontWeight: 600, textTransform: "uppercase" }}>
+        <View style={[{ flex: 1, paddingVertical: mm(3), paddingHorizontal: mm(4), justifyContent: "center" }, colDivider]}>
+          <Text style={priceTh(fonts)}>{T(L.subtotal)}</Text>
+        </View>
+        <View style={[{ width: COL_QTY, paddingVertical: mm(3) }, colDivider]} />
+        <View style={[{ width: COL_UNIT, paddingVertical: mm(3) }, colDivider]} />
+        <View style={{ width: COL_TOTAL, paddingVertical: mm(3), justifyContent: "center" }}>
+          <Text style={[priceTdMono, { textAlign: "right" }]}>{subtotalPrice}</Text>
+        </View>
+      </View>
+
+      {/* Grand Total band (navy) */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          backgroundColor: COLOR.ink,
+          paddingVertical: mm(4),
+          paddingHorizontal: mm(5),
+          position: "relative",
+        }}
+      >
+        <View style={{ position: "absolute", left: mm(3), right: mm(3), top: mm(1.4), height: 0.5, backgroundColor: COLOR.gold, opacity: 0.55 }} />
+        <View style={{ position: "absolute", left: mm(3), right: mm(3), bottom: mm(1.4), height: 0.5, backgroundColor: COLOR.gold, opacity: 0.55 }} />
+        <View style={{ flexDirection: "row", alignItems: "baseline", gap: 6 }}>
+          <Text style={{ fontFamily: fonts.body, fontSize: 9, letterSpacing: ls(3.2, fonts.rtl), color: COLOR.ivory, fontWeight: 600, textTransform: "uppercase" }}>
             {T(L.grandTotal)}
           </Text>
-          <Text style={{ fontFamily: fonts.body, fontSize: 8, letterSpacing: ls(3.2, fonts.rtl), color: COLOR.gold, fontWeight: 500, textTransform: "uppercase" }}>
+          <Text style={{ fontFamily: fonts.body, fontSize: 8, letterSpacing: ls(3.2, fonts.rtl), color: COLOR.goldSoft, fontWeight: 500, textTransform: "uppercase" }}>
             · {currency}
           </Text>
         </View>
-        <Text style={{ fontFamily: fonts.display, fontSize: 22, color: COLOR.ink, lineHeight: 1 }}>
-          <Text style={{ color: COLOR.gold }}>{symbol} </Text>
-          {totalPrice.replace(`${symbol} `, "")}
+        <Text style={{ fontFamily: fonts.display, fontSize: 28, color: COLOR.ivory, lineHeight: 1 }}>
+          <Text style={{ color: COLOR.goldSoft }}>{symbol} </Text>
+          {subtotalPrice.replace(`${symbol} `, "")}
         </Text>
       </View>
     </View>
@@ -830,7 +867,7 @@ function PriceTable({
 function priceTh(fonts: FontsArg) {
   return {
     fontFamily: fonts.body,
-    fontSize: 6.8,
+    fontSize: 7,
     letterSpacing: ls(2.4, fonts.rtl),
     color: COLOR.muted,
     fontWeight: 500 as const,
@@ -841,7 +878,7 @@ function priceTh(fonts: FontsArg) {
 
 const priceTdMono = {
   fontFamily: FONT.mono,
-  fontSize: 10,
+  fontSize: 10.5,
   color: COLOR.ink,
   letterSpacing: 0.4,
   paddingHorizontal: mm(4),
