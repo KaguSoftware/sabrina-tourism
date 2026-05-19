@@ -74,8 +74,11 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
       <GoldUnderlineHeading as="h2" className="text-[clamp(28px,3.5vw,44px)] mt-4 mb-3 tracking-tight text-ink">
         {t("heading")}
       </GoldUnderlineHeading>
-      <p className="text-ink-soft text-[15px] leading-[1.6] mb-10 max-w-[52ch]">
+      <p className="text-ink-soft text-[15px] leading-[1.6] mb-4 max-w-[52ch]">
         {t("sub")}
+      </p>
+      <p className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-ochre border border-ochre/40 bg-ochre/5 px-4 py-2.5 mb-8">
+        <span className="text-ochre">✦</span> {t("freeTransferNote")}
       </p>
 
       <div className="flex flex-col gap-12 mb-12">

@@ -15,7 +15,7 @@
     "homeAriaLabel": "Sabrina Turizm — home",
     "primaryNavigation": "Primary navigation",
     "locationCity": "Istanbul",
-    "privatePackages": "Private Packages",
+    "privatePackages": "Private Tours",
     "privatePackagesDescription": "Tailor-made itineraries built around your dates, group size, and interests.",
     "groupPackages": "Group Packages",
     "groupPackagesDescription": "Scheduled departures from a set date to a set date — join a group or book all seats.",
@@ -222,7 +222,8 @@
       "ordinalArea": "第{ord}个区域",
       "viewDetails": "查看详情",
       "moreHotels": "更多酒店可按需提供 — 我们的团队将根据您的行程定制选项。",
-      "selectHotel": "选择 {name}"
+      "selectHotel": "选择 {name}",
+      "freeTransferNote": "预订6晚或以上，免费获得机场接送"
     },
     "step4": {
       "kicker": "第4步，共5步",
