@@ -39,7 +39,7 @@ function DropdownNavItem({
     <div ref={ref} className="relative inline-flex items-center" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <Link
         href={item.href}
-        className={`inline-flex items-center gap-1 relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
+        className={`inline-flex items-center gap-1 relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
       >
@@ -122,11 +122,11 @@ export function SiteHeader({
             : "bg-cream/95 backdrop-blur-sm border-b border-rule"
         }`}
       >
-        <div className="max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-6 md:py-4 flex items-center justify-between gap-6">
+        <div className="w-full max-w-[1800px] mx-auto px-[clamp(20px,4vw,56px)] py-4 md:py-2.5 flex items-center justify-between gap-6">
           {/* Brand */}
           <Link
             href={`${localePfx}/`}
-            className="inline-flex flex-col items-start group"
+            className="inline-flex w-[111px] md:w-[140px] shrink-0 flex-col items-center group"
             aria-label={t("homeAriaLabel")}
           >
             <Image
@@ -137,7 +137,7 @@ export function SiteHeader({
               className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
             />
             <span
-              className={`mt-0.5 text-[9px] md:text-[10px] tracking-[0.18em] uppercase font-medium transition-colors duration-500 ${
+              className={`mt-0.5 whitespace-nowrap text-[9px] md:text-[10px] tracking-[0.18em] uppercase font-medium transition-colors duration-500 ${
                 transparent ? "text-cream/80" : "text-ink/70"
               }`}
             >
@@ -145,10 +145,10 @@ export function SiteHeader({
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 relative" aria-label={t("primaryNavigation")}>
+          <nav className="hidden md:flex items-center gap-9 lg:gap-10 relative" aria-label={t("primaryNavigation")}>
             <Link
               href={`${localePfx}/`}
-              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+              className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
               } ${pathname === `${localePfx}/` || pathname === "/" ? "after:scale-x-100" : ""}`}
             >
@@ -157,7 +157,7 @@ export function SiteHeader({
             <NavTours currentPath={pathname} transparent={transparent} />
             <Link
               href={`${localePfx}/transportation`}
-              className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+              className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
               } ${pathname.includes("/transportation") ? "after:scale-x-100" : ""}`}
             >
