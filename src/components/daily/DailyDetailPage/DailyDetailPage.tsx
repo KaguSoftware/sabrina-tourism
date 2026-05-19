@@ -36,12 +36,27 @@ function formatDate(iso: string, locale: string): string {
   });
 }
 
-function bookMessage(pkg: DailyPackage, date: string, guests: number, locale: string): string {
+const CHILD_DISCOUNT = 0.25;
+
+function partyText(adults: number, children: number): string {
+  const a = `${adults} adult${adults !== 1 ? "s" : ""}`;
+  if (children <= 0) return a;
+  const c = `${children} child${children !== 1 ? "ren" : ""}`;
+  return `${a} and ${c}`;
+}
+
+function bookMessage(
+  pkg: DailyPackage,
+  date: string,
+  adults: number,
+  children: number,
+  locale: string,
+): string {
   const phone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
   const num = phone.replace(/[^\d+]/g, "");
   const dateStr = date ? formatDate(date, locale) : "a date TBD";
   const text = encodeURIComponent(
-    `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`
+    `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`,
   );
   return `https://wa.me/${num}?text=${text}`;
 }
@@ -85,8 +100,11 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const { currency, rates } = useCurrency();
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
-  const [guests, setGuests] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
   const { refs: stopRefs, active: activeStops } = useStopGlow(pkg.stops.length);
+  const childPrice = pkg.price * (1 - CHILD_DISCOUNT);
+  const totalPrice = adults * pkg.price + children * childPrice;
   return (
     <>
       {/* Hero */}
@@ -279,22 +297,57 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   </div>
                   <div>
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
-                      Number of guests
+                      Adults
                     </p>
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                        className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
-                      >−</button>
-                      <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center">{guests}</span>
-                      <button
-                        type="button"
-                        onClick={() => setGuests((g) => g + 1)}
-                        className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
-                      >+</button>
-                      <span className="font-mono text-[11px] text-muted">guest{guests !== 1 ? "s" : ""}</span>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setAdults((a) => Math.max(1, a - 1))}
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                        >−</button>
+                        <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center">{adults}</span>
+                        <button
+                          type="button"
+                          onClick={() => setAdults((a) => a + 1)}
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                        >+</button>
+                      </div>
+                      <span className="font-mono text-[11px] text-muted">
+                        {formatPrice(pkg.price, currency, rates, locale)} ea.
+                      </span>
                     </div>
+                  </div>
+                  <div>
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
+                      Children <span className="text-ochre normal-case tracking-normal">· {Math.round(CHILD_DISCOUNT * 100)}% off</span>
+                    </p>
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setChildren((c) => Math.max(0, c - 1))}
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                        >−</button>
+                        <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center">{children}</span>
+                        <button
+                          type="button"
+                          onClick={() => setChildren((c) => c + 1)}
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                        >+</button>
+                      </div>
+                      <span className="font-mono text-[11px] text-muted">
+                        {formatPrice(childPrice, currency, rates, locale)} ea.
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-baseline justify-between pt-1">
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted">
+                      Total
+                    </p>
+                    <p className="font-display text-[22px] leading-none tracking-[-0.02em] text-ink">
+                      {formatPrice(totalPrice, currency, rates, locale)}
+                    </p>
                   </div>
                   <div>
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
@@ -310,13 +363,13 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   <div className="border-l-2 border-ochre bg-cream-deep p-3 mb-4">
                     <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
                     <p className="font-sans text-[12px] text-ink-soft leading-snug">
-                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate, locale)} (${pkg.startTime}–${pkg.endTime}) for ${guests} guest${guests !== 1 ? "s" : ""}. Could you confirm availability?`}
+                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate, locale)} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`}
                     </p>
                   </div>
                 )}
 
                 <GoldButton
-                  href={selectedDate ? bookMessage(pkg, selectedDate, guests, locale) : undefined}
+                  href={selectedDate ? bookMessage(pkg, selectedDate, adults, children, locale) : undefined}
                   variant="solid"
                   target="_blank"
                   rel="noopener noreferrer"
