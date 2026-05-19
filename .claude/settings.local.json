@@ -76,7 +76,8 @@
       "Bash(python3 -c \"from PIL import Image; img=Image.open\\('/Users/saitaydin/Pictures/turizm/hotel_flat_design.webp'\\); print\\(img.size\\)\")",
       "Bash(git fetch *)",
       "Read(//tmp/**)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git merge *)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
