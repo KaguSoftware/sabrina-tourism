@@ -37,19 +37,23 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ordinal(n: number) {
-  const suffix =
-    n % 100 >= 11 && n % 100 <= 13
-      ? "th"
-      : n % 10 === 1
-      ? "st"
-      : n % 10 === 2
-      ? "nd"
-      : n % 10 === 3
-      ? "rd"
-      : "th";
+const EN_ORDINAL_SUFFIXES: Record<Intl.LDMLPluralRule, string> = {
+  one: "st",
+  two: "nd",
+  few: "rd",
+  other: "th",
+  zero: "th",
+  many: "th",
+};
 
-  return `${n}${suffix}`;
+function ordinal(n: number, locale: string) {
+  if (locale === "en" || locale.startsWith("en-")) {
+    const rule = new Intl.PluralRules("en", { type: "ordinal" }).select(n);
+    return `${n}${EN_ORDINAL_SUFFIXES[rule] ?? "th"}`;
+  }
+  // Arabic, Chinese, and most other locales don't use English-style ordinal
+  // suffixes — a period suffix is universally readable as "Nth".
+  return `${n}.`;
 }
 
 export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {

@@ -1,26 +1,28 @@
 import { unstable_cache } from "next/cache";
 import { createAnonClient, createServiceClient } from "@/lib/supabase/server";
+import { tags } from "@/lib/cache/tags";
 import type { Locale } from "@/i18n/locales";
-
-const TAG = "ui-translations";
 
 // ui_translations is not in the generated Database types yet; cast to any to bypass
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyClient = any;
 
-export const getUIMessages = unstable_cache(
-  async (locale: string): Promise<Record<string, unknown> | null> => {
-    const sb = createAnonClient() as AnyClient;
-    const { data } = await sb
-      .from("ui_translations")
-      .select("data")
-      .eq("locale", locale)
-      .single();
-    return (data?.data as Record<string, unknown>) ?? null;
-  },
-  [TAG],
-  { tags: [TAG] }
-);
+async function _getUIMessages(locale: string): Promise<Record<string, unknown> | null> {
+  const sb = createAnonClient() as AnyClient;
+  const { data } = await sb
+    .from("ui_translations")
+    .select("data")
+    .eq("locale", locale)
+    .single();
+  return (data?.data as Record<string, unknown>) ?? null;
+}
+
+export const getUIMessages = (locale: string) =>
+  unstable_cache(
+    () => _getUIMessages(locale),
+    ["ui-messages", locale],
+    { tags: [tags.ui(locale)], revalidate: 3600 }
+  )();
 
 export async function loadAllUIMessages(): Promise<Record<string, Record<string, unknown>>> {
   const sb = createAnonClient() as AnyClient;

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -38,7 +38,7 @@ function ConfirmDialog({ open, onClose, onConfirm, deleting }: { open: boolean; 
   );
 }
 
-function SortableRow({ pkg, onTogglePublished, onDelete, onDuplicate }: {
+const SortableRow = memo(function SortableRow({ pkg, onTogglePublished, onDelete, onDuplicate }: {
   pkg: AdminPremadeRow;
   onTogglePublished: (id: string, current: boolean) => void;
   onDelete: (id: string) => void;
@@ -72,7 +72,7 @@ function SortableRow({ pkg, onTogglePublished, onDelete, onDuplicate }: {
       </td>
     </tr>
   );
-}
+});
 
 export function FixedDatesTable({ initialPackages }: { initialPackages: AdminPremadeRow[] }) {
   const t = useTranslations("admin");

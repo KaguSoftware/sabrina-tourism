@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -82,6 +82,7 @@ function useStopGlow(count: number) {
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const locale = useLocale();
   const t = useTranslations("daily");
+  const tNav = useTranslations("nav");
   const { currency, rates } = useCurrency();
   const today = toYMD(new Date());
   const [selectedDate, setSelectedDate] = useState("");
@@ -107,7 +108,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <Reveal>
             <span className="block font-mono text-[12px] tracking-[0.18em] uppercase text-cream/70 mb-7">
               <Link href="/tours/daily-packages" className="text-ochre hover:underline">
-                Daily Packages
+                {tNav("dailyPackages")}
               </Link>
               <span className="mx-2 opacity-50">/</span>
               {pkg.region}

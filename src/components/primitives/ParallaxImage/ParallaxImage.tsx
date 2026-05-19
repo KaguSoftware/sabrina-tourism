@@ -19,18 +19,23 @@ export function ParallaxImage({
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+    // Respect reduced-motion: skip parallax entirely, no listener attached.
     if (prefersReduced) return;
 
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+
     let raf = 0;
+    let scrollAttached = false;
 
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        const wrap = wrapRef.current;
+        const wrapEl = wrapRef.current;
         const img = imgRef.current;
-        if (!wrap || !img) return;
-        const rect = wrap.getBoundingClientRect();
+        if (!wrapEl || !img) return;
+        const rect = wrapEl.getBoundingClientRect();
         const vh = window.innerHeight;
         const center = rect.top + rect.height / 2;
         const progress = (center - vh / 2) / (vh + rect.height);
@@ -39,11 +44,41 @@ export function ParallaxImage({
       });
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
+    const attachScroll = () => {
+      if (scrollAttached) return;
+      window.addEventListener("scroll", onScroll, { passive: true });
+      scrollAttached = true;
+      onScroll();
+    };
+
+    const detachScroll = () => {
+      if (!scrollAttached) return;
       window.removeEventListener("scroll", onScroll);
-      if (raf) cancelAnimationFrame(raf);
+      scrollAttached = false;
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    // Only attach the scroll handler while the element is near/within the
+    // viewport. rootMargin warms it up before it becomes visible.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          attachScroll();
+        } else {
+          detachScroll();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(wrap);
+
+    return () => {
+      observer.disconnect();
+      detachScroll();
     };
   }, [amount]);
 

@@ -42,7 +42,21 @@ export function PackageCTAStrip({
       : "";
   const singleRoomSuffix = isOneGuest && singleRoom ? tWa("singleRoomSuffix") : "";
 
-  const previewMsg = `Hey Sabrina — I'd like to reserve "${packageName}" at the ${tierName} tier for ${people || "TBD"} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${date || "TBD"}. Could you confirm availability?`;
+  // TODO: i18n — once the translation key `packageDetail.ctaPreview` (or
+  // `whatsapp.ctaPreview`) is added to messages/*.json, prefer t("ctaPreview", {...}).
+  const ctaPreviewParams = {
+    packageName,
+    tierName,
+    people: people || "TBD",
+    childrenSuffix,
+    singleRoomSuffix,
+    date: date || "TBD",
+  };
+  const previewMsg = t.has("ctaPreview")
+    ? t("ctaPreview", ctaPreviewParams)
+    : tWa.has("ctaPreview")
+    ? tWa("ctaPreview", ctaPreviewParams)
+    : `Hey Sabrina — I'd like to reserve "${packageName}" at the ${tierName} tier for ${people || "TBD"} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${date || "TBD"}. Could you confirm availability?`;
 
   const waHref = packageMessage({
     name: packageName,

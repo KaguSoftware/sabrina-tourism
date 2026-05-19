@@ -20,7 +20,7 @@ No test framework is configured. Type-check and lint are the primary correctness
 
 Copy `.env.local.example` to `.env.local` and fill in:
 
-- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — public Supabase credentials
+- `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — public Supabase credentials
 - `SUPABASE_SERVICE_ROLE_KEY` — server-only, used in admin Server Actions
 - `NEXT_PUBLIC_WA_PHONE` — WhatsApp phone number for the FAB and transport inquiry forms
 

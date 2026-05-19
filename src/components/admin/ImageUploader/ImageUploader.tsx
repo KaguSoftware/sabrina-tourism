@@ -8,6 +8,11 @@ import { Spinner } from "@/components/admin/Spinner/Spinner";
 
 const BUCKET = "media";
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
+const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
+
+// Keyed by name-size-lastModified so repeat uploads of the same file skip canvas resize
+const blobCache = new Map<string, Blob>();
+function blobKey(file: File) { return `${file.name}-${file.size}-${file.lastModified}`; }
 
 interface ImageUploaderProps {
   value: string | null;
@@ -58,10 +63,16 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
       toast.error("Only JPEG, PNG, and WebP images are accepted.");
       return;
     }
+    if (file.size > MAX_UPLOAD_BYTES) {
+      toast.error("Image too large — please upload under 20 MB.");
+      return;
+    }
     setUploadError(null);
     setUploading(true);
     try {
-      const blob = await resizeAndConvert(file);
+      const key = blobKey(file);
+      const blob = blobCache.get(key) ?? await resizeAndConvert(file);
+      if (!blobCache.has(key)) blobCache.set(key, blob);
       const slug = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-+|-+$/g, "");
       const path = `${folder}/${Date.now()}-${slug.replace(/\.[^.]+$/, "")}.jpg`;
       const supabase = createBrowserClient();

@@ -4,6 +4,14 @@ import { updateTag } from "next/cache";
 import fs from "fs/promises";
 import path from "path";
 import Groq from "groq-sdk";
+import { createServerClient } from "@/lib/supabase/server";
+
+async function requireAuth(): Promise<{ error?: string }> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  return {};
+}
 
 function extractJson(text: string): string {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -15,6 +23,7 @@ function extractJson(text: string): string {
 }
 
 import { LOCALES, LOCALE_NAMES, type Locale } from "@/i18n/locales";
+import { tags } from "@/lib/cache/tags";
 import { loadAllUIMessages, saveUIMessages, saveAllUIMessages } from "@/lib/db/ui-translations";
 
 // Keep this for seeding only
@@ -22,7 +31,13 @@ function messagesPath(locale: string) {
   return path.join(process.cwd(), "messages", `${locale}.json`);
 }
 
-export async function loadAllMessages(): Promise<Record<Locale, Record<string, unknown>>> {
+export async function loadAllMessages(): Promise<{
+  data?: Record<Locale, Record<string, unknown>>;
+  error?: string;
+}> {
+  const auth = await requireAuth();
+  if (auth.error) return { error: "Unauthorized" };
+
   // Try DB first
   const dbData = await loadAllUIMessages();
 
@@ -40,31 +55,42 @@ export async function loadAllMessages(): Promise<Record<Locale, Record<string, u
       }
     }
   }
-  return result;
+  return { data: result };
 }
 
 export async function saveMessages(
   locale: Locale,
   messages: Record<string, unknown>
 ): Promise<{ error?: string }> {
+  const auth = await requireAuth();
+  if (auth.error) return auth;
+
   if (!LOCALES.includes(locale)) return { error: "Invalid locale" };
   const { error } = await saveUIMessages(locale, messages);
   if (error) return { error };
-  updateTag("ui-translations");
+  updateTag(tags.ui(locale));
   return {};
 }
 
 export async function saveAllMessages(
   allMessages: Record<Locale, Record<string, unknown>>
 ): Promise<{ error?: string }> {
+  const auth = await requireAuth();
+  if (auth.error) return auth;
+
   const { error } = await saveAllUIMessages(allMessages);
   if (error) return { error };
-  updateTag("ui-translations");
+  for (const locale of LOCALES) {
+    updateTag(tags.ui(locale));
+  }
   return {};
 }
 
 // Add a seed action — call once to populate DB from JSON files
 export async function seedTranslationsFromFiles(): Promise<{ error?: string }> {
+  const auth = await requireAuth();
+  if (auth.error) return auth;
+
   const all: Record<string, Record<string, unknown>> = {};
   for (const locale of LOCALES) {
     try {
@@ -76,7 +102,9 @@ export async function seedTranslationsFromFiles(): Promise<{ error?: string }> {
   }
   const { error } = await saveAllUIMessages(all);
   if (error) return { error };
-  updateTag("ui-translations");
+  for (const locale of LOCALES) {
+    updateTag(tags.ui(locale));
+  }
   return {};
 }
 
@@ -85,6 +113,7 @@ export async function translateWithAI(
   values: Record<string, string>,
   targetLocale: Locale
 ): Promise<{ result?: Record<string, string>; error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return { error: "GROQ_API_KEY is not set in .env.local" };
 
@@ -133,6 +162,7 @@ export async function translateAllLocalesWithAI(
   namespace: string,
   values: Record<string, string>
 ): Promise<{ results?: Record<Locale, Record<string, string>>; error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return { error: "GROQ_API_KEY is not set in .env.local" };
 

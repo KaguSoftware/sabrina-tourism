@@ -55,7 +55,8 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
   }, [drawerOpen]);
 
   function isActive(item: (typeof NAV_ITEMS)[number]) {
-    return item.exact ? pathname === item.href : pathname.startsWith(item.href);
+    if (item.exact) return pathname === item.href;
+    return pathname === item.href || pathname.startsWith(`${item.href}/`);
   }
 
   const navContent = (

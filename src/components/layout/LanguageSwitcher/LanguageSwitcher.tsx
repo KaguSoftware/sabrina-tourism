@@ -43,10 +43,12 @@ export function LanguageSwitcher({ transparent }: { transparent?: boolean }) {
     if (next === locale) return;
     setOpen(false);
     document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000`;
+    const search = window.location.search;
+    const hash = window.location.hash;
     const target = next === DEFAULT_LOCALE
       ? pathname
       : `/${next}${pathname === "/" ? "" : pathname}`;
-    window.location.assign(target || "/");
+    window.location.assign(`${target || "/"}${search}${hash}`);
   }
 
   const currentLabel = localeLabel(locale);

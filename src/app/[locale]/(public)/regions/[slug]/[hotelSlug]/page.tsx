@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
@@ -68,7 +68,7 @@ export default async function HotelDetailPage({
             <nav className="flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-cream/50 mb-6">
               <Link href="/regions" className="hover:text-cream transition-colors">Hotels</Link>
               <span>·</span>
-              <Link href={`/regions/${slug}`} className="hover:text-cream transition-colors">{region}</Link>
+              <Link href={`/regions/${slug}` as `/${string}`} className="hover:text-cream transition-colors">{region}</Link>
               <span>·</span>
               <span className="text-cream/80">{hotel.name}</span>
             </nav>

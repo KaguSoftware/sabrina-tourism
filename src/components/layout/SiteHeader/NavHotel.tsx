@@ -55,7 +55,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
     >
       <Link
         href={`${pfx}/regions`}
-        className={`relative inline-flex items-center gap-1.5 text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+        className={`relative inline-flex items-center gap-1.5 text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive || open ? "after:scale-x-100" : ""}`}
         aria-haspopup="true"

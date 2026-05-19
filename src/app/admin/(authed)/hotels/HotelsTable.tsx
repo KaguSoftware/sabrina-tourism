@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
@@ -32,7 +32,7 @@ function ConfirmDialog({ open, onClose, onConfirm, deleting }: { open: boolean; 
   );
 }
 
-function SortableRow({ hotel, onTogglePublished, onDelete, onDuplicate }: { hotel: AdminHotelRow; onTogglePublished: (id: string, cur: boolean) => void; onDelete: (id: string) => void; onDuplicate: (id: string) => void; }) {
+const SortableRow = memo(function SortableRow({ hotel, onTogglePublished, onDelete, onDuplicate }: { hotel: AdminHotelRow; onTogglePublished: (id: string, cur: boolean) => void; onDelete: (id: string) => void; onDuplicate: (id: string) => void; }) {
   const t = useTranslations("admin.common");
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: hotel.id });
   return (
@@ -61,7 +61,7 @@ function SortableRow({ hotel, onTogglePublished, onDelete, onDuplicate }: { hote
       </td>
     </tr>
   );
-}
+});
 
 export function HotelsTable({ initialHotels }: { initialHotels: AdminHotelRow[] }) {
   const t = useTranslations("admin");

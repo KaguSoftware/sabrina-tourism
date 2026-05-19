@@ -1,7 +1,14 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient, createServerClient } from "@/lib/supabase/server";
+
+async function requireAuth(): Promise<{ error?: string }> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  return {};
+}
 import { saveSiteContentData } from "@/lib/db/site-content";
 import { tags } from "@/lib/cache/tags";
 import {
@@ -12,6 +19,7 @@ import {
 } from "./schema";
 
 export async function saveTransportHero(raw: TransportHeroFormValues): Promise<{ error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = transportHeroSchema.safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
 
@@ -23,6 +31,7 @@ export async function saveTransportHero(raw: TransportHeroFormValues): Promise<{
 }
 
 export async function saveFleet(raw: FleetFormValues): Promise<{ error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = fleetSchema.safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
 

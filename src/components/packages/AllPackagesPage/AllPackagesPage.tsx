@@ -83,13 +83,19 @@ export function AllPackagesPage({
           </p>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-          {fixedDatePackages.map((pkg, i) => (
-            <Reveal key={pkg.id} delay={i * 70}>
-              <PremadePackageCard pkg={pkg} />
-            </Reveal>
-          ))}
-        </div>
+        {fixedDatePackages.length === 0 ? (
+          <p className="text-ink/50 text-[15px] font-mono tracking-[0.08em] py-8">
+            No group packages available at the moment — check back soon.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
+            {fixedDatePackages.map((pkg, i) => (
+              <Reveal key={pkg.id} delay={i * 70}>
+                <PremadePackageCard pkg={pkg} />
+              </Reveal>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Daily Packages */}

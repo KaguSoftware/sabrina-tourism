@@ -1,66 +1,11 @@
 "use client";
-import { useFormContext, useFieldArray, Controller } from "react-hook-form";
-import { X, Plus } from "lucide-react";
-import { Input } from "@/components/admin/Input/Input";
-import { InclusionIconPicker } from "@/components/admin/InclusionIconPicker";
-import type { DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
-
-function InclusionList({
-  name,
-  label,
-  placeholder,
-}: {
-  name: "included" | "not_included";
-  label: string;
-  placeholder: string;
-}) {
-  const { register, control } = useFormContext<DailyFormValues>();
-  const { fields, append, remove } = useFieldArray({ control, name });
-
-  return (
-    <div>
-      <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-3">{label}</p>
-      <div className="space-y-2">
-        {fields.map((field, i) => (
-          <div key={field.id} className="flex items-center gap-2">
-            <Controller
-              control={control}
-              name={`${name}.${i}.icon` as const}
-              render={({ field: f }) => (
-                <InclusionIconPicker value={f.value ?? null} onChange={(v) => f.onChange(v)} />
-              )}
-            />
-            <Input {...register(`${name}.${i}.text` as const)} placeholder={placeholder} className="flex-1" />
-            <button type="button" onClick={() => remove(i)} className="text-ink-soft hover:text-terracotta transition-colors p-1 shrink-0" aria-label="Remove">
-              <X size={14} />
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => append({ text: "", icon: null })}
-          className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors mt-1"
-        >
-          <Plus size={12} /> Add item
-        </button>
-      </div>
-    </div>
-  );
-}
+import { InclusionsTab as SharedInclusionsTab } from "@/components/admin/shared-tabs/InclusionsTab";
 
 export function InclusionsTab() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <InclusionList
-        name="included"
-        label="Included"
-        placeholder="e.g. Entrance to Topkapi Palace"
-      />
-      <InclusionList
-        name="not_included"
-        label="Not included"
-        placeholder="e.g. Personal expenses"
-      />
-    </div>
+    <SharedInclusionsTab
+      includedPlaceholder="e.g. Entrance to Topkapi Palace"
+      notIncludedPlaceholder="e.g. Personal expenses"
+    />
   );
 }

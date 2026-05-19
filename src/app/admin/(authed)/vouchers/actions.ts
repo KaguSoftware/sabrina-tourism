@@ -6,6 +6,7 @@ import { getAdminDailyPackages, getDailyPackageBySlug } from "@/lib/db/daily-pac
 import { getAdminHotels, getHotelBySlug } from "@/lib/db/hotels";
 import { getVehicles } from "@/lib/db/transport";
 import { LOCALE_NAMES, type Locale } from "@/i18n/locales";
+import { requireAdmin } from "@/lib/admin/auth";
 
 export interface PackageOption {
   id: string;
@@ -40,6 +41,9 @@ export interface PackageDefaults {
 }
 
 export async function listPackagesForVoucher(): Promise<PackageOption[]> {
+  const auth = await requireAdmin();
+  if (auth.error) return [];
+
   const rows = await getAdminPremadePackages();
   return rows.map((r) => ({ id: r.id, slug: r.slug, name: r.name, isPublished: r.isPublished }));
 }
@@ -47,6 +51,9 @@ export async function listPackagesForVoucher(): Promise<PackageOption[]> {
 export async function fetchPackageDefaults(
   slug: string,
 ): Promise<{ defaults?: PackageDefaults; error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const pkg = await getPremadePackageBySlug(slug);
   if (!pkg) return { error: "Package not found" };
 
@@ -122,6 +129,9 @@ export interface DailyPackageDefaults {
 }
 
 export async function listDailyPackagesForVoucher(): Promise<PackageOption[]> {
+  const auth = await requireAdmin();
+  if (auth.error) return [];
+
   const rows = await getAdminDailyPackages();
   return rows.map((r) => ({ id: r.id, slug: r.slug, name: r.name, isPublished: r.isPublished }));
 }
@@ -129,6 +139,9 @@ export async function listDailyPackagesForVoucher(): Promise<PackageOption[]> {
 export async function fetchDailyPackageDefaults(
   slug: string,
 ): Promise<{ defaults?: DailyPackageDefaults; error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const pkg = await getDailyPackageBySlug(slug);
   if (!pkg) return { error: "Daily package not found" };
   return {
@@ -155,6 +168,9 @@ export interface HotelDefaults {
 }
 
 export async function listHotelsForVoucher(): Promise<PackageOption[]> {
+  const auth = await requireAdmin();
+  if (auth.error) return [];
+
   const rows = await getAdminHotels();
   return rows.map((r) => ({ id: r.id, slug: r.slug, name: r.name, isPublished: r.isPublished }));
 }
@@ -162,6 +178,9 @@ export async function listHotelsForVoucher(): Promise<PackageOption[]> {
 export async function fetchHotelDefaults(
   slug: string,
 ): Promise<{ defaults?: HotelDefaults; error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const hotel = await getHotelBySlug(slug);
   if (!hotel) return { error: "Hotel not found" };
   return {
@@ -190,6 +209,9 @@ export interface VehicleDefaults {
 }
 
 export async function listVehiclesForVoucher(): Promise<VehicleOption[]> {
+  const auth = await requireAdmin();
+  if (auth.error) return [];
+
   const rows = await getVehicles();
   return rows.map((r) => ({
     id: r.id,
@@ -202,6 +224,9 @@ export async function listVehiclesForVoucher(): Promise<VehicleOption[]> {
 export async function fetchVehicleDefaults(
   id: string,
 ): Promise<{ defaults?: VehicleDefaults; error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const rows = await getVehicles();
   const v = rows.find((r) => r.id === id);
   if (!v) return { error: "Vehicle not found" };
@@ -366,6 +391,9 @@ export async function translateVoucherFields(
   fields: Record<string, string>,
   targetLocale: Locale,
 ): Promise<{ result?: Record<string, string>; error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   if (targetLocale === "en") {
     return { result: fields };
   }

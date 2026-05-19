@@ -107,6 +107,7 @@ export function AirportForm({
   const vehicleMissing = submitted && !vehicleId;
   const dateMissing = submitted && !date;
   const timeMissing = submitted && !time;
+  const destinationMissing = submitted && !destination.trim();
 
   const canSubmit = !!vehicleId && !!date && !!time && !!destination.trim() &&
     (direction !== "both" || (!!returnDate && !!returnTime)) &&
@@ -161,9 +162,9 @@ export function AirportForm({
           </select>
         </TransportFormField>
 
-        <TransportFormField label={t("areaHotel")}>
+        <TransportFormField label={t("areaHotel")} hint={destinationMissing ? t("requiredHint") : undefined}>
           <input type="text" value={destination} placeholder={t("areaPlaceholder")}
-            onChange={(e) => setDestination(e.target.value)} className={fieldCls} />
+            onChange={(e) => setDestination(e.target.value)} className={`${fieldCls} ${destinationMissing ? "border-terracotta" : ""}`} />
         </TransportFormField>
 
         <TransportFormField label={t("passengers")}>

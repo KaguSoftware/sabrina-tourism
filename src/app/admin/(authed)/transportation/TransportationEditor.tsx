@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -134,7 +134,7 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
 // Sortable airport row
 // ---------------------------------------------------------------------------
 
-function SortableAirportRow({
+const SortableAirportRow = memo(function SortableAirportRow({
   index,
   onRemove,
   register,
@@ -183,13 +183,13 @@ function SortableAirportRow({
       </button>
     </div>
   );
-}
+});
 
 // ---------------------------------------------------------------------------
 // Sortable vehicle row
 // ---------------------------------------------------------------------------
 
-function SortableVehicleRow({
+const SortableVehicleRow = memo(function SortableVehicleRow({
   index,
   onRemove,
   register,
@@ -255,7 +255,7 @@ function SortableVehicleRow({
       </div>
     </div>
   );
-}
+});
 
 // ---------------------------------------------------------------------------
 // Fleet & airports tab

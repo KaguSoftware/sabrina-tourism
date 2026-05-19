@@ -48,6 +48,7 @@ export function DatePicker({
   const [isClosing, setIsClosing] = useState(false);
   const [cursor, setCursor] = useState(new Date(initial.getFullYear(), initial.getMonth(), 1));
   const [panelPos, setPanelPos] = useState({ top: 0, left: 0 });
+  const [focusedDay, setFocusedDay] = useState<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -58,6 +59,12 @@ export function DatePicker({
       setOpen(false);
       setIsClosing(false);
     }, 180);
+  }, []);
+
+  const recomputePosition = useCallback(() => {
+    if (!triggerRef.current) return;
+    const r = triggerRef.current.getBoundingClientRect();
+    setPanelPos({ top: r.bottom + window.scrollY + 6, left: r.left + window.scrollX });
   }, []);
 
   useEffect(() => {
@@ -75,19 +82,47 @@ export function DatePicker({
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
-  }, [open]);
+  }, [open, closePanel]);
+
+  // Re-run position computation on scroll/resize while panel is open.
+  useEffect(() => {
+    if (!open) return;
+    const onScroll = () => recomputePosition();
+    const onResize = () => recomputePosition();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [open, recomputePosition]);
+
+  // Move focus into the panel when it opens so keyboard events are captured.
+  useEffect(() => {
+    if (open && !isClosing && panelRef.current) {
+      panelRef.current.focus();
+    }
+  }, [open, isClosing]);
 
   function openPicker() {
-    if (triggerRef.current) {
-      const r = triggerRef.current.getBoundingClientRect();
-      setPanelPos({ top: r.bottom + window.scrollY + 6, left: r.left + window.scrollX });
-    }
+    recomputePosition();
     if (open && !isClosing) {
       closePanel();
     } else if (!open) {
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
       setIsClosing(false);
       setOpen(true);
+      // Seed focused day: selected value's day if visible, else today if visible, else 1
+      const selected = parseYMD(value);
+      const cursorY = cursor.getFullYear();
+      const cursorM = cursor.getMonth();
+      let seed = 1;
+      if (selected && selected.getFullYear() === cursorY && selected.getMonth() === cursorM) {
+        seed = selected.getDate();
+      } else if (today.getFullYear() === cursorY && today.getMonth() === cursorM) {
+        seed = today.getDate();
+      }
+      setFocusedDay(seed);
     }
   }
 
@@ -122,6 +157,57 @@ export function DatePicker({
     return toYMD(new Date(year, month, day)) === toYMD(today);
   }
 
+  function clampToMonth(d: Date): Date {
+    // Returns a date clamped to min/max if they are set.
+    if (minDate && d < minDate) return new Date(minDate);
+    if (maxDate && d > maxDate) return new Date(maxDate);
+    return d;
+  }
+
+  function moveFocus(deltaDays: number) {
+    const base = new Date(year, month, focusedDay ?? 1);
+    const next = new Date(base.getFullYear(), base.getMonth(), base.getDate() + deltaDays);
+    const clamped = clampToMonth(next);
+    setCursor(new Date(clamped.getFullYear(), clamped.getMonth(), 1));
+    setFocusedDay(clamped.getDate());
+  }
+
+  function onPanelKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closePanel();
+      triggerRef.current?.focus();
+      return;
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      moveFocus(-1);
+      return;
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      moveFocus(1);
+      return;
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      moveFocus(-7);
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      moveFocus(7);
+      return;
+    }
+    if (e.key === "Enter" || e.key === " ") {
+      if (focusedDay !== null && !isDisabled(focusedDay)) {
+        e.preventDefault();
+        select(focusedDay);
+      }
+      return;
+    }
+  }
+
   const triggerCls = [
     "w-full flex items-center gap-2 bg-transparent border-0 border-b py-2.5 text-left transition-colors duration-200 focus:outline-none cursor-pointer",
     error ? "border-terracotta" : value ? "border-ochre" : "border-rule",
@@ -131,7 +217,10 @@ export function DatePicker({
   const panel = open ? (
     <div
       ref={panelRef}
-      style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
+      role="dialog"
+      tabIndex={-1}
+      onKeyDown={onPanelKeyDown}
+      style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999, outline: "none" }}
       className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] p-4 w-72 select-none ${isClosing ? "picker-exit" : "picker-enter"}`}
     >
       {/* Header — year-prev, month-prev, label, month-next, year-next */}
@@ -170,12 +259,14 @@ export function DatePicker({
           const disabled = isDisabled(day);
           const selected = isSelected(day);
           const tod = isToday(day);
+          const focused = focusedDay === day;
           return (
             <button
               key={day}
               type="button"
               disabled={disabled}
               onClick={() => select(day)}
+              onMouseEnter={() => setFocusedDay(day)}
               className={[
                 "h-8 w-full flex items-center justify-center font-sans text-[13px] transition-colors duration-150",
                 disabled ? "text-muted/40 cursor-not-allowed" : "cursor-pointer",
@@ -186,6 +277,7 @@ export function DatePicker({
                 disabled ? "" :
                 selected ? "bg-navy text-ochre font-semibold" :
                 tod ? "border border-ochre text-ink hover:bg-ochre/10" :
+                focused ? "bg-ochre/15 text-ink ring-1 ring-ochre/40" :
                 "text-ink hover:bg-ochre/15",
               ].join(" ")}>
                 {day}

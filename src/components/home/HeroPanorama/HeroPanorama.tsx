@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { getLocale } from "next-intl/server";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
+import { DEFAULT_LOCALE } from "@/i18n/locales";
 interface HeroPanoramaProps {
   headlineTop: string;
   headlineEm: string;
@@ -10,7 +12,7 @@ interface HeroPanoramaProps {
   ctaChauffeur: string;
 }
 
-export function HeroPanorama({
+export async function HeroPanorama({
   headlineTop,
   headlineEm,
   sub,
@@ -18,6 +20,8 @@ export function HeroPanorama({
   ctaBrowse,
   ctaChauffeur,
 }: HeroPanoramaProps) {
+  const locale = await getLocale();
+  const localePfx = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
   return (
     <section className="relative aspect-[1716/917] max-h-screen w-full flex items-center pt-[clamp(120px,18vw,200px)] pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
@@ -30,8 +34,7 @@ export function HeroPanorama({
           className="object-cover object-center"
           priority
           fetchPriority="high"
-          quality={100}
-          unoptimized
+          quality={85}
         />
         <div className="absolute inset-0 bg-cream/50" aria-hidden="true" />
       </div>
@@ -58,10 +61,10 @@ export function HeroPanorama({
         </Reveal>
         <Reveal delay={460}>
           <div className="flex gap-4 flex-wrap">
-            <GoldButton href="/packages" variant="solid">
+            <GoldButton href={`${localePfx}/packages`} variant="solid">
               {ctaBrowse}
             </GoldButton>
-            <GoldButton href="/transportation" variant="ghost-navy">
+            <GoldButton href={`${localePfx}/transportation`} variant="ghost-navy">
               {ctaChauffeur}
             </GoldButton>
           </div>

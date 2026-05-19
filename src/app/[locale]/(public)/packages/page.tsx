@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { AllPackagesPage } from "@/components/packages/AllPackagesPage/AllPackagesPage";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAllPremadePackages } from "@/lib/db/premade-packages";
@@ -6,18 +7,23 @@ import { getAllDailyPackages } from "@/lib/db/daily-packages";
 
 export const revalidate = 604800;
 
-export const metadata = {
-  title: "Itineraries — Sabrina Turizm",
-  description:
-    "Group tours, daily escapes, and bespoke itineraries through Türkiye.",
-  alternates: { canonical: "/packages" },
-  openGraph: {
-    title: "Itineraries — Sabrina Turizm",
-    description:
-      "Group tours, daily escapes, and bespoke itineraries through Türkiye.",
-    images: [{ url: "/homepage.png", width: 1200, height: 630, alt: "Sabrina Turizm itineraries" }],
-  },
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const path = "/packages";
+  const localePath = locale === "en" ? path : `/${locale}${path}`;
+  const title = "Itineraries — Sabrina Turizm";
+  const description = "Group tours, daily escapes, and bespoke itineraries through Türkiye.";
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
+    },
+  };
+}
 
 export default async function PackagesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

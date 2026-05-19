@@ -1,11 +1,19 @@
 "use server";
 import { updateTag } from "next/cache";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { PremadeSchema, type PremadeFormValues } from "./schema";
 
+async function requireAuth(): Promise<{ error?: string }> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  return {};
+}
+
 function revalidateAll(slug?: string, previousSlug?: string | null) {
+  updateTag(tags.premade.admin());
   updateTag(tags.premade.all());
   updateTag(tags.premade.slugs());
   if (slug) updateTag(tags.premade.bySlug(slug));
@@ -15,7 +23,19 @@ function revalidateAll(slug?: string, previousSlug?: string | null) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function db(): any { return createServiceClient(); }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function findUniqueSlug(supabase: any, table: string, baseSlug: string, excludeId?: string): Promise<string> {
+  const query = supabase.from(table).select("slug").like("slug", `${baseSlug}%`);
+  const { data } = excludeId ? await query.neq("id", excludeId) : await query;
+  const existing = new Set<string>((data ?? []).map((r: { slug: string }) => r.slug));
+  if (!existing.has(baseSlug)) return baseSlug;
+  let n = 2;
+  while (existing.has(`${baseSlug}-${n}`)) n++;
+  return `${baseSlug}-${n}`;
+}
+
 export async function savePremadePackage(payload: PremadeFormValues): Promise<{ error?: string; id?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = PremadeSchema.safeParse(payload);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
   const data = parsed.data;
@@ -70,17 +90,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   if (pkgId) {
     // Recompute slug from the (possibly renamed) name; ensure uniqueness against other rows
     if (slug !== storedSlug) {
-      let candidate = slug; let n = 2;
-      while (true) {
-        const { data: ex } = await supabase
-          .from("premade_packages")
-          .select("id")
-          .eq("slug", candidate)
-          .neq("id", pkgId)
-          .maybeSingle();
-        if (!ex) { slug = candidate; break; }
-        candidate = `${slug}-${n++}`;
-      }
+      slug = await findUniqueSlug(supabase, "premade_packages", slug, pkgId);
     }
     const { error } = await supabase
       .from("premade_packages")
@@ -88,12 +98,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
       .eq("id", pkgId);
     if (error) return { error: error.message };
   } else {
-    let candidate = slug; let n = 2;
-    while (true) {
-      const { data: ex } = await supabase.from("premade_packages").select("id").eq("slug", candidate).maybeSingle();
-      if (!ex) { slug = candidate; break; }
-      candidate = `${slug}-${n++}`;
-    }
+    slug = await findUniqueSlug(supabase, "premade_packages", slug);
     const { data: row, error } = await supabase.from("premade_packages").insert({
       slug,
       ...coreFields,

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice, parseEurAmount } from "@/lib/currency/format";
@@ -46,10 +46,10 @@ export function CustomForm({
   const t = useTranslations("transport.form");
   const formLocale = useLocale();
   const { currency, rates } = useCurrency();
-  const displayFromPrice = (raw: string) => {
+  const displayFromPrice = useCallback((raw: string) => {
     const eur = parseEurAmount(raw);
     return eur === null ? raw : `From ${formatPrice(eur, currency, rates, formLocale)}`;
-  };
+  }, [currency, rates, formLocale]);
   const [pickup, setPickup] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [destinations, setDestinations] = useState("");
@@ -71,27 +71,36 @@ export function CustomForm({
   const setGuideLanguage = setGuideLanguageProp ?? setLocalGuideLanguage;
 
   const today = new Date().toISOString().split("T")[0];
-  const availableVehicles = vehicles.filter((v) => v.id === "van");
-  const vClass = availableVehicles.find((v) => v.id === vehicleId) ?? vehicles.find((v) => v.id === vehicleId);
+  const availableVehicles = useMemo(() => vehicles.filter((v) => v.id === "van"), [vehicles]);
+  const vClass = useMemo(
+    () => availableVehicles.find((v) => v.id === vehicleId) ?? vehicles.find((v) => v.id === vehicleId),
+    [availableVehicles, vehicles, vehicleId],
+  );
 
-  function maxCapacity(v: typeof vClass) {
+  const maxCapacity = useCallback((v: typeof vClass) => {
     if (!v) return Infinity;
     const nums = v.capacity.match(/\d+/g);
     return nums ? parseInt(nums[nums.length - 1], 10) : Infinity;
-  }
+  }, []);
 
   const pax = parseInt(passengers, 10) || 1;
   const bags = parseInt(luggage, 10) || 0;
 
   // total capacity from all selected vehicles
-  const totalVehicleCapacity = Object.entries(vehicleQty).reduce((sum, [id, qty]) => {
-    const v = vehicles.find((x) => x.id === id);
-    return sum + (v ? maxCapacity(v) * qty : 0);
-  }, 0);
-  const totalLuggageCapacity = Object.entries(vehicleQty).reduce((sum, [id, qty]) => {
-    const v = vehicles.find((x) => x.id === id);
-    return sum + (v ? (v.luggageCapacity ?? 0) * qty : 0);
-  }, 0);
+  const totalVehicleCapacity = useMemo(
+    () => Object.entries(vehicleQty).reduce((sum, [id, qty]) => {
+      const v = vehicles.find((x) => x.id === id);
+      return sum + (v ? maxCapacity(v) * qty : 0);
+    }, 0),
+    [vehicleQty, vehicles, maxCapacity],
+  );
+  const totalLuggageCapacity = useMemo(
+    () => Object.entries(vehicleQty).reduce((sum, [id, qty]) => {
+      const v = vehicles.find((x) => x.id === id);
+      return sum + (v ? (v.luggageCapacity ?? 0) * qty : 0);
+    }, 0),
+    [vehicleQty, vehicles],
+  );
 
   const singleVehicleCapacity = maxCapacity(vClass);
   const singleLuggageCapacity = vClass?.luggageCapacity ?? Infinity;
@@ -105,6 +114,7 @@ export function CustomForm({
 
   const vehicleMissing = submitted && !vehicleId;
   const pickupMissing = submitted && !pickup.trim();
+  const destinationsMissing = submitted && !destinations.trim();
   const dateMissing = submitted && !startDate;
   const capacityError = vehicleId && pax > singleVehicleCapacity && !needsMultiVehicle
     ? t("vehicleCapacityError", { label: vClass!.label, n: singleVehicleCapacity })
@@ -114,21 +124,24 @@ export function CustomForm({
     (!needsMultiVehicle || multiVehicleCoversAll);
 
   // build vehicle summary string for WA message
-  const vehicleSummary = needsMultiVehicle && multiVehicleSelected
-    ? Object.entries(vehicleQty)
-        .filter(([, q]) => q > 0)
-        .map(([id, q]) => { const v = vehicles.find((x) => x.id === id); return v ? `${q}× ${v.label}` : ""; })
-        .filter(Boolean).join(", ")
-    : vClass ? `${vClass.label} (${vClass.capacity})` : String(vehicleId);
+  const vehicleSummary = useMemo(
+    () => needsMultiVehicle && multiVehicleSelected
+      ? Object.entries(vehicleQty)
+          .filter(([, q]) => q > 0)
+          .map(([id, q]) => { const v = vehicles.find((x) => x.id === id); return v ? `${q}× ${v.label}` : ""; })
+          .filter(Boolean).join(", ")
+      : vClass ? `${vClass.label} (${vClass.capacity})` : String(vehicleId),
+    [needsMultiVehicle, multiVehicleSelected, vehicleQty, vehicles, vClass, vehicleId],
+  );
 
-  function setQty(id: string, delta: number) {
+  const setQty = useCallback((id: string, delta: number) => {
     setVehicleQty((prev) => {
       const next = { ...prev, [id]: Math.max(0, (prev[id] ?? 0) + delta) };
       return next;
     });
-  }
+  }, []);
 
-  const previewMessage = [
+  const previewMessage = useMemo(() => [
     t("privateChauffeurIntro"),
     t("pickupSummary", { value: pickup || "—" }),
     pickupTime ? t("pickupTimeSummary", { value: pickupTime }) : "",
@@ -144,9 +157,15 @@ export function CustomForm({
     }),
     guideNeeded ? t("guideSummary", { type: guideType, language: guideLanguage }) : "",
     t("couldYouQuote"),
-  ].filter(Boolean).join(" ");
+  ].filter(Boolean).join(" "), [
+    t, pickup, pickupTime, destinations, startDate, endDate, passengers,
+    luggage, vehicleId, vehicleSummary, guideNeeded, guideType, guideLanguage,
+  ]);
   const waNum = process.env.NEXT_PUBLIC_WA_PHONE?.replace(/[^\d+]/g, "") ?? "";
-  const href = vehicleId ? `https://wa.me/${waNum}?text=${encodeURIComponent(previewMessage)}` : "#";
+  const href = useMemo(
+    () => vehicleId ? `https://wa.me/${waNum}?text=${encodeURIComponent(previewMessage)}` : "#",
+    [vehicleId, waNum, previewMessage],
+  );
 
   return (
     <div>
@@ -328,13 +347,13 @@ export function CustomForm({
           </div>
         )}
 
-        <TransportFormField label={t("destinationsStops")} span>
+        <TransportFormField label={t("destinationsStops")} span hint={destinationsMissing ? t("requiredHint") : undefined}>
           <textarea
             value={destinations}
             placeholder={t("destinationsStopsTextareaPlaceholder")}
             onChange={(e) => setDestinations(e.target.value)}
             rows={3}
-            className="bg-transparent border border-rule text-ink font-sans text-[16px] px-3 py-2.5 focus:outline-none focus:border-ochre transition-colors duration-200 resize-none"
+            className={`bg-transparent border text-ink font-sans text-[16px] px-3 py-2.5 focus:outline-none focus:border-ochre transition-colors duration-200 resize-none ${destinationsMissing ? "border-terracotta" : "border-rule"}`}
           />
         </TransportFormField>
 

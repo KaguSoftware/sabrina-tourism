@@ -1,4 +1,4 @@
-import { CURRENCIES, ZERO_DECIMAL_CURRENCIES, type Currency } from "@/i18n/currencies";
+import { CURRENCIES, CURRENCY_SYMBOLS, ZERO_DECIMAL_CURRENCIES, type Currency } from "@/i18n/currencies";
 
 export type Rates = Partial<Record<Currency, number>>;
 
@@ -19,19 +19,32 @@ export function getDisplayCurrency(currency: Currency, rates: Rates): Currency {
 }
 
 export function formatPrice(
-  amountEur: number,
+  amountEur: number | null | undefined,
   currency: Currency,
   rates: Rates,
   locale: string = "en-US",
+  fallback: string = "",
 ): string {
+  if (amountEur === null || amountEur === undefined || !Number.isFinite(amountEur)) {
+    return fallback;
+  }
   const display = getDisplayCurrency(currency, rates);
   const value = convert(amountEur, display, rates);
   const fractionDigits = ZERO_DECIMAL_CURRENCIES.includes(display) ? 0 : 2;
-  return new Intl.NumberFormat(locale, {
+  const opts: Intl.NumberFormatOptions = {
     style: "currency",
     currency: display,
     maximumFractionDigits: fractionDigits,
-  }).format(value);
+  };
+  try {
+    return new Intl.NumberFormat(locale, opts).format(value);
+  } catch {
+    const sym = CURRENCY_SYMBOLS[display] ?? display;
+    const numberOpts: Intl.NumberFormatOptions = {
+      maximumFractionDigits: fractionDigits,
+    };
+    return `${sym}${value.toLocaleString(locale, numberOpts)}`;
+  }
 }
 
 /**

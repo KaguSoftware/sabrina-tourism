@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
@@ -28,25 +28,24 @@ function applyTemplate(template: string, values: Record<string, string | number>
   );
 }
 
-export const metadata: Metadata = {
-  title: "Partnered Hotels — Sabrina Turizm",
-  description:
-    "All partnered hotels across Türkiye, organised by region — Istanbul, Cappadocia, the Aegean, the Mediterranean, the Black Sea, and Eastern Anatolia.",
-  alternates: { canonical: "/regions" },
-  openGraph: {
-    title: "Partnered Hotels — Sabrina Turizm",
-    description:
-      "All partnered hotels across Türkiye, organised by region.",
-    images: [
-      {
-        url: "/homepage.png",
-        width: 1200,
-        height: 630,
-        alt: "Sabrina Turizm partnered hotels",
-      },
-    ],
-  },
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const path = "/regions";
+  const localePath = locale === "en" ? path : `/${locale}${path}`;
+  const title = "Partnered Hotels — Sabrina Turizm";
+  const description =
+    "All partnered hotels across Türkiye, organised by region — Istanbul, Cappadocia, the Aegean, the Mediterranean, the Black Sea, and Eastern Anatolia.";
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
+    },
+  };
+}
 
 export default async function RegionsIndexPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -123,7 +122,7 @@ export default async function RegionsIndexPage({ params }: { params: Promise<{ l
                     </GoldUnderlineHeading>
                   </div>
                   <Link
-                    href={`/regions/${regionSlug}`}
+                    href={`/regions/${regionSlug}` as `/${string}`}
                     className="font-mono text-[12px] tracking-[0.16em] uppercase text-ochre hover:text-ink transition-colors duration-150"
                   >
                     {regionCtaLabel} &rarr;

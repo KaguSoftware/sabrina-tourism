@@ -21,10 +21,11 @@ export async function GET(
   }
   if (!bytes) return new Response("Daily package not found", { status: 404 });
 
+  const safeId = id.replace(/[^A-Za-z0-9-_]/g, "_");
   return new Response(new Blob([bytes], { type: "application/pdf" }), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${id}.pdf"`,
+      "Content-Disposition": `attachment; filename="${safeId}.pdf"`,
       "Cache-Control": "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800",
     },
   });

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { PackageDetailPage } from "@/components/packages/PackageDetailPage/PackageDetailPage";
 import { getPackageBySlug } from "@/lib/db/packages";
@@ -7,26 +8,30 @@ export const revalidate = 604800;
 export const dynamicParams = true;
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
   searchParams: Promise<{ date?: string; people?: string; tier?: string }>;
 }
 
-export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { locale, slug } = await params;
   const result = await getPackageBySlug(slug);
   const pkg = result && !("redirectTo" in result) ? (result as Package) : null;
   const title = pkg ? `${pkg.name} — Sabrina Turizm` : `${slug.replace(/-/g, " ")} — Sabrina Turizm`;
   const description = pkg
     ? `${pkg.shortDescription} ${pkg.duration} · ${pkg.region}.`
     : "Boutique tour itinerary across Türkiye by Sabrina Turizm.";
+  const path = `/packages/${slug}`;
+  const localePath = locale === "en" ? path : `/${locale}${path}`;
   return {
     title,
     description,
-    alternates: { canonical: `/packages/${slug}` },
+    alternates: { canonical: localePath },
     openGraph: {
       title,
       description,
-      images: pkg ? [{ url: pkg.heroImage, width: 1200, height: 630, alt: pkg.name }] : [],
+      images: pkg
+        ? [{ url: pkg.heroImage, width: 1200, height: 630, alt: pkg.name }]
+        : [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
     },
   };
 }

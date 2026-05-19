@@ -39,7 +39,7 @@ function DropdownNavItem({
     <div ref={ref} className="relative inline-flex items-center" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <Link
         href={item.href}
-        className={`inline-flex items-center gap-1 relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:transition-transform after:duration-300 ${
+        className={`inline-flex items-center gap-1 relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
       >
@@ -112,6 +112,8 @@ export function SiteHeader({
   const localePfx = locale === "en" ? "" : `/${locale}`;
   const NO_HERO_PATHS = [`${localePfx}/tours/custom-packages`];
   const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname) && !menuOpen;
+  const isRTL = ["ar", "he", "fa"].includes(locale);
+  const menuSlideOffset = isRTL ? "-40px" : "40px";
 
   return (
     <>
@@ -148,7 +150,7 @@ export function SiteHeader({
           <nav className="hidden md:flex items-center gap-9 lg:gap-10 relative" aria-label={t("primaryNavigation")}>
             <Link
               href={`${localePfx}/`}
-              className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+              className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
               } ${pathname === `${localePfx}/` || pathname === "/" ? "after:scale-x-100" : ""}`}
             >
@@ -157,7 +159,7 @@ export function SiteHeader({
             <NavTours currentPath={pathname} transparent={transparent} />
             <Link
               href={`${localePfx}/transportation`}
-              className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+              className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
               } ${pathname.includes("/transportation") ? "after:scale-x-100" : ""}`}
             >
@@ -223,10 +225,10 @@ export function SiteHeader({
         </div>
       </header>
 
-      {/* Mobile overlay — slides in from right, sits below the header bar */}
+      {/* Mobile overlay — slides in from the end edge (right in LTR, left in RTL) */}
       <div
         className={`md:hidden fixed top-21.5 bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
+          menuOpen ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"
         }`}
         role="dialog"
         aria-modal="true"
@@ -243,7 +245,7 @@ export function SiteHeader({
               className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
               style={{
                 opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? "translateX(0)" : "translateX(40px)",
+                transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
                 transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                   100 + i * 60
                 }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
@@ -258,7 +260,7 @@ export function SiteHeader({
           <div
             style={{
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? "translateX(0)" : "translateX(40px)",
+              transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
               transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                 100 + NAV_ITEMS.length * 60
               }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
@@ -289,7 +291,7 @@ export function SiteHeader({
           <div
             style={{
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? "translateX(0)" : "translateX(40px)",
+              transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
               transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                 160 + NAV_ITEMS.length * 60
               }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${

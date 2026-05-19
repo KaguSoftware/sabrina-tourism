@@ -1,11 +1,30 @@
 "use server";
 import { updateTag } from "next/cache";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { HotelSchema, type HotelFormValues } from "./schema";
 
+async function requireAuth(): Promise<{ error?: string }> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  return {};
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function findUniqueSlug(supabase: any, table: string, baseSlug: string, excludeId?: string): Promise<string> {
+  const query = supabase.from(table).select("slug").like("slug", `${baseSlug}%`);
+  const { data } = excludeId ? await query.neq("id", excludeId) : await query;
+  const existing = new Set<string>((data ?? []).map((r: { slug: string }) => r.slug));
+  if (!existing.has(baseSlug)) return baseSlug;
+  let n = 2;
+  while (existing.has(`${baseSlug}-${n}`)) n++;
+  return `${baseSlug}-${n}`;
+}
+
 function revalidateAll(slug?: string, regions?: ReadonlyArray<string | null | undefined>) {
+  updateTag(tags.hotels.admin());
   updateTag(tags.hotels.all());
   updateTag(tags.hotels.featured());
   if (slug) updateTag(tags.hotels.bySlug(slug));
@@ -19,6 +38,7 @@ function revalidateAll(slug?: string, regions?: ReadonlyArray<string | null | un
 }
 
 export async function saveHotel(payload: HotelFormValues): Promise<{ error?: string; id?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = HotelSchema.safeParse(payload);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
   const data = parsed.data;
@@ -57,13 +77,8 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     }).eq("id", hotelId);
     if (error) return { error: error.message };
   } else {
-    // INSERT — ensure slug uniqueness
-    let candidate = slug; let n = 2;
-    while (true) {
-      const { data: ex } = await supabase.from("hotels").select("id").eq("slug", candidate).maybeSingle();
-      if (!ex) { slug = candidate; break; }
-      candidate = `${slug}-${n++}`;
-    }
+    // INSERT — ensure slug uniqueness with a single LIKE query
+    slug = await findUniqueSlug(supabase, "hotels", slug);
     const { data: newH, error } = await supabase.from("hotels").insert({
       slug, name: data.name, region: data.region, description: data.description,
       long_description: data.long_description, tag_a: data.tag_a, tag_b: data.tag_b,

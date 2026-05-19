@@ -94,7 +94,7 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
   const [saving, setSaving] = useState(false);
 
   const methods = useForm<HotelFormValues>({ resolver: zodResolver(HotelSchema), defaultValues: defaultValues(hotel), mode: "onBlur" });
-  const { handleSubmit, watch, formState: { isDirty, errors } } = methods;
+  const { handleSubmit, watch, reset, formState: { isDirty, errors } } = methods;
 
   useEffect(() => {
     function handler(e: BeforeUnloadEvent) { if (isDirty) { e.preventDefault(); e.returnValue = ""; } }
@@ -112,6 +112,7 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
       const result = await saveHotel(data);
       if (result.error) { toast.error(result.error); return; }
       toast.success("Saved.");
+      reset(data);
       if (!hotel) router.push(`/admin/hotels/${result.id}`);
       else router.refresh();
     } finally { setSaving(false); }

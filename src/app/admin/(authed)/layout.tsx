@@ -3,7 +3,11 @@ import { Toaster } from "sonner";
 import { createServerClient } from "@/lib/supabase/server";
 import { AdminSidebar } from "@/components/admin/AdminSidebar/AdminSidebar";
 
-export const dynamic = "force-dynamic";
+// Note: `force-dynamic` removed — auth is already enforced at the edge by
+// src/proxy.ts (the middleware), which calls supabase.auth.getUser() and
+// redirects unauthenticated visitors before they reach this layout.
+// The layout still validates the session server-side to obtain the user email
+// for the sidebar, but the page is now eligible for partial caching.
 
 export default async function AuthedAdminLayout({
   children,

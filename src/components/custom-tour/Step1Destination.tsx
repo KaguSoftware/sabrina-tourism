@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { DateRangePicker, type DateRangePickerHandle } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -14,19 +14,23 @@ interface Props {
   onNext: () => void;
 }
 
-function ordinal(n: number) {
-  const suffix =
-    n % 100 >= 11 && n % 100 <= 13
-      ? "th"
-      : n % 10 === 1
-        ? "st"
-        : n % 10 === 2
-          ? "nd"
-          : n % 10 === 3
-            ? "rd"
-            : "th";
+const EN_ORDINAL_SUFFIXES: Record<Intl.LDMLPluralRule, string> = {
+  one: "st",
+  two: "nd",
+  few: "rd",
+  other: "th",
+  zero: "th",
+  many: "th",
+};
 
-  return `${n}${suffix}`;
+function ordinal(n: number, locale: string) {
+  if (locale === "en" || locale.startsWith("en-")) {
+    const rule = new Intl.PluralRules("en", { type: "ordinal" }).select(n);
+    return `${n}${EN_ORDINAL_SUFFIXES[rule] ?? "th"}`;
+  }
+  // Arabic, Chinese, and most other locales don't use English-style ordinal
+  // suffixes — a period suffix is universally readable as "Nth".
+  return `${n}.`;
 }
 
 function getSelectedTripDays(startDate: string, endDate: string) {
@@ -44,6 +48,7 @@ function getSelectedTripDays(startDate: string, endDate: string) {
 export function Step1Destination({ state, onChange, onNext }: Props) {
   const t = useTranslations("customTour.step1");
   const tCommon = useTranslations("common");
+  const locale = useLocale();
   const today = new Date().toISOString().split("T")[0];
   const dateWrapperRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<DateRangePickerHandle>(null);
@@ -271,7 +276,7 @@ export function Step1Destination({ state, onChange, onNext }: Props) {
                   </div>
                   <span className="flex flex-col gap-0.5">
                     <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre">
-                      {t("ordinalArea", { ord: ordinal(i + 1) })}
+                      {t("ordinalArea", { ord: ordinal(i + 1, locale) })}
                     </span>
                     <span className="font-display text-[20px] tracking-tight text-ink">
                       {destination?.label ?? id}

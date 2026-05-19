@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -7,16 +8,23 @@ import { getSiteContent } from "@/lib/db/site-content";
 
 export const revalidate = 604800;
 
-export const metadata = {
-  title: "Hotels — Sabrina Turizm",
-  description: "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.",
-  alternates: { canonical: "/hotels" },
-  openGraph: {
-    title: "Hotels — Sabrina Turizm",
-    description: "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.",
-    images: [{ url: "/homepage.png", width: 1200, height: 630, alt: "Sabrina Turizm hotels" }],
-  },
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const path = "/hotels";
+  const localePath = locale === "en" ? path : `/${locale}${path}`;
+  const title = "Hotels — Sabrina Turizm";
+  const description = "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.";
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
+    },
+  };
+}
 
 export default async function HotelsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
