@@ -1,3 +1,4 @@
+import { getLocale } from "next-intl/server";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 
 interface LegalPageProps {
@@ -11,7 +12,8 @@ interface LegalPageProps {
   contactWhatsapp: string;
 }
 
-export function LegalPage({ eyebrow, title, intro, sections, contactWhatsapp }: LegalPageProps) {
+export async function LegalPage({ eyebrow, title, intro, sections, contactWhatsapp }: LegalPageProps) {
+  const locale = await getLocale();
   return (
     <section className="relative z-10 min-h-screen px-[clamp(20px,4vw,56px)] pt-[clamp(140px,16vw,220px)] pb-[clamp(80px,10vw,140px)]">
       <div className="max-w-[900px] mx-auto">
@@ -42,7 +44,7 @@ export function LegalPage({ eyebrow, title, intro, sections, contactWhatsapp }: 
         </div>
 
         <a
-          href={genericMessage()}
+          href={genericMessage(locale)}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-10 inline-flex items-center gap-3 border border-ochre bg-navy px-6 py-4 font-mono text-[12px] font-semibold tracking-[0.16em] uppercase text-ochre transition-all duration-300 hover:-translate-y-0.5"

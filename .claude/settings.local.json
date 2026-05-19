@@ -73,7 +73,10 @@
       "Bash(cp /Users/saitaydin/Pictures/turizm/hotel_bosphorus_hero_300kb.webp /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/public/hotel-hero.webp)",
       "Bash(ls /var/folders/*/T/ 2>/dev/null | head -5; find /var/folders -name \"*.png\" -newer /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/public/hotel-hero.webp 2>/dev/null | head -5)",
       "Read(//private/var/folders/**)",
-      "Bash(python3 -c \"from PIL import Image; img=Image.open\\('/Users/saitaydin/Pictures/turizm/hotel_flat_design.webp'\\); print\\(img.size\\)\")"
+      "Bash(python3 -c \"from PIL import Image; img=Image.open\\('/Users/saitaydin/Pictures/turizm/hotel_flat_design.webp'\\); print\\(img.size\\)\")",
+      "Bash(git fetch *)",
+      "Read(//tmp/**)",
+      "Bash(git commit *)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

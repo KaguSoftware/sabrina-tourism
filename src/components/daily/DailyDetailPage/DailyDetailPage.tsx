@@ -97,8 +97,11 @@ function useStopGlow(count: number) {
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const locale = useLocale();
   const t = useTranslations("daily");
+  const tA = useTranslations("aria");
   const { currency, rates } = useCurrency();
   const today = toYMD(new Date());
+  const MAX_ADULTS = 20;
+  const MAX_CHILDREN = 10;
   const [selectedDate, setSelectedDate] = useState("");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
@@ -197,6 +200,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
 
           {/* Schedule timeline */}
           <Reveal>
+            <h2 className="sr-only">{t("dayItinerary")}</h2>
             <Kicker className="mb-6">{t("dayItinerary")}</Kicker>
           </Reveal>
           <ol className="relative border-l border-rule pl-8 space-y-10 mb-20">
@@ -225,6 +229,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
             <div>
               <Reveal>
+                <h2 className="sr-only">{t("whatsIncluded")}</h2>
                 <Kicker className="mb-6">{t("whatsIncluded")}</Kicker>
               </Reveal>
               <ul className="space-y-3">
@@ -242,6 +247,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
             </div>
             <div>
               <Reveal>
+                <h2 className="sr-only">{t("whatsNotIncluded")}</h2>
                 <Kicker className="mb-6">{t("whatsNotIncluded")}</Kicker>
               </Reveal>
               <ul className="space-y-3">
@@ -301,14 +307,18 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
+                          aria-label={tA("removeAdult")}
+                          disabled={adults <= 1}
                           onClick={() => setAdults((a) => Math.max(1, a - 1))}
-                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rule disabled:hover:text-ink-soft"
                         >−</button>
-                        <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center">{adults}</span>
+                        <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center" aria-live="polite">{adults}</span>
                         <button
                           type="button"
-                          onClick={() => setAdults((a) => a + 1)}
-                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                          aria-label={tA("addAdult")}
+                          disabled={adults >= MAX_ADULTS}
+                          onClick={() => setAdults((a) => Math.min(MAX_ADULTS, a + 1))}
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rule disabled:hover:text-ink-soft"
                         >+</button>
                       </div>
                       <span className="font-mono text-[11px] text-muted ml-auto text-right">
@@ -324,14 +334,18 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
+                          aria-label={tA("removeChild")}
+                          disabled={children <= 0}
                           onClick={() => setChildren((c) => Math.max(0, c - 1))}
-                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rule disabled:hover:text-ink-soft"
                         >−</button>
-                        <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center">{children}</span>
+                        <span className="font-mono text-[16px] text-ink min-w-[2ch] text-center" aria-live="polite">{children}</span>
                         <button
                           type="button"
-                          onClick={() => setChildren((c) => c + 1)}
-                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
+                          aria-label={tA("addChild")}
+                          disabled={children >= MAX_CHILDREN}
+                          onClick={() => setChildren((c) => Math.min(MAX_CHILDREN, c + 1))}
+                          className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rule disabled:hover:text-ink-soft"
                         >+</button>
                       </div>
                       <span className="font-mono text-[11px] text-muted ml-auto text-right">
@@ -367,11 +381,13 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                 )}
 
                 <GoldButton
-                  href={selectedDate ? bookMessage(pkg, selectedDate, adults, children, locale) : undefined}
+                  href={selectedDate ? bookMessage(pkg, selectedDate, adults, children, locale) : "#"}
                   variant="solid"
-                  target="_blank"
+                  target={selectedDate ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className={`w-full justify-center ${!selectedDate ? "opacity-50 pointer-events-none" : ""}`}
+                  aria-disabled={!selectedDate}
+                  tabIndex={!selectedDate ? -1 : undefined}
+                  className={`w-full justify-center ${!selectedDate ? "opacity-50" : ""}`}
                 >
                   Book This Day
                 </GoldButton>

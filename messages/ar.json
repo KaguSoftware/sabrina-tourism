@@ -687,7 +687,9 @@
     "date": "التاريخ",
     "region": "المنطقة",
     "all": "الكل",
-    "anyDate": "أي تاريخ"
+    "anyDate": "أي تاريخ",
+    "clearAll": "مسح الكل",
+    "filtersActive": "{count, plural, one {# فلتر مفعّل} other {# فلاتر مفعّلة}}"
   },
   "daily": {
     "dayItinerary": "جدول اليوم",
@@ -704,5 +706,27 @@
     "noMatchesBody": "جرّب تعديل الفلاتر، أو أخبرنا بما تتخيله وسنصممه من الصفر.",
     "clearFilters": "مسح الفلاتر",
     "contactWhatsapp": "تواصل معنا عبر واتساب"
+  },
+  "errors": {
+    "notFoundKicker": "404",
+    "notFoundHeading": "تعذّر العثور على هذه الصفحة.",
+    "notFoundBody": "قد يكون الرابط قديمًا أو أن الصفحة قد نُقلت. جرّب أحد الخيارات التالية.",
+    "errorKicker": "حدث خطأ ما",
+    "errorHeading": "واجهنا مشكلة أثناء تحميل هذه الصفحة.",
+    "errorBody": "حاول مرة أخرى، أو تواصل معنا عبر واتساب وسنحلّ المشكلة.",
+    "tryAgain": "حاول مرة أخرى",
+    "backHome": "العودة للرئيسية",
+    "browsePackages": "تصفّح الباقات",
+    "loadingLabel": "جارٍ التحميل"
+  },
+  "aria": {
+    "addAdult": "إضافة بالغ",
+    "removeAdult": "إزالة بالغ",
+    "addChild": "إضافة طفل",
+    "removeChild": "إزالة طفل",
+    "addPassenger": "إضافة راكب",
+    "removePassenger": "إزالة راكب",
+    "addVehicle": "إضافة مركبة",
+    "removeVehicle": "إزالة مركبة"
   }
 }

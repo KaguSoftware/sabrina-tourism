@@ -684,7 +684,9 @@
     "date": "Date",
     "region": "Region",
     "all": "All",
-    "anyDate": "Any date"
+    "anyDate": "Any date",
+    "clearAll": "Tümünü temizle",
+    "filtersActive": "{count, plural, one {# filtre aktif} other {# filtre aktif}}"
   },
   "daily": {
     "dayItinerary": "Günlük Program",
@@ -701,5 +703,27 @@
     "noMatchesBody": "Filtrelerinizi ayarlayın ya da hayal ettiğinizi bize anlatın, sıfırdan çizelim.",
     "clearFilters": "Filtreleri temizle",
     "contactWhatsapp": "WhatsApp ile iletişime geçin"
+  },
+  "errors": {
+    "notFoundKicker": "404",
+    "notFoundHeading": "Bu sayfayı bulamadık.",
+    "notFoundBody": "Bağlantı eski olabilir ya da sayfa taşınmış olabilir. Aşağıdakilerden birini deneyin.",
+    "errorKicker": "Bir şeyler ters gitti",
+    "errorHeading": "Bu sayfayı yüklerken bir sorun yaşadık.",
+    "errorBody": "Tekrar deneyin ya da WhatsApp üzerinden bize ulaşın, hallederiz.",
+    "tryAgain": "Tekrar dene",
+    "backHome": "Anasayfaya dön",
+    "browsePackages": "Paketlere göz at",
+    "loadingLabel": "Yükleniyor"
+  },
+  "aria": {
+    "addAdult": "Yetişkin ekle",
+    "removeAdult": "Yetişkin çıkar",
+    "addChild": "Çocuk ekle",
+    "removeChild": "Çocuk çıkar",
+    "addPassenger": "Yolcu ekle",
+    "removePassenger": "Yolcu çıkar",
+    "addVehicle": "Araç ekle",
+    "removeVehicle": "Araç çıkar"
   }
 }

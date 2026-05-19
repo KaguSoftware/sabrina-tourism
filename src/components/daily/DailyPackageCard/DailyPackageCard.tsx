@@ -6,7 +6,7 @@ import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
 
-export function DailyPackageCard({ pkg }: { pkg: DailyPackagePublic }) {
+export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackagePublic; priority?: boolean }) {
   const locale = useLocale();
   const { currency, rates } = useCurrency();
   return (
@@ -19,7 +19,8 @@ export function DailyPackageCard({ pkg }: { pkg: DailyPackagePublic }) {
             src={pkg.cardImage}
             alt={pkg.name}
             fill
-            loading="lazy"
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
             className="object-cover transition-transform duration-1400 ease-out group-hover:scale-[1.06]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />

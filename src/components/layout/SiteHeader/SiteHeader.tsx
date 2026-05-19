@@ -170,7 +170,7 @@ export function SiteHeader({
             <LanguageSwitcher transparent={transparent} />
             <CurrencySwitcher transparent={transparent} />
             <a
-              href={genericMessage()}
+              href={genericMessage(locale)}
               target="_blank"
               rel="noopener noreferrer"
               style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
@@ -314,7 +314,7 @@ export function SiteHeader({
         </nav>
         <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
           <a
-            href={genericMessage()}
+            href={genericMessage(locale)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}

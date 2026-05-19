@@ -1,10 +1,12 @@
+import { getLocale } from "next-intl/server";
 import { FAB_LABEL } from "./constants";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 
-export function WhatsAppFAB() {
+export async function WhatsAppFAB() {
+  const locale = await getLocale();
   return (
     <a
-      href={genericMessage()}
+      href={genericMessage(locale)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={FAB_LABEL}

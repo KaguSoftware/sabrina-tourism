@@ -1,9 +1,12 @@
 "use client";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
+import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPackageCard";
+import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
 interface DailyListPageProps {
@@ -11,6 +14,9 @@ interface DailyListPageProps {
 }
 
 export function DailyListPage({ packages }: DailyListPageProps) {
+  const locale = useLocale();
+  const t = useTranslations("packageList");
+  const localePfx = locale === "en" ? "" : `/${locale}`;
   return (
     <>
       {/* Hero — matches PackageListPage exactly */}
@@ -56,14 +62,33 @@ export function DailyListPage({ packages }: DailyListPageProps) {
         </p>
 
         {packages.length === 0 ? (
-          <p className="font-mono text-[14px] tracking-[0.12em] text-muted py-20 text-center">
-            No daily packages available at the moment — check back soon.
-          </p>
+          <div className="py-20 text-center max-w-[480px] mx-auto flex flex-col items-center gap-6">
+            <Kicker>{t("noMatchesKicker")}</Kicker>
+            <p className="font-display text-[clamp(22px,2.4vw,30px)] text-ink leading-[1.3]">
+              No daily packages available at the moment.
+            </p>
+            <p className="font-sans text-[15px] text-ink-soft leading-[1.6]">
+              Browse our multi-day itineraries or message us for a custom plan.
+            </p>
+            <div className="flex flex-wrap gap-3 justify-center mt-2">
+              <GoldButton href={`${localePfx}/tours/fixed-dates`} variant="solid">
+                Browse packages
+              </GoldButton>
+              <GoldButton
+                href={genericMessage(locale)}
+                variant="ghost"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t("contactWhatsapp")}
+              </GoldButton>
+            </div>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
             {packages.map((pkg, i) => (
               <Reveal key={pkg.id} delay={i * 70}>
-                <DailyPackageCard pkg={pkg} />
+                <DailyPackageCard pkg={pkg} priority={i < 3} />
               </Reveal>
             ))}
           </div>

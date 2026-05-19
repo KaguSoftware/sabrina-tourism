@@ -11,6 +11,9 @@ export function GoldButton({
   rel,
   type = "button",
   "aria-label": ariaLabel,
+  "aria-disabled": ariaDisabled,
+  tabIndex,
+  disabled,
 }: GoldButtonProps) {
   const classes = `${BTN_BASE} ${BTN_VARIANTS[variant]} ${className}`;
   const inlineStyle = variant === "solid"
@@ -30,6 +33,13 @@ export function GoldButton({
   );
 
   if (href) {
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (ariaDisabled || disabled) {
+        e.preventDefault();
+        return;
+      }
+      onClick?.(e);
+    };
     return (
       <a
         href={href}
@@ -38,6 +48,9 @@ export function GoldButton({
         target={target}
         rel={rel}
         aria-label={ariaLabel}
+        aria-disabled={ariaDisabled || disabled || undefined}
+        tabIndex={tabIndex}
+        onClick={onClick || ariaDisabled || disabled ? handleClick : undefined}
       >
         {inner}
       </a>
@@ -51,6 +64,9 @@ export function GoldButton({
       className={classes}
       style={inlineStyle}
       aria-label={ariaLabel}
+      aria-disabled={ariaDisabled || undefined}
+      tabIndex={tabIndex}
+      disabled={disabled}
     >
       {inner}
     </button>

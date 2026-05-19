@@ -2,7 +2,7 @@ export type GoldButtonVariant = "solid" | "ghost" | "ghost-light" | "ghost-navy"
 
 export interface GoldButtonProps {
   href?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
   variant?: GoldButtonVariant;
   children: React.ReactNode;
   className?: string;
@@ -10,4 +10,7 @@ export interface GoldButtonProps {
   rel?: string;
   type?: "button" | "submit";
   "aria-label"?: string;
+  "aria-disabled"?: boolean;
+  tabIndex?: number;
+  disabled?: boolean;
 }
