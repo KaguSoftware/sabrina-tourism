@@ -111,7 +111,7 @@ export function SiteHeader({
 
   const localePfx = locale === "en" ? "" : `/${locale}`;
   const NO_HERO_PATHS = [`${localePfx}/tours/custom-packages`];
-  const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname) && !menuOpen;
+  const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname);
 
   return (
     <>
@@ -126,7 +126,7 @@ export function SiteHeader({
           {/* Brand */}
           <Link
             href={`${localePfx}/`}
-            className="inline-flex w-[111px] md:w-[140px] shrink-0 flex-col items-center group"
+            className="inline-flex w-24 md:w-35 shrink-0 flex-col items-center group ml-8 md:ml-0"
             aria-label={t("homeAriaLabel")}
           >
             <Image
@@ -134,10 +134,10 @@ export function SiteHeader({
               alt="Sabrina Turizm"
               width="140"
               height="48"
-              className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
+              className="h-8 md:h-12 w-auto object-contain transition-all duration-500"
             />
             <span
-              className={`mt-0.5 whitespace-nowrap text-[9px] md:text-[10px] tracking-[0.18em] uppercase font-medium transition-colors duration-500 ${
+              className={`mt-0.5 whitespace-nowrap text-[8px] md:text-[10px] tracking-[0.16em] uppercase font-medium transition-colors duration-500 ${
                 transparent ? "text-cream/80" : "text-ink/70"
               }`}
             >
@@ -204,18 +204,18 @@ export function SiteHeader({
               onClick={() => setMenuOpen((o) => !o)}
             >
               <span
-                className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
-                  menuOpen ? "translate-y-[7px] rotate-45" : ""
+                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 origin-center ${
+                  menuOpen ? "translate-y-[8px] rotate-45" : ""
                 }`}
               />
               <span
-                className={`w-[26px] h-px bg-current block transition-all duration-300 ${
+                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 ${
                   menuOpen ? "opacity-0 scale-x-0" : ""
                 }`}
               />
               <span
-                className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
-                  menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 origin-center ${
+                  menuOpen ? "-translate-y-[8px] -rotate-45" : ""
                 }`}
               />
             </button>
@@ -225,7 +225,7 @@ export function SiteHeader({
 
       {/* Mobile overlay — slides in from right, sits below the header bar */}
       <div
-        className={`md:hidden fixed top-21.5 bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+        className={`md:hidden fixed top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
