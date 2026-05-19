@@ -9,7 +9,7 @@ import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
-import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
+import { DailyPrices } from "@/components/daily/DailyPrices/DailyPrices";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/lib/currency/context";
@@ -103,7 +103,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const { refs: stopRefs, active: activeStops } = useStopGlow(pkg.stops.length);
-  const childPrice = pkg.price * (1 - CHILD_DISCOUNT);
+  const childPrice = pkg.pricing?.pricePerChild ?? pkg.price * (1 - CHILD_DISCOUNT);
   const totalPrice = adults * pkg.price + children * childPrice;
   return (
     <>
@@ -179,12 +179,10 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
         </a>
       </div>
 
-      {/* Multi-person pricing */}
-      {pkg.pricing && (
-        <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pb-10 pt-4">
-          <MultiPersonPrices pricing={pkg.pricing} />
-        </div>
-      )}
+      {/* Adult / Child pricing */}
+      <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pb-10 pt-4">
+        <DailyPrices adultPrice={pkg.price} childPrice={childPrice} />
+      </div>
 
       {/* Content */}
       <div className="relative max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-20 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16" style={{ zIndex: 10 }}>
@@ -320,7 +318,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   </div>
                   <div>
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
-                      Children <span className="text-ochre normal-case tracking-normal">· {Math.round(CHILD_DISCOUNT * 100)}% off</span>
+                      Children <span className="text-ochre normal-case tracking-normal">· {Math.max(0, Math.round((1 - childPrice / pkg.price) * 100))}% off</span>
                     </p>
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
