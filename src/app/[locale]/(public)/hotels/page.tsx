@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -34,21 +35,30 @@ export default async function HotelsPage({ params }: { params: Promise<{ locale:
   return (
     <>
       {/* Hero */}
-      <section className="relative z-10 pt-[clamp(80px,10vw,140px)] pb-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)]">
-        <div className="max-w-[1320px] mx-auto">
+      <section className="relative z-10 overflow-hidden min-h-[clamp(340px,45vw,560px)] flex items-end">
+        <Image
+          src="/hotel-hero.webp"
+          alt="Bosphorus hotel view"
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="relative z-10 w-full max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-[clamp(80px,10vw,140px)] pb-[clamp(40px,6vw,80px)]">
           <Reveal>
-            <Kicker>{kicker}</Kicker>
+            <Kicker className="text-white/80">{kicker}</Kicker>
           </Reveal>
           <Reveal delay={120}>
             <GoldUnderlineHeading
               as="h1"
-              className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch]"
+              className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch] text-white"
             >
               {heading}
             </GoldUnderlineHeading>
           </Reveal>
           <Reveal delay={200}>
-            <p className="mt-6 text-[clamp(15px,1.3vw,18px)] text-ink-soft leading-[1.6] max-w-[52ch]">
+            <p className="mt-6 text-[clamp(15px,1.3vw,18px)] text-white/80 leading-[1.6] max-w-[52ch]">
               {lede}
             </p>
           </Reveal>
