@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
@@ -14,6 +14,7 @@ import { PackageSchema } from "@/app/admin/(authed)/packages/[slug]/schema";
 import { slugify } from "@/lib/utils/slug";
 import type { PackageRaw } from "@/lib/db/packages";
 
+import { collectErrors, formatRelativeTime, useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
 import { TABS, type Tab, type PackageFormValues } from "./types";
 import { defaultValues } from "./defaultValues";
 import { ErrorCallout } from "./primitives";
@@ -32,34 +33,6 @@ const TAB_LABEL_KEYS: Record<(typeof TABS)[number], string> = {
   Gallery: "gallery",
   Inclusions: "inclusions",
 };
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatRelativeTime(date: Date): string {
-  const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (diff < 60) return "just now";
-  if (diff < 3600)
-    return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) === 1 ? "" : "s"} ago`;
-  if (diff < 86400)
-    return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) === 1 ? "" : "s"} ago`;
-  return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) === 1 ? "" : "s"} ago`;
-}
-
-function collectErrors(errs: Record<string, any>): string[] {
-  const msgs: string[] = [];
-  function walk(obj: any) {
-    if (!obj) return;
-    if (typeof obj.message === "string") {
-      msgs.push(obj.message);
-      return;
-    }
-    for (const key of Object.keys(obj)) walk(obj[key]);
-  }
-  walk(errs);
-  return msgs;
-}
 
 // ---------------------------------------------------------------------------
 // PackageEditor
@@ -91,19 +64,11 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
   const {
     handleSubmit,
     watch,
+    reset,
     formState: { isDirty, errors },
   } = methods;
 
-  useEffect(() => {
-    function handler(e: BeforeUnloadEvent) {
-      if (isDirty) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    }
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [isDirty]);
+  useDirtyBeforeUnload(isDirty);
 
   const errorMessages = collectErrors(errors as Record<string, any>);
   const name = watch("name");
@@ -132,6 +97,7 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
         return;
       }
       toast.success("Saved.");
+      reset(data);
       if (!pkg) {
         router.push(`/admin/packages/${result.slug}`);
       } else if (result.slug && result.slug !== pkg.slug) {

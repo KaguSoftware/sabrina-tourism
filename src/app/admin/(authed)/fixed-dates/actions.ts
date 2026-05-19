@@ -1,28 +1,37 @@
 "use server";
 import { updateTag } from "next/cache";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 
 function revalidateAll(slug?: string) {
   updateTag(tags.premade.all());
   updateTag(tags.premade.slugs());
+  updateTag(tags.premade.admin());
   if (slug) updateTag(tags.premade.bySlug(slug));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function db(): any { return createServiceClient(); }
 
+async function requireAuth(): Promise<{ error?: string }> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  return {};
+}
+
 export async function reorderPremadePackages(orderedIds: string[]): Promise<{ error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const supabase = db();
-  for (let i = 0; i < orderedIds.length; i++) {
-    const { error } = await supabase.from("premade_packages").update({ sort_order: i }).eq("id", orderedIds[i]);
-    if (error) return { error: error.message };
-  }
+  const updates = orderedIds.map((id, i) => ({ id, sort_order: i }));
+  const { error } = await supabase.from("premade_packages").upsert(updates);
+  if (error) return { error: error.message };
   revalidateAll();
   return {};
 }
 
 export async function setPremadePublished(id: string, isPublished: boolean): Promise<{ error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const supabase = db();
   const { error } = await supabase.from("premade_packages").update({ is_published: isPublished }).eq("id", id);
   if (error) return { error: error.message };
@@ -31,6 +40,7 @@ export async function setPremadePublished(id: string, isPublished: boolean): Pro
 }
 
 export async function deletePremadePackage(id: string): Promise<{ error?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const supabase = db();
   const { error } = await supabase.from("premade_packages").delete().eq("id", id);
   if (error) return { error: error.message };
@@ -39,6 +49,7 @@ export async function deletePremadePackage(id: string): Promise<{ error?: string
 }
 
 export async function duplicatePremadePackage(id: string): Promise<{ error?: string; newId?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const supabase = db();
   const { data: pkg, error: pkgErr } = await supabase
     .from("premade_packages")
@@ -48,11 +59,13 @@ export async function duplicatePremadePackage(id: string): Promise<{ error?: str
   if (pkgErr || !pkg) return { error: pkgErr?.message ?? "Not found" };
 
   const baseSlug = `${pkg.slug}-copy`;
-  let newSlug = baseSlug; let n = 0;
-  while (true) {
-    const { data: ex } = await supabase.from("premade_packages").select("id").eq("slug", newSlug).maybeSingle();
-    if (!ex) break;
-    newSlug = `${baseSlug}-${++n}`;
+  const { data: _dupData } = await supabase.from("premade_packages").select("slug").like("slug", `${baseSlug}%`);
+  const _dupExisting = new Set<string>((_dupData ?? []).map((r: { slug: string }) => r.slug));
+  let newSlug = baseSlug;
+  if (_dupExisting.has(baseSlug)) {
+    let n = 1;
+    while (_dupExisting.has(`${baseSlug}-${n}`)) n++;
+    newSlug = `${baseSlug}-${n}`;
   }
 
   const { data: newPkg, error: insertErr } = await supabase.from("premade_packages").insert({
@@ -69,10 +82,11 @@ export async function duplicatePremadePackage(id: string): Promise<{ error?: str
   if (insertErr || !newPkg) return { error: insertErr?.message ?? "Insert failed" };
 
   if (pkg.premade_package_gallery?.length) {
-    await supabase.from("premade_package_gallery").insert(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+    const { error: eg } = await supabase.from("premade_package_gallery").insert(
       pkg.premade_package_gallery.map(({ id: _id, package_id: _pid, ...rest }: any) => ({ ...rest, package_id: newPkg.id }))
     );
+    if (eg) return { error: `Gallery copy failed: ${eg.message}` };
   }
 
   revalidateAll();

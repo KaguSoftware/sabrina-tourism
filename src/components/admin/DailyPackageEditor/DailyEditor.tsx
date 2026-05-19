@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { collectErrors, useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
 import { saveDailyPackage } from "@/app/admin/(authed)/daily/[id]/actions";
 import { DailySchema, type DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
 import type { DailyPackageRaw } from "@/lib/db/daily-packages";
@@ -70,18 +71,6 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
   };
 }
 
-function collectErrors(errs: Record<string, unknown>): string[] {
-  const msgs: string[] = [];
-  function walk(obj: unknown) {
-    if (!obj || typeof obj !== "object") return;
-    const o = obj as Record<string, unknown>;
-    if (typeof o.message === "string") { msgs.push(o.message); return; }
-    for (const k of Object.keys(o)) walk(o[k]);
-  }
-  walk(errs);
-  return msgs;
-}
-
 interface Props {
   pkg?: DailyPackageRaw;
   initialTranslations?: TranslationsState;
@@ -94,13 +83,9 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
   const [saving, setSaving] = useState(false);
 
   const methods = useForm<DailyFormValues>({ resolver: zodResolver(DailySchema), defaultValues: defaultValues(pkg), mode: "onBlur" });
-  const { handleSubmit, watch, formState: { isDirty, errors } } = methods;
+  const { handleSubmit, watch, reset, formState: { isDirty, errors } } = methods;
 
-  useEffect(() => {
-    function handler(e: BeforeUnloadEvent) { if (isDirty) { e.preventDefault(); e.returnValue = ""; } }
-    window.addEventListener("beforeunload", handler);
-    return () => window.removeEventListener("beforeunload", handler);
-  }, [isDirty]);
+  useDirtyBeforeUnload(isDirty);
 
   const name = watch("name");
   const formValues = watch();
@@ -112,6 +97,7 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
       const result = await saveDailyPackage(data);
       if (result.error) { toast.error(result.error); return; }
       toast.success("Saved.");
+      reset(data);
       if (!pkg) router.push(`/admin/daily/${result.id}`);
       else router.refresh();
     } finally { setSaving(false); }

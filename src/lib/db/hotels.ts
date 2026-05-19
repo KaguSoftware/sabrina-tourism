@@ -218,11 +218,19 @@ export async function getFeaturedHotels(locale = 'en'): Promise<HotelPublic[]> {
   )();
 }
 
-export async function getAdminHotels(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {
+async function _getAdminHotels(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServiceClient() as any;
   const { data, error } = await supabase.from('hotels').select('id,slug,name,region,is_published,sort_order').order('sort_order');
   if (error) { console.error('[db/hotels] getAdminHotels:', error); return []; }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (data ?? []).map((r: any) => ({ id: r.id, slug: r.slug, name: r.name, region: r.region, isPublished: r.is_published, sortOrder: r.sort_order }));
+}
+
+export async function getAdminHotels(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {
+  return unstable_cache(
+    () => _getAdminHotels(),
+    ['hotels:admin'],
+    { tags: [tags.hotels.admin()], revalidate: 300 },
+  )();
 }

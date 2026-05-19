@@ -42,7 +42,7 @@ export const LOCALE_TO_CURRENCY: Record<Locale, Currency> = {
   ja: "JPY",
 };
 
-export const ZERO_DECIMAL_CURRENCIES: Currency[] = ["JPY", "TRY", "RUB", "IRR"];
+export const ZERO_DECIMAL_CURRENCIES: Currency[] = ["JPY", "IRR"];
 
 export function isCurrency(value: unknown): value is Currency {
   return typeof value === "string" && (CURRENCIES as readonly string[]).includes(value);

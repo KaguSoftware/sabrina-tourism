@@ -37,16 +37,20 @@ export function CustomTourWizard({ airports, vehicles, hotelsByRegion }: Props) 
 
   useEffect(() => {
     try {
-      const saved = window.sessionStorage.getItem(CUSTOM_TOUR_DRAFT_KEY);
-      if (saved) setState({ ...INITIAL_STATE, ...JSON.parse(saved) });
+      const saved = window.localStorage.getItem(CUSTOM_TOUR_DRAFT_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as { step?: number; state?: CustomTourState };
+        if (parsed.state) setState({ ...INITIAL_STATE, ...parsed.state });
+        if (typeof parsed.step === "number") setStep(parsed.step);
+      }
     } catch {
       // ignore corrupt draft
     }
   }, []);
 
   useEffect(() => {
-    window.sessionStorage.setItem(CUSTOM_TOUR_DRAFT_KEY, JSON.stringify(state));
-  }, [state]);
+    window.localStorage.setItem(CUSTOM_TOUR_DRAFT_KEY, JSON.stringify({ step, state }));
+  }, [step, state]);
 
   function patch(update: Partial<CustomTourState>) {
     setState((prev) => ({ ...prev, ...update }));
@@ -83,7 +87,12 @@ export function CustomTourWizard({ airports, vehicles, hotelsByRegion }: Props) 
           <Step4Vehicle state={state} onChange={patch} onNext={next} onBack={back} airports={airports} vehicles={vehicles} />
         )}
         {step === 4 && (
-          <Step5Review state={state} onBack={back} onConfirm={() => {}} vehicles={vehicles} />
+          <Step5Review state={state} onBack={back} onConfirm={() => {
+            window.localStorage.removeItem(CUSTOM_TOUR_DRAFT_KEY);
+            setState(INITIAL_STATE);
+            setStep(0);
+            scrollWizardHeaderIntoView();
+          }} vehicles={vehicles} />
         )}
       </div>
     </section>

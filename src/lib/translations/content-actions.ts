@@ -2,6 +2,7 @@
 
 import { updateTag, revalidatePath } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/admin/auth";
 import { tags } from "@/lib/cache/tags";
 import type { ContentLocale } from "./ai";
 
@@ -14,8 +15,12 @@ function db(): any { return createServiceClient(); }
 
 export async function saveDailyTranslations(
   pkgId: string,
-  translations: ContentTranslations
+  translations: ContentTranslations,
+  slug?: string
 ): Promise<{ error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const supabase = db();
 
   // Main package fields
@@ -38,15 +43,15 @@ export async function saveDailyTranslations(
     if (!stopUpdates[idx]) stopUpdates[idx] = {};
     stopUpdates[idx][`${field}_translations`] = val;
   }
-  for (const [idx, update] of Object.entries(stopUpdates)) {
+  if (Object.keys(stopUpdates).length > 0) {
     const { data: stops } = await supabase
       .from("daily_package_stops")
       .select("id")
       .eq("package_id", pkgId)
       .order("sort_order");
-    const stop = stops?.[parseInt(idx)];
-    if (stop) {
-      await supabase.from("daily_package_stops").update(update).eq("id", stop.id);
+    for (const [idx, update] of Object.entries(stopUpdates)) {
+      const stop = stops?.[parseInt(idx)];
+      if (stop) await supabase.from("daily_package_stops").update(update).eq("id", stop.id);
     }
   }
 
@@ -57,15 +62,15 @@ export async function saveDailyTranslations(
     if (!m) continue;
     includedUpdates[m[1]] = val;
   }
-  for (const [idx, val] of Object.entries(includedUpdates)) {
-    const { data: items } = await supabase
+  if (Object.keys(includedUpdates).length > 0) {
+    const { data: includedRows } = await supabase
       .from("daily_package_included")
       .select("id")
       .eq("package_id", pkgId)
       .order("sort_order");
-    const item = items?.[parseInt(idx)];
-    if (item) {
-      await supabase.from("daily_package_included").update({ text_translations: val }).eq("id", item.id);
+    for (const [idx, val] of Object.entries(includedUpdates)) {
+      const item = includedRows?.[parseInt(idx)];
+      if (item) await supabase.from("daily_package_included").update({ text_translations: val }).eq("id", item.id);
     }
   }
 
@@ -75,19 +80,20 @@ export async function saveDailyTranslations(
     if (!m) continue;
     notIncludedUpdates[m[1]] = val;
   }
-  for (const [idx, val] of Object.entries(notIncludedUpdates)) {
-    const { data: items } = await supabase
+  if (Object.keys(notIncludedUpdates).length > 0) {
+    const { data: notIncludedRows } = await supabase
       .from("daily_package_not_included")
       .select("id")
       .eq("package_id", pkgId)
       .order("sort_order");
-    const item = items?.[parseInt(idx)];
-    if (item) {
-      await supabase.from("daily_package_not_included").update({ text_translations: val }).eq("id", item.id);
+    for (const [idx, val] of Object.entries(notIncludedUpdates)) {
+      const item = notIncludedRows?.[parseInt(idx)];
+      if (item) await supabase.from("daily_package_not_included").update({ text_translations: val }).eq("id", item.id);
     }
   }
 
   updateTag(tags.daily.all());
+  if (slug) updateTag(tags.daily.bySlug(slug));
   return {};
 }
 
@@ -95,8 +101,12 @@ export async function saveDailyTranslations(
 
 export async function savePremadeTranslations(
   pkgId: string,
-  translations: ContentTranslations
+  translations: ContentTranslations,
+  slug?: string
 ): Promise<{ error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const supabase = db();
 
   const pkgFields = ["name", "short_description", "overview", "accommodation_name", "accommodation_description"];
@@ -117,14 +127,16 @@ export async function savePremadeTranslations(
     if (!dayUpdates[m[1]]) dayUpdates[m[1]] = {};
     dayUpdates[m[1]][`${m[2]}_translations`] = val;
   }
-  for (const [idx, update] of Object.entries(dayUpdates)) {
+  if (Object.keys(dayUpdates).length > 0) {
     const { data: days } = await supabase
       .from("premade_package_itinerary_days")
       .select("id")
       .eq("package_id", pkgId)
       .order("sort_order");
-    const day = days?.[parseInt(idx)];
-    if (day) await supabase.from("premade_package_itinerary_days").update(update).eq("id", day.id);
+    for (const [idx, update] of Object.entries(dayUpdates)) {
+      const day = days?.[parseInt(idx)];
+      if (day) await supabase.from("premade_package_itinerary_days").update(update).eq("id", day.id);
+    }
   }
 
   // Tiers — keyed as tier_{idx}_{field}
@@ -150,23 +162,33 @@ export async function savePremadeTranslations(
     }
   }
 
-  // Inclusions — keyed as inclusion_{idx}
+  // Inclusions — keyed as inclusion_{kind}_{idx}
+  const inclusionUpdates: Array<{ kind: string; idx: number; val: Record<ContentLocale, string> }> = [];
   for (const [key, val] of Object.entries(translations)) {
     const m = key.match(/^inclusion_(included|not_included)_(\d+)$/);
     if (!m) continue;
-    const kind = m[1];
-    const idx = parseInt(m[2]);
-    const { data: items } = await supabase
-      .from("premade_package_inclusions")
-      .select("id")
-      .eq("package_id", pkgId)
-      .eq("kind", kind)
-      .order("sort_order");
-    const item = items?.[idx];
-    if (item) await supabase.from("premade_package_inclusions").update({ text_translations: val }).eq("id", item.id);
+    inclusionUpdates.push({ kind: m[1], idx: parseInt(m[2]), val });
+  }
+  if (inclusionUpdates.length > 0) {
+    const kinds = [...new Set(inclusionUpdates.map((u) => u.kind))];
+    const rowsByKind = new Map<string, Array<{ id: string }>>();
+    await Promise.all(kinds.map(async (kind) => {
+      const { data } = await supabase
+        .from("premade_package_inclusions")
+        .select("id")
+        .eq("package_id", pkgId)
+        .eq("kind", kind)
+        .order("sort_order");
+      rowsByKind.set(kind, data ?? []);
+    }));
+    for (const { kind, idx, val } of inclusionUpdates) {
+      const item = rowsByKind.get(kind)?.[idx];
+      if (item) await supabase.from("premade_package_inclusions").update({ text_translations: val }).eq("id", item.id);
+    }
   }
 
   updateTag(tags.premade.all());
+  if (slug) updateTag(tags.premade.bySlug(slug));
   return {};
 }
 
@@ -174,8 +196,12 @@ export async function savePremadeTranslations(
 
 export async function saveHotelTranslations(
   hotelId: string,
-  translations: ContentTranslations
+  translations: ContentTranslations,
+  slug?: string
 ): Promise<{ error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const supabase = db();
 
   const hotelFields = ["name", "description", "long_description", "tag_a", "tag_b", "location"];
@@ -189,16 +215,22 @@ export async function saveHotelTranslations(
   }
 
   // Amenities — keyed as amenity_{idx}
+  const amenityUpdates: Record<string, Record<ContentLocale, string>> = {};
   for (const [key, val] of Object.entries(translations)) {
     const m = key.match(/^amenity_(\d+)$/);
     if (!m) continue;
-    const { data: items } = await supabase
+    amenityUpdates[m[1]] = val;
+  }
+  if (Object.keys(amenityUpdates).length > 0) {
+    const { data: amenities } = await supabase
       .from("hotel_amenities")
       .select("id")
       .eq("hotel_id", hotelId)
       .order("sort_order");
-    const item = items?.[parseInt(m[1])];
-    if (item) await supabase.from("hotel_amenities").update({ text_translations: val }).eq("id", item.id);
+    for (const [idx, val] of Object.entries(amenityUpdates)) {
+      const item = amenities?.[parseInt(idx)];
+      if (item) await supabase.from("hotel_amenities").update({ text_translations: val }).eq("id", item.id);
+    }
   }
 
   // Room types — keyed as room_{idx}_name, room_{idx}_beds, room_{idx}_size, room_{idx}_highlights
@@ -209,23 +241,29 @@ export async function saveHotelTranslations(
     if (!roomUpdates[m[1]]) roomUpdates[m[1]] = {};
     roomUpdates[m[1]][`${m[2]}_translations`] = val;
   }
-  for (const [idx, update] of Object.entries(roomUpdates)) {
+  if (Object.keys(roomUpdates).length > 0) {
     const { data: rooms } = await supabase
       .from("hotel_room_types")
       .select("id")
       .eq("hotel_id", hotelId)
       .order("sort_order");
-    const room = rooms?.[parseInt(idx)];
-    if (room) await supabase.from("hotel_room_types").update(update).eq("id", room.id);
+    for (const [idx, update] of Object.entries(roomUpdates)) {
+      const room = rooms?.[parseInt(idx)];
+      if (room) await supabase.from("hotel_room_types").update(update).eq("id", room.id);
+    }
   }
 
   updateTag(tags.hotels.all());
+  if (slug) updateTag(tags.hotels.bySlug(slug));
   return {};
 }
 
 /* ── Load translations ───────────────────────────────────────────────── */
 
 export async function loadDailyTranslations(pkgId: string): Promise<ContentTranslations> {
+  const auth = await requireAdmin();
+  if (auth.error) return {};
+
   const supabase = db();
   const result: ContentTranslations = {};
 
@@ -275,6 +313,9 @@ export async function loadDailyTranslations(pkgId: string): Promise<ContentTrans
 }
 
 export async function loadPremadeTranslations(pkgId: string): Promise<ContentTranslations> {
+  const auth = await requireAdmin();
+  if (auth.error) return {};
+
   const supabase = db();
   const result: ContentTranslations = {};
 
@@ -350,6 +391,9 @@ export async function loadPremadeTranslations(pkgId: string): Promise<ContentTra
 }
 
 export async function loadHotelTranslations(hotelId: string): Promise<ContentTranslations> {
+  const auth = await requireAdmin();
+  if (auth.error) return {};
+
   const supabase = db();
   const result: ContentTranslations = {};
 
@@ -395,6 +439,9 @@ export async function loadHotelTranslations(hotelId: string): Promise<ContentTra
 /* ── Site content (home, tours page, etc.) ──────────────────────── */
 
 export async function loadSiteContentTranslations(key: string): Promise<ContentTranslations> {
+  const auth = await requireAdmin();
+  if (auth.error) return {};
+
   const supabase = db();
   const result: ContentTranslations = {};
   const { data: row } = await supabase
@@ -419,6 +466,9 @@ export async function saveSiteContentTranslations(
   key: string,
   translations: ContentTranslations
 ): Promise<{ error?: string }> {
+  const auth = await requireAdmin();
+  if (auth.error) return auth;
+
   const supabase = db();
   // Pivot ContentTranslations back to { locale: { fieldKey: value } }
   const byLocale: Record<string, Record<string, string>> = {};

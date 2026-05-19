@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import {
   DndContext,
@@ -16,7 +17,7 @@ import { FormField } from "@/components/admin/FormField/FormField";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
 import type { PackageFormValues } from "../types";
 
-function SortableGalleryItem({
+const SortableGalleryItem = memo(function SortableGalleryItem({
   index,
   path,
   onRemove,
@@ -58,7 +59,7 @@ function SortableGalleryItem({
       </button>
     </div>
   );
-}
+});
 
 export function GalleryTab() {
   const { control, watch, setValue } = useFormContext<PackageFormValues>();

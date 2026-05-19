@@ -2,10 +2,17 @@
 
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { createServiceClient } from "@/lib/supabase/server";
+import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { PackageSchema, type PackageFormValues } from "./schema";
+
+async function requireAuth(): Promise<{ error?: string }> {
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Unauthorized" };
+  return {};
+}
 
 // ---------------------------------------------------------------------------
 // Server action
@@ -14,6 +21,7 @@ import { PackageSchema, type PackageFormValues } from "./schema";
 export async function savePackage(
   payload: PackageFormValues,
 ): Promise<{ error?: string; slug?: string }> {
+  const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = PackageSchema.safeParse(payload);
   if (!parsed.success) {
     const first = parsed.error.issues[0];
@@ -78,20 +86,14 @@ export async function savePackage(
 }
 
 async function resolveUniqueSlug(base: string): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServiceClient() as any;
-
-  let candidate = base;
+  const { data } = await supabase.from("packages").select("slug").like("slug", `${base}%`);
+  const existing = new Set<string>((data ?? []).map((r: { slug: string }) => r.slug));
+  if (!existing.has(base)) return base;
   let n = 2;
-  while (true) {
-    const { data } = await supabase
-      .from("packages")
-      .select("id")
-      .eq("slug", candidate)
-      .maybeSingle();
-    if (!data) return candidate;
-    candidate = `${base}-${n}`;
-    n++;
-  }
+  while (existing.has(`${base}-${n}`)) n++;
+  return `${base}-${n}`;
 }
 
 // Called after successful create to navigate — must be called from client via redirect

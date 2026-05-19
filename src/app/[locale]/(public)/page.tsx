@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { HeroPanorama } from "@/components/home/HeroPanorama/HeroPanorama";
 import { AboutStrip } from "@/components/home/AboutStrip/AboutStrip";
 import { SignatureDestinations } from "@/components/home/SignatureDestinations/SignatureDestinations";
@@ -13,6 +14,23 @@ import { getFeaturedHotels } from "@/lib/db/hotels";
 import type { Step } from "@/components/home/HowItWorks/types";
 
 export const revalidate = 604800;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const localePath = locale === "en" ? "/" : `/${locale}`;
+  const title = "Sabrina Turizm — Boutique Travel in Türkiye";
+  const description = "Boutique tours, daily escapes, curated hotels, and private chauffeur service across Türkiye.";
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
+    },
+  };
+}
 
 const HOME_KEYS = [
   "home_hero",

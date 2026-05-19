@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { HotelCard } from "@/components/hotels/HotelCard/HotelCard";
@@ -19,19 +19,23 @@ interface Props {
 
 type Region = (typeof REGIONS)[number];
 
-function ordinal(n: number) {
-  const suffix =
-    n % 100 >= 11 && n % 100 <= 13
-      ? "th"
-      : n % 10 === 1
-      ? "st"
-      : n % 10 === 2
-      ? "nd"
-      : n % 10 === 3
-      ? "rd"
-      : "th";
+const EN_ORDINAL_SUFFIXES: Record<Intl.LDMLPluralRule, string> = {
+  one: "st",
+  two: "nd",
+  few: "rd",
+  other: "th",
+  zero: "th",
+  many: "th",
+};
 
-  return `${n}${suffix}`;
+function ordinal(n: number, locale: string) {
+  if (locale === "en" || locale.startsWith("en-")) {
+    const rule = new Intl.PluralRules("en", { type: "ordinal" }).select(n);
+    return `${n}${EN_ORDINAL_SUFFIXES[rule] ?? "th"}`;
+  }
+  // Arabic, Chinese, and most other locales don't use English-style ordinal
+  // suffixes — a period suffix is universally readable as "Nth".
+  return `${n}.`;
 }
 
 function getSelectedRegions(destinations: string[]): Region[] {
@@ -42,6 +46,7 @@ function getSelectedRegions(destinations: string[]): Region[] {
 
 export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }: Props) {
   const t = useTranslations("customTour.step3");
+  const locale = useLocale();
   const selectedRegions = getSelectedRegions(state.destinations);
   const canProceed =
     selectedRegions.length > 0 &&
@@ -81,7 +86,7 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
             <section key={region}>
               <div className="mb-5">
                 <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre">
-                  {t("ordinalArea", { ord: ordinal(sectionIndex + 1) })}
+                  {t("ordinalArea", { ord: ordinal(sectionIndex + 1, locale) })}
                 </p>
                 <h3 className="font-display text-[clamp(26px,3vw,36px)] tracking-tight text-ink">
                   {region}

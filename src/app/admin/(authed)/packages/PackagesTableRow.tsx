@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Pencil, Copy, Trash2 } from "lucide-react";
@@ -30,7 +31,7 @@ interface SortableRowProps {
   onDuplicate: (id: string) => void;
 }
 
-export function SortableRow({
+export const SortableRow = memo(function SortableRow({
   pkg,
   onTogglePublished,
   onToggleFeatured,
@@ -126,4 +127,4 @@ export function SortableRow({
       </td>
     </tr>
   );
-}
+});

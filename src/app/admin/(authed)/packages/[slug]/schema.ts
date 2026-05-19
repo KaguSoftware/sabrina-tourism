@@ -47,6 +47,12 @@ export const PackageSchema = z.object({
   gallery: z.array(z.object({ path: z.string() })),
   included: z.array(z.object({ text: z.string().min(1), icon: z.string().nullable().optional() })),
   not_included: z.array(z.object({ text: z.string().min(1), icon: z.string().nullable().optional() })),
-});
+}).refine(
+  (data) =>
+    !data.available_from ||
+    !data.available_to ||
+    data.available_from < data.available_to,
+  { message: "Available from must be before Available to", path: ["available_to"] },
+);
 
 export type PackageFormValues = z.infer<typeof PackageSchema>;

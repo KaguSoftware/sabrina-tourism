@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import {
   DndContext,
@@ -23,7 +23,7 @@ import { Textarea } from "@/components/admin/Input/Textarea";
 import { ConfirmDialog } from "../primitives";
 import type { PackageFormValues } from "../types";
 
-function SortableDayCard({ index, onDelete }: { index: number; onDelete: () => void }) {
+const SortableDayCard = memo(function SortableDayCard({ index, onDelete }: { index: number; onDelete: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: `day-${index}` });
   const [open, setOpen] = useState(true);
@@ -81,7 +81,7 @@ function SortableDayCard({ index, onDelete }: { index: number; onDelete: () => v
       )}
     </div>
   );
-}
+});
 
 export function ItineraryTab() {
   const { control } = useFormContext<PackageFormValues>();

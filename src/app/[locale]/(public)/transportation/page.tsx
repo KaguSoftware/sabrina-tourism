@@ -1,14 +1,28 @@
+import type { Metadata } from "next";
 import { TransportationPage } from "@/components/transport/TransportationPage/TransportationPage";
 import { getSiteContent } from "@/lib/db/site-content";
 import { getAirports, getVehicles } from "@/lib/db/transport";
 
 export const revalidate = 604800;
 
-export const metadata = {
-  title: "Private Chauffeur & Airport Transfer — Sabrina Turizm",
-  description:
-    "Mercedes E-Class, V-Class and S-Class. English-speaking, licensed chauffeurs across Türkiye. Airport transfers and custom routes.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const path = "/transportation";
+  const localePath = locale === "en" ? path : `/${locale}${path}`;
+  const title = "Private Chauffeur & Airport Transfer — Sabrina Turizm";
+  const description =
+    "Mercedes E-Class, V-Class and S-Class. English-speaking, licensed chauffeurs across Türkiye. Airport transfers and custom routes.";
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
+    },
+  };
+}
 
 export default async function TransportationRoute({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

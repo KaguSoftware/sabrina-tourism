@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DEFAULT_THRESHOLD, DEFAULT_ROOT_MARGIN } from "./constants";
 import type { UseRevealOptions } from "./types";
 
@@ -8,14 +8,33 @@ export function useReveal(options: UseRevealOptions = {}) {
   const { threshold = DEFAULT_THRESHOLD, rootMargin = DEFAULT_ROOT_MARGIN } =
     options;
 
+  // Track prefers-reduced-motion in state so we react to OS-level toggles
+  // while the page is mounted.
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mql.matches);
+
+    const onChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+
+    if (typeof mql.addEventListener === "function") {
+      mql.addEventListener("change", onChange);
+      return () => mql.removeEventListener("change", onChange);
+    }
+    // Safari < 14 fallback
+    mql.addListener(onChange);
+    return () => mql.removeListener(onChange);
+  }, []);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) {
+    if (prefersReducedMotion) {
       el.setAttribute("data-revealed", "true");
       return;
     }
@@ -44,7 +63,7 @@ export function useReveal(options: UseRevealOptions = {}) {
       clearTimeout(fallback);
       observer.disconnect();
     };
-  }, [threshold, rootMargin]);
+  }, [threshold, rootMargin, prefersReducedMotion]);
 
   return ref;
 }

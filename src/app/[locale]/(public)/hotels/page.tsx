@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
@@ -8,18 +9,34 @@ import { getSiteContent } from "@/lib/db/site-content";
 
 export const revalidate = 604800;
 
-export const metadata = {
-  title: "Hotels — Sabrina Turizm",
-  description: "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.",
-  alternates: { canonical: "/hotels" },
-  openGraph: {
-    title: "Hotels — Sabrina Turizm",
-    description: "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.",
-    images: [{ url: "/homepage.png", width: 1200, height: 630, alt: "Sabrina Turizm hotels" }],
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const path = "/hotels";
+  const localePath = locale === "en" ? path : `/${locale}${path}`;
+  const title = "Hotels — Sabrina Turizm";
+  const description =
+    "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.";
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath },
+    openGraph: {
+      title,
+      description,
+      images: [{ url: "/homepage.png", width: 1200, height: 630, alt: title }],
+    },
+  };
+}
 
-export default async function HotelsPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function HotelsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   const [hotels, pageContent] = await Promise.all([
     getAllHotels(),
@@ -28,7 +45,9 @@ export default async function HotelsPage({ params }: { params: Promise<{ locale:
 
   const kicker = pageContent?.kicker ?? "Our hotels";
   const heading = pageContent?.page_heading ?? "Curated stays across Türkiye";
-  const lede = pageContent?.page_lede ?? "Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.";
+  const lede =
+    pageContent?.page_lede ??
+    "Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.";
   const singular = pageContent?.property_singular ?? "property";
   const plural = pageContent?.property_plural ?? "properties";
   const hotelCardCtaLabel = pageContent?.hotel_card_cta_label ?? "View hotel";
