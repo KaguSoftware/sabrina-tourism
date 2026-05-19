@@ -30,6 +30,7 @@ export default async function HotelsPage({ params }: { params: Promise<{ locale:
   const lede = pageContent?.page_lede ?? "Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.";
   const singular = pageContent?.property_singular ?? "property";
   const plural = pageContent?.property_plural ?? "properties";
+  const hotelCardCtaLabel = pageContent?.hotel_card_cta_label ?? "View hotel";
 
   return (
     <>
@@ -68,7 +69,7 @@ export default async function HotelsPage({ params }: { params: Promise<{ locale:
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
             {hotels.map((hotel, i) => (
               <Reveal key={hotel.id} delay={i * 70}>
-                <HotelCard hotel={hotel} />
+                <HotelCard hotel={hotel} ctaLabel={hotelCardCtaLabel} />
               </Reveal>
             ))}
           </div>

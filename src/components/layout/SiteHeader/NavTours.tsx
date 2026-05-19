@@ -15,21 +15,21 @@ const TOUR_TYPES = [
     labelKey: "privatePackages",
     cadenceKey: "privatePackagesCadence",
     descriptionKey: "privatePackagesDescription",
-    image: "/capadocia-hero.png",
+    image: "/sabrina_trabzon_private_tours.webp",
   },
   {
     href: "/tours/fixed-dates",
     labelKey: "groupPackages",
     cadenceKey: "groupPackagesCadence",
     descriptionKey: "groupPackagesDescription",
-    image: "/istanbul-hero1.png",
+    image: "/istanbul_group_tour.webp",
   },
   {
     href: "/tours/daily-packages",
     labelKey: "dailyPackages",
     cadenceKey: "dailyPackagesCadence",
     descriptionKey: "dailyPackagesDescription",
-    image: "/Antalya-hero.png",
+    image: "/sabrina_istanbul_daily_tours.webp",
   },
 ] as const;
 

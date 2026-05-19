@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import { createAnonClient } from '@/lib/supabase/server';
+import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
 import { tags } from '@/lib/cache/tags';
 import type { SiteContentKey, SiteContentDataMap } from '@/lib/supabase/types';
 
@@ -111,4 +111,34 @@ export async function getSiteContentBatch<K extends SiteContentKey>(
     { tags: sortedKeys.map((k) => tags.siteContent(k)), revalidate: REVALIDATE_SECONDS },
   );
   return cached();
+}
+
+export async function saveSiteContentData<K extends SiteContentKey>(
+  key: K,
+  data: SiteContentDataMap[K],
+): Promise<{ error?: string }> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createServiceClient() as any;
+
+  const { data: existing, error: selectError } = await supabase
+    .from('site_content')
+    .select('id')
+    .eq('id', key)
+    .maybeSingle();
+
+  if (selectError) return { error: selectError.message };
+
+  if (existing) {
+    const { error } = await supabase
+      .from('site_content')
+      .update({ data })
+      .eq('id', key);
+    return error ? { error: error.message } : {};
+  }
+
+  const { error } = await supabase
+    .from('site_content')
+    .insert({ id: key, data, data_translations: {} });
+
+  return error ? { error: error.message } : {};
 }

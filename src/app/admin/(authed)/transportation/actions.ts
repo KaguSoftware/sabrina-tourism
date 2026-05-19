@@ -2,6 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { createServiceClient } from "@/lib/supabase/server";
+import { saveSiteContentData } from "@/lib/db/site-content";
 import { tags } from "@/lib/cache/tags";
 import {
   transportHeroSchema,
@@ -14,12 +15,8 @@ export async function saveTransportHero(raw: TransportHeroFormValues): Promise<{
   const parsed = transportHeroSchema.safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
 
-  const supabase = createServiceClient();
-
-  const { error } = await (supabase.from("site_content") as any)
-    .upsert({ id: "transport_hero", data: parsed.data }, { onConflict: "id" });
-
-  if (error) return { error: error.message };
+  const { error } = await saveSiteContentData("transport_hero", parsed.data);
+  if (error) return { error };
 
   updateTag(tags.siteContent("transport_hero"));
   return {};

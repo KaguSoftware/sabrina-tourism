@@ -215,6 +215,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
       label: "Group packages section",
       fields: [
         { key: "kicker", label: "Kicker", englishValue: watch("group_packages.kicker") ?? "Our Group Packages" },
+        { key: "section_heading", label: "Section heading", englishValue: watch("group_packages.section_heading") ?? "Four corners of the country." },
         { key: "cta_label", label: "CTA link label", englishValue: watch("group_packages.cta_label") ?? "See all group packages" },
       ],
     },
@@ -241,6 +242,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
       label: "How it works",
       fields: [
         { key: "section_heading", label: "Section heading", englishValue: watch("how_it_works.section_heading") },
+        { key: "cta_label", label: "CTA link label", englishValue: watch("how_it_works.cta_label") ?? "Start a conversation" },
         ...stepFields.flatMap((_, i) => [
           { key: `step_${i}_heading`, label: `Step ${i + 1} heading`, englishValue: watch(`how_it_works.steps.${i}.heading`) },
           { key: `step_${i}_body`, label: `Step ${i + 1} body`, englishValue: watch(`how_it_works.steps.${i}.body`), multiline: true },

@@ -1,8 +1,9 @@
 "use server";
 
 import { updateTag, revalidatePath } from "next/cache";
-import { createServiceClient } from "@/lib/supabase/server";
+import { saveSiteContentData } from "@/lib/db/site-content";
 import { tags } from "@/lib/cache/tags";
+import type { SiteContentKey, SiteContentDataMap } from "@/lib/supabase/types";
 import { homeContentSchema, type HomeContentFormValues } from "./schema";
 
 export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ error?: string }> {
@@ -12,8 +13,6 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
   }
 
   const { hero, about, how_it_works, featured, featured_hotels, group_packages, quote } = parsed.data;
-
-  const supabase = createServiceClient();
 
   const upserts = [
     { id: "home_hero", data: hero },
@@ -26,17 +25,11 @@ export async function saveHomeContent(raw: HomeContentFormValues): Promise<{ err
   ];
 
   for (const row of upserts) {
-    const { error } = await (supabase
-      .from("site_content") as unknown as {
-        upsert: (
-          values: { id: string; data: unknown },
-          opts: { onConflict: string },
-        ) => Promise<{ error: { message: string } | null }>;
-      })
-      .upsert({ id: row.id, data: row.data }, { onConflict: "id" });
+    const key = row.id as SiteContentKey;
+    const { error } = await saveSiteContentData(key, row.data as SiteContentDataMap[typeof key]);
 
     if (error) {
-      return { error: `Failed to save ${row.id}: ${error.message}` };
+      return { error: `Failed to save ${row.id}: ${error}` };
     }
   }
 
