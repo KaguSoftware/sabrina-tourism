@@ -299,11 +299,23 @@ const LOCALE_GUIDANCE: Record<Locale, string> = {
   en: "Polished English with a warm, concierge tone.",
   ar:
     "Modern Standard Arabic (الفصحى) at a formal level — the register used on official documents, luxury hotel correspondence, and high-end concierge notes. Use the polite plural form (أنتم / حضرتكم) when addressing the guest. Use established Arabic place names: إسطنبول for Istanbul, تركيا for Turkey, القاهرة for Cairo. Do not transliterate. Keep Western digits (5, 6, 12, etc.) — do NOT convert to Arabic-Indic numerals. Use Arabic punctuation where natural (، ؛). " +
-    // Produce NATURAL Arabic in standard logical word/letter order. Our PDF
-    // renderer handles glyph reshaping AND visual RTL reordering downstream —
-    // your job here is canonical, idiomatic Arabic. Do not pre-reverse, do not
-    // inject RTL marks, do not rearrange to match LTR conventions.
-    "Write Arabic in the NORMAL logical order a native speaker would type. Count phrases follow standard Arabic grammar: digit then noun ('5 ليال', '6 أيام', '1 يوم'). Sentences in normal subject-verb-object flow. The renderer takes care of the right-to-left display.",
+    // The PDF renderer handles letter reshaping (Arabic Presentation Forms B)
+    // but does NOT do bidirectional reordering. The Arabic strings we generate
+    // must be written in NORMAL logical word order — exactly as a native Arabic
+    // speaker would type them. Do NOT pre-reverse word order. Do NOT pad with
+    // RTL-mark characters. Just write idiomatic, natural Arabic.
+    "CRITICAL — write Arabic in NATURAL logical word order, exactly as a native speaker would type it in WhatsApp or Word. EXAMPLES of correct output: 'يجب تسوية الدفع الكلي في إسطنبول عند الوصول.' / 'جواز السفر'. Do NOT reverse words. Do NOT output 'الوصول عند ... تسوية يجب' — that's wrong. The PDF renderer reshapes letters automatically; you only supply natural Arabic prose. " +
+    // Voucher count-phrase order (Sabrina editorial style). The voucher is
+    // rendered by a PDF engine that lays out chars LEFT-TO-RIGHT (no bidi).
+    // A native Arabic reader scans the rendered output RIGHT-TO-LEFT. For the
+    // reader to see "<digit> <noun>" in their natural reading order, the
+    // SOURCE STRING must have the NOUN FIRST and the DIGIT LAST (logical
+    // character order). Stated unambiguously:
+    "EDITORIAL STYLE for count phrases (duration / nights / days / hours / similar): " +
+    "In the JSON string you return, put the Arabic NOUN before the DIGIT in logical character order. " +
+    "The digit is the LAST non-space character of the phrase; the noun comes first. " +
+    "Transliteration-based example (to bypass any bidi confusion in this prompt): for the English source '5 nights', write the Arabic word for 'nights' as the first run, then a space, then the literal digit 5 at the END of the string. For '5 nights · 6 days', write: [Arabic word for nights] + ' 5 · ' + [Arabic word for days] + ' 6'. " +
+    "Do NOT write the digit before the noun (i.e. do NOT produce the standard-Arabic '5 + noun' pattern). This convention applies to every duration / count tag — nightsDays, durationLabel, and any free-text containing a small number paired with a unit noun.",
   tr:
     "Native Turkish at a formal, polished register — the way a high-end Istanbul boutique tour operator would write to a paying guest. Use 'siz' (formal you). Use authentic Turkish idiom; do NOT produce English-sounding translations. Tourism-industry vocabulary preferred (rezervasyon, transfer, konaklama).",
   es:
@@ -321,6 +333,21 @@ const LOCALE_GUIDANCE: Record<Locale, string> = {
   ja:
     "Polite Japanese (敬語/丁寧語). Use ます/です throughout. Tone: high-end hotel concierge. Use イスタンブール / トルコ for place names. Preserve brand names (Sabrina Turizm) in Latin script.",
 };
+
+// Sabrina-voucher Arabic editorial style: when a count phrase is "digit <space>
+// Arabic noun", swap to "Arabic noun <space> digit" so the digit ends up at the
+// END of the logical string. The PDF renders chars LTR; placing the digit at
+// the end of the string puts it visually on the right, which is where an RTL
+// reader encounters it first. Examples:
+//   "5 ليال · 6 أيام"        → "ليال 5 · أيام 6"
+//   "1 يوم · 8 ساعات"        → "يوم 1 · ساعات 8"
+// Mid-prose digits with no immediately following Arabic word are left alone, so
+// sentences like "يجب تسوية الدفع الكلي ..." pass through unchanged.
+const DIGIT_THEN_ARABIC_NOUN = /(\d+(?:[.,]\d+)?)\s+([؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]+)/g;
+
+function flipArabicCountPhrases(text: string): string {
+  return text.replace(DIGIT_THEN_ARABIC_NOUN, "$2 $1");
+}
 
 function buildBriefedInput(cleaned: Record<string, string>): string {
   const lines: string[] = [];
@@ -418,7 +445,12 @@ Return ONLY the JSON object: { "<key>": "<${localeName} translation>", ... }`;
     const out: Record<string, string> = {};
     for (const key of Object.keys(cleaned)) {
       const v = parsed[key];
-      if (typeof v === "string") out[key] = v;
+      if (typeof v === "string") {
+        // For Arabic results, post-process count phrases so the digit lands at
+        // the END of the logical string (it then appears on the right in the
+        // LTR-rendered PDF, which is where an RTL reader encounters it first).
+        out[key] = targetLocale === "ar" ? flipArabicCountPhrases(v) : v;
+      }
     }
     return { result: out };
   } catch (err) {
