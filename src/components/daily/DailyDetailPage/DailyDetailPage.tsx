@@ -268,7 +268,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
 
         {/* Right column — sticky booking card */}
         <aside>
-          <div className="sticky top-24">
+          <div className="lg:sticky lg:top-24">
             <Reveal>
               <div className="bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] p-6">
                 <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted mb-1">
@@ -297,7 +297,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
                       Adults
                     </p>
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
@@ -311,7 +311,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                           className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
                         >+</button>
                       </div>
-                      <span className="font-mono text-[11px] text-muted">
+                      <span className="font-mono text-[11px] text-muted ml-auto text-right">
                         {formatPrice(pkg.price, currency, rates, locale)} ea.
                       </span>
                     </div>
@@ -320,7 +320,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
                       Children <span className="text-ochre normal-case tracking-normal">· {Math.max(0, Math.round((1 - childPrice / pkg.price) * 100))}% off</span>
                     </p>
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
@@ -334,7 +334,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                           className="w-8 h-8 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-lg leading-none"
                         >+</button>
                       </div>
-                      <span className="font-mono text-[11px] text-muted">
+                      <span className="font-mono text-[11px] text-muted ml-auto text-right">
                         {formatPrice(childPrice, currency, rates, locale)} ea.
                       </span>
                     </div>

@@ -118,7 +118,7 @@ export function SiteHeader({
       <header
         className={`fixed top-0 left-0 right-0 transition-all duration-300 ${menuOpen ? "z-70" : "z-50"} ${
           transparent
-            ? "bg-transparent border-transparent"
+            ? "bg-gradient-to-b from-navy/55 via-navy/25 to-transparent border-transparent"
             : "bg-cream/95 backdrop-blur-sm border-b border-rule"
         }`}
       >
@@ -224,7 +224,7 @@ export function SiteHeader({
 
       {/* Mobile overlay — slides in from right, sits below the header bar */}
       <div
-        className={`md:hidden fixed top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+        className={`md:hidden fixed top-16 md:top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"

@@ -67,7 +67,7 @@ export function MultiPersonPrices({ pricing }: MultiPersonPricesProps) {
             {t("heading")}
           </p>
         </div>
-        <div className={`grid gap-px bg-rule ${slots.length === 3 ? "grid-cols-3" : slots.length === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
+        <div className={`grid gap-px bg-rule ${slots.length === 3 ? "grid-cols-1 sm:grid-cols-3" : slots.length === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
           {slots.map((slot) => (
             <div key={slot.key} className="bg-cream flex flex-col items-center py-8 px-4 gap-4">
               <div className="w-10 h-10 text-ochre">{slot.icon}</div>
