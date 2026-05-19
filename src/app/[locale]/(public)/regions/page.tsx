@@ -73,7 +73,7 @@ export default async function RegionsIndexPage({ params }: { params: Promise<{ l
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
-            src="/homepage.png"
+            src="/hotel-flat-design.webp"
             alt="Hotels hero"
             fill
             className="object-cover object-center"
@@ -82,7 +82,7 @@ export default async function RegionsIndexPage({ params }: { params: Promise<{ l
         </div>
         <div className="absolute inset-0 bg-black/40" />
 
-        <div className="relative z-10 max-w-[1320px] mx-auto w-full">
+        <div className="relative z-10 w-full">
           <Reveal>
             <Kicker light>{kicker}</Kicker>
           </Reveal>

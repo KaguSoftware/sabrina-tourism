@@ -68,7 +68,12 @@
       "Bash(grep -E \"currency|CurrencyS|CurrencyProvider|format\\\\.ts|api[\\\\\\\\/]rates\")",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\" -Recurse -Filter \"page.tsx\")",
       "Bash(Select-Object -First 5)",
-      "mcp__claude_ai_Supabase__list_projects"
+      "mcp__claude_ai_Supabase__list_projects",
+      "Bash(cp /Users/saitaydin/Pictures/turizm/MaidensTower.png /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/public/MaidensTower.png)",
+      "Bash(cp /Users/saitaydin/Pictures/turizm/hotel_bosphorus_hero_300kb.webp /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/public/hotel-hero.webp)",
+      "Bash(ls /var/folders/*/T/ 2>/dev/null | head -5; find /var/folders -name \"*.png\" -newer /Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/public/hotel-hero.webp 2>/dev/null | head -5)",
+      "Read(//private/var/folders/**)",
+      "Bash(python3 -c \"from PIL import Image; img=Image.open\\('/Users/saitaydin/Pictures/turizm/hotel_flat_design.webp'\\); print\\(img.size\\)\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
