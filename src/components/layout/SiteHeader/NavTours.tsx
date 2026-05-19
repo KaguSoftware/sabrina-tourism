@@ -138,7 +138,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
                 {/* Body */}
                 <div className="mt-4 flex-1">
-                  <p className="relative inline-block font-display font-normal text-[18px] leading-[1.15] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                  <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
                     {t(item.labelKey)}
                   </p>
                   <p className="mt-2.5 text-[12.5px] leading-[1.55] text-ink-soft pr-5">

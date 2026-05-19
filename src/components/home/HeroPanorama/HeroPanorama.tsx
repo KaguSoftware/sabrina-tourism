@@ -19,7 +19,7 @@ export function HeroPanorama({
   ctaChauffeur,
 }: HeroPanoramaProps) {
   return (
-    <section className="relative aspect-[1716/917] max-h-screen w-full flex items-center pt-20 pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
+    <section className="relative aspect-[1716/917] max-h-screen w-full flex items-center pt-[clamp(120px,18vw,200px)] pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-[-1]">
         <Image
@@ -37,21 +37,16 @@ export function HeroPanorama({
       </div>
 
       {/* Content */}
-      <div className="relative z-5 inline-block max-w-230">
+      <div className="relative z-5 inline-block max-w-160">
         <div
-          className="absolute -inset-x-6 -inset-y-8 bg-black/20 rounded-2xl"
+          className="absolute -inset-x-5 -inset-y-6 bg-black/20 rounded-xl"
           aria-hidden="true"
         />
-        <Reveal>
-          <span className="inline-block font-mono text-[11px] tracking-[0.3em] uppercase text-teal-deep pb-2 border-b border-teal-deep mb-7">
-            {kicker}
-          </span>
-        </Reveal>
         <Reveal delay={140}>
-          <h1 className="font-display font-semibold text-[clamp(72px,13vw,180px)] leading-[0.9] tracking-[-0.04em] text-navy mb-7">
+          <h1 className="font-display font-semibold text-[clamp(48px,7vw,96px)] leading-[0.9] tracking-[-0.04em] text-navy mb-7">
             {headlineTop}
             <br />
-            <em className="text-ochre font-bold not-italic text-[clamp(64px,12vw,172px)]">
+            <em className="text-ochre font-bold not-italic text-[clamp(44px,6.5vw,88px)]">
               {headlineEm}
             </em>
           </h1>

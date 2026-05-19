@@ -130,10 +130,10 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                       </div>
 
                       <div>
-                        <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted group-hover:text-ochre transition-colors duration-300">
+                        <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
                           {t(`regions.${regionKey}`)}
                         </p>
-                        <p className="relative inline-block mt-1.5 font-display font-normal text-[15px] leading-[1.2] tracking-tight text-ink group-hover:text-ochre transition-colors duration-300 truncate after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                        <p className="mt-1.5 font-display font-normal text-[13px] leading-[1.2] tracking-tight text-ink-soft truncate">
                           {first.name}
                         </p>
                         {remaining > 0 && (
@@ -147,7 +147,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                     </>
                   ) : (
                     <div>
-                      <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted">
+                      <p className="font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy">
                         {t(`regions.${regionKey}`)}
                       </p>
                     </div>
