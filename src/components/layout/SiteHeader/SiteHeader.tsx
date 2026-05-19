@@ -141,7 +141,6 @@ export function SiteHeader({
                 transparent ? "text-cream/80" : "text-ink/70"
               }`}
             >
-              Tours, Transfers, Hotel
             </span>
           </Link>
 
