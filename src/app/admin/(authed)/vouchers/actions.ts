@@ -16,6 +16,10 @@ export interface PackageOption {
 
 export interface PackageDefaultsTier {
   name: string;
+  hotelName: string;
+  // Compact one-line "perks" tag built from tier highlights, meals, group size,
+  // etc. Suitable for use as the voucher's item descriptor.
+  perksShort: string;
   unitPrice: number | null;
 }
 
@@ -28,6 +32,7 @@ export interface PackageDefaults {
   packageName: string;
   region: string;
   duration: string;
+  hotelName: string;
   currency: string;
   defaultUnitPrice: number | null;
   tiers: PackageDefaultsTier[];
@@ -47,6 +52,8 @@ export async function fetchPackageDefaults(
 
   const tiers: PackageDefaultsTier[] = (pkg.tiers ?? []).map((t) => ({
     name: t.name,
+    hotelName: t.hotel?.name ?? t.accommodation ?? "",
+    perksShort: buildTierPerks(t),
     unitPrice: pickTierUnitPrice(pkg.pricing),
   }));
 
@@ -61,17 +68,39 @@ export async function fetchPackageDefaults(
     .map((d) => ({ startDate: d.startDate, endDate: d.endDate }))
     .sort((a, b) => a.startDate.localeCompare(b.startDate));
 
+  // Default hotel = first tier's hotel; falls back to package-level accommodation
+  // name. Admin can re-pick a tier on the form to swap this.
+  const hotelName = tiers[0]?.hotelName || pkg.accommodation?.name || "";
+
   return {
     defaults: {
       packageName: pkg.name,
       region: pkg.region ?? "",
       duration: pkg.duration ?? "",
+      hotelName,
       currency: (pkg.currency || "EUR").toUpperCase(),
       defaultUnitPrice,
       tiers,
       dates,
     },
   };
+}
+
+// Compact tier descriptor — joins the most informative bits with " · ", trimmed
+// to roughly the same shape as the voucher's existing itemDescriptor copy.
+function buildTierPerks(t: {
+  groupSize?: string;
+  mealsIncluded?: string;
+  vehicleClass?: string;
+  highlights?: string[];
+}): string {
+  const parts: string[] = [];
+  if (t.mealsIncluded?.trim()) parts.push(t.mealsIncluded.trim());
+  if (t.groupSize?.trim()) parts.push(t.groupSize.trim());
+  if (t.vehicleClass?.trim()) parts.push(t.vehicleClass.trim());
+  const firstHighlight = t.highlights?.[0]?.trim();
+  if (firstHighlight && parts.length < 3) parts.push(firstHighlight);
+  return parts.slice(0, 3).join(" · ");
 }
 
 function pickTierUnitPrice(pricing: { twoPeople: number | null; onePerson: number | null } | null): number | null {
@@ -269,7 +298,12 @@ const GUEST_ROLE_BRIEF =
 const LOCALE_GUIDANCE: Record<Locale, string> = {
   en: "Polished English with a warm, concierge tone.",
   ar:
-    "Modern Standard Arabic (الفصحى) at a formal level — the register used on official documents, luxury hotel correspondence, and high-end concierge notes. Use the polite plural form (أنتم / حضرتكم) when addressing the guest. Use established Arabic place names: إسطنبول for Istanbul, تركيا for Turkey, القاهرة for Cairo, etc. Do not transliterate. Use Arabic-script numerals only if the rest of the document does — otherwise keep Western numerals as-is. Use Arabic punctuation marks where natural (، ؟ ؛).",
+    "Modern Standard Arabic (الفصحى) at a formal level — the register used on official documents, luxury hotel correspondence, and high-end concierge notes. Use the polite plural form (أنتم / حضرتكم) when addressing the guest. Use established Arabic place names: إسطنبول for Istanbul, تركيا for Turkey, القاهرة for Cairo. Do not transliterate. Keep Western digits (5, 6, 12, etc.) — do NOT convert to Arabic-Indic numerals. Use Arabic punctuation where natural (، ؛). " +
+    // Produce NATURAL Arabic in standard logical word/letter order. Our PDF
+    // renderer handles glyph reshaping AND visual RTL reordering downstream —
+    // your job here is canonical, idiomatic Arabic. Do not pre-reverse, do not
+    // inject RTL marks, do not rearrange to match LTR conventions.
+    "Write Arabic in the NORMAL logical order a native speaker would type. Count phrases follow standard Arabic grammar: digit then noun ('5 ليال', '6 أيام', '1 يوم'). Sentences in normal subject-verb-object flow. The renderer takes care of the right-to-left display.",
   tr:
     "Native Turkish at a formal, polished register — the way a high-end Istanbul boutique tour operator would write to a paying guest. Use 'siz' (formal you). Use authentic Turkish idiom; do NOT produce English-sounding translations. Tourism-industry vocabulary preferred (rezervasyon, transfer, konaklama).",
   es:
@@ -342,7 +376,8 @@ ${guidance}
 3. Preserve formatting: middle dots (·), em-dashes (—), line breaks, digits, currency symbols.
 4. Match length to the original — voucher labels are tight; don't pad with filler.
 5. Each field has a "brief" telling you what it's for and what tone/length to use. Read it before translating.
-6. CRITICAL: Never put a double-quote character (") inside any string value — use a single quote (') or rephrase. The output must be valid JSON.
+6. For RTL languages (Arabic, Hebrew): output in NATURAL logical word order — exactly as a native speaker would write it. Do NOT pre-reverse words for visual layout. Do NOT inject RTL-mark characters. The PDF renderer handles letter reshaping and visual placement; your job is canonical, idiomatic text only.
+7. CRITICAL: Never put a double-quote character (") inside any string value — use a single quote (') or rephrase. The output must be valid JSON.
 
 ────── OUTPUT FORMAT ──────
 Return a single JSON object whose keys exactly match the input keys, and whose values are the ${localeName} translations. No commentary, no markdown fences, no extra keys.`;

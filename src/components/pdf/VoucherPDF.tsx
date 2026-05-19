@@ -195,6 +195,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
         >
           {/* ===== HEADER ===== */}
           <View
+            wrap={false}
             style={{
               flexDirection: "row",
               alignItems: "flex-start",
@@ -226,6 +227,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
 
           {/* ===== META RIBBON (navy) ===== */}
           <View
+            wrap={false}
             style={{
               marginTop: mm(6),
               flexDirection: "row",
@@ -243,6 +245,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
 
           {/* ===== HERO ===== */}
           <View
+            wrap={false}
             style={{
               flexDirection: "row",
               alignItems: "flex-end",
@@ -267,6 +270,23 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
               >
                 {T(payload.packageName)}
               </Text>
+              {/* Hotel line — small gold italic flourish under the package name.
+                  Skip for hotel-type vouchers (packageName already IS the hotel).
+                  No "Hotel:" prefix — the autofill value sometimes already starts
+                  with the word "Hotel" / "الفندق", which would double up. */}
+              {payload.hotelName && payload.voucherType !== "hotel" && (
+                <Text
+                  style={{
+                    fontFamily: fonts.display,
+                    fontSize: 11,
+                    fontStyle: locale === "ar" ? "normal" : "italic",
+                    color: COLOR.gold,
+                    marginTop: mm(1.5),
+                  }}
+                >
+                  {T(payload.hotelName)}
+                </Text>
+              )}
             </View>
             <View style={{ flexDirection: "column", alignItems: "flex-end", gap: mm(1) }}>
               <Text style={{ fontFamily: fonts.display, fontSize: 14, color: COLOR.ink, fontStyle: locale === "ar" ? "normal" : "italic" }}>
@@ -283,6 +303,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
           <GuestsGrid guests={payload.guests} L={L} fonts={fonts} T={T} />
 
           {/* ===== SECTION 02 · STAY (variant by voucherType) ===== */}
+          <View wrap={false}>
           <SectionHead num="02" name={T(staySectionLabel(payload.voucherType, L))} fonts={fonts} />
           <View
             style={{
@@ -360,8 +381,10 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
               </>
             )}
           </View>
+          </View>
 
           {/* ===== SECTION 03 · PRICE ===== */}
+          <View wrap={false}>
           <SectionHead num="03" name={T(L.sectionPrice)} fonts={fonts} />
           <PriceTable
             L={L}
@@ -375,9 +398,11 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
             currency={payload.currency}
             symbol={symbol}
           />
+          </View>
 
           {/* ===== PAYMENT NOTE ===== */}
           <View
+            wrap={false}
             style={{
               marginTop: mm(4),
               paddingVertical: mm(3.5),
@@ -398,7 +423,11 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
                 textAlign: "center",
               }}
             >
-              <Text style={{ color: COLOR.gold }}>✶ </Text>
+              {/* ornamental ✶ was removed — it's U+2736 (Six-Pointed Black Star)
+                  which neither Fraunces nor IBM Plex Sans Arabic carry as a
+                  glyph; both fonts fell back to a substitute that read as "6"
+                  or "." inside Arabic vouchers. The gold border band and the
+                  italic body already give the note enough visual weight. */}
               {T(payload.paymentNote)}
             </Text>
           </View>
@@ -408,6 +437,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
 
           {/* ===== FOOTER ===== */}
           <View
+            wrap={false}
             style={{
               marginTop: mm(2),
               paddingVertical: mm(3),
@@ -587,6 +617,7 @@ function GuestsGrid({
         return (
           <View
             key={i}
+            wrap={false}
             style={{
               width: mm(86),
               borderWidth: 0.5,

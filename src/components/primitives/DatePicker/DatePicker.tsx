@@ -25,6 +25,7 @@ export function DatePicker({
   value,
   onChange,
   min,
+  max,
   placeholder = "Select a date",
   className,
   error,
@@ -32,12 +33,17 @@ export function DatePicker({
   value: string;
   onChange: (v: string) => void;
   min?: string;
+  max?: string;
   placeholder?: string;
   className?: string;
   error?: boolean;
 }) {
   const today = new Date();
-  const initial = parseYMD(value) ?? today;
+  // Picker opens at value's month if set; otherwise at max's month if provided
+  // (so a "DOB max = 18 years ago" picker doesn't open in the current year and
+  // force the admin to page back through hundreds of months); otherwise today.
+  const initial =
+    parseYMD(value) ?? parseYMD(max ?? "") ?? today;
   const [open, setOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [cursor, setCursor] = useState(new Date(initial.getFullYear(), initial.getMonth(), 1));
@@ -86,6 +92,7 @@ export function DatePicker({
   }
 
   const minDate = parseYMD(min ?? "") ?? null;
+  const maxDate = parseYMD(max ?? "") ?? null;
 
   function daysInMonth(y: number, m: number) { return new Date(y, m + 1, 0).getDate(); }
   function firstWeekday(y: number, m: number) { return (new Date(y, m, 1).getDay() + 6) % 7; }
@@ -101,8 +108,10 @@ export function DatePicker({
   }
 
   function isDisabled(day: number) {
-    if (!minDate) return false;
-    return new Date(year, month, day) < minDate;
+    const d = new Date(year, month, day);
+    if (minDate && d < minDate) return true;
+    if (maxDate && d > maxDate) return true;
+    return false;
   }
 
   function isSelected(day: number) {
@@ -125,14 +134,24 @@ export function DatePicker({
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999 }}
       className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] p-4 w-72 select-none ${isClosing ? "picker-exit" : "picker-enter"}`}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <button type="button" onClick={() => setCursor(new Date(year, month - 1, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
+      {/* Header — year-prev, month-prev, label, month-next, year-next */}
+      <div className="flex items-center justify-between mb-3 gap-1">
+        <button type="button" aria-label="Previous year" onClick={() => setCursor(new Date(year - 1, month, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M6 1L1 6l5 5M11 1L6 6l5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <button type="button" aria-label="Previous month" onClick={() => setCursor(new Date(year, month - 1, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
           <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1L1 6l5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </button>
-        <span className="font-display text-[15px] tracking-tight text-ink">{MONTHS[month]} {year}</span>
-        <button type="button" onClick={() => setCursor(new Date(year, month + 1, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
+        <span className="font-display text-[15px] tracking-tight text-ink flex-1 text-center">{MONTHS[month]} {year}</span>
+        <button type="button" aria-label="Next month" onClick={() => setCursor(new Date(year, month + 1, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
           <svg width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+        <button type="button" aria-label="Next year" onClick={() => setCursor(new Date(year + 1, month, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 1l5 5-5 5M6 1l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
       </div>
 

@@ -31,6 +31,7 @@ import {
   translateVoucherFields,
   type PackageOption,
   type PackageDateOption,
+  type PackageDefaultsTier,
   type VehicleOption,
 } from "./actions";
 
@@ -53,6 +54,16 @@ const TAB_META: Array<{ type: VoucherType; label: string; sublabel: string }> = 
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
+// Latest DOB allowed = today minus 18 years. Used by the DOB picker as both
+// `max` (disables more recent days) and as the picker's initial cursor month
+// so the admin doesn't have to page back ~216 months from the current date.
+function maxDobIso(): string {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 18);
+  return d.toISOString().slice(0, 10);
+}
+const MAX_DOB = maxDobIso();
+
 function nightsBetween(startIso: string, endIso: string): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startIso) || !/^\d{4}-\d{2}-\d{2}$/.test(endIso)) return 0;
   const s = new Date(startIso + "T00:00:00");
@@ -73,6 +84,7 @@ const DEFAULT_VALUES: VoucherPayload = {
   packageId: "",
   packageName: "",
   region: "",
+  hotelName: "",
   nightsDays: "",
   guests: [{ role: "Lead Guest", name: "", dateOfBirth: "", passport: "" }],
   checkIn: "",
@@ -127,6 +139,8 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
   const [downloading, setDownloading] = useState(false);
   const [availableDates, setAvailableDates] = useState<PackageDateOption[]>([]);
   const [selectedDateIdx, setSelectedDateIdx] = useState<string>("");
+  const [availableTiers, setAvailableTiers] = useState<PackageDefaultsTier[]>([]);
+  const [selectedTierIdx, setSelectedTierIdx] = useState<string>("0");
   // Epoch counter — bumped on every tab switch or picker change. Async autofill
   // callbacks capture the epoch they started under and bail if it's stale, so a
   // late-arriving response can't overwrite fields the admin already moved on from.
@@ -149,6 +163,7 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
     setValue("packageId", "");
     setValue("packageName", "");
     setValue("region", "");
+    setValue("hotelName", "");
     setValue("nightsDays", "");
     setValue("durationLabel", "");
     setValue("checkIn", "");
@@ -168,6 +183,8 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
     setValue("itemDescriptor", DESCRIPTOR_BY_TYPE[next]);
     setAvailableDates([]);
     setSelectedDateIdx("");
+    setAvailableTiers([]);
+    setSelectedTierIdx("0");
   }
 
   function onGroupPackageChange(packageId: string) {
@@ -176,6 +193,8 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
     setValue("packageId", packageId);
     setAvailableDates([]);
     setSelectedDateIdx("");
+    setAvailableTiers([]);
+    setSelectedTierIdx("0");
     if (!packageId) return;
     const pkg = packages.find((p) => p.id === packageId);
     if (!pkg) return;
@@ -189,6 +208,7 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
       const d = res.defaults;
       setValue("packageName", d.packageName);
       setValue("region", d.region);
+      if (d.hotelName) setValue("hotelName", d.hotelName);
       if (d.duration) {
         setValue("nightsDays", d.duration);
         setValue("durationLabel", d.duration);
@@ -196,8 +216,25 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
       if (isCurrency(d.currency)) setValue("currency", d.currency);
       if (d.defaultUnitPrice != null) setValue("unitPrice", d.defaultUnitPrice);
       setAvailableDates(d.dates);
+      setAvailableTiers(d.tiers);
+      // Default-select the first tier; if it carries perk info, override the
+      // tab-default descriptor with the tier's perksShort.
+      setSelectedTierIdx("0");
+      const firstTierPerks = d.tiers?.[0]?.perksShort;
+      if (firstTierPerks) setValue("itemDescriptor", firstTierPerks);
       toast.success(`Filled defaults from "${d.packageName}".`);
     });
+  }
+
+  function onTierChange(idxStr: string) {
+    setSelectedTierIdx(idxStr);
+    const tier = availableTiers[Number(idxStr)];
+    if (!tier) return;
+    // The chosen tier drives hotel + perks descriptor. Unit price is left as-is
+    // (premade packages don't have per-tier prices today; admin sets manually).
+    if (tier.hotelName) setValue("hotelName", tier.hotelName);
+    if (tier.perksShort) setValue("itemDescriptor", tier.perksShort);
+    if (tier.unitPrice != null) setValue("unitPrice", tier.unitPrice);
   }
 
   function onDailyPackageChange(packageId: string) {
@@ -249,6 +286,7 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
       const d = res.defaults;
       setValue("packageName", d.packageName);
       setValue("region", d.region);
+      setValue("hotelName", d.packageName);
       if (d.checkInTime) setValue("checkInTime", d.checkInTime);
       if (d.checkOutTime) setValue("checkOutTime", d.checkOutTime);
       toast.success(`Filled defaults from "${d.packageName}".`);
@@ -444,16 +482,31 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
 
           {voucherType === "group" && (
             packages.length > 0 ? (
-              <FormField label="Pick a group package" hint="Auto-fills name, region, duration, currency, unit price. All fields stay editable.">
-                <Select value={watch("packageId") ?? ""} onChange={(e) => onGroupPackageChange(e.target.value)}>
-                  <option value="">— select a package —</option>
-                  {packages.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}{p.isPublished ? "" : " (draft)"}
-                    </option>
-                  ))}
-                </Select>
-              </FormField>
+              <>
+                <FormField label="Pick a group package" hint="Auto-fills name, region, duration, currency, unit price. All fields stay editable.">
+                  <Select value={watch("packageId") ?? ""} onChange={(e) => onGroupPackageChange(e.target.value)}>
+                    <option value="">— select a package —</option>
+                    {packages.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}{p.isPublished ? "" : " (draft)"}
+                      </option>
+                    ))}
+                  </Select>
+                </FormField>
+                {availableTiers.length > 1 && (
+                  <FormField label="Tier" hint="Switches the hotel and the item descriptor (perks) on the voucher.">
+                    <Select value={selectedTierIdx} onChange={(e) => onTierChange(e.target.value)}>
+                      {availableTiers.map((t, idx) => (
+                        <option key={`${t.name}-${idx}`} value={String(idx)}>
+                          {t.name}
+                          {t.hotelName ? ` — ${t.hotelName}` : ""}
+                          {t.perksShort ? ` · ${t.perksShort}` : ""}
+                        </option>
+                      ))}
+                    </Select>
+                  </FormField>
+                )}
+              </>
             ) : (
               <p className="font-sans text-[14px] text-muted">No premade packages found — fill the fields manually below.</p>
             )
@@ -544,6 +597,11 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
           <FormField label="Region" required error={errors.region?.message}>
             <Input placeholder="Istanbul · Marmara" {...register("region")} />
           </FormField>
+          {voucherType !== "transfer" && voucherType !== "hotel" && (
+            <FormField label="Hotel" hint="Where guests are staying. Shown on the voucher under the package name.">
+              <Input placeholder="Park Hyatt Istanbul" {...register("hotelName")} />
+            </FormField>
+          )}
           <FormField label={isDaily ? "Tour length label" : isTransfer ? "One-line tag" : "Nights / days label"}>
             <Input
               placeholder={isDaily ? "1 day · 8 hours" : isTransfer ? "One-way private transfer" : "5 nights · 6 days"}
@@ -592,12 +650,12 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
                 <FormField label="Full name" required error={errors.guests?.[i]?.name?.message}>
                   <Input placeholder="Cherif Fkih Romdhane" {...register(`guests.${i}.name`)} />
                 </FormField>
-                <FormField label="Date of birth" required error={errors.guests?.[i]?.dateOfBirth?.message}>
+                <FormField label="Date of birth (18+)" required error={errors.guests?.[i]?.dateOfBirth?.message}>
                   <Controller
                     control={control}
                     name={`guests.${i}.dateOfBirth`}
                     render={({ field: f }) => (
-                      <DatePicker value={f.value} onChange={f.onChange} error={!!errors.guests?.[i]?.dateOfBirth} />
+                      <DatePicker value={f.value} onChange={f.onChange} max={MAX_DOB} error={!!errors.guests?.[i]?.dateOfBirth} />
                     )}
                   />
                 </FormField>
