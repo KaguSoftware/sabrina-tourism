@@ -69,7 +69,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           .map((id, i) => {
             const destination = DESTINATIONS.find((d) => d.id === id);
             const days = (state.destinationDays ?? {})[id];
-            return `${ordinal(i + 1)} ${destination?.label ?? id}${
+            return `${ordinal(i + 1, locale)} ${destination?.label ?? id}${
               days ? `: ${days} day${days === "1" ? "" : "s"}` : ""
             }`;
           })

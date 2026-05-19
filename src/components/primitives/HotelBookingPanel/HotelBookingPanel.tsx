@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import type { RoomType } from "@/lib/regions/hotels";
+import type { TransferDetails } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
 
 function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -21,9 +22,12 @@ interface HotelBookingPanelProps {
   selectedRoomIndex: number;
   onRoomSelect: (i: number) => void;
   waPhone?: string;
+  airportTransfer: boolean;
+  onAirportTransferChange: (v: boolean) => void;
+  transferDetails?: TransferDetails | null;
 }
 
-export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIndex, onRoomSelect, waPhone }: HotelBookingPanelProps) {
+export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIndex, onRoomSelect, waPhone, airportTransfer, onAirportTransferChange, transferDetails }: HotelBookingPanelProps) {
   const today = toYMD(new Date());
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -82,6 +86,26 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
   const hasError = !!guestError || !!childrenError;
   const canEnquire = checkIn && checkOut && !hasError && !isNaN(guestsNum) && guestsNum >= 1;
 
+  const transferLine = (() => {
+    if (!transferDetails) return airportTransfer ? "Airport transfer requested: Yes." : "";
+    const dir = transferDetails.direction === "pickup" ? "Airport → Hotel" : transferDetails.direction === "dropoff" ? "Hotel → Airport" : "Both ways";
+    const parts = [
+      `Airport transfer: ${transferDetails.airport} (${dir}).`,
+      `Vehicle: ${transferDetails.vehicleSummary}.`,
+      `Transfer date: ${transferDetails.date}${transferDetails.time ? ` at ${transferDetails.time}` : ""}.`,
+      transferDetails.flightNumber ? `Flight: ${transferDetails.flightNumber}.` : "",
+      transferDetails.direction === "both" && transferDetails.returnDate
+        ? `Return: ${transferDetails.returnDate}${transferDetails.returnTime ? ` at ${transferDetails.returnTime}` : ""}${transferDetails.returnFlightNumber ? `, flight ${transferDetails.returnFlightNumber}` : ""}.`
+        : "",
+      transferDetails.passengers !== "1" ? `Transfer passengers: ${transferDetails.passengers}.` : "",
+      transferDetails.luggage ? `Luggage bags: ${transferDetails.luggage}.` : "",
+      transferDetails.childSeat ? "Child seat requested." : "",
+      transferDetails.meetAndGreet ? "Meet & greet requested." : "",
+      transferDetails.guideNeeded ? `Guide requested: ${transferDetails.guideType ?? "assistant"}, ${transferDetails.guideLanguage ?? "English"}.` : "",
+    ];
+    return parts.filter(Boolean).join(" ");
+  })();
+
   const waMessage = [
     `Hi, I'd like to enquire about ${hotelName} in ${region}.`,
     selectedRoom ? `Room type: ${selectedRoom.name} (up to ${selectedRoom.capacity} guests per room).` : "",
@@ -90,6 +114,7 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
     checkIn && checkOut
       ? `Dates: ${formatShort(checkIn)} → ${formatShort(checkOut)} (${nights} night${nights !== 1 ? "s" : ""}).`
       : "",
+    transferLine,
   ].filter(Boolean).join(" ");
 
   const waHref = `https://wa.me/${waPhone ?? ""}?text=${encodeURIComponent(waMessage)}`;
@@ -100,6 +125,32 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
     <div className="border border-rule">
       {/* Date picker — mandatory first step */}
       <div className="border-b border-rule p-5">
+        <label className="flex items-center gap-2.5 cursor-pointer mb-4 select-none">
+          <input
+            type="checkbox"
+            checked={airportTransfer}
+            onChange={(e) => onAirportTransferChange(e.target.checked)}
+            className="sr-only peer"
+          />
+          <span className="w-4 h-4 shrink-0 border border-rule bg-cream-deep peer-checked:bg-ochre peer-checked:border-ochre transition-colors duration-150 flex items-center justify-center">
+            {airportTransfer && (
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                <path d="M1 4L3.5 6.5L9 1" stroke="#0b1a2e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+          </span>
+          <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink">
+            Airport Transfer is requested
+          </span>
+          {transferDetails && (
+            <span className="ml-auto font-mono text-[9px] tracking-[0.12em] uppercase text-ochre bg-ochre/10 px-1.5 py-0.5">
+              Saved
+            </span>
+          )}
+        </label>
+
+        <div className="border-b border-rule -mx-5 mb-4" />
+
         <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-1">
           Dates <span className="text-terracotta">*</span>
         </p>
@@ -115,6 +166,9 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
           min={today}
           placeholder="Select check-in → check-out"
         />
+        <p className={`mt-2 font-mono text-[9px] tracking-[0.14em] uppercase leading-snug ${nights >= 6 ? "text-ochre" : "text-muted"}`}>
+          {nights >= 6 ? "✓ 6+ nights — airport transfer is free!" : <>Book 6+ nights and get <span className="text-ochre">free</span> airport transfer</>}
+        </p>
       </div>
 
       {/* Room type selector */}
@@ -251,6 +305,12 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
             <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
             <p className="font-sans text-[12px] text-ink-soft leading-snug">{waMessage}</p>
           </div>
+        )}
+
+        {airportTransfer && nights > 0 && nights < 6 && (
+          <p className="mb-3 font-mono text-[10px] tracking-[0.14em] uppercase text-muted leading-snug">
+            Add <span className="text-ochre">{6 - nights} more day{6 - nights !== 1 ? "s" : ""}</span> to get a <span className="text-ochre">free</span> airport transfer!
+          </p>
         )}
 
         <div className="flex flex-col gap-2">

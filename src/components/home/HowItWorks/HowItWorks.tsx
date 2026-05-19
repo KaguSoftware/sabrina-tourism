@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
@@ -241,6 +242,7 @@ interface HowItWorksProps {
 }
 
 export function HowItWorks({ sectionHeading, steps, ctaLabel }: HowItWorksProps) {
+    const locale = useLocale();
     return (
         <section className="relative z-10 py-[clamp(60px,8vw,100px)] px-[clamp(20px,4vw,56px)] overflow-hidden">
             {/* Section background */}
@@ -341,7 +343,7 @@ export function HowItWorks({ sectionHeading, steps, ctaLabel }: HowItWorksProps)
 
                 <Reveal delay={320} className="mt-14">
                     <GoldButton
-                        href={genericMessage()}
+                        href={genericMessage(locale)}
                         variant="solid"
                         target="_blank"
                         rel="noopener noreferrer"

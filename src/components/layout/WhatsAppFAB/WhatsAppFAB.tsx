@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 
 export function WhatsAppFAB() {
   const t = useTranslations("nav");
+  const locale = useLocale();
   const [bodyLocked, setBodyLocked] = useState(false);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ export function WhatsAppFAB() {
 
   return (
     <a
-      href={genericMessage()}
+      href={genericMessage(locale)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("whatsapp")}

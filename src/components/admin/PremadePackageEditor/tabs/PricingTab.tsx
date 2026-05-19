@@ -19,23 +19,15 @@ export function PricingTab() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField label={tl("oneAdult")} hint={th("soloTraveller")}>
-          <Input type="number" min={0} step="0.01" {...register("price_1_person", numberOpts)} placeholder="e.g. 1800" />
-        </FormField>
-
-        <FormField label={tl("twoAdults")} hint={th("doubleOccupancy")}>
+        <FormField label="In double room (per person)" hint="Per-person rate when two share a room.">
           <Input type="number" min={0} step="0.01" {...register("price_2_people", numberOpts)} placeholder="e.g. 1500" />
         </FormField>
 
-        <FormField label={tl("babyInfant")} hint={th("babySupp")}>
-          <Input type="number" min={0} step="0.01" {...register("price_baby", numberOpts)} placeholder="e.g. 0" />
-        </FormField>
-
-        <FormField label="Single-room supplement" hint="Extra charge added per person for single-room occupancy.">
+        <FormField label="Single-room supplement" hint='Added on top of the double-room rate; shown as "+ amount" under "In single room".'>
           <Input type="number" min={0} step="0.01" {...register("price_single_room_supplement", numberOpts)} placeholder="e.g. 300" />
         </FormField>
 
-        <FormField label="Per-child price" hint="Shown next to each child age in the reservation form.">
+        <FormField label="Per-child price" hint="Per-child rate shown in the pricing panel.">
           <Input type="number" min={0} step="0.01" {...register("price_per_child", numberOpts)} placeholder="e.g. 400" />
         </FormField>
       </div>

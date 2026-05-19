@@ -150,7 +150,7 @@ export function SiteHeader({
           menuOpen ? "z-70" : "z-50"
         } ${
           transparent
-            ? "bg-transparent border-transparent"
+            ? "bg-gradient-to-b from-navy/55 via-navy/25 to-transparent border-transparent"
             : "bg-cream/95 backdrop-blur-sm border-b border-rule"
         }`}
       >
@@ -218,7 +218,7 @@ export function SiteHeader({
             <LanguageSwitcher transparent={transparent} />
             <CurrencySwitcher transparent={transparent} />
             <a
-              href={genericMessage()}
+              href={genericMessage(locale)}
               target="_blank"
               rel="noopener noreferrer"
               style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
@@ -272,7 +272,7 @@ export function SiteHeader({
 
       {/* Mobile overlay — slides in from the end edge (right in LTR, left in RTL) */}
       <div
-        className={`md:hidden fixed top-21.5 bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+        className={`md:hidden fixed top-16 md:top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
           menuOpen
             ? "translate-x-0"
             : "ltr:translate-x-full rtl:-translate-x-full"
@@ -379,7 +379,7 @@ export function SiteHeader({
         </nav>
         <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
           <a
-            href={genericMessage()}
+            href={genericMessage(locale)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}

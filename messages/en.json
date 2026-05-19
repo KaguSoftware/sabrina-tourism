@@ -9,13 +9,13 @@
     "allItineraries": "All Itineraries",
     "customDealPackages": "Custom Deal Packages",
     "fixedDatePackages": "Group Tours",
-    "dailyPackages": "Daily Packages",
+    "dailyPackages": "Daily Tours",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "homeAriaLabel": "Sabrina Turizm — home",
     "primaryNavigation": "Primary navigation",
     "locationCity": "Istanbul",
-    "privatePackages": "Private Packages",
+    "privatePackages": "Private Tours",
     "privatePackagesDescription": "Tailor-made itineraries built around your dates, group size, and interests.",
     "groupPackages": "Group Packages",
     "groupPackagesDescription": "Scheduled departures from a set date to a set date — join a group or book all seats.",
@@ -226,6 +226,7 @@
       "back": "← Back",
       "next": "Next →",
       "sub": "Select your preferred hotel for each area in your itinerary. Our concierge team will confirm availability and arrange the booking.",
+      "freeTransferNote": "Book 6+ nights and get free airport transfer",
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
@@ -631,10 +632,10 @@
   "pricingBlock": {
     "kicker": "Group rates",
     "heading": "Price per person",
-    "onePerson": "Single",
-    "twoPeople": "2 people",
-    "singleRoomSupplement": "+ {amount} single-room supplement",
-    "baby": "Baby"
+    "doubleRoom": "In double room",
+    "singleRoom": "In single room",
+    "child": "Child",
+    "babiesFree": "Babies under 2 travel free."
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -687,7 +688,9 @@
     "date": "Date",
     "region": "Region",
     "all": "All",
-    "anyDate": "Any date"
+    "anyDate": "Any date",
+    "clearAll": "Clear all",
+    "filtersActive": "{count, plural, one {# filter active} other {# filters active}}"
   },
   "daily": {
     "dayItinerary": "Day Itinerary",
@@ -704,5 +707,27 @@
     "noMatchesBody": "Try adjusting your filters, or tell us what you're imagining and we'll draw it from scratch.",
     "clearFilters": "Clear filters",
     "contactWhatsapp": "Contact us via WhatsApp"
+  },
+  "errors": {
+    "notFoundKicker": "404",
+    "notFoundHeading": "We couldn't find that page.",
+    "notFoundBody": "The link may be old, or the page may have moved. Try one of these instead.",
+    "errorKicker": "Something went wrong",
+    "errorHeading": "We hit a snag loading this page.",
+    "errorBody": "Give it another try — or message us on WhatsApp and we'll sort it out.",
+    "tryAgain": "Try again",
+    "backHome": "Back to home",
+    "browsePackages": "Browse packages",
+    "loadingLabel": "Loading"
+  },
+  "aria": {
+    "addAdult": "Add adult",
+    "removeAdult": "Remove adult",
+    "addChild": "Add child",
+    "removeChild": "Remove child",
+    "addPassenger": "Add passenger",
+    "removePassenger": "Remove passenger",
+    "addVehicle": "Add vehicle",
+    "removeVehicle": "Remove vehicle"
   }
 }

@@ -15,7 +15,7 @@
     "homeAriaLabel": "Sabrina Turizm — home",
     "primaryNavigation": "Primary navigation",
     "locationCity": "Istanbul",
-    "privatePackages": "Private Packages",
+    "privatePackages": "Private Tours",
     "privatePackagesDescription": "Tailor-made itineraries built around your dates, group size, and interests.",
     "groupPackages": "Group Packages",
     "groupPackagesDescription": "Scheduled departures from a set date to a set date — join a group or book all seats.",
@@ -227,7 +227,8 @@
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
-      "selectHotel": "Select {name}"
+      "selectHotel": "Select {name}",
+      "freeTransferNote": "6+ gece rezervasyon yapın, ücretsiz havalimanı transferi kazanın"
     },
     "step4": {
       "kicker": "Adım 4 / 5",
@@ -628,10 +629,10 @@
   "pricingBlock": {
     "kicker": "Grup fiyatları",
     "heading": "Kişi başı fiyat",
-    "onePerson": "Tek kişi",
-    "twoPeople": "2 kişi",
-    "singleRoomSupplement": "+ {amount} tek kişilik oda ek ücreti",
-    "baby": "Bebek"
+    "doubleRoom": "Çift kişilik odada",
+    "singleRoom": "Tek kişilik odada",
+    "child": "Çocuk",
+    "babiesFree": "2 yaş altı bebekler ücretsiz seyahat eder."
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -684,7 +685,9 @@
     "date": "Date",
     "region": "Region",
     "all": "All",
-    "anyDate": "Any date"
+    "anyDate": "Any date",
+    "clearAll": "Tümünü temizle",
+    "filtersActive": "{count, plural, one {# filtre aktif} other {# filtre aktif}}"
   },
   "daily": {
     "dayItinerary": "Günlük Program",
@@ -701,5 +704,27 @@
     "noMatchesBody": "Filtrelerinizi ayarlayın ya da hayal ettiğinizi bize anlatın, sıfırdan çizelim.",
     "clearFilters": "Filtreleri temizle",
     "contactWhatsapp": "WhatsApp ile iletişime geçin"
+  },
+  "errors": {
+    "notFoundKicker": "404",
+    "notFoundHeading": "Bu sayfayı bulamadık.",
+    "notFoundBody": "Bağlantı eski olabilir ya da sayfa taşınmış olabilir. Aşağıdakilerden birini deneyin.",
+    "errorKicker": "Bir şeyler ters gitti",
+    "errorHeading": "Bu sayfayı yüklerken bir sorun yaşadık.",
+    "errorBody": "Tekrar deneyin ya da WhatsApp üzerinden bize ulaşın, hallederiz.",
+    "tryAgain": "Tekrar dene",
+    "backHome": "Anasayfaya dön",
+    "browsePackages": "Paketlere göz at",
+    "loadingLabel": "Yükleniyor"
+  },
+  "aria": {
+    "addAdult": "Yetişkin ekle",
+    "removeAdult": "Yetişkin çıkar",
+    "addChild": "Çocuk ekle",
+    "removeChild": "Çocuk çıkar",
+    "addPassenger": "Yolcu ekle",
+    "removePassenger": "Yolcu çıkar",
+    "addVehicle": "Araç ekle",
+    "removeVehicle": "Araç çıkar"
   }
 }

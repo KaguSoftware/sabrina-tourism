@@ -44,6 +44,7 @@ export function CustomForm({
   setGuideLanguage: setGuideLanguageProp,
 }: CustomFormProps) {
   const t = useTranslations("transport.form");
+  const tA = useTranslations("aria");
   const formLocale = useLocale();
   const { currency, rates } = useCurrency();
   const displayFromPrice = useCallback((raw: string) => {
@@ -328,11 +329,20 @@ export function CustomForm({
                     <span className="font-mono text-[10px] text-muted">{v.capacity}</span>
                     <span className="font-mono text-[10px] text-muted">{v.luggageCapacity} {t("bags")}</span>
                     <div className="flex items-center gap-2 mt-1">
-                      <button type="button" onClick={() => setQty(v.id, -1)}
-                        className="w-7 h-7 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-base leading-none">−</button>
-                      <span className="font-mono text-[14px] text-ink min-w-[1.5ch] text-center">{qty}</span>
-                      <button type="button" onClick={() => setQty(v.id, 1)}
-                        className="w-7 h-7 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-base leading-none">+</button>
+                      <button
+                        type="button"
+                        aria-label={`${tA("removeVehicle")} — ${v.label}`}
+                        disabled={qty <= 0}
+                        onClick={() => setQty(v.id, -1)}
+                        className="w-7 h-7 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-base leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-rule disabled:hover:text-ink-soft"
+                      >−</button>
+                      <span className="font-mono text-[14px] text-ink min-w-[1.5ch] text-center" aria-live="polite">{qty}</span>
+                      <button
+                        type="button"
+                        aria-label={`${tA("addVehicle")} — ${v.label}`}
+                        onClick={() => setQty(v.id, 1)}
+                        className="w-7 h-7 border border-rule flex items-center justify-center text-ink-soft hover:border-ochre hover:text-ochre transition-colors text-base leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-1"
+                      >+</button>
                     </div>
                     {qty > 0 && (
                       <div className="flex flex-col items-center gap-0.5">

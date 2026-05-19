@@ -49,7 +49,7 @@ export async function SiteFooter() {
           {t("ctaHeading")}
         </h3>
         <a
-          href={genericMessage()}
+          href={genericMessage(locale)}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-3 border border-ochre text-cream px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-medium transition-all duration-300 hover:bg-ochre hover:text-navy group"
@@ -113,7 +113,7 @@ export async function SiteFooter() {
           </p>
           <div className="flex flex-col gap-1">
             <a
-              href={genericMessage()}
+              href={genericMessage(locale)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm py-1 text-cream/80 hover:text-cream transition-colors duration-200"

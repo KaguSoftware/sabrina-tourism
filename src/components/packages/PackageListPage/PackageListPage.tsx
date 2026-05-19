@@ -2,7 +2,7 @@
 import { useState, useMemo, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
@@ -22,6 +22,7 @@ interface PackageListPageProps {
 
 export function PackageListPage({ pageHeading, pageLede, packages, hideFilters = false }: PackageListPageProps) {
     const t = useTranslations("packageList");
+    const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -169,7 +170,7 @@ export function PackageListPage({ pageHeading, pageLede, packages, hideFilters =
                                     {t("clearFilters")}
                                 </button>
                                 <GoldButton
-                                    href={genericMessage()}
+                                    href={genericMessage(locale)}
                                     variant="solid"
                                     target="_blank"
                                     rel="noopener noreferrer"

@@ -5,11 +5,27 @@ import type { FilterBarProps } from "./types";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 
 
-export function FilterBar({ filters, onChange, onClear: _onClear }: FilterBarProps) {
+export function FilterBar({ filters, onChange, onClear }: FilterBarProps) {
   const t = useTranslations("packageFilters");
+  const activeCount =
+    filters.region.length + (filters.people > 0 ? 1 : 0) + (filters.date ? 1 : 0);
 
   return (
     <div className="relative z-7 sm:sticky sm:top-18 sm:z-40 border-y border-rule">
+      {activeCount > 0 && (
+        <div className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-2 flex items-center justify-between gap-3 border-b border-rule/60">
+          <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-ochre">
+            {t("filtersActive", { count: activeCount })}
+          </span>
+          <button
+            type="button"
+            onClick={onClear}
+            className="font-mono text-[11px] tracking-[0.14em] uppercase text-ink-soft hover:text-ochre transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 px-2 py-1"
+          >
+            {t("clearAll")}
+          </button>
+        </div>
+      )}
       {/* Mobile layout */}
       <div className="sm:hidden max-w-330 mx-auto px-[clamp(20px,4vw,56px)] py-3 flex flex-col gap-5">
         {/* Group */}
