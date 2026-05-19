@@ -37,9 +37,9 @@ export function HeroPanorama({
       </div>
 
       {/* Content */}
-      <div className="relative z-5 inline-block max-w-160">
+      <div className="relative z-5 inline-block max-w-200">
         <div
-          className="absolute -inset-x-5 -inset-y-6 bg-black/20 rounded-xl"
+          className="absolute -left-5 -right-24 -inset-y-6 bg-black/20 rounded-xl"
           aria-hidden="true"
         />
         <Reveal delay={140}>
