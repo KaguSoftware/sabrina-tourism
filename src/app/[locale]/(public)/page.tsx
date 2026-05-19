@@ -59,7 +59,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         sub={hero.sub}
         kicker={hero.kicker}
         ctaBrowse={hero.cta_browse ?? "Browse tours"}
-        ctaChauffeur={hero.cta_chauffeur ?? "Book a chauffeur →"}
+        ctaChauffeur={hero.cta_chauffeur ?? "Book your Driver"}
       />
       <AboutStrip heading={about.heading} body={about.body} kicker={about.kicker ?? "About — Est. 2014"} />
       <Suspense fallback={<SectionFallback />}>

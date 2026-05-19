@@ -74,7 +74,7 @@ export async function SiteFooter() {
             alt="Sabrina Turizm"
             width="140"
             height="48"
-            className="h-7 w-auto object-contain mb-3"
+            className="h-7 w-auto object-contain mb-3 brightness-0 invert"
           />
           <p className="text-cream/60 text-sm leading-relaxed">
             {t("tagline")}

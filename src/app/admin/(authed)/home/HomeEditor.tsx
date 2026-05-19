@@ -101,7 +101,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
       sub: hero.sub ?? "",
       hero_image: hero.hero_image ?? null,
       cta_browse: hero.cta_browse ?? "Browse tours",
-      cta_chauffeur: hero.cta_chauffeur ?? "Book a chauffeur →",
+      cta_chauffeur: hero.cta_chauffeur ?? "Book your Driver",
     },
     about: {
       heading: about.heading ?? "",
@@ -198,7 +198,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
         { key: "headline_em", label: "Headline em", englishValue: watch("hero.headline_em") },
         { key: "sub", label: "Sub", englishValue: watch("hero.sub"), multiline: true },
         { key: "cta_browse", label: "CTA — Browse tours", englishValue: watch("hero.cta_browse") ?? "Browse tours" },
-        { key: "cta_chauffeur", label: "CTA — Book a chauffeur", englishValue: watch("hero.cta_chauffeur") ?? "Book a chauffeur →" },
+        { key: "cta_chauffeur", label: "CTA — Book your Driver", englishValue: watch("hero.cta_chauffeur") ?? "Book your Driver" },
       ],
     },
     {
@@ -317,8 +317,8 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
                   <FormField label="CTA — Browse tours button">
                     <Input {...register("hero.cta_browse")} placeholder="Browse tours" />
                   </FormField>
-                  <FormField label="CTA — Book a chauffeur button">
-                    <Input {...register("hero.cta_chauffeur")} placeholder="Book a chauffeur →" />
+                  <FormField label="CTA — Book your Driver button">
+                    <Input {...register("hero.cta_chauffeur")} placeholder="Book your Driver" />
                   </FormField>
                   <FormField label="Hero background image">
                     <ImageUploader
