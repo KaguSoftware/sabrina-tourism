@@ -9,6 +9,7 @@ import { HotelBackButton } from "@/components/regions/HotelBackButton/HotelBackB
 import { HotelDetailClient } from "@/components/regions/HotelDetailClient/HotelDetailClient";
 import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
 import { HOTELS } from "@/lib/regions/hotels";
+import { getAirports, getVehicles } from "@/lib/db/transport";
 
 export function generateStaticParams() {
   return REGIONS.flatMap((region) =>
@@ -48,6 +49,17 @@ export default async function HotelDetailPage({
 
   const hotel = HOTELS[region].find((h) => h.slug === hotelSlug);
   if (!hotel) notFound();
+
+  const [airportRows, vehicleRows] = await Promise.all([getAirports(), getVehicles()]);
+  const airports = airportRows.map((a) => ({ code: a.code, label: a.label }));
+  const vehicles = vehicleRows.map((v) => ({
+    id: v.vehicle_id,
+    label: v.label,
+    capacity: v.capacity,
+    luggageCapacity: 6,
+    note: v.note,
+    from: v.from_price,
+  }));
 
   return (
     <>
@@ -93,7 +105,7 @@ export default async function HotelDetailPage({
       <section className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-16 pb-28 relative" style={{ zIndex: 10 }}>
         {from === "custom-tour" && <HotelBackButton />}
 
-        <HotelDetailClient hotel={hotel} region={region} slug={slug} waPhone={process.env.NEXT_PUBLIC_WA_PHONE} />
+        <HotelDetailClient hotel={hotel} region={region} slug={slug} waPhone={process.env.NEXT_PUBLIC_WA_PHONE} airports={airports} vehicles={vehicles} />
       </section>
     </>
   );
