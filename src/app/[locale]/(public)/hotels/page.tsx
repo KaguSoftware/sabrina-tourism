@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
@@ -8,12 +9,17 @@ import { getSiteContent } from "@/lib/db/site-content";
 
 export const revalidate = 604800;
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
   const path = "/hotels";
   const localePath = locale === "en" ? path : `/${locale}${path}`;
   const title = "Hotels — Sabrina Turizm";
-  const description = "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.";
+  const description =
+    "Curated partner hotels across Türkiye — handpicked for comfort, character, and location.";
   return {
     title,
     description,
@@ -26,7 +32,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function HotelsPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function HotelsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   const [hotels, pageContent] = await Promise.all([
     getAllHotels(),
@@ -35,7 +45,9 @@ export default async function HotelsPage({ params }: { params: Promise<{ locale:
 
   const kicker = pageContent?.kicker ?? "Our hotels";
   const heading = pageContent?.page_heading ?? "Curated stays across Türkiye";
-  const lede = pageContent?.page_lede ?? "Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.";
+  const lede =
+    pageContent?.page_lede ??
+    "Every property is hand-selected for its character, location, and the experience it delivers — from boutique cave hotels to waterfront retreats.";
   const singular = pageContent?.property_singular ?? "property";
   const plural = pageContent?.property_plural ?? "properties";
   const hotelCardCtaLabel = pageContent?.hotel_card_cta_label ?? "View hotel";
@@ -43,21 +55,30 @@ export default async function HotelsPage({ params }: { params: Promise<{ locale:
   return (
     <>
       {/* Hero */}
-      <section className="relative z-10 pt-[clamp(80px,10vw,140px)] pb-[clamp(40px,6vw,80px)] px-[clamp(20px,4vw,56px)]">
-        <div className="max-w-[1320px] mx-auto">
+      <section className="relative z-10 overflow-hidden min-h-[clamp(340px,45vw,560px)] flex items-end">
+        <Image
+          src="/hotel-hero.webp"
+          alt="Bosphorus hotel view"
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="relative z-10 w-full max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-[clamp(80px,10vw,140px)] pb-[clamp(40px,6vw,80px)]">
           <Reveal>
-            <Kicker>{kicker}</Kicker>
+            <Kicker className="text-white/80">{kicker}</Kicker>
           </Reveal>
           <Reveal delay={120}>
             <GoldUnderlineHeading
               as="h1"
-              className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch]"
+              className="text-[clamp(36px,5vw,72px)] mt-4 tracking-[-0.02em] max-w-[18ch] text-white"
             >
               {heading}
             </GoldUnderlineHeading>
           </Reveal>
           <Reveal delay={200}>
-            <p className="mt-6 text-[clamp(15px,1.3vw,18px)] text-ink-soft leading-[1.6] max-w-[52ch]">
+            <p className="mt-6 text-[clamp(15px,1.3vw,18px)] text-white/80 leading-[1.6] max-w-[52ch]">
               {lede}
             </p>
           </Reveal>

@@ -28,16 +28,16 @@ export function AllPackagesPage({
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
-            src="/homepage.png"
+            src="/MaidensTower.png"
             alt="Tours hero"
             fill
-            className="object-cover object-center"
+            className="object-cover object-[center_60%]"
             priority
           />
         </div>
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
 
-        <div className="relative z-5 max-w-[1320px] mx-auto w-full">
+        <div className="relative z-10 max-w-330 mx-auto w-full">
           <Reveal>
             <Kicker light>Itineraries</Kicker>
           </Reveal>

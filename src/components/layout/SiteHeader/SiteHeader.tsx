@@ -19,7 +19,11 @@ function DropdownNavItem({
   isActive,
   pathname,
 }: {
-  item: { href: string; label: string; children?: { href: string; label: string }[] };
+  item: {
+    href: string;
+    label: string;
+    children?: { href: string; label: string }[];
+  };
   transparent: boolean;
   isActive: boolean;
   pathname: string;
@@ -29,27 +33,48 @@ function DropdownNavItem({
 
   useEffect(() => {
     function onDown(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
     }
     document.addEventListener("mousedown", onDown);
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
   return (
-    <div ref={ref} className="relative inline-flex items-center" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+    <div
+      ref={ref}
+      className="relative inline-flex items-center"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <Link
         href={item.href}
         className={`inline-flex items-center gap-1 relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 ${
           transparent ? "text-cream" : "text-ink"
-        } ${isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"}`}
+        } ${
+          isActive
+            ? "after:scale-x-100"
+            : "after:scale-x-0 hover:after:scale-x-100"
+        }`}
       >
         {item.label}
         <svg
-          width="10" height="10" viewBox="0 0 10 10" fill="none"
-          className={`transition-transform duration-200 opacity-60 ${open ? "rotate-180" : ""}`}
+          width="10"
+          height="10"
+          viewBox="0 0 10 10"
+          fill="none"
+          className={`transition-transform duration-200 opacity-60 ${
+            open ? "rotate-180" : ""
+          }`}
           aria-hidden="true"
         >
-          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M2 3.5L5 6.5L8 3.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </Link>
 
@@ -58,7 +83,9 @@ function DropdownNavItem({
 
       <div
         className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
-          open ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
+          open
+            ? "opacity-100 scale-y-100 pointer-events-auto"
+            : "opacity-0 scale-y-95 pointer-events-none"
         }`}
       >
         {item.children?.map((child) => (
@@ -111,14 +138,17 @@ export function SiteHeader({
 
   const localePfx = locale === "en" ? "" : `/${locale}`;
   const NO_HERO_PATHS = [`${localePfx}/tours/custom-packages`];
-  const transparent = !scrolled && !NO_HERO_PATHS.includes(pathname) && !menuOpen;
+  const transparent =
+    !scrolled && !NO_HERO_PATHS.includes(pathname) && !menuOpen;
   const isRTL = ["ar", "he", "fa"].includes(locale);
   const menuSlideOffset = isRTL ? "-40px" : "40px";
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 transition-all duration-300 ${menuOpen ? "z-70" : "z-50"} ${
+        className={`fixed top-0 left-0 right-0 transition-all duration-300 ${
+          menuOpen ? "z-70" : "z-50"
+        } ${
           transparent
             ? "bg-transparent border-transparent"
             : "bg-cream/95 backdrop-blur-sm border-b border-rule"
@@ -128,31 +158,40 @@ export function SiteHeader({
           {/* Brand */}
           <Link
             href={`${localePfx}/`}
-            className="inline-flex w-[111px] md:w-[140px] shrink-0 flex-col items-center group"
+            className="inline-flex w-24 md:w-35 shrink-0 flex-col items-center group ml-8 md:ml-0"
             aria-label={t("homeAriaLabel")}
           >
             <Image
-              src={transparent ? "/logo_1_sabrina_cropped.png" : "/logo_2_sabrina_cropped.png"}
+              src={
+                transparent
+                  ? "/logo_1_sabrina_cropped.png"
+                  : "/logo_2_sabrina_cropped.png"
+              }
               alt="Sabrina Turizm"
               width="140"
               height="48"
-              className="h-[38px] md:h-12 w-auto object-contain transition-all duration-500"
+              className="h-8 md:h-12 w-auto object-contain transition-all duration-500"
             />
             <span
-              className={`mt-0.5 whitespace-nowrap text-[9px] md:text-[10px] tracking-[0.18em] uppercase font-medium transition-colors duration-500 ${
+              className={`mt-0.5 whitespace-nowrap text-[8px] md:text-[10px] tracking-[0.16em] uppercase font-medium transition-colors duration-500 ${
                 transparent ? "text-cream/80" : "text-ink/70"
               }`}
-            >
-              Tours, Transfers, Hotel
-            </span>
+            ></span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-9 lg:gap-10 relative" aria-label={t("primaryNavigation")}>
+          <nav
+            className="hidden md:flex items-center gap-9 lg:gap-10 relative"
+            aria-label={t("primaryNavigation")}
+          >
             <Link
               href={`${localePfx}/`}
               className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
-              } ${pathname === `${localePfx}/` || pathname === "/" ? "after:scale-x-100" : ""}`}
+              } ${
+                pathname === `${localePfx}/` || pathname === "/"
+                  ? "after:scale-x-100"
+                  : ""
+              }`}
             >
               {t("home")}
             </Link>
@@ -161,11 +200,17 @@ export function SiteHeader({
               href={`${localePfx}/transportation`}
               className={`relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 ${
                 transparent ? "text-cream" : "text-ink"
-              } ${pathname.includes("/transportation") ? "after:scale-x-100" : ""}`}
+              } ${
+                pathname.includes("/transportation") ? "after:scale-x-100" : ""
+              }`}
             >
               {t("driver")}
             </Link>
-            <NavHotel currentPath={pathname} transparent={transparent} hotelsByRegion={hotelsByRegion} />
+            <NavHotel
+              currentPath={pathname}
+              transparent={transparent}
+              hotelsByRegion={hotelsByRegion}
+            />
           </nav>
 
           {/* Desktop CTA + Language switcher */}
@@ -206,18 +251,18 @@ export function SiteHeader({
               onClick={() => setMenuOpen((o) => !o)}
             >
               <span
-                className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
-                  menuOpen ? "translate-y-[7px] rotate-45" : ""
+                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 origin-center ${
+                  menuOpen ? "translate-y-[8px] rotate-45" : ""
                 }`}
               />
               <span
-                className={`w-[26px] h-px bg-current block transition-all duration-300 ${
+                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 ${
                   menuOpen ? "opacity-0 scale-x-0" : ""
                 }`}
               />
               <span
-                className={`w-[26px] h-px bg-current block transition-all duration-300 origin-center ${
-                  menuOpen ? "-translate-y-[7px] -rotate-45" : ""
+                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 origin-center ${
+                  menuOpen ? "-translate-y-[8px] -rotate-45" : ""
                 }`}
               />
             </button>
@@ -228,7 +273,9 @@ export function SiteHeader({
       {/* Mobile overlay — slides in from the end edge (right in LTR, left in RTL) */}
       <div
         className={`md:hidden fixed top-21.5 bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-          menuOpen ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"
+          menuOpen
+            ? "translate-x-0"
+            : "ltr:translate-x-full rtl:-translate-x-full"
         }`}
         role="dialog"
         aria-modal="true"
@@ -245,7 +292,9 @@ export function SiteHeader({
               className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
               style={{
                 opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
+                transform: menuOpen
+                  ? "translateX(0)"
+                  : `translateX(${menuSlideOffset})`,
                 transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                   100 + i * 60
                 }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
@@ -260,7 +309,9 @@ export function SiteHeader({
           <div
             style={{
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
+              transform: menuOpen
+                ? "translateX(0)"
+                : `translateX(${menuSlideOffset})`,
               transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                 100 + NAV_ITEMS.length * 60
               }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
@@ -273,9 +324,18 @@ export function SiteHeader({
             </p>
             <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
               {[
-                { href: "/tours/fixed-dates", labelKey: "fixedDatePackages" as const },
-                { href: "/tours/daily-packages", labelKey: "dailyPackages" as const },
-                { href: "/tours/custom-packages", labelKey: "customDealPackages" as const },
+                {
+                  href: "/tours/fixed-dates",
+                  labelKey: "fixedDatePackages" as const,
+                },
+                {
+                  href: "/tours/daily-packages",
+                  labelKey: "dailyPackages" as const,
+                },
+                {
+                  href: "/tours/custom-packages",
+                  labelKey: "customDealPackages" as const,
+                },
               ].map((item) => (
                 <Link
                   key={item.href}
@@ -291,7 +351,9 @@ export function SiteHeader({
           <div
             style={{
               opacity: menuOpen ? 1 : 0,
-              transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
+              transform: menuOpen
+                ? "translateX(0)"
+                : `translateX(${menuSlideOffset})`,
               transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
                 160 + NAV_ITEMS.length * 60
               }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
