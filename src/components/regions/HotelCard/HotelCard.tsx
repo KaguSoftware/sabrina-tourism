@@ -4,7 +4,19 @@ import type { HotelCardData } from "@/lib/regions/hotels";
 
 export type { HotelCardData };
 
-export function HotelCard({ hotel, regionSlug }: { hotel: HotelCardData; regionSlug: string }) {
+export function HotelCard({
+  hotel,
+  regionSlug,
+  eyebrowLabel = "Partnered Hotel",
+  stayLabel = "Curated Stay",
+  ctaLabel = "View hotel",
+}: {
+  hotel: HotelCardData;
+  regionSlug: string;
+  eyebrowLabel?: string;
+  stayLabel?: string;
+  ctaLabel?: string;
+}) {
   return (
     <BaseCard
       href={`/regions/${regionSlug}/${hotel.slug}`}
@@ -29,9 +41,9 @@ export function HotelCard({ hotel, regionSlug }: { hotel: HotelCardData; regionS
       }
     >
       <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted mb-2.5">
-        Partnered Hotel
+        {eyebrowLabel}
         <span className="mx-1.5 text-rule">·</span>
-        <em className="text-ochre not-italic">Curated Stay</em>
+        <em className="text-ochre not-italic">{stayLabel}</em>
       </p>
       <h3 className="font-display font-normal text-[clamp(22px,2.4vw,30px)] tracking-[-0.012em] leading-[1.1] mb-2.5">
         {hotel.name}
@@ -40,7 +52,7 @@ export function HotelCard({ hotel, regionSlug }: { hotel: HotelCardData; regionS
         {hotel.description}
       </p>
       <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre w-fit">
-        View hotel{" "}
+        {ctaLabel}{" "}
         <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
           →
         </em>

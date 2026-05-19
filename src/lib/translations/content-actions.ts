@@ -428,9 +428,29 @@ export async function saveSiteContentTranslations(
       byLocale[locale][field] = value;
     }
   }
+
+  const { data: existingRow, error: loadError } = await supabase
+    .from("site_content")
+    .select("data_translations")
+    .eq("id", key)
+    .maybeSingle();
+  if (loadError) return { error: loadError.message };
+
+  const existingTranslations =
+    existingRow?.data_translations && typeof existingRow.data_translations === "object"
+      ? existingRow.data_translations as Record<string, Record<string, string>>
+      : {};
+  const mergedByLocale: Record<string, Record<string, string>> = { ...existingTranslations };
+  for (const [locale, fields] of Object.entries(byLocale)) {
+    mergedByLocale[locale] = {
+      ...(mergedByLocale[locale] ?? {}),
+      ...fields,
+    };
+  }
+
   const { error } = await supabase
     .from("site_content")
-    .update({ data_translations: byLocale })
+    .update({ data_translations: mergedByLocale })
     .eq("id", key);
   if (error) return { error: error.message };
   updateTag(tags.siteContent(key));

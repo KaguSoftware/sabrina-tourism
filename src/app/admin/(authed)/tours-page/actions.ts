@@ -1,7 +1,7 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import { createServiceClient } from "@/lib/supabase/server";
+import { saveSiteContentData } from "@/lib/db/site-content";
 import { tags } from "@/lib/cache/tags";
 import { toursPageSchema, type ToursPageFormValues } from "./schema";
 
@@ -11,13 +11,8 @@ export async function saveToursPage(raw: ToursPageFormValues): Promise<{ error?:
     return { error: parsed.error.issues[0]?.message ?? "Validation failed" };
   }
 
-  const supabase = createServiceClient();
-
-  const { error } = await (supabase
-    .from("site_content") as any)
-    .upsert({ id: "tours_hero", data: parsed.data }, { onConflict: "id" });
-
-  if (error) return { error: error.message };
+  const { error } = await saveSiteContentData("tours_hero", parsed.data);
+  if (error) return { error };
 
   updateTag(tags.siteContent("tours_hero"));
   return {};

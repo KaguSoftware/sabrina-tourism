@@ -10,9 +10,10 @@ interface HotelCardProps {
   onSelect?: () => void;
   /** When true, the card omits its own lift/scale transform so a parent can animate the card + adjacent elements as one unit. Border, ring, and selected-badge indicators are preserved. */
   flat?: boolean;
+  ctaLabel?: string;
 }
 
-export function HotelCard({ hotel, selected, onSelect, flat }: HotelCardProps) {
+export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel = "View hotel" }: HotelCardProps) {
   const image = hotel.images[0] ?? hotel.bedroomImage;
   const regionSlug = REGION_SLUGS[hotel.region as keyof typeof REGION_SLUGS] ?? hotel.region.toLowerCase().replace(/\s+/g, "-");
   const starCount = Math.min(5, Math.max(0, hotel.stars));
@@ -69,7 +70,7 @@ export function HotelCard({ hotel, selected, onSelect, flat }: HotelCardProps) {
         </p>
         {!onSelect && (
           <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre w-fit">
-            View hotel{" "}
+            {ctaLabel}{" "}
             <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
               →
             </em>
@@ -155,7 +156,7 @@ export function HotelCard({ hotel, selected, onSelect, flat }: HotelCardProps) {
         {hotel.description}
       </p>
       <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre w-fit">
-        View hotel{" "}
+        {ctaLabel}{" "}
         <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
           →
         </em>

@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { ChevronDown } from "lucide-react";
 
 interface NavToursProps {
   currentPath: string;
@@ -15,21 +16,21 @@ const TOUR_TYPES = [
     labelKey: "privatePackages",
     cadenceKey: "privatePackagesCadence",
     descriptionKey: "privatePackagesDescription",
-    image: "/capadocia-hero.png",
+    image: "/sabrina_trabzon_private_tours.webp",
   },
   {
     href: "/tours/fixed-dates",
     labelKey: "groupPackages",
     cadenceKey: "groupPackagesCadence",
     descriptionKey: "groupPackagesDescription",
-    image: "/istanbul-hero1.png",
+    image: "/istanbul_group_tour.webp",
   },
   {
     href: "/tours/daily-packages",
     labelKey: "dailyPackages",
     cadenceKey: "dailyPackagesCadence",
     descriptionKey: "dailyPackagesDescription",
-    image: "/Antalya-hero.png",
+    image: "/sabrina_istanbul_daily_tours.webp",
   },
 ] as const;
 
@@ -62,13 +63,19 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
     >
       <Link
         href={`${pfx}/packages`}
-        className={`relative text-[13px] tracking-[0.14em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+        className={`relative inline-flex items-center gap-1.5 text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive || open ? "after:scale-x-100" : ""}`}
         aria-haspopup="true"
         aria-expanded={open}
       >
         {t("tours")}
+        <ChevronDown
+          aria-hidden="true"
+          size={16}
+          strokeWidth={1.8}
+          className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
       </Link>
 
       <div

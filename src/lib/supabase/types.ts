@@ -62,6 +62,14 @@ export interface HotelsPageData {
   page_lede?: string;
   property_singular?: string;
   property_plural?: string;
+  region_index_kicker?: string;
+  region_index_heading?: string;
+  region_index_lede?: string;
+  region_section_heading_template?: string;
+  region_section_cta_label?: string;
+  region_card_eyebrow_label?: string;
+  region_card_stay_label?: string;
+  hotel_card_cta_label?: string;
 }
 
 export interface TransportHeroData {

@@ -82,18 +82,38 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     hotelId = newH.id;
   }
 
-  // Replace amenities
+  // Replace amenities — preserve existing translations by row order.
+  const { data: existingAmenities } = await supabase
+    .from("hotel_amenities")
+    .select("sort_order, text_translations")
+    .eq("hotel_id", hotelId)
+    .order("sort_order");
   await supabase.from("hotel_amenities").delete().eq("hotel_id", hotelId);
   if (data.amenities.length) {
-    await supabase.from("hotel_amenities").insert(data.amenities.map((a, i) => ({ hotel_id: hotelId, text: a.text, is_property: false, sort_order: i })));
+    await supabase.from("hotel_amenities").insert(data.amenities.map((a, i) => ({
+      hotel_id: hotelId,
+      text: a.text,
+      is_property: false,
+      sort_order: i,
+      text_translations: existingAmenities?.[i]?.text_translations ?? null,
+    })));
   }
 
-  // Replace room types
+  // Replace room types — preserve existing translations by row order.
+  const { data: existingRoomTypes } = await supabase
+    .from("hotel_room_types")
+    .select("sort_order, name_translations, beds_translations, size_translations, highlights_translations")
+    .eq("hotel_id", hotelId)
+    .order("sort_order");
   await supabase.from("hotel_room_types").delete().eq("hotel_id", hotelId);
   if (data.room_types.length) {
     await supabase.from("hotel_room_types").insert(data.room_types.map((r, i) => ({
       hotel_id: hotelId, name: r.name, capacity: r.capacity, beds: r.beds,
       size: r.size, image_index: r.image_index, highlights: r.highlights, sort_order: i,
+      name_translations: existingRoomTypes?.[i]?.name_translations ?? null,
+      beds_translations: existingRoomTypes?.[i]?.beds_translations ?? null,
+      size_translations: existingRoomTypes?.[i]?.size_translations ?? null,
+      highlights_translations: existingRoomTypes?.[i]?.highlights_translations ?? null,
     })));
   }
 
