@@ -145,9 +145,9 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
             {/* hover bridge */}
             <div className="absolute -top-3 left-0 right-0 h-3" />
 
-        <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden">
+        <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden flex flex-col max-h-[calc(100vh-6rem)]">
           {/* Header band */}
-          <div className="relative flex items-start justify-between gap-6 px-7 pt-6 pb-5 border-b border-rule">
+          <div className="relative shrink-0 flex items-start justify-between gap-6 px-7 pt-6 pb-5 border-b border-rule">
             <div>
               <div className="flex items-center gap-3">
                 <span aria-hidden className="block h-px w-6 bg-ochre" />
@@ -176,7 +176,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
           </div>
 
           {/* Six region cards in a 3×2 grid */}
-          <div className="grid grid-cols-3 divide-x divide-y divide-rule">
+          <div className="grid grid-cols-3 divide-x divide-y divide-rule overflow-y-auto min-h-0">
             {REGIONS.map((region, idx) => {
               const hotelList = hotelsByRegion[region] ?? [];
               const first = hotelList[0];
@@ -235,7 +235,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
           </div>
 
           {/* Footer band */}
-          <div className="border-t border-rule px-7 py-3">
+          <div className="shrink-0 border-t border-rule px-7 py-3">
             <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">
               {t("partneredPropertiesAcrossTurkey", { count: totalProperties })}
             </p>
