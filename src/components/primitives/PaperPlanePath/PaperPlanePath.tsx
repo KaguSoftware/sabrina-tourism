@@ -50,6 +50,13 @@ export function PaperPlanePath() {
     svg.style.display = "none";
     const h = document.documentElement.scrollHeight;
     svg.style.display = "";
+
+    // Skip the rebuild if the page is implausibly short — this happens mid-
+    // navigation when the new page hasn't laid out yet. We'd otherwise compress
+    // the path against a header-only height and anchor the plane too high.
+    // The ResizeObserver will trigger another rebuild as soon as content lands.
+    if (h < window.innerHeight * 1.2) return;
+
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
     svg.setAttribute("width", String(w));
     svg.setAttribute("height", String(h));
@@ -132,7 +139,7 @@ export function PaperPlanePath() {
     return Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
   }, []);
 
-  // Initial mount: set up scroll + resize listeners.
+  // Initial mount: set up scroll + resize + ResizeObserver listeners.
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -151,6 +158,23 @@ export function PaperPlanePath() {
 
     const onResize = () => { buildPath(); onScroll(); };
 
+    // ResizeObserver fires whenever the document body height changes — e.g.
+    // images/fonts loading after navigation, lazy content appearing, etc. This
+    // keeps the path stretched to the real page height so the plane never
+    // anchors against a transient short scrollHeight.
+    let rebuildScheduled = false;
+    const onBodyResize = () => {
+      if (rebuildScheduled) return;
+      rebuildScheduled = true;
+      requestAnimationFrame(() => {
+        rebuildScheduled = false;
+        buildPath();
+        updatePlane(getProgress());
+      });
+    };
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(onBodyResize) : null;
+    if (ro) ro.observe(document.body);
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     onScroll();
@@ -158,6 +182,7 @@ export function PaperPlanePath() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      if (ro) ro.disconnect();
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [buildPath, updatePlane, getProgress]);
