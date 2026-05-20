@@ -244,33 +244,35 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
           </div>
         </Reveal>
 
-        {/* Tier pills */}
-        <Reveal delay={220}>
-          <div className="flex flex-col gap-2 mb-10 max-w-[560px]">
-            <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("tierLabel")}</span>
-            <div className="flex flex-wrap gap-2">
-              {(["Essential", "Signature", "Private"] as const).map((t) => {
-                const active = tier === t;
-                return (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => onTierChange(t)}
-                    className="font-sans text-[13px] px-4 py-1.5 rounded-full border transition-all duration-200"
-                    style={{
-                      backgroundColor: active ? "#0b1a2e" : "transparent",
-                      color: active ? "#c99a3f" : "#1f1a14",
-                      borderColor: active ? "transparent" : "#c99a3f",
-                      fontWeight: active ? 600 : 400,
-                    }}
-                  >
-                    {t}
-                  </button>
-                );
-              })}
+        {/* Tier pills — only show if more than one tier is available */}
+        {pkg.tiers && pkg.tiers.length > 1 && (
+          <Reveal delay={220}>
+            <div className="flex flex-col gap-2 mb-10 max-w-[560px]">
+              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("tierLabel")}</span>
+              <div className="flex flex-wrap gap-2">
+                {pkg.tiers.map((tr) => {
+                  const active = tier === tr.name;
+                  return (
+                    <button
+                      key={tr.name}
+                      type="button"
+                      onClick={() => onTierChange(tr.name)}
+                      className="font-sans text-[13px] px-4 py-1.5 rounded-full border transition-all duration-200"
+                      style={{
+                        backgroundColor: active ? "#0b1a2e" : "transparent",
+                        color: active ? "#c99a3f" : "#1f1a14",
+                        borderColor: active ? "transparent" : "#c99a3f",
+                        fontWeight: active ? 600 : 400,
+                      }}
+                    >
+                      {tr.name}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </Reveal>
+          </Reveal>
+        )}
 
         {/* Message preview */}
         <Reveal delay={240}>
@@ -308,7 +310,11 @@ export function PremadePackageDetailPage({ pkg }: Props) {
   const tCommon = useTranslations("common");
   const dates = pkg.dates && pkg.dates.length > 0 ? pkg.dates : [{ startDate: pkg.startDate, endDate: pkg.endDate }];
   const [selectedDateIdx, setSelectedDateIdx] = useState(0);
-  const [tier, setTier] = useState("Signature");
+  const tierNames = (pkg.tiers ?? []).map((tr) => tr.name);
+  const initialTier = tierNames.includes("Signature")
+    ? "Signature"
+    : tierNames[0] ?? "Signature";
+  const [tier, setTier] = useState(initialTier);
   const [openDay, setOpenDay] = useState(1);
   const { refs: dayRefs, active: activeDays } = useItineraryGlow(pkg.itinerary?.length ?? 0);
 
@@ -475,31 +481,54 @@ export function PremadePackageDetailPage({ pkg }: Props) {
       )}
 
       {/* Tier selector */}
-      {pkg.tiers && pkg.tiers.length === 3 && (
+      {pkg.tiers && pkg.tiers.length > 0 && (() => {
+        const tierCount = pkg.tiers.length;
+        const hasGroup = pkg.tiers.some((tr) => tr.name === "Essential" || tr.name === "Signature");
+        const hasPrivate = pkg.tiers.some((tr) => tr.name === "Private");
+        const tierHeading = t.has("waysToTravelRoute")
+          ? t("waysToTravelRoute", { count: tierCount })
+          : tierCount === 1
+            ? "One way to travel this route."
+            : tierCount === 2
+              ? "Two ways to travel this route."
+              : t("threeWaysToTravel");
+        const tierGrid =
+          tierCount === 1
+            ? "grid grid-cols-1 gap-5 max-w-md mx-auto"
+            : tierCount === 2
+              ? "grid grid-cols-1 lg:grid-cols-2 gap-5 max-w-4xl mx-auto"
+              : "grid grid-cols-1 lg:grid-cols-3 gap-5";
+        return (
         <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
           <div className="mb-14">
             <Reveal><Kicker>{t("chooseYourTier")}</Kicker></Reveal>
             <Reveal delay={120}>
               <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
-                {t("threeWaysToTravel")}
+                {tierHeading}
               </GoldUnderlineHeading>
             </Reveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-              <Reveal delay={160}>
-                <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">{t("essentialSignature")}</p>
-                <p className="text-[15px] text-ink-soft leading-[1.65] max-w-[46ch]">
-                  {t("essentialSignatureDescShort")}
-                </p>
-              </Reveal>
-              <Reveal delay={200}>
-                <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">{t("private")}</p>
-                <p className="text-[15px] text-ink-soft leading-[1.65] max-w-[46ch]">
-                  {t("privateDesc")}
-                </p>
-              </Reveal>
-            </div>
+            {(hasGroup || hasPrivate) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                {hasGroup && (
+                  <Reveal delay={160}>
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">{t("essentialSignature")}</p>
+                    <p className="text-[15px] text-ink-soft leading-[1.65] max-w-[46ch]">
+                      {t("essentialSignatureDescShort")}
+                    </p>
+                  </Reveal>
+                )}
+                {hasPrivate && (
+                  <Reveal delay={200}>
+                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">{t("private")}</p>
+                    <p className="text-[15px] text-ink-soft leading-[1.65] max-w-[46ch]">
+                      {t("privateDesc")}
+                    </p>
+                  </Reveal>
+                )}
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className={tierGrid}>
             {pkg.tiers.map((tierItem, i) => {
               const active = tierItem.name === tier;
               return (
@@ -573,7 +602,8 @@ export function PremadePackageDetailPage({ pkg }: Props) {
             })}
           </div>
         </section>
-      )}
+        );
+      })()}
 
       {/* Reserve section */}
       <ReserveSection pkg={pkg} tier={tier} onTierChange={setTier} dates={dates} selectedDateIdx={selectedDateIdx} setSelectedDateIdx={setSelectedDateIdx} selectedDate={selectedDate} locale={locale} />

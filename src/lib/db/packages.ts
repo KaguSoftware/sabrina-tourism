@@ -59,7 +59,8 @@ function assemblePackage(
 ): Package {
   const orderedTiers = (['Essential', 'Signature', 'Private'] as PackageTierName[])
     .map((name) => {
-      const t = tiers.find((t) => t.tier_name === name)!;
+      const t = tiers.find((t) => t.tier_name === name);
+      if (!t) return null;
       const hotel = t.hotel_id ? hotelsById.get(t.hotel_id) : undefined;
       return {
         name: t.tier_name,
@@ -72,7 +73,8 @@ function assemblePackage(
         mealsIncluded: t.meals_included,
         highlights: t.highlights,
       };
-    }) as Package['tiers'];
+    })
+    .filter((t): t is NonNullable<typeof t> => t !== null) as Package['tiers'];
 
   return {
     slug: row.slug,

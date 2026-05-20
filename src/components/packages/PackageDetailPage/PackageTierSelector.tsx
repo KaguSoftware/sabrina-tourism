@@ -21,29 +21,58 @@ export function PackageTierSelector({
 }) {
   const t = useTranslations("packageDetail");
   const tCommon = useTranslations("common");
+
+  if (!tiers || tiers.length === 0) return null;
+
+  const tierCount = tiers.length;
+  const hasGroupTier = tiers.some((t) => t.name === "Essential" || t.name === "Signature");
+  const hasPrivateTier = tiers.some((t) => t.name === "Private");
+
+  const tierNames = tiers.map((t) => t.name).join(" & ");
+  const headingText = t.has("waysToTravelRoute")
+    ? t("waysToTravelRoute", { count: tierCount, tiers: tierNames })
+    : tierCount === 1
+      ? `One way to travel this route.`
+      : tierCount === 2
+        ? `Two ways to travel this route.`
+        : t("threeWaysToTravel");
+
+  const gridClass =
+    tierCount === 1
+      ? "grid grid-cols-1 gap-5 max-w-md mx-auto"
+      : tierCount === 2
+        ? "grid grid-cols-1 lg:grid-cols-2 gap-5 max-w-4xl mx-auto"
+        : "grid grid-cols-1 lg:grid-cols-3 gap-5";
+
   return (
     <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
       <div className="mb-14">
         <Reveal><Kicker>{t("chooseYourTier")}</Kicker></Reveal>
         <Reveal delay={120}>
           <GoldUnderlineHeading as="h2" className="text-[clamp(32px,4.6vw,64px)] mt-4 tracking-[-0.02em]">
-            {t("threeWaysToTravel")}
+            {headingText}
           </GoldUnderlineHeading>
         </Reveal>
       </div>
-      <Reveal delay={60}>
-        <div className="mb-10 flex flex-col sm:flex-row gap-4 sm:gap-10 text-[13px] text-ink-soft leading-relaxed border-l-2 border-ochre pl-5">
-          <p>
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre block mb-1">{t("essentialSignature")}</span>
-            {t("essentialSignatureDesc")}
-          </p>
-          <p>
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre block mb-1">{t("private")}</span>
-            {t("privateDesc")}
-          </p>
-        </div>
-      </Reveal>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {(hasGroupTier || hasPrivateTier) && (
+        <Reveal delay={60}>
+          <div className="mb-10 flex flex-col sm:flex-row gap-4 sm:gap-10 text-[13px] text-ink-soft leading-relaxed border-l-2 border-ochre pl-5">
+            {hasGroupTier && (
+              <p>
+                <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre block mb-1">{t("essentialSignature")}</span>
+                {t("essentialSignatureDesc")}
+              </p>
+            )}
+            {hasPrivateTier && (
+              <p>
+                <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre block mb-1">{t("private")}</span>
+                {t("privateDesc")}
+              </p>
+            )}
+          </div>
+        </Reveal>
+      )}
+      <div className={gridClass}>
         {tiers.map((tier, i) => {
           const active = tier.name === activeTierName;
           return (
