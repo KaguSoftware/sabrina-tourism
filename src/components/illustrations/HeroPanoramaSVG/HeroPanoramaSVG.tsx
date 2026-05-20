@@ -13,13 +13,14 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
       className={`w-full h-full ${className}`}
       aria-hidden="true"
       preserveAspectRatio="xMidYMid slice"
+      style={{ contentVisibility: "auto", containIntrinsicSize: "1440px 560px" }}
     >
       {/* Sky — cream */}
       <rect width="1440" height="560" fill="#f5ede0" />
 
       {/* Sun */}
       <circle cx="1200" cy="110" r="52" fill="#c99a3f" opacity="0.85" />
-      <g stroke="#c99a3f" strokeWidth="3" strokeLinecap="round" style={{ transformOrigin: "1200px 110px", animation: "rays 40s linear infinite" }}>
+      <g stroke="#c99a3f" strokeWidth="3" strokeLinecap="round" style={{ transformOrigin: "1200px 110px", animation: "rays 40s linear infinite", willChange: "transform" }}>
         <line x1="1200" y1="38" x2="1200" y2="22" />
         <line x1="1200" y1="198" x2="1200" y2="214" />
         <line x1="1128" y1="110" x2="1112" y2="110" />
@@ -31,18 +32,18 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
       </g>
 
       {/* Clouds — cream-warm so they read against cream sky */}
-      <g style={{ animation: "drift 28s ease-in-out infinite alternate" }}>
+      <g style={{ animation: "drift 28s ease-in-out infinite alternate", willChange: "transform" }}>
         <path d="M80 100 Q60 100 64 84 Q68 72 84 74 Q88 60 106 64 Q120 54 136 68 Q154 64 160 78 Q178 78 180 96 Q186 108 168 108 H88 Q72 108 80 100Z" fill="#e8dac8" opacity="0.9" />
       </g>
-      <g style={{ animation: "drift 38s ease-in-out infinite alternate-reverse" }}>
+      <g style={{ animation: "drift 38s ease-in-out infinite alternate-reverse", willChange: "transform" }}>
         <path d="M520 68 Q504 68 507 57 Q510 47 522 50 Q524 40 538 43 Q547 36 558 46 Q570 43 575 53 Q586 53 588 66 Q592 74 580 74 H528 Q516 74 520 68Z" fill="#e8dac8" opacity="0.75" />
       </g>
-      <g style={{ animation: "drift 24s ease-in-out infinite alternate" }}>
+      <g style={{ animation: "drift 24s ease-in-out infinite alternate", willChange: "transform" }}>
         <path d="M950 50 Q938 50 940 42 Q942 34 951 36 Q953 28 963 31 Q971 25 980 33 Q990 30 993 39 Q1002 39 1003 49 Q1006 55 997 55 H957 Q948 55 950 50Z" fill="#e8dac8" opacity="0.7" />
       </g>
 
       {/* Balloon 1 — navy body, ochre band */}
-      <g style={{ animation: "float-y 8s ease-in-out infinite" }}>
+      <g style={{ animation: "float-y 8s ease-in-out infinite", willChange: "transform" }}>
         <ellipse cx="240" cy="180" rx="44" ry="56" fill="#0b1a2e" />
         <path d="M240 124 L266 180 L240 236 L214 180Z" fill="#efe4d2" opacity="0.12" />
         <path d="M196 180 L240 158 L284 180 L240 202Z" fill="#efe4d2" opacity="0.08" />
@@ -55,7 +56,7 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
       </g>
 
       {/* Balloon 2 — terracotta body, cream panels */}
-      <g style={{ animation: "float-y 10s ease-in-out infinite 1.5s" }}>
+      <g style={{ animation: "float-y 10s ease-in-out infinite 1.5s", willChange: "transform" }}>
         <ellipse cx="610" cy="140" rx="50" ry="62" fill="#c46b4f" />
         <path d="M560 140 Q560 110 610 102 L610 140Z" fill="#efe4d2" opacity="0.45" />
         <path d="M560 140 Q560 170 610 178 L610 140Z" fill="#efe4d2" opacity="0.45" />
@@ -69,7 +70,7 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
       </g>
 
       {/* Balloon 3 — ochre body, navy stripes */}
-      <g style={{ animation: "float-y 12s ease-in-out infinite 3s" }}>
+      <g style={{ animation: "float-y 12s ease-in-out infinite 3s", willChange: "transform" }}>
         <ellipse cx="960" cy="160" rx="46" ry="58" fill="#c99a3f" />
         <line x1="932" y1="102" x2="932" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
         <line x1="946" y1="102" x2="946" y2="218" stroke="#0b1a2e" strokeWidth="6" opacity="0.18" />
@@ -84,7 +85,7 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
       </g>
 
       {/* Balloon 4 — cream-warm body, navy detail */}
-      <g style={{ animation: "float-y 9s ease-in-out infinite 0.8s" }}>
+      <g style={{ animation: "float-y 9s ease-in-out infinite 0.8s", willChange: "transform" }}>
         <ellipse cx="1260" cy="190" rx="40" ry="52" fill="#efe4d2" />
         <path d="M1220 190 Q1220 160 1260 152 L1260 190Z" fill="#0b1a2e" opacity="0.12" />
         <path d="M1300 190 Q1300 160 1260 152 L1260 190Z" fill="#0b1a2e" opacity="0.08" />
@@ -98,7 +99,7 @@ export function HeroPanoramaSVG({ className = "" }: HeroPanoramaSVGProps) {
       </g>
 
       {/* Balloon 5 — navy body, terracotta stripe */}
-      <g style={{ animation: "float-y 11s ease-in-out infinite 2.2s" }}>
+      <g style={{ animation: "float-y 11s ease-in-out infinite 2.2s", willChange: "transform" }}>
         <ellipse cx="60" cy="310" rx="38" ry="50" fill="#162b47" />
         <path d="M22 310 Q22 280 60 272 L60 310Z" fill="#c46b4f" opacity="0.6" />
         <path d="M98 310 Q98 280 60 272 L60 310Z" fill="#c46b4f" opacity="0.4" />

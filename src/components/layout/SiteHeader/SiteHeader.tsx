@@ -26,8 +26,15 @@ export function SiteHeader({
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 1);
-    onScroll();
+    let last = window.scrollY > 1;
+    setScrolled(last);
+    const onScroll = () => {
+      const next = window.scrollY > 1;
+      if (next !== last) {
+        last = next;
+        setScrolled(next);
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -190,7 +197,7 @@ export function SiteHeader({
             <CurrencySwitcher transparent={transparent} />
             <button
               ref={hamburgerRef}
-              className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 ${
+              className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-cream ${
                 transparent ? "text-cream" : "text-black"
               }`}
               aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
@@ -232,7 +239,7 @@ export function SiteHeader({
         aria-hidden={!menuOpen}
         inert={!menuOpen}
       >
-        <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
+        <nav className="flex flex-col items-center text-center gap-2 flex-1 overflow-y-auto">
           {[
             { href: "/", label: t("home") },
             { href: "/transportation", label: t("driver") },
@@ -248,10 +255,10 @@ export function SiteHeader({
           ))}
           {/* Tours */}
           <div style={drawerItem(NAV_ITEMS.length)}>
-            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/65 mb-2">
               {t("tours")}
             </p>
-            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+            <div className="flex flex-col items-center gap-1">
               {[
                 {
                   href: "/tours/fixed-dates",
@@ -278,10 +285,10 @@ export function SiteHeader({
           </div>
           {/* Hotel / Regions */}
           <div style={drawerItem(NAV_ITEMS.length + 1)}>
-            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/65 mb-2">
               {t("hotels")}
             </p>
-            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+            <div className="flex flex-col items-center gap-1">
               {REGIONS.map((region) => (
                 <Link
                   key={region}
@@ -295,7 +302,7 @@ export function SiteHeader({
           </div>
         </nav>
         <div
-          className="border-t border-cream/20 pt-6 flex flex-col gap-4"
+          className="border-t border-cream/20 pt-6 flex flex-col items-center text-center gap-4"
           style={drawerItem(NAV_ITEMS.length + 2)}
         >
           <a
