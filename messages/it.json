@@ -412,5 +412,9 @@
     "noMatchesBody": "Prova a modificare i filtri o raccontaci cosa immagini e lo creiamo da zero.",
     "clearFilters": "Cancella filtri",
     "contactWhatsapp": "Contattaci su WhatsApp"
+  },
+  "pricingBlock": {
+    "baby": "Neonato (sotto i 2 anni)",
+    "free": "Gratis"
   }
 }

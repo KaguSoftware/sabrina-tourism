@@ -473,13 +473,6 @@ export function PremadePackageDetailPage({ pkg }: Props) {
         </section>
       )}
 
-      {/* Multi-person pricing */}
-      {pkg.pricing && (
-        <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(48px,6vw,80px)]">
-          <MultiPersonPrices pricing={pkg.pricing} />
-        </section>
-      )}
-
       {/* Tier selector */}
       {pkg.tiers && pkg.tiers.length > 0 && (() => {
         const tierCount = pkg.tiers.length;
@@ -605,6 +598,53 @@ export function PremadePackageDetailPage({ pkg }: Props) {
         );
       })()}
 
+      {/* Smaller pricing panel + inclusions directly underneath */}
+      {(pkg.pricing || pkg.included || pkg.notIncluded) && (
+        <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
+          {pkg.pricing && (
+            <div className="max-w-3xl mx-auto mb-12">
+              <MultiPersonPrices pricing={pkg.pricing} />
+            </div>
+          )}
+          {(pkg.included || pkg.notIncluded) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+              {pkg.included && (
+                <Reveal>
+                  <Kicker>{t("included")}</Kicker>
+                  <ul className="list-none p-0 mt-4">
+                    {pkg.included.map((x, i) => (
+                      <li key={i} className="flex items-center gap-3 py-2.5 border-b border-rule text-[14px] text-ink-soft">
+                        <span aria-hidden="true" className="text-ochre font-mono w-4 text-center shrink-0">+</span>
+                        <span className="flex-1">{x.text}</span>
+                        <span className="text-ochre shrink-0 w-4 flex items-center justify-center">
+                          <InclusionIcon name={x.icon} fallback="Check" />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              )}
+              {pkg.notIncluded && (
+                <Reveal delay={80}>
+                  <Kicker>{t("notIncluded")}</Kicker>
+                  <ul className="list-none p-0 mt-4">
+                    {pkg.notIncluded.map((x, i) => (
+                      <li key={i} className="flex items-center gap-3 py-2.5 border-b border-rule text-[14px] text-ink-soft">
+                        <span aria-hidden="true" className="text-muted font-mono w-4 text-center shrink-0">−</span>
+                        <span className="flex-1">{x.text}</span>
+                        <span className="text-muted shrink-0 w-4 flex items-center justify-center">
+                          <InclusionIcon name={x.icon} fallback="X" />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </Reveal>
+              )}
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Reserve section */}
       <ReserveSection pkg={pkg} tier={tier} onTierChange={setTier} dates={dates} selectedDateIdx={selectedDateIdx} setSelectedDateIdx={setSelectedDateIdx} selectedDate={selectedDate} locale={locale} />
 
@@ -621,46 +661,6 @@ export function PremadePackageDetailPage({ pkg }: Props) {
           </div>
           <div className="max-w-3xl mx-auto">
             <HotelCarousel images={pkg.gallery} hotelName={pkg.name} showThumbnails={false} />
-          </div>
-        </section>
-      )}
-
-      {/* Includes */}
-      {(pkg.included || pkg.notIncluded) && (
-        <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
-            {pkg.included && (
-              <Reveal>
-                <Kicker>{t("included")}</Kicker>
-                <ul className="list-none p-0 mt-6">
-                  {pkg.included.map((x, i) => (
-                    <li key={i} className="flex items-center gap-3 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                      <span aria-hidden="true" className="text-ochre font-mono w-4 text-center shrink-0">+</span>
-                      <span className="flex-1">{x.text}</span>
-                      <span className="text-ochre shrink-0 w-4 flex items-center justify-center">
-                        <InclusionIcon name={x.icon} fallback="Check" />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            )}
-            {pkg.notIncluded && (
-              <Reveal delay={80}>
-                <Kicker>{t("notIncluded")}</Kicker>
-                <ul className="list-none p-0 mt-6">
-                  {pkg.notIncluded.map((x, i) => (
-                    <li key={i} className="flex items-center gap-3 py-3.5 border-b border-rule text-[15px] text-ink-soft">
-                      <span aria-hidden="true" className="text-muted font-mono w-4 text-center shrink-0">−</span>
-                      <span className="flex-1">{x.text}</span>
-                      <span className="text-muted shrink-0 w-4 flex items-center justify-center">
-                        <InclusionIcon name={x.icon} fallback="X" />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </Reveal>
-            )}
           </div>
         </section>
       )}

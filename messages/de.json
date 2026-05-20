@@ -412,5 +412,9 @@
     "noMatchesBody": "Passen Sie Ihre Filter an oder schildern Sie uns Ihre Vorstellung und wir gestalten sie von Grund auf.",
     "clearFilters": "Filter löschen",
     "contactWhatsapp": "Kontaktieren Sie uns auf WhatsApp"
+  },
+  "pricingBlock": {
+    "baby": "Baby (unter 2)",
+    "free": "Kostenlos"
   }
 }

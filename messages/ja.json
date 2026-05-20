@@ -411,5 +411,9 @@
     "noMatchesBody": "フィルターを調整するか、ご希望をお聞かせいただければゼロから作成します。",
     "clearFilters": "フィルターをクリア",
     "contactWhatsapp": "WhatsAppでお問い合わせ"
+  },
+  "pricingBlock": {
+    "baby": "ベビー (2 歳未満)",
+    "free": "無料"
   }
 }

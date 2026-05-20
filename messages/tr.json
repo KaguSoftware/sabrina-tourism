@@ -632,7 +632,9 @@
     "doubleRoom": "Çift kişilik odada",
     "singleRoom": "Tek kişilik odada",
     "child": "Çocuk",
-    "babiesFree": "2 yaş altı bebekler ücretsiz seyahat eder."
+    "babiesFree": "2 yaş altı bebekler ücretsiz seyahat eder.",
+    "baby": "Bebek (2 yaş altı)",
+    "free": "Ücretsiz"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",

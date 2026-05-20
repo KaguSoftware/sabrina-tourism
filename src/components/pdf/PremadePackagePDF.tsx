@@ -277,16 +277,21 @@ function fmtPrice(amount: number, currency: string): string {
 function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSet }) {
   const pricing = pkg.pricing;
   if (!pricing) return null;
-  const allSlots: Array<{ icon: string; label: string; value: number | null | undefined }> = [
-    { icon: "user",    label: "Single",    value: pricing.onePerson },
-    { icon: "users",   label: "2 people",  value: pricing.twoPeople },
-    { icon: "baby",    label: "Baby",      value: pricing.baby },
-  ];
-  const slots = allSlots.filter(
-    (r): r is { icon: string; label: string; value: number } => r.value != null,
-  );
+  type PriceSlot = { icon: string; label: string; value: number; isFree: false };
+  type FreeSlot = { icon: string; label: string; isFree: true };
+  type Slot = PriceSlot | FreeSlot;
 
-  if (slots.length === 0 && pricing.singleRoomSupplement == null) return null;
+  const rawSlots: Array<{ icon: string; label: string; value: number | null | undefined }> = [
+    { icon: "user",  label: "Single",   value: pricing.onePerson },
+    { icon: "users", label: "2 people", value: pricing.twoPeople },
+  ];
+  const priceSlots: PriceSlot[] = rawSlots
+    .filter((s): s is { icon: string; label: string; value: number } => s.value != null)
+    .map((s) => ({ ...s, isFree: false }));
+
+  // Baby column is ALWAYS shown — babies under 2 travel free.
+  const babySlot: FreeSlot = { icon: "baby", label: "Baby (under 2)", isFree: true };
+  const allSlots: Slot[] = [...priceSlots, babySlot];
   const currency = pkg.currency ?? "USD";
 
   return (
@@ -294,17 +299,17 @@ function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSe
       <View style={{ borderBottomWidth: 1, borderBottomColor: C.ochre, paddingBottom: 8, marginBottom: 10 }}>
         <Mono style={{ color: C.ochre }} fonts={fonts}>GROUP RATES — PER PERSON ({currency.toUpperCase()})</Mono>
       </View>
-      {slots.length > 0 ? (
-        <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
-          {slots.map((slot, i) => (
-            <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
-              <PdfIcon name={slot.icon} size={18} color={C.ochre} />
-              <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(slot.label)}</Text>
-              <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>{fmtPrice(slot.value, currency)}</Text>
-            </View>
-          ))}
-        </View>
-      ) : null}
+      <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
+        {allSlots.map((slot, i) => (
+          <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
+            <PdfIcon name={slot.icon} size={18} color={C.ochre} />
+            <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(slot.label)}</Text>
+            <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: slot.isFree ? C.ochre : C.ink, textAlign: "center" }}>
+              {slot.isFree ? "FREE" : fmtPrice(slot.value, currency)}
+            </Text>
+          </View>
+        ))}
+      </View>
       {pricing.singleRoomSupplement != null ? (
         <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, marginTop: 8, textAlign: fonts.rtl ? "left" : "right" }}>
           {`+ ${fmtPrice(pricing.singleRoomSupplement, currency)} single-room supplement`}

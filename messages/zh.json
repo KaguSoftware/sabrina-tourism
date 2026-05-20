@@ -412,5 +412,9 @@
     "noMatchesBody": "请尝试调整筛选条件，或告诉我们您的设想，我们将从头为您定制。",
     "clearFilters": "清除筛选",
     "contactWhatsapp": "通过WhatsApp联系我们"
+  },
+  "pricingBlock": {
+    "baby": "婴儿 (2 岁以下)",
+    "free": "免费"
   }
 }

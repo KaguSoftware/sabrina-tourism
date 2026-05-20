@@ -635,7 +635,9 @@
     "doubleRoom": "In double room",
     "singleRoom": "In single room",
     "child": "Child",
-    "babiesFree": "Babies under 2 travel free."
+    "babiesFree": "Babies under 2 travel free.",
+    "baby": "Baby (under 2)",
+    "free": "Free"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
