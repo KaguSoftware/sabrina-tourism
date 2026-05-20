@@ -63,7 +63,7 @@ export function DailyListPage({ packages }: DailyListPageProps) {
 
       {/* Grid */}
       <section className="relative z-10 max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
-        <div className="flex flex-wrap items-center gap-3 mb-10">
+        <div className="flex flex-wrap items-center gap-4 mb-10">
           <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted">
             <span className="text-ochre font-display italic text-[18px] mr-1">
               {filtered.length}
@@ -71,21 +71,37 @@ export function DailyListPage({ packages }: DailyListPageProps) {
             {filtered.length === 1 ? "day available" : "days available"}
           </p>
 
-          <div className="flex items-center gap-2 ml-2">
-            {REGIONS.map((region) => (
-              <button
-                key={region}
-                onClick={() => setActiveRegion(activeRegion === region ? null : region)}
-                className={[
-                  "font-mono text-[11px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-full border transition-colors",
-                  activeRegion === region
-                    ? "border-ochre bg-ochre text-white"
-                    : "border-ink/20 text-ink/60 hover:border-ochre hover:text-ochre",
-                ].join(" ")}
-              >
-                {region}
-              </button>
-            ))}
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-ink/10 bg-surface">
+            <svg
+              className="w-3.5 h-3.5 text-ochre shrink-0"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 3h14M4 8h8M7 13h2" />
+            </svg>
+
+            {REGIONS.map((region) => {
+              const isActive = activeRegion === region;
+              return (
+                <button
+                  key={region}
+                  onClick={() => setActiveRegion(isActive ? null : region)}
+                  className="font-mono text-[11px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-lg border"
+                  style={{
+                    borderColor: isActive ? "var(--color-ochre)" : "transparent",
+                    color: isActive ? "var(--color-ochre)" : "rgba(0,0,0,0.4)",
+                    transform: isActive ? "scale(1.06)" : "scale(1)",
+                    transition: "color 200ms ease, border-color 200ms ease, transform 200ms cubic-bezier(0.34,1.56,0.64,1)",
+                  }}
+                >
+                  {region}
+                </button>
+              );
+            })}
           </div>
         </div>
 
