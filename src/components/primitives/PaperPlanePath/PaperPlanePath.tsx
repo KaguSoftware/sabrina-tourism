@@ -41,6 +41,9 @@ export function PaperPlanePath() {
   const displayProgressRef = useRef(0);
   const rafRef = useRef(0);
   const inViewRef = useRef(true);
+  // Track the last frame timestamp so the lerp can be framerate-independent:
+  // a high-refresh display (120Hz) should not converge twice as fast as 60Hz.
+  const lastTickRef = useRef(0);
 
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
@@ -143,30 +146,59 @@ export function PaperPlanePath() {
     return Math.min(1, Math.max(0, window.scrollY / docH));
   }, []);
 
-  const tick = useCallback(() => {
+  const tick = useCallback((now: number) => {
     const target = targetProgressRef.current;
     const display = displayProgressRef.current;
     const diff = target - display;
+    const absDiff = Math.abs(diff);
+
+    // Framerate-independent lerp via exponential decay: `1 - exp(-rate * dt)`.
+    // A higher decay rate = snappier convergence. We use TWO rates:
+    //   - a fast rate that kicks in on the first frame after a restart, so
+    //     the plane catches up immediately when you scroll after stopping;
+    //   - a softer steady-state rate for the tail of the easing so it still
+    //     glides into position rather than snapping.
+    const dt = lastTickRef.current
+      ? Math.min(0.05, (now - lastTickRef.current) / 1000) // clamp at 20fps worst-case
+      : 1 / 60;
+    lastTickRef.current = now;
 
     // Stop the loop when settled; resume on next scroll.
-    if (Math.abs(diff) < 0.0008) {
+    if (absDiff < 0.0005) {
       displayProgressRef.current = target;
       paint(target);
       rafRef.current = 0;
+      lastTickRef.current = 0;
       return;
     }
 
-    // Critically damped lerp — feels like silk on a trackpad, also tames
-    // wheel-event bursts so the plane never overshoots violently.
-    displayProgressRef.current = display + diff * 0.12;
+    // Adaptive decay rate: large remaining distance → snappy (rate ~18),
+    // small remaining distance → smooth (rate ~9). Maps roughly to alpha
+    // 0.26 → 0.14 per frame at 60fps, but stays consistent at any refresh.
+    const rate = absDiff > 0.04 ? 18 : 9 + absDiff * 225; // continuous blend
+    const alpha = 1 - Math.exp(-rate * dt);
+
+    displayProgressRef.current = display + diff * alpha;
     paint(displayProgressRef.current);
     rafRef.current = requestAnimationFrame(tick);
   }, [paint]);
 
   const requestTick = useCallback(() => {
     if (rafRef.current) return;
+    // Restart impulse: close 45% of the gap immediately so the plane never
+    // feels frozen when you start scrolling after a pause. Without this,
+    // small scroll deltas (a single trackpad tick = ~1% of doc) take many
+    // frames for the lerp to make them visibly large.
+    const target = targetProgressRef.current;
+    const display = displayProgressRef.current;
+    const diff = target - display;
+    if (Math.abs(diff) > 0.0005) {
+      displayProgressRef.current = display + diff * 0.45;
+      paint(displayProgressRef.current);
+    }
+    lastTickRef.current = 0;
     rafRef.current = requestAnimationFrame(tick);
-  }, [tick]);
+  }, [tick, paint]);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia(
