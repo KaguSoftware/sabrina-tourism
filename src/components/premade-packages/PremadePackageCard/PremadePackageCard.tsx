@@ -5,10 +5,7 @@ import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
-
-function formatDate(iso: string): string {
-  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
-}
+import { formatDate } from "@/lib/format/date";
 
 interface PremadePackageCardProps {
   pkg: PremadePackagePublic;
@@ -34,7 +31,7 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
           <div className="absolute top-4 left-4 bg-navy/80 backdrop-blur-sm px-3 py-2 flex flex-col gap-0.5">
             <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre">Group Tour</span>
             <span className="font-mono text-[11px] tracking-[0.12em] text-cream">
-              {formatDate(pkg.startDate)} — {formatDate(pkg.endDate)}
+              {formatDate(pkg.startDate, "en-GB")} — {formatDate(pkg.endDate, "en-GB")}
             </span>
           </div>
           {pkg.season && (
