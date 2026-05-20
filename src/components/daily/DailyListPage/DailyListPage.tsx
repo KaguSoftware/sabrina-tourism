@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -9,6 +10,9 @@ import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPacka
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
+const REGIONS = ["Istanbul", "Antalya", "Cappadocia"] as const;
+type Region = (typeof REGIONS)[number];
+
 interface DailyListPageProps {
   packages: DailyPackagePublic[];
 }
@@ -17,6 +21,11 @@ export function DailyListPage({ packages }: DailyListPageProps) {
   const locale = useLocale();
   const t = useTranslations("packageList");
   const localePfx = locale === "en" ? "" : `/${locale}`;
+  const [activeRegion, setActiveRegion] = useState<Region | null>(null);
+
+  const filtered = activeRegion
+    ? packages.filter((p) => p.region.toLowerCase() === activeRegion.toLowerCase())
+    : packages;
   return (
     <>
       {/* Hero — matches PackageListPage exactly */}
@@ -54,14 +63,33 @@ export function DailyListPage({ packages }: DailyListPageProps) {
 
       {/* Grid */}
       <section className="relative z-10 max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
-        <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
-          <span className="text-ochre font-display italic text-[18px] mr-1">
-            {packages.length}
-          </span>
-          {packages.length === 1 ? "day available" : "days available"}
-        </p>
+        <div className="flex flex-wrap items-center gap-3 mb-10">
+          <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted">
+            <span className="text-ochre font-display italic text-[18px] mr-1">
+              {filtered.length}
+            </span>
+            {filtered.length === 1 ? "day available" : "days available"}
+          </p>
 
-        {packages.length === 0 ? (
+          <div className="flex items-center gap-2 ml-2">
+            {REGIONS.map((region) => (
+              <button
+                key={region}
+                onClick={() => setActiveRegion(activeRegion === region ? null : region)}
+                className={[
+                  "font-mono text-[11px] tracking-[0.14em] uppercase px-3 py-1.5 rounded-full border transition-colors",
+                  activeRegion === region
+                    ? "border-ochre bg-ochre text-white"
+                    : "border-ink/20 text-ink/60 hover:border-ochre hover:text-ochre",
+                ].join(" ")}
+              >
+                {region}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {filtered.length === 0 ? (
           <div className="py-20 text-center max-w-[480px] mx-auto flex flex-col items-center gap-6">
             <Kicker>{t("noMatchesKicker")}</Kicker>
             <p className="font-display text-[clamp(22px,2.4vw,30px)] text-ink leading-[1.3]">
@@ -86,7 +114,7 @@ export function DailyListPage({ packages }: DailyListPageProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-            {packages.map((pkg, i) => (
+            {filtered.map((pkg, i) => (
               <Reveal key={pkg.id} delay={i * 70}>
                 <DailyPackageCard pkg={pkg} priority={i < 3} />
               </Reveal>

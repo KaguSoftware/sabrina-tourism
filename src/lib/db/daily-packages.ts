@@ -153,6 +153,7 @@ async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}
   let q = supabase.from('daily_packages').select(SELECT).order('sort_order');
   if (publishedOnly) q = q.eq('is_published', true);
   const { data, error } = await q;
+
   if (error) { console.error('[db/daily] getAllDailyPackages:', error); return []; }
   const notIncludedById = await fetchNotIncludedByPackageIds(supabase, (data ?? []).map((row: { id: string }) => row.id));
   return (data ?? []).map((row: DailyPackageRaw) => assemble({ ...row, daily_package_not_included: notIncludedById.get(row.id) ?? [] }, locale));
@@ -172,7 +173,7 @@ export async function getAllDailyPackages(opts?: { publishedOnly?: boolean; loca
   const locale = opts?.locale ?? 'en';
   return unstable_cache(
     () => _getAllDailyPackages({ publishedOnly, locale }),
-    ['daily:all', String(publishedOnly), locale],
+    ['daily:all:v2', String(publishedOnly), locale],
     { tags: [tags.daily.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }
