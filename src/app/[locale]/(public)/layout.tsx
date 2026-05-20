@@ -1,7 +1,13 @@
+import dynamic from "next/dynamic";
 import { SiteHeader } from "@/components/layout/SiteHeader/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter/SiteFooter";
-import { PaperPlanePath } from "@/components/primitives/PaperPlanePath/PaperPlanePath";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
+
+// PaperPlanePath does heavy DOM measurement; defer it past LCP via dynamic import.
+const PaperPlanePath = dynamic(
+  () => import("@/components/primitives/PaperPlanePath/PaperPlanePath").then((m) => m.PaperPlanePath),
+  { loading: () => null },
+);
 import { getAllHotels, type HotelPublic } from "@/lib/db/hotels";
 import { REGIONS } from "@/lib/packages/constants";
 import type { Region } from "@/components/layout/SiteHeader/NavHotel";

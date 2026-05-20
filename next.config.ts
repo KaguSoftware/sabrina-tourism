@@ -58,6 +58,7 @@ const nextConfig: NextConfig = {
       "@hookform/resolvers",
       "zod",
       "next-intl",
+      "framer-motion",
     ],
   },
   webpack: (config) => {

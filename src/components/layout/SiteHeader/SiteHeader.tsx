@@ -117,6 +117,7 @@ export function SiteHeader({
   const t = useTranslations("nav");
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
   useLayoutEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 1);
@@ -134,6 +135,18 @@ export function SiteHeader({
     return () => {
       document.body.style.overflow = "";
     };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        requestAnimationFrame(() => hamburgerRef.current?.focus());
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
   const localePfx = locale === "en" ? "" : `/${locale}`;
@@ -244,10 +257,13 @@ export function SiteHeader({
             <LanguageSwitcher transparent={transparent} />
             <CurrencySwitcher transparent={transparent} />
             <button
+              ref={hamburgerRef}
               className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 ${
                 transparent ? "text-cream" : "text-black"
               }`}
               aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-drawer"
               onClick={() => setMenuOpen((o) => !o)}
             >
               <span
@@ -272,6 +288,7 @@ export function SiteHeader({
 
       {/* Mobile overlay — slides in from the end edge (right in LTR, left in RTL) */}
       <div
+        id="mobile-nav-drawer"
         className={`md:hidden fixed top-16 md:top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
           menuOpen
             ? "translate-x-0"
@@ -280,6 +297,7 @@ export function SiteHeader({
         role="dialog"
         aria-modal="true"
         aria-hidden={!menuOpen}
+        inert={!menuOpen}
       >
         <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
           {[

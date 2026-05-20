@@ -8,9 +8,9 @@ import { FeaturedHotels } from "@/components/home/FeaturedHotels/FeaturedHotels"
 import { HowItWorks } from "@/components/home/HowItWorks/HowItWorks";
 import { QuoteStrip } from "@/components/home/QuoteStrip/QuoteStrip";
 import { getSiteContentBatch } from "@/lib/db/site-content";
-import { getAllPremadePackages } from "@/lib/db/premade-packages";
+import { getAllPremadePackages, type PremadePackagePublic } from "@/lib/db/premade-packages";
 import { getAllDailyPackages } from "@/lib/db/daily-packages";
-import { getFeaturedHotels } from "@/lib/db/hotels";
+import { getFeaturedHotels, type HotelPublic } from "@/lib/db/hotels";
 import type { Step } from "@/components/home/HowItWorks/types";
 
 export const revalidate = 604800;
@@ -42,13 +42,33 @@ const HOME_KEYS = [
   "home_quote",
 ] as const;
 
-async function SignatureSection({ heading, kicker, ctaLabel, locale }: { heading: string; kicker: string; ctaLabel: string; locale: string }) {
-  const groupPackages = await getAllPremadePackages({ locale });
+async function SignatureSection({
+  heading,
+  kicker,
+  ctaLabel,
+  packagesPromise,
+}: {
+  heading: string;
+  kicker: string;
+  ctaLabel: string;
+  packagesPromise: Promise<PremadePackagePublic[]>;
+}) {
+  const groupPackages = await packagesPromise;
   return <SignatureDestinations packages={groupPackages.slice(0, 3)} heading={heading} kicker={kicker} ctaLabel={ctaLabel} />;
 }
 
-async function FeaturedHotelsSection({ heading, kicker, ctaLabel, locale }: { heading: string; kicker: string; ctaLabel: string; locale: string }) {
-  const featuredHotels = await getFeaturedHotels(locale);
+async function FeaturedHotelsSection({
+  heading,
+  kicker,
+  ctaLabel,
+  hotelsPromise,
+}: {
+  heading: string;
+  kicker: string;
+  ctaLabel: string;
+  hotelsPromise: Promise<HotelPublic[]>;
+}) {
+  const featuredHotels = await hotelsPromise;
   return <FeaturedHotels sectionHeading={heading} hotels={featuredHotels} kicker={kicker} ctaLabel={ctaLabel} />;
 }
 
@@ -56,6 +76,12 @@ const SectionFallback = () => <div className="min-h-[40vh]" />;
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+
+  // Kick off all queries in parallel. The two large ones flow through Suspense
+  // so they don't block initial paint, but they still start fetching now.
+  const premadePromise = getAllPremadePackages({ locale });
+  const featuredHotelsPromise = getFeaturedHotels(locale);
+
   const [content, dailyPackages] = await Promise.all([
     getSiteContentBatch(HOME_KEYS, locale),
     getAllDailyPackages({ locale }),
@@ -85,7 +111,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           heading={groupPackages.section_heading ?? "Four corners of the country."}
           kicker={groupPackages.kicker ?? "Our Group Packages"}
           ctaLabel={groupPackages.cta_label ?? "See all group packages"}
-          locale={locale}
+          packagesPromise={premadePromise}
         />
       </Suspense>
       <FeaturedPackages
@@ -99,7 +125,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           heading={featuredHotelsHeading.section_heading ?? "Where comfort meets culture"}
           kicker={featuredHotelsHeading.kicker ?? "Featured hotels"}
           ctaLabel={featuredHotelsHeading.cta_label ?? "See all hotels"}
-          locale={locale}
+          hotelsPromise={featuredHotelsPromise}
         />
       </Suspense>
       <HowItWorks

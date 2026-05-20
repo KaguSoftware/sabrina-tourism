@@ -5,6 +5,7 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { packageMessage } from "@/lib/whatsapp/whatsapp";
+import { openWhatsApp } from "@/lib/whatsapp/open";
 import { PEOPLE_OPTIONS } from "@/lib/packages/constants";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 
@@ -44,8 +45,6 @@ export function PackageCTAStrip({
       : "";
   const singleRoomSuffix = isOneGuest && singleRoom ? tWa("singleRoomSuffix") : "";
 
-  // TODO: i18n — once the translation key `packageDetail.ctaPreview` (or
-  // `whatsapp.ctaPreview`) is added to messages/*.json, prefer t("ctaPreview", {...}).
   const ctaPreviewParams = {
     packageName,
     tierName,
@@ -164,6 +163,9 @@ export function PackageCTAStrip({
                   type="number"
                   min={0}
                   max={17}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  aria-label={t("childAge")}
                   value={child.age}
                   onChange={(e) => updateChildAge(child.id, e.target.value)}
                   className="w-20 border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
@@ -232,7 +234,7 @@ export function PackageCTAStrip({
             onClick={() => {
               setSubmitted(true);
               if (!date) return;
-              window.open(waHref, "_blank", "noopener,noreferrer");
+              openWhatsApp(waHref);
             }}
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
             className="inline-flex items-center gap-4 px-10 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] group"

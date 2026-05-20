@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
 import { createPortal } from "react-dom";
 
 const TOOLTIP_W = 200;
@@ -9,6 +9,7 @@ export function InfoTooltip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef<HTMLButtonElement>(null);
+  const tooltipId = useId();
 
   function calcPos() {
     if (!btnRef.current) return;
@@ -28,11 +29,16 @@ export function InfoTooltip({ text }: { text: string }) {
     function handleOutside(e: MouseEvent | TouchEvent) {
       if (btnRef.current && !btnRef.current.contains(e.target as Node)) setOpen(false);
     }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
     document.addEventListener("mousedown", handleOutside);
     document.addEventListener("touchstart", handleOutside);
+    document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("mousedown", handleOutside);
       document.removeEventListener("touchstart", handleOutside);
+      document.removeEventListener("keydown", handleKey);
     };
   }, [open]);
 
@@ -46,9 +52,13 @@ export function InfoTooltip({ text }: { text: string }) {
       <button
         ref={btnRef}
         type="button"
-        aria-label="More information"
+        aria-label={text}
+        aria-describedby={open ? tooltipId : undefined}
+        aria-expanded={open}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
         onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); setOpen((o) => !o); }}
         className="w-4.5 h-4.5 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 hover:scale-110"
@@ -61,6 +71,8 @@ export function InfoTooltip({ text }: { text: string }) {
       </button>
       {open && typeof document !== "undefined" && createPortal(
         <span
+          id={tooltipId}
+          role="tooltip"
           style={{ top: pos.top, left: pos.left, width: TOOLTIP_W, transform: "translateY(calc(-100% - 10px))" }}
           className="fixed z-[9999] px-3 py-2.5 rounded bg-navy text-cream text-[12px] font-sans font-normal normal-case tracking-normal leading-relaxed shadow-xl pointer-events-none"
         >

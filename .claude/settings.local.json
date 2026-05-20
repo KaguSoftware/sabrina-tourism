@@ -77,7 +77,10 @@
       "Bash(git fetch *)",
       "Read(//tmp/**)",
       "Bash(git commit *)",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(grep -E \"^\\(C:\\\\\\\\\\\\\\\\|\\\\s+\\\\d+:\\\\d+\\\\s+error\\)\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
