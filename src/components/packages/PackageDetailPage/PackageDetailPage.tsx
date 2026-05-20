@@ -16,11 +16,14 @@ const PackageLightbox = dynamic(
   { ssr: false, loading: () => null },
 );
 
-const VALID_TIERS = ["Essential", "Signature", "Private"];
-
 export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTier = "" }: PackageDetailPageProps) {
   const t = useTranslations("packageDetail");
-  const initialTier = VALID_TIERS.includes(seedTier) ? seedTier : "Signature";
+  const availableTierNames = (pkg.tiers ?? []).map((tr) => tr.name);
+  const initialTier = availableTierNames.includes(seedTier as (typeof availableTierNames)[number])
+    ? seedTier
+    : availableTierNames.includes("Signature")
+      ? "Signature"
+      : availableTierNames[0] ?? "";
   const [tier, setTier] = useState(initialTier);
   const [openDay, setOpenDay] = useState(1);
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -55,7 +58,21 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
     return () => window.removeEventListener("keydown", onKey);
   }, [lightbox, pkg, closeLightbox]);
 
-  const activeTier = pkg.tiers.find((t) => t.name === tier) ?? pkg.tiers[0];
+  const tiers = pkg.tiers as ReadonlyArray<(typeof pkg.tiers)[number]>;
+  if (!tiers || tiers.length === 0) {
+    const noTiersLabel = t.has("noTiersAvailable")
+      ? t("noTiersAvailable")
+      : "Pricing details are not available for this package yet.";
+    return (
+      <main className="min-h-[60vh] flex items-center justify-center px-6">
+        <div className="text-center max-w-md">
+          <h1 className="font-display text-3xl text-ink mb-3">{pkg.name}</h1>
+          <p className="text-ink-soft">{noTiersLabel}</p>
+        </div>
+      </main>
+    );
+  }
+  const activeTier = tiers.find((t) => t.name === tier) ?? tiers[0];
 
   const scrollToReserveInputs = () => {
     document
@@ -84,6 +101,7 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
       <PackageCTAStrip
         packageName={pkg.name}
         tierName={tier}
+        availableTiers={availableTierNames}
         date={date}
         people={people}
         onDateChange={setDate}

@@ -69,9 +69,21 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
           .map((id, i) => {
             const destination = DESTINATIONS.find((d) => d.id === id);
             const days = (state.destinationDays ?? {})[id];
-            return `${ordinal(i + 1, locale)} ${destination?.label ?? id}${
-              days ? `: ${days} day${days === "1" ? "" : "s"}` : ""
-            }`;
+            const n = Number(days) || 0;
+            let daysSuffix = "";
+            if (n > 0) {
+              try {
+                const formatted = new Intl.NumberFormat(locale, {
+                  style: "unit",
+                  unit: "day",
+                  unitDisplay: "long",
+                }).format(n);
+                daysSuffix = `: ${formatted}`;
+              } catch {
+                daysSuffix = `: ${n} ${n === 1 ? "day" : "days"}`;
+              }
+            }
+            return `${ordinal(i + 1, locale)} ${destination?.label ?? id}${daysSuffix}`;
           })
           .join("; ")
       : "";

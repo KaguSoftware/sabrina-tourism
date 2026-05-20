@@ -635,7 +635,9 @@
     "doubleRoom": "In double room",
     "singleRoom": "In single room",
     "child": "Child",
-    "babiesFree": "Babies under 2 travel free."
+    "babiesFree": "Babies under 2 travel free.",
+    "baby": "Baby (under 2)",
+    "free": "Free"
   },
   "packageDetail": {
     "routeInBrief": "The route, in brief",
@@ -643,6 +645,7 @@
     "theItinerary": "The itinerary.",
     "chooseYourTier": "Choose your tier",
     "threeWaysToTravel": "Three ways to travel this route.",
+    "waysToTravelRoute": "{count, plural, =1 {One way} =2 {Two ways} =3 {Three ways} other {# ways}} to travel this route.",
     "essentialSignature": "Essential & Signature",
     "essentialSignatureDesc": "Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
     "essentialSignatureDescShort": "Small-group departures on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",

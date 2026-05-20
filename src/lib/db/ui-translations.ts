@@ -9,11 +9,14 @@ type AnyClient = any;
 
 async function _getUIMessages(locale: string): Promise<Record<string, unknown> | null> {
   const sb = createAnonClient() as AnyClient;
-  const { data } = await sb
+  const { data, error } = await sb
     .from("ui_translations")
     .select("data")
     .eq("locale", locale)
     .single();
+  if (error && error.code !== "PGRST116") {
+    console.error("[db/ui-translations] _getUIMessages:", error);
+  }
   return (data?.data as Record<string, unknown>) ?? null;
 }
 
@@ -26,7 +29,10 @@ export const getUIMessages = (locale: string) =>
 
 export async function loadAllUIMessages(): Promise<Record<string, Record<string, unknown>>> {
   const sb = createAnonClient() as AnyClient;
-  const { data } = await sb.from("ui_translations").select("locale, data");
+  const { data, error } = await sb.from("ui_translations").select("locale, data");
+  if (error) {
+    console.error("[db/ui-translations] loadAllUIMessages:", error);
+  }
   const result: Record<string, Record<string, unknown>> = {};
   for (const row of ((data ?? []) as Array<{ locale: string; data: unknown }>)) {
     result[row.locale] = row.data as Record<string, unknown>;

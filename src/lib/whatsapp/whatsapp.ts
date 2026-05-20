@@ -34,8 +34,9 @@ export function packageMessage(ctx: PackageMessageContext): string {
       ? `, with ${ctx.childrenAges.length} child(ren) (ages ${ctx.childrenAges.join(", ")})`
       : "";
   const singleRoomSuffix = ctx.singleRoom ? ", single-room occupancy" : "";
+  const tierLabel = ctx.tier || "selected";
   return waLink(
-    `Hey Sabrina — I'd like to reserve "${ctx.name}" at the ${ctx.tier} tier for ${ctx.count} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${ctx.date}. Could you confirm availability?`
+    `Hey Sabrina — I'd like to reserve "${ctx.name}" at the ${tierLabel} tier for ${ctx.count} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${ctx.date}. Could you confirm availability?`
   );
 }
 

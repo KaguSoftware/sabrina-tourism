@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import { HotelBookingPanel } from "@/components/primitives/HotelBookingPanel/HotelBookingPanel";

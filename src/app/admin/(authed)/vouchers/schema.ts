@@ -90,6 +90,9 @@ export const voucherSchema = z
       if (!v.dropoffLocation.trim()) ctx.addIssue({ code: "custom", path: ["dropoffLocation"], message: "Dropoff location is required" });
       if (!ISO_DATE.test(v.pickupDate)) ctx.addIssue({ code: "custom", path: ["pickupDate"], message: "Pick a pickup date" });
     }
+    if (v.qty > 0 && v.unitPrice <= 0) {
+      ctx.addIssue({ code: "custom", path: ["unitPrice"], message: "Unit price must be greater than 0" });
+    }
   });
 
 export type VoucherPayload = z.infer<typeof voucherSchema>;

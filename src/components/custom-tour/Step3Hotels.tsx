@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
@@ -95,6 +95,23 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
                   {region}
                 </h3>
               </div>
+
+              {hotels.length === 0 && (
+                <div className="border border-rule bg-cream-warm px-6 py-8 text-center">
+                  <p className="text-ink-soft text-[14px] leading-[1.6]">
+                    {t.has("noHotelsInRegion")
+                      ? t("noHotelsInRegion", { region })
+                      : `No partner hotels available in ${region} yet. Please choose a different region.`}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={onBack}
+                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ochre hover:text-ink transition-colors"
+                  >
+                    ← {t.has("chooseAnotherRegion") ? t("chooseAnotherRegion") : "Choose another region"}
+                  </button>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {hotels.map((hotel) => {

@@ -353,6 +353,7 @@
     "theItinerary": "The itinerary.",
     "chooseYourTier": "Choose your tier",
     "threeWaysToTravel": "Three ways to travel this route.",
+    "waysToTravelRoute": "{count, plural, =1 {One way} =2 {Two ways} =3 {Three ways} other {# ways}} to travel this route.",
     "essentialSignature": "Essential & Signature",
     "essentialSignatureDesc": "Small-group departures (up to 8 guests) on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
     "essentialSignatureDescShort": "Small-group departures on fixed dates. You travel alongside other like-minded guests — ideal for solo travellers or couples who enjoy a social dynamic.",
@@ -410,5 +411,9 @@
     "noMatchesBody": "フィルターを調整するか、ご希望をお聞かせいただければゼロから作成します。",
     "clearFilters": "フィルターをクリア",
     "contactWhatsapp": "WhatsAppでお問い合わせ"
+  },
+  "pricingBlock": {
+    "baby": "ベビー (2 歳未満)",
+    "free": "無料"
   }
 }

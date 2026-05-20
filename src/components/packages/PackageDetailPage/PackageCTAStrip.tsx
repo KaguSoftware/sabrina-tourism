@@ -5,12 +5,13 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeading/GoldUnderlineHeading";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { packageMessage } from "@/lib/whatsapp/whatsapp";
-import { PEOPLE_OPTIONS, TIER_LABELS } from "@/lib/packages/constants";
+import { PEOPLE_OPTIONS } from "@/lib/packages/constants";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 
 export function PackageCTAStrip({
   packageName,
   tierName,
+  availableTiers,
   date,
   people,
   onDateChange,
@@ -19,6 +20,7 @@ export function PackageCTAStrip({
 }: {
   packageName: string;
   tierName: string;
+  availableTiers: readonly string[];
   date: string;
   people: string;
   onDateChange: (v: string) => void;
@@ -184,12 +186,13 @@ export function PackageCTAStrip({
           </div>
         </Reveal>
 
-        {/* Tier */}
+        {/* Tier — only show selector if more than one tier is available */}
+        {availableTiers.length > 1 && (
         <Reveal delay={220}>
           <div className="flex flex-col gap-2 mb-10 max-w-140">
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("tierLabel")}</span>
             <div className="flex flex-wrap gap-2">
-              {TIER_LABELS.map((t) => {
+              {availableTiers.map((t) => {
                 const active = tierName === t;
                 return (
                   <button
@@ -211,6 +214,7 @@ export function PackageCTAStrip({
             </div>
           </div>
         </Reveal>
+        )}
 
         {/* Message preview */}
         <Reveal delay={240}>

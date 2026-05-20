@@ -54,7 +54,7 @@ export interface Package {
   cardImage?: string;
   gallery: string[];
   itinerary: ItineraryDay[];
-  tiers: [Tier, Tier, Tier];
+  tiers: Tier[];
   included: InclusionItem[];
   notIncluded: InclusionItem[];
   minPeople: number;

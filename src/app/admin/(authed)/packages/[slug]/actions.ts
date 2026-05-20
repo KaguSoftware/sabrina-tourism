@@ -98,5 +98,7 @@ async function resolveUniqueSlug(base: string): Promise<string> {
 
 // Called after successful create to navigate — must be called from client via redirect
 export async function redirectAfterCreate(slug: string): Promise<never> {
+  const auth = await requireAuth();
+  if (auth.error) redirect("/admin/login");
   redirect(`/admin/packages/${slug}`);
 }
