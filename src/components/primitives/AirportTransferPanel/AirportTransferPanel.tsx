@@ -149,10 +149,10 @@ export function AirportTransferPanel({ airports, vehicles, hotelName, onSave }: 
           </Field>
           <div className="grid grid-cols-2 gap-2 col-span-1">
             <Field label={t("passengers")}>
-              <input type="number" min="1" value={passengers} onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
+              <input type="number" min="1" inputMode="numeric" pattern="[0-9]*" value={passengers} onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
             </Field>
             <Field label={t("luggageBags")}>
-              <input type="number" min="0" max="20" value={luggage} onChange={(e) => setLuggage(e.target.value)} className={fieldCls} />
+              <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={luggage} onChange={(e) => setLuggage(e.target.value)} className={fieldCls} />
             </Field>
           </div>
         </div>

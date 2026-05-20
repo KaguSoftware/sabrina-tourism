@@ -2,5 +2,5 @@ export interface RevealProps {
   children: React.ReactNode;
   delay?: number;
   className?: string;
-  as?: keyof React.JSX.IntrinsicElements;
+  as?: "div" | "section" | "article" | "aside" | "header" | "footer" | "main" | "nav" | "ul" | "ol" | "li" | "span" | "p";
 }

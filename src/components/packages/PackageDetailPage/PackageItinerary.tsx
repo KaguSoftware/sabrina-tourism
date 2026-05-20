@@ -45,9 +45,13 @@ export function PackageItinerary({
         <span className="absolute left-[6px] top-3 bottom-3 w-px bg-rule" aria-hidden="true" />
         {itinerary.map((day, i) => {
           const isOpen = openDay === day.day;
+          const btnId = `itinerary-day-${day.day}-trigger`;
+          const panelId = `itinerary-day-${day.day}-panel`;
           return (
             <Reveal key={day.day} as="li" delay={i * 70} className="relative">
               <button
+                id={btnId}
+                aria-controls={panelId}
                 className="w-full text-left grid grid-cols-[auto_80px_1fr_auto] sm:grid-cols-[auto_100px_1fr_auto] gap-4 sm:gap-6 items-center py-5 border-b border-rule"
                 onClick={() => onToggle(day.day)}
                 aria-expanded={isOpen}
@@ -61,7 +65,13 @@ export function PackageItinerary({
                   {isOpen ? "−" : "+"}
                 </span>
               </button>
-              <div className={`timeline-body ${isOpen ? "open" : ""} pl-[148px] sm:pl-[168px]`}>
+              <div
+                id={panelId}
+                role="region"
+                aria-labelledby={btnId}
+                hidden={!isOpen}
+                className={`timeline-body ${isOpen ? "open" : ""} pl-[148px] sm:pl-[168px]`}
+              >
                 <div className="timeline-body-inner">
                   <p className="pt-2 pb-6 text-ink-soft leading-[1.65] max-w-[64ch]">{day.description}</p>
                 </div>

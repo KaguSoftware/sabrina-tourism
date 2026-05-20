@@ -7,6 +7,7 @@ import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { FleetIllustration } from "@/components/illustrations/FleetIllustration/FleetIllustration";
 import { transferMessage } from "@/lib/whatsapp/whatsapp";
+import { openWhatsApp } from "@/lib/whatsapp/open";
 import { TransportFormField, fieldCls, selectCls } from "./TransportFormField";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
@@ -169,7 +170,7 @@ export function AirportForm({
         </TransportFormField>
 
         <TransportFormField label={t("passengers")}>
-          <input type="number" min="1" value={passengers}
+          <input type="number" min="1" inputMode="numeric" pattern="[0-9]*" value={passengers}
             onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
         </TransportFormField>
       </div>
@@ -345,9 +346,10 @@ export function AirportForm({
           }
         >
           <input
-            type="number" min="0" max="20" value={luggage}
+            type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={luggage}
             onChange={(e) => setLuggage(e.target.value)}
             className={`${fieldCls} ${luggageExceedsSingle || luggageExceedsMulti ? "border-terracotta" : ""}`}
+            aria-invalid={Boolean(luggageExceedsSingle || luggageExceedsMulti)}
           />
         </TransportFormField>
 
@@ -453,7 +455,7 @@ export function AirportForm({
         <button
           type="button"
           disabled={!canSubmit}
-          onClick={() => { setSubmitted(true); if (!canSubmit) return; window.open(href, "_blank", "noopener,noreferrer"); }}
+          onClick={() => { setSubmitted(true); if (!canSubmit) return; openWhatsApp(href); }}
           style={canSubmit ? { backgroundColor: "#0b1a2e", color: "#c99a3f" } : { backgroundColor: "#d6cfc7", color: "#9a9087", cursor: "not-allowed" }}
           className="inline-flex items-center gap-3.5 px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold transition-all duration-300 whitespace-nowrap group shadow-none disabled:shadow-none enabled:shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] enabled:hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] enabled:hover:scale-[1.02] enabled:active:scale-[0.99]"
         >

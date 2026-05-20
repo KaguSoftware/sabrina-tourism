@@ -9,6 +9,7 @@ import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
+import { openWhatsApp } from "@/lib/whatsapp/open";
 import { useLocale, useTranslations } from "next-intl";
 import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
@@ -287,7 +288,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
         <Reveal delay={280}>
           <button
             type="button"
-            onClick={() => window.open(waHref, "_blank", "noopener,noreferrer")}
+            onClick={() => openWhatsApp(waHref)}
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
             className="inline-flex items-center gap-4 px-10 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] group"
           >

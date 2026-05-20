@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { AnimatePresence, m } from "framer-motion";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { AirportForm } from "./AirportForm";
@@ -97,9 +98,19 @@ export function TransportationPage({ heroHeadingTop, heroHeadingEm, heroSub, air
             />
           </div>
 
-          {mode === "airport"
-            ? <AirportForm vehicleId={vehicleId} setVehicleId={setVehicleId} airports={airports} vehicles={vehicles} />
-            : <CustomForm vehicleId={vehicleId} setVehicleId={setVehicleId} vehicles={vehicles} />}
+          <AnimatePresence mode="wait">
+            <m.div
+              key={mode}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.24, ease: [0.22, 0.61, 0.36, 1] }}
+            >
+              {mode === "airport"
+                ? <AirportForm vehicleId={vehicleId} setVehicleId={setVehicleId} airports={airports} vehicles={vehicles} />
+                : <CustomForm vehicleId={vehicleId} setVehicleId={setVehicleId} vehicles={vehicles} />}
+            </m.div>
+          </AnimatePresence>
         </div>
       </section>
     </>

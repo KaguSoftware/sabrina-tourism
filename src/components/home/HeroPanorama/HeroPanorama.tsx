@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { DEFAULT_LOCALE } from "@/i18n/locales";
+import { KenBurnsImage } from "./KenBurnsImage";
 interface HeroPanoramaProps {
   headlineTop: string;
   headlineEm: string;
@@ -23,26 +23,17 @@ export async function HeroPanorama({
   const locale = await getLocale();
   const localePfx = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
   return (
-    <section className="relative aspect-[1716/917] max-h-screen w-full flex items-center pt-[clamp(120px,18vw,200px)] pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
+    <section className="relative w-full min-h-160 md:min-h-190 lg:min-h-215 max-h-screen flex items-center pt-[max(140px,clamp(140px,18vw,220px))] pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
-      <div className="absolute inset-0 z-[-1]">
-        <Image
-          src="/Istanbul_Alternative1.webp"
-          alt="Hero panorama"
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-          priority
-          fetchPriority="high"
-          quality={85}
-        />
+      <div className="absolute inset-0 z-[-1] overflow-hidden">
+        <KenBurnsImage src="/Istanbul_Alternative1.webp" alt="Hero panorama" />
         <div className="absolute inset-0 bg-cream/50" aria-hidden="true" />
       </div>
 
       {/* Content */}
       <div className="relative z-5 inline-block max-w-200">
         <div
-          className="absolute -left-5 -right-56 -inset-y-6 bg-black/20 rounded-xl"
+          className="absolute -left-5 -right-10 sm:-right-20 md:-right-56 -inset-y-6 bg-black/20 rounded-xl"
           aria-hidden="true"
         />
         <Reveal delay={140}>

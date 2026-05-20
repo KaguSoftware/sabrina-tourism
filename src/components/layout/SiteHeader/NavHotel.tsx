@@ -1,9 +1,10 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
 import type { HotelPublic } from "@/lib/db/hotels";
 
@@ -30,16 +31,74 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
   const t = useTranslations("nav");
   const pfx = locale === "en" ? "" : `/${locale}`;
   const [open, setOpen] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const triggerRef = useRef<HTMLAnchorElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+
+  const clearClose = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
+  const scheduleClose = useCallback(() => {
+    clearClose();
+    closeTimeoutRef.current = setTimeout(() => setOpen(false), 120);
+  }, []);
 
   function handleMouseEnter() {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    clearClose();
     setOpen(true);
   }
 
-  function handleMouseLeave() {
-    timeoutRef.current = setTimeout(() => setOpen(false), 120);
+  function handleTriggerKeyDown(e: React.KeyboardEvent<HTMLAnchorElement>) {
+    if (e.key === "ArrowDown" || e.key === " " || (e.key === "Enter" && !open)) {
+      e.preventDefault();
+      setOpen(true);
+      requestAnimationFrame(() => itemRefs.current[0]?.focus());
+    } else if (e.key === "Escape" && open) {
+      e.preventDefault();
+      setOpen(false);
+    }
   }
+
+  function handleItemKeyDown(e: React.KeyboardEvent<HTMLAnchorElement>, idx: number) {
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      e.preventDefault();
+      const next = (idx + 1) % itemRefs.current.length;
+      itemRefs.current[next]?.focus();
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const prev = (idx - 1 + itemRefs.current.length) % itemRefs.current.length;
+      itemRefs.current[prev]?.focus();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    } else if (e.key === "Tab") {
+      setOpen(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Node;
+      if (
+        triggerRef.current?.contains(target) ||
+        menuRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  useEffect(() => () => clearClose(), []);
 
   const isActive = currentPath.startsWith("/regions");
   const totalProperties = REGIONS.reduce(
@@ -51,14 +110,16 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
     <div
       className="relative"
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={scheduleClose}
     >
       <Link
+        ref={triggerRef}
         href={`${pfx}/regions`}
+        onKeyDown={handleTriggerKeyDown}
         className={`relative inline-flex items-center gap-1.5 text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 select-none after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:scale-x-0 after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 hover:after:scale-x-100 ${
           transparent ? "text-cream" : "text-ink"
         } ${isActive || open ? "after:scale-x-100" : ""}`}
-        aria-haspopup="true"
+        aria-haspopup="menu"
         aria-expanded={open}
       >
         {t("hotels")}
@@ -70,14 +131,19 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
         />
       </Link>
 
-      <div
-        data-open={open}
-        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] max-w-[calc(100vw-2rem)] pointer-events-none opacity-0 transition-opacity duration-200 ease-[cubic-bezier(0.22,0.61,0.36,1)] data-[open=true]:pointer-events-auto data-[open=true]:opacity-100 motion-reduce:transition-none"
-        role="menu"
-        aria-hidden={!open}
-      >
-        {/* hover bridge */}
-        <div className="absolute -top-3 left-0 right-0 h-3" />
+      <AnimatePresence>
+        {open && (
+          <m.div
+            ref={menuRef}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
+            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] max-w-[calc(100vw-2rem)]"
+            role="menu"
+          >
+            {/* hover bridge */}
+            <div className="absolute -top-3 left-0 right-0 h-3" />
 
         <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden">
           {/* Header band */}
@@ -111,7 +177,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
 
           {/* Six region cards in a 3×2 grid */}
           <div className="grid grid-cols-3 divide-x divide-y divide-rule">
-            {REGIONS.map((region) => {
+            {REGIONS.map((region, idx) => {
               const hotelList = hotelsByRegion[region] ?? [];
               const first = hotelList[0];
               const remaining = hotelList.length - 1;
@@ -120,7 +186,11 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
               return (
                 <Link
                   key={region}
+                  ref={(el) => {
+                    itemRefs.current[idx] = el;
+                  }}
                   href={`${pfx}/regions/${REGION_SLUGS[region]}`}
+                  onKeyDown={(e) => handleItemKeyDown(e, idx)}
                   className="group relative flex flex-col gap-3 p-5 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
                   role="menuitem"
                 >
@@ -171,7 +241,9 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
             </p>
           </div>
         </div>
-      </div>
+          </m.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

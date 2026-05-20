@@ -16,7 +16,8 @@ export default function PublicError({
   const locale = useLocale();
 
   useEffect(() => {
-    console.error(error);
+    // eslint-disable-next-line no-console
+    console.error("public error boundary:", error);
   }, [error]);
 
   return (
@@ -26,9 +27,14 @@ export default function PublicError({
         <h1 className="font-display font-light text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-0.02em] text-ink mt-4 mb-5">
           {t("errorHeading")}
         </h1>
-        <p className="font-sans text-[16px] text-ink-soft leading-[1.6] mb-10">
+        <p className="font-sans text-[16px] text-ink-soft leading-[1.6] mb-6">
           {t("errorBody")}
         </p>
+        {error.digest && (
+          <p className="font-mono text-[11px] tracking-[0.16em] text-muted mb-10">
+            Ref: {error.digest}
+          </p>
+        )}
         <div className="flex flex-wrap gap-4 justify-center">
           <GoldButton onClick={reset} variant="solid">
             {t("tryAgain")}
