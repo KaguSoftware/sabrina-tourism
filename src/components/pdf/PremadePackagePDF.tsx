@@ -284,6 +284,7 @@ function PricingBlock({ pkg, fonts }: { pkg: PremadePackagePublic; fonts: FontSe
   const rawSlots: Array<{ icon: string; label: string; value: number | null | undefined }> = [
     { icon: "user",  label: "Single",   value: pricing.onePerson },
     { icon: "users", label: "2 people", value: pricing.twoPeople },
+    { icon: "baby",  label: "Child",    value: pricing.pricePerChild },
   ];
   const priceSlots: PriceSlot[] = rawSlots
     .filter((s): s is { icon: string; label: string; value: number } => s.value != null)

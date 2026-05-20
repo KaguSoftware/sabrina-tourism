@@ -106,6 +106,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
     ? [
         { icon: "user",  label: "Single",   value: pricing.onePerson },
         { icon: "users", label: "2 people", value: pricing.twoPeople },
+        { icon: "baby",  label: "Child",    value: pricing.pricePerChild },
       ]
     : [];
   const paidRows: PaidRow[] = pricingRowsAll
