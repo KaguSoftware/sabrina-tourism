@@ -2,38 +2,22 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
-import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import { InclusionIcon } from "@/lib/icons/InclusionIcon";
+import { useScrollAnchorGlow } from "@/lib/hooks/useScrollAnchorGlow/useScrollAnchorGlow";
 import { DailyPrices } from "@/components/daily/DailyPrices/DailyPrices";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
-
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
-  const def = getInclusionIcon(name);
-  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
-  if (!Component) return null;
-  return <Component size={16} strokeWidth={1.75} />;
-}
+import { formatDate } from "@/lib/format/date";
 
 function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function formatDate(iso: string, locale: string): string {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString(locale, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 }
 
 const CHILD_DISCOUNT = 0.25;
@@ -54,44 +38,11 @@ function bookMessage(
 ): string {
   const phone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
   const num = phone.replace(/[^\d+]/g, "");
-  const dateStr = date ? formatDate(date, locale) : "a date TBD";
+  const dateStr = date ? formatDate(date, locale, "full") : "a date TBD";
   const text = encodeURIComponent(
     `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`,
   );
   return `https://wa.me/${num}?text=${text}`;
-}
-
-const GLOW_WINDOW = 3;
-
-function useStopGlow(count: number) {
-  const refs = useRef<(HTMLLIElement | null)[]>([]);
-  const [anchor, setAnchor] = useState<number | null>(null);
-
-  useEffect(() => {
-    function onScroll() {
-      const mid = window.innerHeight / 2;
-      let closest = -1;
-      let closestDist = Infinity;
-      refs.current.forEach((el, i) => {
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const dist = Math.abs(rect.top + rect.height / 2 - mid);
-        if (dist < closestDist) { closestDist = dist; closest = i; }
-      });
-      if (closest !== -1) setAnchor(closest);
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [count]);
-
-  const active = new Set(
-    anchor === null
-      ? []
-      : Array.from({ length: GLOW_WINDOW }, (_, k) => anchor - (GLOW_WINDOW - 1) + k).filter((i) => i >= 0 && i < count)
-  );
-  return { refs, active };
 }
 
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
@@ -106,7 +57,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const [selectedDate, setSelectedDate] = useState("");
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
-  const { refs: stopRefs, active: activeStops } = useStopGlow(pkg.stops.length);
+  const { refs: stopRefs, active: activeStops } = useScrollAnchorGlow<HTMLLIElement>(pkg.stops.length);
   const childPrice = pkg.pricing?.pricePerChild ?? pkg.price * (1 - CHILD_DISCOUNT);
   const totalPrice = adults * pkg.price + children * childPrice;
   return (
@@ -376,7 +327,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   <div className="border-l-2 border-ochre bg-cream-deep p-3 mb-4">
                     <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
                     <p className="font-sans text-[12px] text-ink-soft leading-snug">
-                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate, locale)} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`}
+                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate, locale, "full")} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`}
                     </p>
                   </div>
                 )}

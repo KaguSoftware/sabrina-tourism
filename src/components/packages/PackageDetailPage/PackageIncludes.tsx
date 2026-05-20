@@ -1,15 +1,7 @@
 import { useTranslations } from "next-intl";
-import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
-import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import { InclusionIcon } from "@/lib/icons/InclusionIcon";
 import type { Package } from "@/lib/packages/types";
-
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
-  const def = getInclusionIcon(name);
-  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
-  if (!Component) return null;
-  return <Component size={16} strokeWidth={1.75} />;
-}
 
 export function PackageIncludes({ included, notIncluded }: Pick<Package, "included" | "notIncluded">) {
   const t = useTranslations("packageDetail");

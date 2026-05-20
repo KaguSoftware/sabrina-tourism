@@ -6,22 +6,13 @@ import { TripMapSVG } from "@/components/illustrations/TripMapSVG/TripMapSVG";
 import { DESTINATIONS } from "./types";
 import type { CustomTourState } from "./types";
 import type { Vehicle } from "@/lib/transport/types";
+import { formatDate } from "@/lib/format/date";
 
 interface Props {
   state: CustomTourState;
   onBack: () => void;
   onConfirm: () => void;
   vehicles: Vehicle[];
-}
-
-function formatDate(s: string, locale: string) {
-  if (!s) return "—";
-  const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString(locale, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 }
 
 function Row({ label, value }: { label: string; value: string }) {

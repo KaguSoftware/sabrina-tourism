@@ -82,7 +82,18 @@
       "Bash(Select-Object Name)",
       "Bash(grep -E \"^\\(C:\\\\\\\\\\\\\\\\|\\\\s+\\\\d+:\\\\d+\\\\s+error\\)\")",
       "Bash(xargs -I {} du -h {})",
-      "Bash(awk -F: '{c+=$2} END {print c \" uses\"}')"
+      "Bash(awk -F: '{c+=$2} END {print c \" uses\"}')",
+      "Bash(grep -B1 -A2 \"src.components.primitives.PaperPlanePath.PaperPlanePath.tsx$\")",
+      "Bash(npm view *)",
+      "Bash(node -e \"const L=require\\('lucide-react'\\); console.log\\('Plane:', typeof L.Plane, '| keys sample:', Object.keys\\(L\\).filter\\(k=>k.toLowerCase\\(\\).includes\\('plane'\\)\\)\\)\")",
+      "Bash(node -e \"const L=require\\('lucide-react/dist/cjs/lucide-react.js'\\); console.log\\(JSON.stringify\\(L.Plane\\).slice\\(0,500\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(where chrome.exe)",
+      "Bash(where msedge.exe)",
+      "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application//**)",
+      "Read(//c/Program Files/Microsoft/Edge/**)",
+      "Bash(node .verify-plane.js)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

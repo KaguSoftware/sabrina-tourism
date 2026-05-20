@@ -10,62 +10,19 @@ import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarous
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 import { openWhatsApp } from "@/lib/whatsapp/open";
+import { formatDate } from "@/lib/format/date";
 import { useLocale, useTranslations } from "next-intl";
-import { LUCIDE_REGISTRY, type LucideIcon } from "@/lib/icons/lucide-registry";
-import { getInclusionIcon } from "@/lib/icons/inclusion-icons";
+import { InclusionIcon } from "@/lib/icons/InclusionIcon";
+import { useScrollAnchorGlow } from "@/lib/hooks/useScrollAnchorGlow/useScrollAnchorGlow";
 import { MultiPersonPrices } from "@/components/packages/MultiPersonPrices/MultiPersonPrices";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
-
-function InclusionIcon({ name, fallback }: { name: string | null; fallback: string }) {
-  const def = getInclusionIcon(name);
-  const Component = (def ? LUCIDE_REGISTRY[def.lucide] : LUCIDE_REGISTRY[fallback]) as LucideIcon | undefined;
-  if (!Component) return null;
-  return <Component size={16} strokeWidth={1.75} />;
-}
 
 type PremadePackage = PremadePackagePublic;
 
 type DateRange = { startDate: string; endDate: string };
 
-const GLOW_WINDOW = 3;
-
-function useItineraryGlow(count: number) {
-  const refs = useRef<(HTMLLIElement | null)[]>([]);
-  const [anchor, setAnchor] = useState<number | null>(null);
-
-  useEffect(() => {
-    function onScroll() {
-      const mid = window.innerHeight / 2;
-      let closest = -1;
-      let closestDist = Infinity;
-      refs.current.forEach((el, i) => {
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const dist = Math.abs(rect.top + rect.height / 2 - mid);
-        if (dist < closestDist) { closestDist = dist; closest = i; }
-      });
-      if (closest !== -1) setAnchor(closest);
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [count]);
-
-  const active = new Set(
-    anchor === null
-      ? []
-      : Array.from({ length: GLOW_WINDOW }, (_, k) => anchor - (GLOW_WINDOW - 1) + k).filter((i) => i >= 0 && i < count)
-  );
-  return { refs, active };
-}
-
 const TIER_ROMAN = ["I", "II", "III"] as const;
-
-function formatDate(iso: string, locale: string): string {
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
-}
 
 function prettyMonth(iso: string, locale: string) {
   return new Date(iso + "T00:00:00").toLocaleDateString(locale, { month: "short", year: "numeric" });
@@ -317,7 +274,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
     : tierNames[0] ?? "Signature";
   const [tier, setTier] = useState(initialTier);
   const [openDay, setOpenDay] = useState(1);
-  const { refs: dayRefs, active: activeDays } = useItineraryGlow(pkg.itinerary?.length ?? 0);
+  const { refs: dayRefs, active: activeDays } = useScrollAnchorGlow<HTMLLIElement>(pkg.itinerary?.length ?? 0);
 
   const selectedDate = dates[selectedDateIdx] ?? dates[0];
 
