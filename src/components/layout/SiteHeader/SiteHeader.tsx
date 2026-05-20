@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
@@ -13,100 +13,6 @@ import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher/LanguageS
 import { CurrencySwitcher } from "@/components/layout/CurrencySwitcher/CurrencySwitcher";
 import Image from "next/image";
 
-function DropdownNavItem({
-  item,
-  transparent,
-  isActive,
-  pathname,
-}: {
-  item: {
-    href: string;
-    label: string;
-    children?: { href: string; label: string }[];
-  };
-  transparent: boolean;
-  isActive: boolean;
-  pathname: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function onDown(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
-    }
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="relative inline-flex items-center"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
-      <Link
-        href={item.href}
-        className={`inline-flex items-center gap-1 relative text-[14px] lg:text-[15px] tracking-[0.16em] uppercase font-medium py-1.5 transition-colors duration-300 after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-ochre after:origin-left rtl:after:origin-right after:transition-transform after:duration-300 ${
-          transparent ? "text-cream" : "text-ink"
-        } ${
-          isActive
-            ? "after:scale-x-100"
-            : "after:scale-x-0 hover:after:scale-x-100"
-        }`}
-      >
-        {item.label}
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 10 10"
-          fill="none"
-          className={`transition-transform duration-200 opacity-60 ${
-            open ? "rotate-180" : ""
-          }`}
-          aria-hidden="true"
-        >
-          <path
-            d="M2 3.5L5 6.5L8 3.5"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </Link>
-
-      {/* Zero-height bridge fills the gap so onMouseLeave doesn't fire mid-travel */}
-      <div className="absolute top-full left-0 right-0 h-3" />
-
-      <div
-        className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 min-w-45 bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(11,26,46,0.18)] transition-all duration-200 origin-top ${
-          open
-            ? "opacity-100 scale-y-100 pointer-events-auto"
-            : "opacity-0 scale-y-95 pointer-events-none"
-        }`}
-      >
-        {item.children?.map((child) => (
-          <Link
-            key={child.href}
-            href={child.href}
-            onClick={() => setOpen(false)}
-            className={`block px-5 py-3 font-mono text-[12px] tracking-[0.14em] uppercase transition-colors duration-150 border-b border-rule last:border-0 ${
-              pathname === child.href
-                ? "text-ochre bg-cream-warm"
-                : "text-ink hover:text-ochre hover:bg-cream-warm"
-            }`}
-          >
-            {child.label}
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function SiteHeader({
   hotelsByRegion,
 }: {
@@ -119,12 +25,19 @@ export function SiteHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
-  useLayoutEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 1);
-    onScroll();
+  useEffect(() => {
+    let last = window.scrollY > 1;
+    setScrolled(last);
+    const onScroll = () => {
+      const next = window.scrollY > 1;
+      if (next !== last) {
+        last = next;
+        setScrolled(next);
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -156,17 +69,37 @@ export function SiteHeader({
   const isRTL = ["ar", "he", "fa"].includes(locale);
   const menuSlideOffset = isRTL ? "-40px" : "40px";
 
+  // Drawer item animation: stagger-in on open, uniform fast fade on close so the
+  // close feels in sync with the drawer slide rather than each item dragging behind.
+  const drawerItem = (i: number): React.CSSProperties => {
+    const delayMs = menuOpen ? 80 + i * 50 : 0;
+    const durMs = menuOpen ? 420 : 180;
+    return {
+      opacity: menuOpen ? 1 : 0,
+      transform: menuOpen ? "translateX(0)" : `translateX(${menuSlideOffset})`,
+      transition: `opacity ${durMs}ms cubic-bezier(0.22,0.61,0.36,1) ${delayMs}ms, transform ${durMs}ms cubic-bezier(0.22,0.61,0.36,1) ${delayMs}ms`,
+      willChange: "opacity, transform",
+    };
+  };
+
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 ${
           menuOpen ? "z-70" : "z-50"
-        } ${
+        } transition-[background-color,backdrop-filter,border-color] duration-400 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
           transparent
-            ? "bg-gradient-to-b from-navy/55 via-navy/25 to-transparent border-transparent"
+            ? "bg-transparent backdrop-blur-0 border-b border-transparent"
             : "bg-cream/95 backdrop-blur-sm border-b border-rule"
         }`}
       >
+        {/* Top gradient veil — its own layer so we can crossfade it instead of swapping bg classes */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-0 bg-linear-to-b from-navy/55 via-navy/25 to-transparent transition-opacity duration-400 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+            transparent ? "opacity-100" : "opacity-0"
+          }`}
+        />
         <div className="w-full max-w-[1800px] mx-auto px-[clamp(20px,4vw,56px)] py-4 md:py-2.5 flex items-center justify-between gap-6">
           {/* Brand */}
           <Link
@@ -174,22 +107,28 @@ export function SiteHeader({
             className="inline-flex w-24 md:w-35 shrink-0 flex-col items-center group ml-8 md:ml-0"
             aria-label={t("homeAriaLabel")}
           >
-            <Image
-              src={
-                transparent
-                  ? "/logo_1_sabrina_cropped.png"
-                  : "/logo_2_sabrina_cropped.png"
-              }
-              alt="Sabrina Turizm"
-              width="140"
-              height="48"
-              className="h-8 md:h-12 w-auto object-contain transition-all duration-500"
-            />
-            <span
-              className={`mt-0.5 whitespace-nowrap text-[8px] md:text-[10px] tracking-[0.16em] uppercase font-medium transition-colors duration-500 ${
-                transparent ? "text-cream/80" : "text-ink/70"
-              }`}
-            ></span>
+            <span className="relative inline-block h-8 md:h-12 w-auto">
+              <Image
+                src="/logo_1_sabrina_cropped.png"
+                alt="Sabrina Turizm"
+                width="140"
+                height="48"
+                className={`h-8 md:h-12 w-auto object-contain transition-opacity duration-400 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+                  transparent ? "opacity-100" : "opacity-0"
+                }`}
+                priority
+              />
+              <Image
+                src="/logo_2_sabrina_cropped.png"
+                alt=""
+                aria-hidden="true"
+                width="140"
+                height="48"
+                className={`absolute inset-0 h-8 md:h-12 w-auto object-contain transition-opacity duration-400 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+                  transparent ? "opacity-0" : "opacity-100"
+                }`}
+              />
+            </span>
           </Link>
 
           <nav
@@ -235,7 +174,7 @@ export function SiteHeader({
               target="_blank"
               rel="noopener noreferrer"
               style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-semibold transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_20px_-6px_rgba(11,26,46,0.4)]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-[12px] tracking-[0.14em] uppercase font-semibold transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.99] shadow-[0_4px_20px_-6px_rgba(11,26,46,0.4)]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -258,7 +197,7 @@ export function SiteHeader({
             <CurrencySwitcher transparent={transparent} />
             <button
               ref={hamburgerRef}
-              className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 ${
+              className={`flex flex-col gap-[6px] p-3 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ochre focus-visible:ring-offset-2 focus-visible:ring-offset-cream ${
                 transparent ? "text-cream" : "text-black"
               }`}
               aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
@@ -267,17 +206,17 @@ export function SiteHeader({
               onClick={() => setMenuOpen((o) => !o)}
             >
               <span
-                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 origin-center ${
+                className={`w-[26px] h-[2px] bg-current block transition-transform duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] origin-center ${
                   menuOpen ? "translate-y-[8px] rotate-45" : ""
                 }`}
               />
               <span
-                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 ${
+                className={`w-[26px] h-[2px] bg-current block transition-[opacity,transform] duration-200 ease-out ${
                   menuOpen ? "opacity-0 scale-x-0" : ""
                 }`}
               />
               <span
-                className={`w-[26px] h-[2px] bg-current block transition-all duration-300 origin-center ${
+                className={`w-[26px] h-[2px] bg-current block transition-transform duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] origin-center ${
                   menuOpen ? "-translate-y-[8px] -rotate-45" : ""
                 }`}
               />
@@ -286,10 +225,11 @@ export function SiteHeader({
         </div>
       </header>
 
-      {/* Mobile overlay — slides in from the end edge (right in LTR, left in RTL) */}
+      {/* Mobile overlay — slides in from the end edge (right in LTR, left in RTL). */}
+      {/* Items stagger-in when opening; on close they ride out with the drawer (uniform short fade) */}
       <div
         id="mobile-nav-drawer"
-        className={`md:hidden fixed top-16 md:top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-460 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+        className={`md:hidden fixed top-16 md:top-[78px] bottom-0 right-0 left-0 bg-navy text-cream z-60 flex flex-col p-6 transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0.24,1)] will-change-transform ${
           menuOpen
             ? "translate-x-0"
             : "ltr:translate-x-full rtl:-translate-x-full"
@@ -299,7 +239,7 @@ export function SiteHeader({
         aria-hidden={!menuOpen}
         inert={!menuOpen}
       >
-        <nav className="flex flex-col gap-2 flex-1 overflow-y-auto">
+        <nav className="flex flex-col items-center text-center gap-2 flex-1 overflow-y-auto">
           {[
             { href: "/", label: t("home") },
             { href: "/transportation", label: t("driver") },
@@ -307,40 +247,18 @@ export function SiteHeader({
             <Link
               key={item.href}
               href={`${localePfx}${item.href}`}
-              className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] transition-opacity duration-300 hover:text-ochre"
-              style={{
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen
-                  ? "translateX(0)"
-                  : `translateX(${menuSlideOffset})`,
-                transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
-                  100 + i * 60
-                }ms`,
-              }}
+              className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] hover:text-ochre"
+              style={drawerItem(i)}
             >
               {item.label}
             </Link>
           ))}
           {/* Tours */}
-          <div
-            style={{
-              opacity: menuOpen ? 1 : 0,
-              transform: menuOpen
-                ? "translateX(0)"
-                : `translateX(${menuSlideOffset})`,
-              transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
-                100 + NAV_ITEMS.length * 60
-              }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
-                100 + NAV_ITEMS.length * 60
-              }ms`,
-            }}
-          >
-            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+          <div style={drawerItem(NAV_ITEMS.length)}>
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/65 mb-2">
               {t("tours")}
             </p>
-            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+            <div className="flex flex-col items-center gap-1">
               {[
                 {
                   href: "/tours/fixed-dates",
@@ -366,23 +284,11 @@ export function SiteHeader({
             </div>
           </div>
           {/* Hotel / Regions */}
-          <div
-            style={{
-              opacity: menuOpen ? 1 : 0,
-              transform: menuOpen
-                ? "translateX(0)"
-                : `translateX(${menuSlideOffset})`,
-              transition: `opacity 500ms cubic-bezier(0.22,0.61,0.36,1) ${
-                160 + NAV_ITEMS.length * 60
-              }ms, transform 500ms cubic-bezier(0.22,0.61,0.36,1) ${
-                160 + NAV_ITEMS.length * 60
-              }ms`,
-            }}
-          >
-            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/40 mb-2">
+          <div style={drawerItem(NAV_ITEMS.length + 1)}>
+            <p className="font-display text-[clamp(36px,9vw,64px)] leading-[1.05] tracking-[-0.02em] text-cream/65 mb-2">
               {t("hotels")}
             </p>
-            <div className="flex flex-col gap-1 pl-2 border-l border-cream/20">
+            <div className="flex flex-col items-center gap-1">
               {REGIONS.map((region) => (
                 <Link
                   key={region}
@@ -395,13 +301,16 @@ export function SiteHeader({
             </div>
           </div>
         </nav>
-        <div className="border-t border-cream/20 pt-6 flex flex-col gap-4">
+        <div
+          className="border-t border-cream/20 pt-6 flex flex-col items-center text-center gap-4"
+          style={drawerItem(NAV_ITEMS.length + 2)}
+        >
           <a
             href={genericMessage(locale)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
-            className="inline-flex items-center gap-3 px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-semibold w-fit shadow-[0_4px_24px_-6px_rgba(11,26,46,0.45)]"
+            className="inline-flex items-center gap-3 px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-semibold w-fit shadow-[0_4px_24px_-6px_rgba(11,26,46,0.45)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99]"
           >
             {t("reserveViaWhatsapp")}
           </a>

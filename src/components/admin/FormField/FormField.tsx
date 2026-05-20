@@ -1,6 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { Children, cloneElement, isValidElement, useId } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 
 interface FormFieldProps {
@@ -106,18 +107,44 @@ export function FormField({ label, hint, error, children, required }: FormFieldP
   const translatedLabel = LABEL_KEYS[label] ? labelT(LABEL_KEYS[label]) : label;
   const translatedHint = hint && HINT_KEYS[hint] ? hintT(HINT_KEYS[hint]) : hint;
 
+  const fieldId = useId();
+  const errorId = `${fieldId}-error`;
+  const hintId = `${fieldId}-hint`;
+
+  // Wire a11y attrs onto the single child input if it's a valid element.
+  let wired: ReactNode = children;
+  const arr = Children.toArray(children);
+  if (arr.length === 1 && isValidElement(arr[0])) {
+    const child = arr[0] as ReactElement<Record<string, unknown>>;
+    const existing = child.props as { id?: string; "aria-describedby"?: string; required?: boolean };
+    const describedBy = [
+      error ? errorId : null,
+      translatedHint && !error ? hintId : null,
+      existing["aria-describedby"] ?? null,
+    ].filter(Boolean).join(" ") || undefined;
+    wired = cloneElement(child, {
+      id: existing.id ?? fieldId,
+      "aria-describedby": describedBy,
+      "aria-invalid": error ? true : undefined,
+      required: required ?? existing.required,
+    });
+  }
+
   return (
     <div className="flex flex-col gap-2">
-      <label className="font-mono text-[11px] tracking-[0.25em] uppercase text-ink-soft font-medium mb-1">
+      <label
+        htmlFor={fieldId}
+        className="font-mono text-[11px] tracking-[0.25em] uppercase text-ink-soft font-medium mb-1"
+      >
         {translatedLabel}
         {required && <span className="text-ochre ml-1">*</span>}
       </label>
-      {children}
+      {wired}
       {translatedHint && !error && (
-        <p className="font-sans text-[12px] text-muted">{translatedHint}</p>
+        <p id={hintId} className="font-sans text-[12px] text-muted">{translatedHint}</p>
       )}
       {error && (
-        <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta">
+        <p id={errorId} className="font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta">
           {error}
         </p>
       )}

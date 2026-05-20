@@ -29,7 +29,7 @@ export default async function PublicLayout({
     <div className="relative overflow-x-hidden overflow-y-clip">
       <ScrollToTop />
       <SiteHeader hotelsByRegion={hotelsByRegion} />
-      <PaperPlanePath />
+      {/* <PaperPlanePath /> */}
       <main className="relative">{children}</main>
       <SiteFooter />
     </div>

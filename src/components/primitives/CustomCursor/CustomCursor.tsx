@@ -7,8 +7,8 @@ export function CustomCursor() {
   const target = useRef({ x: -100, y: -100 });
   const current = useRef({ x: -100, y: -100 });
   const rafRef = useRef(0);
-  const [isHover, setIsHover] = useState(false);
-  const [isPress, setIsPress] = useState(false);
+  const hoverRef = useRef(false);
+  const pressRef = useRef(false);
   const [isTouchDevice, setIsTouchDevice] = useState(true);
 
   useEffect(() => {
@@ -20,11 +20,11 @@ export function CustomCursor() {
 
     const onOver = (e: MouseEvent) => {
       const el = e.target as Element;
-      setIsHover(!!el.closest(INTERACTIVE_SELECTORS));
+      hoverRef.current = !!el.closest(INTERACTIVE_SELECTORS);
     };
 
-    const onDown = () => setIsPress(true);
-    const onUp = () => setIsPress(false);
+    const onDown = () => { pressRef.current = true; };
+    const onUp = () => { pressRef.current = false; };
 
     const tick = () => {
       const c = current.current;
@@ -34,18 +34,18 @@ export function CustomCursor() {
 
       const el = cursorRef.current;
       if (el) {
-        const rot = isPress ? -12 : isHover ? -3 : -8;
-        const scale = isPress ? 0.9 : isHover ? 1.15 : 1;
+        const rot = pressRef.current ? -12 : hoverRef.current ? -3 : -8;
+        const scale = pressRef.current ? 0.9 : hoverRef.current ? 1.15 : 1;
         el.style.transform = `translate(${c.x}px, ${c.y}px) translate(-50%, -50%) rotate(${rot}deg) scale(${scale})`;
       }
 
       rafRef.current = requestAnimationFrame(tick);
     };
 
-    window.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
-    window.addEventListener("mousedown", onDown);
-    window.addEventListener("mouseup", onUp);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    document.addEventListener("mouseover", onOver, { passive: true });
+    window.addEventListener("mousedown", onDown, { passive: true });
+    window.addEventListener("mouseup", onUp, { passive: true });
     rafRef.current = requestAnimationFrame(tick);
 
     return () => {
@@ -55,7 +55,7 @@ export function CustomCursor() {
       window.removeEventListener("mouseup", onUp);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [isHover, isPress]);
+  }, []);
 
   if (isTouchDevice) return null;
 

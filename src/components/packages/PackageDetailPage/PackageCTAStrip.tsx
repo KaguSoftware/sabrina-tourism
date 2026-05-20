@@ -168,7 +168,7 @@ export function PackageCTAStrip({
                   aria-label={t("childAge")}
                   value={child.age}
                   onChange={(e) => updateChildAge(child.id, e.target.value)}
-                  className="w-20 border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
+                  className="w-20 border-b border-rule bg-transparent font-sans text-base md:text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
                 />
                 <button
                   type="button"

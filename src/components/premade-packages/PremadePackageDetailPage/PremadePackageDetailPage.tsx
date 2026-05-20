@@ -116,7 +116,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
               <select
                 value={selectedDateIdx}
                 onChange={(e) => setSelectedDateIdx(Number(e.target.value))}
-                className="w-full border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-2.5 pr-6 focus:outline-none focus:border-ochre transition-colors duration-200 cursor-pointer appearance-none"
+                className="w-full border-b border-rule bg-transparent font-sans text-base md:text-[14px] text-ink pb-2.5 pr-6 focus:outline-none focus:border-ochre transition-colors duration-200 cursor-pointer appearance-none"
                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c99a3f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 0 center" }}
               >
                 {dates.map((d, i) => {
@@ -177,7 +177,7 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
                   max={17}
                   value={child.age}
                   onChange={(e) => updateChildAge(child.id, e.target.value)}
-                  className="w-20 border-b border-rule bg-transparent font-sans text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
+                  className="w-20 border-b border-rule bg-transparent font-sans text-base md:text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
                 />
                 {pricePerChild != null && (
                   <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre">

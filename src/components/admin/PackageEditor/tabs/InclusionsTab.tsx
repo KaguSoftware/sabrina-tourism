@@ -17,26 +17,20 @@ function InclusionList({
   variant: "included" | "not_included";
   placeholder: string;
 }) {
-  const { control, watch, setValue } = useFormContext<PackageFormValues>();
-  const { append, remove } = useFieldArray({ control, name });
-  const items = watch(name) ?? [];
+  const { control, register, watch, setValue } = useFormContext<PackageFormValues>();
+  const { fields, append, remove } = useFieldArray({ control, name });
 
   return (
     <div className="space-y-2">
-      {items.map((item, i) => (
-        <div key={i} className="flex items-center gap-2">
+      {fields.map((field, i) => (
+        <div key={field.id} className="flex items-center gap-2">
           <Input
-            value={item.text}
-            onChange={(e) =>
-              setValue(`${name}.${i}.text` as const, e.target.value, {
-                shouldDirty: true,
-              })
-            }
+            {...register(`${name}.${i}.text` as const)}
             placeholder={placeholder}
             className="flex-1"
           />
           <IconPicker
-            value={item.icon ?? null}
+            value={watch(`${name}.${i}.icon` as const) ?? null}
             onChange={(v) =>
               setValue(`${name}.${i}.icon` as const, v, { shouldDirty: true })
             }

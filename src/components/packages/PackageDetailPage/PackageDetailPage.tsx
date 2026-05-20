@@ -48,11 +48,18 @@ export function PackageDetailPage({ pkg, seedDate = "", seedPeople = "", seedTie
   useEffect(() => {
     if (lightbox === null) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowRight")
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeLightbox();
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
         setLightbox((i) => ((i ?? 0) + 1) % pkg.gallery.length);
-      if (e.key === "ArrowLeft")
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
         setLightbox((i) => ((i ?? 0) - 1 + pkg.gallery.length) % pkg.gallery.length);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

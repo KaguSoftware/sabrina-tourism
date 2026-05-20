@@ -14,6 +14,20 @@ const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const blobCache = new Map<string, Blob>();
 function blobKey(file: File) { return `${file.name}-${file.size}-${file.lastModified}`; }
 
+function isStoragePath(p: string | null): p is string {
+  return !!p && !p.startsWith("http://") && !p.startsWith("https://") && !p.startsWith("/");
+}
+
+async function deleteStored(path: string | null) {
+  if (!isStoragePath(path)) return;
+  try {
+    const supabase = createBrowserClient();
+    await supabase.storage.from(BUCKET).remove([path]);
+  } catch {
+    // Non-fatal: leave orphan rather than block the UI.
+  }
+}
+
 interface ImageUploaderProps {
   value: string | null;
   onChange: (path: string | null) => void;
@@ -67,6 +81,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
       toast.error("Image too large — please upload under 20 MB.");
       return;
     }
+    const previous = value;
     setUploadError(null);
     setUploading(true);
     try {
@@ -82,6 +97,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
       });
       if (error) throw new Error(error.message);
       onChange(path);
+      void deleteStored(previous);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Upload failed";
       setUploadError(msg);
@@ -89,7 +105,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
     } finally {
       setUploading(false);
     }
-  }, [folder, onChange]);
+  }, [folder, onChange, value]);
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -114,7 +130,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
           <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
           <button
             type="button"
-            onClick={() => onChange(null)}
+            onClick={() => { const prev = value; onChange(null); void deleteStored(prev); }}
             className="absolute top-2 right-2 w-6 h-6 bg-ink/70 text-cream flex items-center justify-center text-sm hover:bg-terracotta transition-colors"
             aria-label="Remove image"
           >

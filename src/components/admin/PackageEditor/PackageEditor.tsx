@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition, useCallback } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,8 +52,26 @@ interface PackageEditorProps {
 export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps) {
   const tabT = useTranslations("admin.tabs");
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<Tab>("Basics");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const initialTab: Tab = (TABS as readonly string[]).includes(tabParam ?? "")
+    ? (tabParam as Tab)
+    : "Basics";
+  const [activeTab, setActiveTabState] = useState<Tab>(initialTab);
+  const setActiveTab = useCallback(
+    (tab: Tab) => {
+      setActiveTabState(tab);
+      const params = new URLSearchParams(searchParams.toString());
+      if (tab === "Basics") params.delete("tab");
+      else params.set("tab", tab);
+      const qs = params.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    },
+    [pathname, router, searchParams],
+  );
   const [saving, setSaving] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const methods = useForm<PackageFormValues>({
     resolver: zodResolver(PackageSchema),
@@ -79,6 +97,7 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
     : null;
 
   const onSubmit = handleSubmit(async (data) => {
+    if (saving || isPending) return;
     setSaving(true);
     try {
       const result = await savePackage(data);
@@ -99,24 +118,26 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
       toast.success("Saved.");
       reset(data);
       if (!pkg) {
-        router.push(`/admin/packages/${result.slug}`);
+        startTransition(() => router.push(`/admin/packages/${result.slug}`));
       } else if (result.slug && result.slug !== pkg.slug) {
-        router.push(`/admin/packages/${result.slug}`);
+        startTransition(() => router.push(`/admin/packages/${result.slug}`));
       } else {
-        router.refresh();
+        startTransition(() => router.refresh());
       }
     } finally {
       setSaving(false);
     }
   });
 
+  const busy = saving || isPending;
+
   const SaveButton = ({ label = "Save" }: { label?: string }) => (
     <button
       type="submit"
-      disabled={saving}
+      disabled={busy}
       className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
     >
-      {saving ? <Spinner size="sm" /> : label}
+      {busy ? <Spinner size="sm" /> : label}
     </button>
   );
 

@@ -54,7 +54,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
   const scheduleClose = useCallback(() => {
     clearClose();
-    closeTimeoutRef.current = setTimeout(() => setOpen(false), 120);
+    closeTimeoutRef.current = setTimeout(() => setOpen(false), 80);
   }, []);
 
   function handleMouseEnter() {
@@ -143,19 +143,19 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
         {open && (
           <m.div
             ref={menuRef}
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
+            exit={{ opacity: 0, y: -4, transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } }}
+            transition={{ duration: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
             className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] max-w-[calc(100vw-2rem)]"
             role="menu"
           >
             {/* hover bridge */}
             <div className="absolute -top-3 left-0 right-0 h-3" />
 
-            <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden">
+            <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden flex flex-col max-h-[calc(100vh-6rem)]">
               {/* Header band */}
-              <div className="relative flex items-start justify-between gap-6 px-7 pt-6 pb-5 border-b border-rule">
+              <div className="relative shrink-0 flex items-start justify-between gap-6 px-7 pt-6 pb-5 border-b border-rule">
                 <div>
                   <div className="flex items-center gap-3">
                     <span aria-hidden className="block h-px w-6 bg-ochre" />
@@ -184,7 +184,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
               </div>
 
               {/* Three photo-led cards */}
-              <div className="grid grid-cols-3 divide-x divide-rule">
+              <div className="grid grid-cols-3 divide-x divide-rule overflow-y-auto min-h-0">
                 {TOUR_TYPES.map((item, idx) => (
                   <Link
                     key={item.href}

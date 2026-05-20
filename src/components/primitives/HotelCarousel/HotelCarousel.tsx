@@ -29,6 +29,10 @@ export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, s
     }
   }, [activeRoomIndex, roomTypes, images.length]);
 
+  useEffect(() => {
+    if (current >= images.length && images.length > 0) setCurrent(0);
+  }, [images.length, current]);
+
   const prev = useCallback(() => setCurrent((i) => (i === 0 ? images.length - 1 : i - 1)), [images.length]);
   const next = useCallback(() => setCurrent((i) => (i === images.length - 1 ? 0 : i + 1)), [images.length]);
 
