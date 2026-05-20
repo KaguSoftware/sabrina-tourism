@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
-import { Plane } from "lucide-react";
 import {
   PATH_MARGIN_FRACTION,
   PATH_STROKE_COLOR,
@@ -188,6 +187,8 @@ export function PaperPlanePath() {
     const cy = y - ps / 2;
 
     // Plane: GPU-composited transform on a real DOM <div>, every frame.
+    // Single transform on a single element — no nested transforms — gives
+    // the compositor a stable layer to move without re-layering each frame.
     planeEl.style.transform = `translate3d(${cx.toFixed(2)}px, ${cy.toFixed(2)}px, 0) rotate(${ang.toFixed(2)}deg) scale(${s})`;
 
     // Trail: throttle to ~30Hz on slow scroll (the dashed reveal repaints a
@@ -348,23 +349,30 @@ export function PaperPlanePath() {
           strokeDasharray={PATH_DASH_ARRAY}
           strokeLinecap="round"
           opacity="0.35"
-          shapeRendering="geometricPrecision"
         />
-        {/* solid gold trail revealed behind the plane via stroke-dashoffset */}
+        {/* solid gold trail revealed behind the plane via stroke-dashoffset.
+            NO shapeRendering/vectorEffect — both force per-paint geometry
+            recompute on this huge path and cause visible chop. */}
         <path
           ref={trailRef}
           fill="none"
-          stroke="#b8893d"
-          strokeWidth={PATH_STROKE_WIDTH + 1}
+          stroke="#cdb47a"
+          strokeWidth={PATH_STROKE_WIDTH}
           strokeLinecap="round"
-          opacity="1"
-          shapeRendering="geometricPrecision"
-          vectorEffect="non-scaling-stroke"
+          opacity="0.95"
         />
       </svg>
       {/* Plane lives in the DOM, NOT inside the SVG. CSS transforms on real
-          HTML elements are 100% reliable across browsers; nested-svg + CSS
-          transform-on-<g> was unreliable and was the reason it was invisible. */}
+          HTML elements are 100% reliable across browsers.
+          `contain: layout style paint` + translateZ isolates this into its own
+          compositor layer so other elements' reveal animations don't trigger
+          relayout/style invalidation that competes with our rAF. */}
+      {/* Single-element plane wrapper. No nested transforms, no contain, no
+          filters — every frame the only thing that changes is one CSS
+          transform on this one div, which the compositor can move on the GPU
+          without re-layering. The 45° icon rotation is baked into the SVG
+          itself (inside the viewBox via <g transform>) so it never compounds
+          with the JS transform on this div. */}
       <div
         ref={planeRef}
         style={{
@@ -373,23 +381,26 @@ export function PaperPlanePath() {
           left: 0,
           width: PLANE_SIZE,
           height: PLANE_SIZE,
-          transformOrigin: "center",
+          transformOrigin: `${PLANE_SIZE / 2}px ${PLANE_SIZE / 2}px`,
           willChange: "transform",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
         }}
       >
-        {/* Lucide Plane: native orientation is up-right (~45°); counter-rotate
-            so 0° = nose-right, letting the path-tangent rotation align the
-            nose with the direction of travel. */}
-        <Plane
-          size={PLANE_SIZE}
-          color="#8a6529"
-          fill="#c99a3f"
-          strokeWidth={1.5}
-          style={{ transform: "rotate(45deg)" }}
-        />
+        <svg
+          width={PLANE_SIZE}
+          height={PLANE_SIZE}
+          viewBox="-6 -6 36 36"
+          fill="#f5ede0"
+          stroke="#8a6529"
+          strokeWidth={1}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ display: "block" }}
+        >
+          <g transform="rotate(45 12 12)">
+            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
+          </g>
+        </svg>
       </div>
     </div>
   );
