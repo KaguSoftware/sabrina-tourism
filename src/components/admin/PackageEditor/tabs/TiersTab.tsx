@@ -35,6 +35,13 @@ function TierPanel({
   const guideLanguagesStr = guideLanguagesRaw.join(", ");
   const hotelId: string | null = watchAny(`tiers.${tierIndex}.hotel_id`) ?? null;
 
+  const removeHighlight = (hi: number) => {
+    setAny(`tiers.${tierIndex}.highlights`, highlights.filter((_: string, idx: number) => idx !== hi));
+  };
+  const addHighlight = () => {
+    setAny(`tiers.${tierIndex}.highlights`, [...highlights, ""]);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
       <FormField label="Vehicle class" required error={tierErrors?.vehicle_class?.message}>
@@ -100,15 +107,20 @@ function TierPanel({
       <div className="md:col-span-2">
         <FormField label="Highlights">
           <div className="space-y-2 pt-1">
-            {highlights.map((_: string, hi: number) => (
+            {highlights.map((val: string, hi: number) => (
               <div key={hi} className="flex items-center gap-2">
                 <Input
-                  {...reg(`tiers.${tierIndex}.highlights.${hi}`)}
+                  value={val}
+                  onChange={(e) => {
+                    const next = highlights.slice();
+                    next[hi] = e.target.value;
+                    setAny(`tiers.${tierIndex}.highlights`, next, { shouldDirty: true });
+                  }}
                   placeholder="e.g. Private guided Hagia Sophia tour"
                 />
                 <button
                   type="button"
-                  onClick={() => setAny(`tiers.${tierIndex}.highlights`, highlights.filter((_: string, idx: number) => idx !== hi))}
+                  onClick={() => removeHighlight(hi)}
                   className="text-ink-soft hover:text-terracotta transition-colors p-1"
                 >
                   <X size={14} />
@@ -117,7 +129,7 @@ function TierPanel({
             ))}
             <button
               type="button"
-              onClick={() => setAny(`tiers.${tierIndex}.highlights`, [...highlights, ""])}
+              onClick={addHighlight}
               className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors"
             >
               <Plus size={12} /> Add highlight

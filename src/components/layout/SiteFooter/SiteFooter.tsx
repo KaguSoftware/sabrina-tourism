@@ -52,7 +52,7 @@ export async function SiteFooter() {
           href={genericMessage(locale)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 border border-ochre text-cream px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-medium transition-all duration-300 hover:bg-ochre hover:text-navy group"
+          className="inline-flex items-center gap-3 border border-ochre text-cream px-6 py-4 text-[13px] tracking-[0.16em] uppercase font-medium transition-[background-color,color] duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:bg-ochre hover:text-navy group"
         >
           <span>{t("openWhatsapp")}</span>
           <span className="transition-transform duration-300 ltr:group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180">
@@ -98,7 +98,7 @@ export async function SiteFooter() {
                 >
                   <span className="relative">
                     {link.label}
-                    <span className="absolute ltr:left-0 rtl:right-0 -bottom-0.5 w-0 h-px bg-ochre group-hover:w-full transition-all duration-300" />
+                    <span className="absolute ltr:left-0 rtl:right-0 -bottom-0.5 w-full h-px bg-ochre origin-left rtl:origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)]" />
                   </span>
                 </Link>
               ))}

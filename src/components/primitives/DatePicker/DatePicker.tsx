@@ -72,6 +72,10 @@ export function DatePicker({
     if (d) setCursor(new Date(d.getFullYear(), d.getMonth(), 1));
   }, [value]);
 
+  useEffect(() => () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     function onDown(e: MouseEvent) {

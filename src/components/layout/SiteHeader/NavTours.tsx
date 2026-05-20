@@ -54,7 +54,7 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
 
   const scheduleClose = useCallback(() => {
     clearClose();
-    closeTimeoutRef.current = setTimeout(() => setOpen(false), 120);
+    closeTimeoutRef.current = setTimeout(() => setOpen(false), 80);
   }, []);
 
   function handleMouseEnter() {
@@ -143,10 +143,10 @@ export function NavTours({ currentPath, transparent }: NavToursProps) {
         {open && (
           <m.div
             ref={menuRef}
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18, ease: [0.22, 0.61, 0.36, 1] }}
+            exit={{ opacity: 0, y: -4, transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } }}
+            transition={{ duration: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
             className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] max-w-[calc(100vw-2rem)]"
             role="menu"
           >

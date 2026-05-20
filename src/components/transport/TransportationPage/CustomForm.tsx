@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useCallback } from "react";
+import { useRef, useState, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice, parseEurAmount } from "@/lib/currency/format";
@@ -64,6 +64,7 @@ export function CustomForm({
   const [localGuideType, setLocalGuideType] = useState<GuideType>("assistant");
   const [localGuideLanguage, setLocalGuideLanguage] = useState("English");
   const [submitted, setSubmitted] = useState(false);
+  const submittingRef = useRef(false);
   const [vehicleQty, setVehicleQty] = useState<VehicleQty>({});
   const guideNeeded = guideNeededProp ?? localGuideNeeded;
   const setGuideNeeded = setGuideNeededProp ?? setLocalGuideNeeded;
@@ -436,7 +437,14 @@ export function CustomForm({
         <button
           type="button"
           disabled={!canSubmit}
-          onClick={() => { setSubmitted(true); if (!canSubmit) return; openWhatsApp(href); }}
+          onClick={() => {
+            setSubmitted(true);
+            if (!canSubmit) return;
+            if (submittingRef.current) return;
+            submittingRef.current = true;
+            openWhatsApp(href);
+            setTimeout(() => { submittingRef.current = false; }, 1000);
+          }}
           style={canSubmit ? { backgroundColor: "#0b1a2e", color: "#c99a3f" } : { backgroundColor: "#d6cfc7", color: "#9a9087", cursor: "not-allowed" }}
           className="inline-flex items-center gap-3.5 px-8 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold transition-all duration-300 whitespace-nowrap group shadow-none disabled:shadow-none enabled:shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] enabled:hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] enabled:hover:scale-[1.02] enabled:active:scale-[0.99]"
         >

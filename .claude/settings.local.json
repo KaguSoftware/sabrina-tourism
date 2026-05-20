@@ -93,7 +93,10 @@
       "Bash(where msedge.exe)",
       "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application//**)",
       "Read(//c/Program Files/Microsoft/Edge/**)",
-      "Bash(node .verify-plane.js)"
+      "Bash(node .verify-plane.js)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\\\\src\\\\components\\\\admin\\\\\" -Recurse -File | Select-Object FullName)",
+      "Bash(grep -A 2 \"src\\\\\\\\\\\\\\\\components\\\\\\\\\\\\\\\\admin\\\\\\\\\\\\\\\\PackageEditor\\\\\\\\\\\\\\\\primitives.tsx:\")",
+      "Bash(grep -E \"^C:\\\\\\\\\\\\\\\\.*\\\\.tsx?$|error \")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
