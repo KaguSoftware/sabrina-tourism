@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import {
   PATH_MARGIN_FRACTION,
@@ -33,10 +33,17 @@ export function PaperPlanePath() {
   const planeRef = useRef<SVGGElement>(null);
   const pathLengthRef = useRef(0);
   const planeSizeRef = useRef(PLANE_SIZE);
+
+  // Smoothing: targetProgress is updated synchronously from scroll, displayed
+  // progress lerps toward it inside an rAF loop. This kills the jitter that
+  // came from binding the plane 1:1 to wheel events.
+  const targetProgressRef = useRef(0);
+  const displayProgressRef = useRef(0);
   const rafRef = useRef(0);
-  const rebuildTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const inViewRef = useRef(true);
+
   const pathname = usePathname();
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   const buildPath = useCallback(() => {
     const svg = svgRef.current;
@@ -45,16 +52,16 @@ export function PaperPlanePath() {
     if (!svg || !pathEl || !trailEl) return;
 
     const w = document.documentElement.clientWidth;
-    planeSizeRef.current = w < 640 ? 28 : PLANE_SIZE;
-    // Measure content height excluding the SVG itself
+    planeSizeRef.current = w < 640 ? 26 : PLANE_SIZE;
+
+    // Measure content height without including the SVG itself.
+    const prevDisplay = svg.style.display;
     svg.style.display = "none";
     const h = document.documentElement.scrollHeight;
-    svg.style.display = "";
+    svg.style.display = prevDisplay;
 
-    // Skip the rebuild if the page is implausibly short — this happens mid-
-    // navigation when the new page hasn't laid out yet. We'd otherwise compress
-    // the path against a header-only height and anchor the plane too high.
-    // The ResizeObserver will trigger another rebuild as soon as content lands.
+    // Bail out on transient mid-navigation short pages — ResizeObserver will
+    // re-trigger this when real content lands.
     if (h < window.innerHeight * 1.2) return;
 
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
@@ -64,39 +71,37 @@ export function PaperPlanePath() {
 
     const isMobile = w < 640;
     const mid = w / 2;
-    // on mobile push edges beyond margin so the path swings wide
-    const lx = isMobile ? w * 0.06 : Math.min(120, w * PATH_MARGIN_FRACTION) + 40;
-    const rx = isMobile ? w * 0.94 : w - Math.min(120, w * PATH_MARGIN_FRACTION) - 40;
+    const lx = isMobile ? w * 0.08 : Math.min(120, w * PATH_MARGIN_FRACTION) + 40;
+    const rx = isMobile
+      ? w * 0.92
+      : w - Math.min(120, w * PATH_MARGIN_FRACTION) - 40;
 
-    const rawPts = isMobile ? [
-      { x: mid,        y: 160  },
-      { x: rx,         y: 380  },
-      { x: lx,         y: 620  },
-      { x: rx,         y: 900  },
-      { x: mid * 0.4,  y: 1180 },
-      { x: rx,         y: 1480 },
-      { x: lx,         y: 1780 },
-      { x: mid * 1.6,  y: 2080 },
-      { x: lx,         y: 2400 },
-      { x: rx,         y: 2720 },
-      { x: lx,         y: 3060 },
-      { x: mid,        y: h - 160 },
-    ] : [
-      { x: mid - 40, y: 180  },
-      { x: rx,       y: 480  },
-      { x: mid + 20, y: 860  },
-      { x: lx,       y: 1260 },
-      { x: mid + 60, y: 1700 },
-      { x: lx,       y: 2150 },
-      { x: rx - 40,  y: 2600 },
-      { x: lx + 80,  y: 3100 },
-      { x: mid,      y: h - 200 },
-    ];
+    // Smoother, wider arcs with fewer hard reversals than before.
+    const rawPts = isMobile
+      ? [
+          { x: mid, y: 180 },
+          { x: rx, y: 520 },
+          { x: lx, y: 920 },
+          { x: rx, y: 1340 },
+          { x: lx, y: 1780 },
+          { x: rx, y: 2240 },
+          { x: lx, y: 2720 },
+          { x: mid, y: h - 180 },
+        ]
+      : [
+          { x: mid - 20, y: 220 },
+          { x: rx, y: 560 },
+          { x: lx, y: 1040 },
+          { x: rx - 40, y: 1560 },
+          { x: lx + 60, y: 2120 },
+          { x: rx - 80, y: 2700 },
+          { x: mid, y: h - 220 },
+        ];
 
     const refH = isMobile ? 3200 : 3500;
     const scale = h / refH;
     const pts = rawPts.map((p, i) =>
-      i === rawPts.length - 1 ? p : { x: p.x, y: p.y * scale }
+      i === rawPts.length - 1 ? p : { x: p.x, y: p.y * scale },
     );
 
     const d = catmullRomPath(pts);
@@ -104,64 +109,91 @@ export function PaperPlanePath() {
     trailEl.setAttribute("d", d);
     const total = pathEl.getTotalLength();
     pathLengthRef.current = total;
-    // trail: starts fully hidden, revealed as plane moves
     trailEl.setAttribute("stroke-dasharray", String(total));
     trailEl.setAttribute("stroke-dashoffset", String(total));
   }, []);
 
-  const updatePlane = useCallback((progress: number) => {
+  // Paint the plane and trail at a given normalized progress (0..1).
+  const paint = useCallback((progress: number) => {
     const pathEl = pathRef.current;
     const trailEl = trailRef.current;
     const planeEl = planeRef.current;
-    if (!pathEl || !trailEl || !planeEl || !pathLengthRef.current) return;
-
     const total = pathLengthRef.current;
+    if (!pathEl || !trailEl || !planeEl || !total) return;
+
     const dist = progress * total;
     const pt = pathEl.getPointAtLength(dist);
-    const ahead = pathEl.getPointAtLength(Math.min(total, dist + 4));
-    const angle =
-      (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
+    // Sample further ahead for stable rotation (8px gives much smoother angle
+    // changes than 4px on tight curves).
+    const ahead = pathEl.getPointAtLength(Math.min(total, dist + 8));
+    const angle = (Math.atan2(ahead.y - pt.y, ahead.x - pt.x) * 180) / Math.PI;
 
-    // reveal trail behind the plane
     trailEl.setAttribute("stroke-dashoffset", String(total - dist));
 
     const ps = planeSizeRef.current;
     planeEl.setAttribute(
       "transform",
-      `translate(${(pt.x - ps / 2).toFixed(2)} ${(pt.y - ps / 2).toFixed(2)}) rotate(${angle.toFixed(2)} ${ps / 2} ${ps / 2}) scale(${ps / PLANE_SIZE})`
+      `translate(${(pt.x - ps / 2).toFixed(2)} ${(pt.y - ps / 2).toFixed(2)}) rotate(${angle.toFixed(2)} ${ps / 2} ${ps / 2}) scale(${(ps / PLANE_SIZE).toFixed(3)})`,
     );
   }, []);
 
-  const getProgress = useCallback(() => {
+  const computeTargetProgress = useCallback(() => {
     const docH = document.documentElement.scrollHeight - window.innerHeight;
-    const rawProgress = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
-    const viewportBias = window.scrollY / document.documentElement.scrollHeight;
-    return Math.min(1, rawProgress * 0.4 + viewportBias * 0.6);
+    if (docH <= 0) return 0;
+    return Math.min(1, Math.max(0, window.scrollY / docH));
   }, []);
 
-  // Initial mount: set up scroll + resize + ResizeObserver listeners.
+  const tick = useCallback(() => {
+    const target = targetProgressRef.current;
+    const display = displayProgressRef.current;
+    const diff = target - display;
+
+    // Stop the loop when settled; resume on next scroll.
+    if (Math.abs(diff) < 0.0008) {
+      displayProgressRef.current = target;
+      paint(target);
+      rafRef.current = 0;
+      return;
+    }
+
+    // Critically damped lerp — feels like silk on a trackpad, also tames
+    // wheel-event bursts so the plane never overshoots violently.
+    displayProgressRef.current = display + diff * 0.12;
+    paint(displayProgressRef.current);
+    rafRef.current = requestAnimationFrame(tick);
+  }, [paint]);
+
+  const requestTick = useCallback(() => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(tick);
+  }, [tick]);
+
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     buildPath();
-    updatePlane(0);
+    targetProgressRef.current = computeTargetProgress();
+    displayProgressRef.current = targetProgressRef.current;
+    paint(displayProgressRef.current);
+    setVisible(true);
 
     if (prefersReduced) return;
 
     const onScroll = () => {
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = 0;
-        updatePlane(getProgress());
-      });
+      targetProgressRef.current = computeTargetProgress();
+      if (inViewRef.current) requestTick();
     };
 
-    const onResize = () => { buildPath(); onScroll(); };
+    const onResize = () => {
+      buildPath();
+      targetProgressRef.current = computeTargetProgress();
+      // Snap on resize — interpolation across layout changes looks wrong.
+      displayProgressRef.current = targetProgressRef.current;
+      paint(displayProgressRef.current);
+    };
 
-    // ResizeObserver fires whenever the document body height changes — e.g.
-    // images/fonts loading after navigation, lazy content appearing, etc. This
-    // keeps the path stretched to the real page height so the plane never
-    // anchors against a transient short scrollHeight.
     let rebuildScheduled = false;
     const onBodyResize = () => {
       if (rebuildScheduled) return;
@@ -169,69 +201,80 @@ export function PaperPlanePath() {
       requestAnimationFrame(() => {
         rebuildScheduled = false;
         buildPath();
-        updatePlane(getProgress());
+        targetProgressRef.current = computeTargetProgress();
+        displayProgressRef.current = targetProgressRef.current;
+        paint(displayProgressRef.current);
       });
     };
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(onBodyResize) : null;
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(onBodyResize)
+        : null;
     if (ro) ro.observe(document.body);
+
+    // Skip per-frame work when the SVG is fully off-screen (rare since it
+    // covers the whole doc, but cheap insurance against future layout
+    // changes).
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined" && svgRef.current) {
+      io = new IntersectionObserver(
+        ([entry]) => {
+          inViewRef.current = entry.isIntersecting;
+          if (entry.isIntersecting) requestTick();
+        },
+        { rootMargin: "200px" },
+      );
+      io.observe(svgRef.current);
+    }
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    onScroll();
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (ro) ro.disconnect();
+      if (io) io.disconnect();
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [buildPath, updatePlane, getProgress]);
+  }, [buildPath, paint, computeTargetProgress, requestTick, tick]);
 
-  // On every page navigation: hide plane, snap to start, then rebuild after the
-  // browser has laid out the new page. We wait for two animation frames so that
-  // (a) ScrollToTop's layout effect has committed (scrollY = 0) and
-  // (b) the new page content has been measured (scrollHeight is correct).
+  // On navigation: rebuild against the new layout once it settles. Hide the
+  // plane briefly so it doesn't jitter to its new position visibly.
   useEffect(() => {
-    rebuildTimersRef.current.forEach(clearTimeout);
-    rebuildTimersRef.current = [];
-
+    setVisible(false);
     if (rafRef.current) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = 0;
     }
 
-    // Hide immediately and snap plane to start of (stale) path so it never
-    // renders a mid-flight position from the previous page.
-    setVisible(false);
-    updatePlane(0);
-
     let raf1 = 0;
     let raf2 = 0;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
     raf1 = requestAnimationFrame(() => {
       raf2 = requestAnimationFrame(() => {
-        // Rebuild against the new layout. If we just navigated, scrollY is 0,
-        // so progress is 0 — plane stays at the start until the user scrolls.
         buildPath();
-        updatePlane(getProgress());
-        // Fade in after one more frame so the rebuilt position is painted first.
-        rebuildTimersRef.current.push(
-          setTimeout(() => {
-            buildPath();
-            updatePlane(getProgress());
-            setVisible(true);
-          }, 60),
-        );
+        targetProgressRef.current = computeTargetProgress();
+        displayProgressRef.current = targetProgressRef.current;
+        paint(displayProgressRef.current);
+
+        timer = setTimeout(() => {
+          buildPath();
+          targetProgressRef.current = computeTargetProgress();
+          displayProgressRef.current = targetProgressRef.current;
+          paint(displayProgressRef.current);
+          setVisible(true);
+        }, 80);
       });
     });
 
     return () => {
       cancelAnimationFrame(raf1);
       cancelAnimationFrame(raf2);
-      rebuildTimersRef.current.forEach(clearTimeout);
-      rebuildTimersRef.current = [];
+      if (timer) clearTimeout(timer);
     };
-  }, [pathname, buildPath, updatePlane, getProgress]);
-
+  }, [pathname, buildPath, paint, computeTargetProgress]);
 
   return (
     <svg
@@ -245,10 +288,10 @@ export function PaperPlanePath() {
         zIndex: 6,
         overflow: "hidden",
         opacity: visible ? 1 : 0,
-        transition: "opacity 300ms ease",
+        transition: "opacity 360ms cubic-bezier(0.22,0.61,0.36,1)",
       }}
     >
-      {/* ghost track — full path, very faint */}
+      {/* ghost track — dashed, very faint */}
       <path
         ref={pathRef}
         fill="none"
@@ -258,15 +301,19 @@ export function PaperPlanePath() {
         strokeLinecap="round"
         opacity="0.18"
       />
-      {/* revealed trail — follows the plane */}
+      {/* trail that fills in behind the plane — solid, the dasharray on this
+          one is used as a length mask, not a visual pattern */}
       <path
         ref={trailRef}
         fill="none"
         stroke={PATH_STROKE_COLOR}
         strokeWidth={PATH_STROKE_WIDTH}
-        strokeDasharray={PATH_DASH_ARRAY}
         strokeLinecap="round"
       />
+      {/* Original paper-plane artwork — kept visually identical. The outer
+          <g ref={planeRef}> handles translate + rotate from the scroll loop;
+          the inner <g rotate(45)> keeps the artwork's tip pointing along the
+          path's direction-of-travel (the artwork is drawn pointing up-right). */}
       <g ref={planeRef}>
         <svg
           width={PLANE_SIZE}

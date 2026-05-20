@@ -3,7 +3,6 @@ import { SiteHeader } from "@/components/layout/SiteHeader/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter/SiteFooter";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 
-// PaperPlanePath does heavy DOM measurement; defer it past LCP via dynamic import.
 const PaperPlanePath = dynamic(
   () => import("@/components/primitives/PaperPlanePath/PaperPlanePath").then((m) => m.PaperPlanePath),
   { loading: () => null },

@@ -1,10 +1,16 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Toaster } from "sonner";
+import dynamic from "next/dynamic";
 import { routing } from "@/i18n/routing";
 import { CurrencyProvider } from "@/lib/currency/context";
 import { MotionConfig } from "@/components/primitives/motion";
+
+// Sonner is only needed after a user interaction triggers a toast — defer it
+// past initial paint so it doesn't sit in the first-load JS bundle.
+const Toaster = dynamic(() => import("sonner").then((m) => m.Toaster), {
+  loading: () => null,
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

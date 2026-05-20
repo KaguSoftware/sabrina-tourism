@@ -80,7 +80,9 @@
       "Bash(git merge *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\MnS\\\\Kagu\\\\genbuzz\\\\sabrina-tourism\" -Directory)",
       "Bash(Select-Object Name)",
-      "Bash(grep -E \"^\\(C:\\\\\\\\\\\\\\\\|\\\\s+\\\\d+:\\\\d+\\\\s+error\\)\")"
+      "Bash(grep -E \"^\\(C:\\\\\\\\\\\\\\\\|\\\\s+\\\\d+:\\\\d+\\\\s+error\\)\")",
+      "Bash(xargs -I {} du -h {})",
+      "Bash(awk -F: '{c+=$2} END {print c \" uses\"}')"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
@@ -88,7 +90,8 @@
       "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/(public)/tours/daily",
       "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/(public)/packages/custom",
       "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/components/custom-tour",
-      "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/[locale]/(public)"
+      "/Users/saitaydin/Documents/KaguSoftware/projects/sabrina-tourism/src/app/[locale]/(public)",
+      "\\tmp"
     ]
   }
 }
