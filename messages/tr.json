@@ -436,11 +436,7 @@
       "signingIn": "Giriş yapılıyor…",
       "invalid": "Bilgiler geçersiz. Tekrar dene.",
       "validEmail": "Geçerli bir e-posta adresi gir",
-      "passwordRequired": "Şifre gerekli",
-      "or": "veya",
-      "signInWithGoogle": "Google ile giriş yap",
-      "notAllowed": "Bu hesap yönetici erişimi için yetkili değil.",
-      "oauthFailed": "Google ile giriş başarısız. Tekrar dene."
+      "passwordRequired": "Şifre gerekli"
     },
     "formLabels": {
       "name": "Ad",

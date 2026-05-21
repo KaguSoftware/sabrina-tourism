@@ -439,11 +439,7 @@
       "signingIn": "Signing in…",
       "invalid": "Invalid credentials. Try again.",
       "validEmail": "Enter a valid email address",
-      "passwordRequired": "Password is required",
-      "or": "or",
-      "signInWithGoogle": "Sign in with Google",
-      "notAllowed": "This account is not authorized for admin access.",
-      "oauthFailed": "Google sign-in failed. Try again."
+      "passwordRequired": "Password is required"
     },
     "formLabels": {
       "name": "Name",

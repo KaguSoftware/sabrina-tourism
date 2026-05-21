@@ -105,9 +105,7 @@
       "Bash(Get-ChildItem -Path \"src\\\\components\\\\layout\\\\SiteHeader\" -Filter \"*.tsx\" -Recurse)",
       "PowerShell(npm run typecheck 2>&1)",
       "Bash(grep -E \"^\\\\S.*\\\\.tsx?$|error\\\\s+Error\")",
-      "Bash(Get-ChildItem -Path \"c:/Users/p.mansouri/Desktop/kagu/sabrina-tourism/src\" -Recurse -Directory)",
-      "Bash(xargs ls -la)",
-      "Bash(grep -iE \"allowlist|auth.ts|callback|login\\\\\\\\\\\\\\\\page|proxy\\\\\\\\.ts\")"
+      "Bash(Get-ChildItem -Path \"c:/Users/p.mansouri/Desktop/kagu/sabrina-tourism/src\" -Recurse -Directory)"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
