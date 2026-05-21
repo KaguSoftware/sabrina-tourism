@@ -9,6 +9,8 @@ import { DailyPackageCard } from "@/components/daily/DailyPackageCard/DailyPacka
 import { genericMessage } from "@/lib/whatsapp/whatsapp";
 import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 
+const REGIONS = ["Istanbul", "Antalya", "Cappadocia"] as const;
+
 interface DailyListPageProps {
   packages: DailyPackagePublic[];
 }
@@ -17,9 +19,15 @@ export function DailyListPage({ packages }: DailyListPageProps) {
   const locale = useLocale();
   const t = useTranslations("packageList");
   const localePfx = locale === "en" ? "" : `/${locale}`;
+
+  const grouped = REGIONS.map((region) => ({
+    region,
+    pkgs: packages.filter((p) => p.region.toLowerCase() === region.toLowerCase()),
+  })).filter((g) => g.pkgs.length > 0);
+
   return (
     <>
-      {/* Hero — matches PackageListPage exactly */}
+      {/* Hero */}
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
@@ -52,16 +60,9 @@ export function DailyListPage({ packages }: DailyListPageProps) {
         </div>
       </section>
 
-      {/* Grid */}
-      <section className="relative z-10 max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
-        <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-muted mb-10">
-          <span className="text-ochre font-display italic text-[18px] mr-1">
-            {packages.length}
-          </span>
-          {packages.length === 1 ? "day available" : "days available"}
-        </p>
-
-        {packages.length === 0 ? (
+      {/* Region sections */}
+      {grouped.length === 0 ? (
+        <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-14 pb-28">
           <div className="py-20 text-center max-w-[480px] mx-auto flex flex-col items-center gap-6">
             <Kicker>{t("noMatchesKicker")}</Kicker>
             <p className="font-display text-[clamp(22px,2.4vw,30px)] text-ink leading-[1.3]">
@@ -84,16 +85,44 @@ export function DailyListPage({ packages }: DailyListPageProps) {
               </GoldButton>
             </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
-            {packages.map((pkg, i) => (
-              <Reveal key={pkg.id} delay={i * 70}>
-                <DailyPackageCard pkg={pkg} priority={i < 3} />
+        </section>
+      ) : (
+        <div className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-20 pb-28">
+          {grouped.map(({ region, pkgs }, idx) => (
+            <section
+              key={region}
+              id={region.toLowerCase()}
+              className={idx !== 0 ? "mt-24 pt-24 border-t border-ink/10" : ""}
+            >
+              <Reveal>
+                <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
+                  <div>
+                    <Kicker>{region}</Kicker>
+                    <GoldUnderlineHeading
+                      as="h2"
+                      className="text-[clamp(28px,4vw,48px)] mt-4 tracking-tight"
+                    >
+                      {region} Day Tours
+                    </GoldUnderlineHeading>
+                  </div>
+                  <span className="font-mono text-[12px] tracking-[0.16em] uppercase text-muted">
+                    <span className="text-ochre font-display italic text-[18px] mr-1">{pkgs.length}</span>
+                    {pkgs.length === 1 ? "tour" : "tours"}
+                  </span>
+                </div>
               </Reveal>
-            ))}
-          </div>
-        )}
-      </section>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
+                {pkgs.map((pkg, i) => (
+                  <Reveal key={pkg.id} delay={i * 70}>
+                    <DailyPackageCard pkg={pkg} priority={i < 3} />
+                  </Reveal>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
     </>
   );
 }
