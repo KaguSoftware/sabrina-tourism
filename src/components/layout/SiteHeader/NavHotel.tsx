@@ -101,10 +101,30 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
   useEffect(() => () => clearClose(), []);
 
   const isActive = currentPath.startsWith("/regions");
-  const totalProperties = REGIONS.reduce(
+  const visibleRegions = REGIONS.filter(
+    (r) => (hotelsByRegion[r]?.length ?? 0) > 0
+  );
+  const totalProperties = visibleRegions.reduce(
     (sum, r) => sum + (hotelsByRegion[r]?.length ?? 0),
     0
   );
+  const totalCount = visibleRegions.length;
+  // Cap at 3 columns, but if there are very few items, use a tighter row
+  // so the cards stay generously sized instead of stretching across the menu.
+  const colCount = Math.min(3, Math.max(1, totalCount));
+  const menuWidthClass =
+    colCount === 1
+      ? "w-[340px]"
+      : colCount === 2
+        ? "w-[620px]"
+        : "w-[840px]";
+  // Last-row size for centering trailing items (e.g. 5 → 3+2 centered).
+  const remainder = totalCount % colCount;
+  const lastRowSize = remainder === 0 ? colCount : remainder;
+  const lastRowStart = totalCount - lastRowSize;
+  // Each card takes 1/colCount of the row's width via flex-basis.
+  const itemBasis =
+    colCount === 1 ? "100%" : colCount === 2 ? "50%" : "33.3333%";
 
   return (
     <div
@@ -139,7 +159,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4, transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } }}
             transition={{ duration: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
-            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 w-[840px] max-w-[calc(100vw-2rem)]"
+            className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 ${menuWidthClass} max-w-[calc(100vw-2rem)]`}
             role="menu"
           >
             {/* hover bridge */}
@@ -175,13 +195,21 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
             </svg>
           </div>
 
-          {/* Six region cards in a 3×2 grid */}
-          <div className="grid grid-cols-3 divide-x divide-y divide-rule overflow-y-auto min-h-0">
-            {REGIONS.map((region, idx) => {
+          {/* Region cards — last row centers so odd counts feel intentional */}
+          <div className="flex flex-wrap justify-center overflow-y-auto min-h-0">
+            {visibleRegions.map((region, idx) => {
               const hotelList = hotelsByRegion[region] ?? [];
-              const first = hotelList[0];
+              const first = hotelList[0]!;
               const remaining = hotelList.length - 1;
               const regionKey = REGION_TO_NAV_KEY[region];
+              const isLastRow = idx >= lastRowStart;
+              const isCenteredTrailing = isLastRow && lastRowSize < colCount;
+              const colInRow = isLastRow ? idx - lastRowStart : idx % colCount;
+              // Divider rules: vertical between siblings in the same row, horizontal
+              // for any row past the first. Computed manually because the centered
+              // trailing row breaks `divide-*` utility assumptions.
+              const showLeftDivider = colInRow > 0;
+              const showTopDivider = idx >= colCount;
 
               return (
                 <Link
@@ -191,66 +219,49 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                   }}
                   href={`${pfx}/regions/${REGION_SLUGS[region]}`}
                   onKeyDown={(e) => handleItemKeyDown(e, idx)}
-                  className="group relative flex flex-col gap-3 p-5 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)]"
+                  style={{ flexBasis: itemBasis }}
+                  className={`group relative flex flex-col gap-3 p-5 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+                    showLeftDivider ? "border-l border-rule" : ""
+                  } ${showTopDivider ? "border-t border-rule" : ""} ${
+                    isCenteredTrailing
+                      ? "bg-linear-to-b from-transparent via-ochre/[0.025] to-ochre/[0.04]"
+                      : ""
+                  }`}
                   role="menuitem"
                 >
-                  {first ? (
-                    <>
-                      <div className="relative w-full aspect-16/10 overflow-hidden border border-rule">
-                        <Image
-                          src={first.images[0]}
-                          alt={first.name}
-                          fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                          sizes="240px"
-                        />
-                      </div>
+                  <div className="relative w-full aspect-16/10 overflow-hidden border border-rule">
+                    <Image
+                      src={first.images[0]}
+                      alt={first.name}
+                      fill
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      sizes="280px"
+                    />
+                    {isCenteredTrailing && (
+                      <span
+                        aria-hidden
+                        className="absolute top-2 left-2 font-mono text-[9px] tracking-[0.22em] uppercase text-cream/90 bg-navy/55 backdrop-blur-[2px] px-1.5 py-0.5"
+                      >
+                        {t("hotelsMenuKicker")}
+                      </span>
+                    )}
+                  </div>
 
-                      <div>
-                        <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
-                          {t(`regions.${regionKey}`)}
-                        </p>
-                        <p className="mt-1.5 font-display font-normal text-[13px] leading-[1.2] tracking-tight text-ink-soft truncate">
-                          {first.name}
-                        </p>
-                        {remaining > 0 && (
-                          <p className="mt-1 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
-                            {remaining === 1
-                              ? t("otherHotel", { count: remaining })
-                              : t("otherHotels", { count: remaining })}
-                          </p>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="relative w-full aspect-16/10 overflow-hidden border border-rule bg-gradient-to-br from-ochre/10 via-cream to-ochre/5 flex items-center justify-center">
-                        <svg
-                          aria-hidden
-                          viewBox="0 0 80 50"
-                          className="w-1/2 h-auto text-ochre/40"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M4 42 L20 22 L32 34 L46 14 L62 30 L76 18 L76 42 Z" />
-                          <path d="M4 42 L76 42" />
-                          <circle cx="62" cy="12" r="3" />
-                        </svg>
-                      </div>
-
-                      <div>
-                        <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
-                          {t(`regions.${regionKey}`)}
-                        </p>
-                        <p className="mt-1.5 font-mono text-[10px] tracking-[0.16em] uppercase text-muted">
-                          {t("exploreRegion")}
-                        </p>
-                      </div>
-                    </>
-                  )}
+                  <div>
+                    <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                      {t(`regions.${regionKey}`)}
+                    </p>
+                    <p className="mt-1.5 font-display font-normal text-[13px] leading-[1.2] tracking-tight text-ink-soft truncate">
+                      {first.name}
+                    </p>
+                    {remaining > 0 && (
+                      <p className="mt-1 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
+                        {remaining === 1
+                          ? t("otherHotel", { count: remaining })
+                          : t("otherHotels", { count: remaining })}
+                      </p>
+                    )}
+                  </div>
                 </Link>
               );
             })}
