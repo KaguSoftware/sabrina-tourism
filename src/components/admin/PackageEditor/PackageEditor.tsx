@@ -241,7 +241,7 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
 
         {/* Sticky tab bar */}
         <div
-          className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto"
+          className="sticky top-14 md:top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto -mx-4 md:mx-0"
           style={{ background: "#f5ede0" }}
         >
           {TABS.map((tab) => {

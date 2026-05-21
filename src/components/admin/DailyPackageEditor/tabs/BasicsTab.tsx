@@ -6,6 +6,7 @@ import { Select } from "@/components/admin/Input/Select";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { Toggle } from "@/components/admin/PackageEditor/primitives";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
+import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { DAILY_SEASON_OPTIONS, type DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
 
 const REGIONS = ["Istanbul", "Cappadocia", "Aegean", "Mediterranean", "Black Sea", "Eastern Anatolia"] as const;
@@ -43,10 +44,22 @@ export function BasicsTab() {
       </FormField>
 
       <FormField label="Start time" required error={errors.start_time?.message}>
-        <Input {...register("start_time")} placeholder="08:00" />
+        <Controller
+          name="start_time"
+          control={control}
+          render={({ field }) => (
+            <TimePicker value={field.value ?? ""} onChange={field.onChange} placeholder="Select start time" />
+          )}
+        />
       </FormField>
       <FormField label="End time" required error={errors.end_time?.message}>
-        <Input {...register("end_time")} placeholder="18:00" />
+        <Controller
+          name="end_time"
+          control={control}
+          render={({ field }) => (
+            <TimePicker value={field.value ?? ""} onChange={field.onChange} placeholder="Select end time" />
+          )}
+        />
       </FormField>
 
       <FormField label="Vehicle" error={errors.vehicle?.message}>

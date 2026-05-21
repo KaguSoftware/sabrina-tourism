@@ -136,7 +136,7 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
           <div className="flex items-center gap-3 flex-shrink-0 pt-1"><SaveButton /></div>
         </div>
 
-        <div className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
+        <div className="sticky top-14 md:top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto -mx-4 md:mx-0" style={{ background: "#f5ede0" }}>
           {TABS.map((tab) => (
             <button key={tab} type="button" onClick={() => setActiveTab(tab)}
               className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"

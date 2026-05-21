@@ -30,7 +30,7 @@ export default async function AuthedAdminLayout({
       <AdminSidebar email={email} />
 
       <main className="flex-1 min-w-0 overflow-y-auto md:pt-0 pt-14">
-        <div className="max-w-5xl mx-auto px-6 py-10">
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
           {children}
         </div>
       </main>
@@ -38,6 +38,7 @@ export default async function AuthedAdminLayout({
       <Toaster
         position="top-right"
         theme="light"
+        offset={72}
         toastOptions={{
           style: {
             background: "#f5ede0",
