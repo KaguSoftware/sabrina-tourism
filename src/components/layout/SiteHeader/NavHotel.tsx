@@ -223,11 +223,33 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                       </div>
                     </>
                   ) : (
-                    <div>
-                      <p className="font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy">
-                        {t(`regions.${regionKey}`)}
-                      </p>
-                    </div>
+                    <>
+                      <div className="relative w-full aspect-16/10 overflow-hidden border border-rule bg-gradient-to-br from-ochre/10 via-cream to-ochre/5 flex items-center justify-center">
+                        <svg
+                          aria-hidden
+                          viewBox="0 0 80 50"
+                          className="w-1/2 h-auto text-ochre/40"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M4 42 L20 22 L32 34 L46 14 L62 30 L76 18 L76 42 Z" />
+                          <path d="M4 42 L76 42" />
+                          <circle cx="62" cy="12" r="3" />
+                        </svg>
+                      </div>
+
+                      <div>
+                        <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                          {t(`regions.${regionKey}`)}
+                        </p>
+                        <p className="mt-1.5 font-mono text-[10px] tracking-[0.16em] uppercase text-muted">
+                          {t("exploreRegion")}
+                        </p>
+                      </div>
+                    </>
                   )}
                 </Link>
               );
