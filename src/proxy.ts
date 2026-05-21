@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { DEFAULT_LOCALE, LOCALES } from "./i18n/locales";
+import { isAllowedAdminEmail } from "./lib/admin/allowlist";
 
 const intlProxy = createIntlMiddleware(routing);
 const INTL_LOCALE_HEADER = "X-NEXT-INTL-LOCALE";
@@ -52,6 +53,11 @@ function passThroughDefaultLocale(request: NextRequest) {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // OAuth callback and other /auth/* routes: bypass all guards/i18n
+  if (pathname.startsWith("/auth/")) {
+    return NextResponse.next({ request: { headers: request.headers } });
+  }
+
   // Admin routes: Supabase auth guard
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     let response = NextResponse.next({
@@ -85,6 +91,16 @@ export async function proxy(request: NextRequest) {
 
     if (!user && pathname !== "/admin/login") {
       return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+
+    if (user && !isAllowedAdminEmail(user.email)) {
+      await supabase.auth.signOut();
+      if (pathname !== "/admin/login") {
+        const url = new URL("/admin/login", request.url);
+        url.searchParams.set("error", "not_allowed");
+        return NextResponse.redirect(url);
+      }
+      return response;
     }
 
     if (user && pathname === "/admin/login") {

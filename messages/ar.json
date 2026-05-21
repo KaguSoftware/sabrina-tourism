@@ -438,7 +438,11 @@
       "signingIn": "جارٍ تسجيل الدخول…",
       "invalid": "بيانات الدخول غير صحيحة. حاول مرة أخرى.",
       "validEmail": "أدخل بريداً إلكترونياً صالحاً",
-      "passwordRequired": "كلمة المرور مطلوبة"
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "or": "أو",
+      "signInWithGoogle": "تسجيل الدخول بحساب Google",
+      "notAllowed": "هذا الحساب غير مصرح له بالوصول للإدارة.",
+      "oauthFailed": "فشل تسجيل الدخول عبر Google. حاول مرة أخرى."
     },
     "formLabels": {
       "name": "الاسم",
