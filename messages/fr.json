@@ -30,6 +30,7 @@
     "otherHotel": "& {count} autre hôtel",
     "otherHotels": "& {count} autres hôtels",
     "partneredPropertiesAcrossTurkey": "{count} établissements partenaires en Türkiye",
+    "exploreRegion": "Découvrir la région",
     "regions": {
       "istanbul": "Istanbul",
       "cappadocia": "Cappadoce",
