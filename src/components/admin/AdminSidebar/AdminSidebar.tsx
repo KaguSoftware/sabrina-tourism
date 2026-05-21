@@ -15,6 +15,7 @@ import {
   Sun,
   Languages,
   ReceiptText,
+  LogOut,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth/actions";
@@ -114,8 +115,9 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
       <form action={signOut}>
         <button
           type="submit"
-          className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-terracotta transition-colors duration-200"
+          className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft border border-rule hover:border-terracotta hover:text-terracotta hover:bg-cream-deep transition-colors duration-200 px-3 py-2 rounded-sm"
         >
+          <LogOut size={12} />
           {t("signOut")}
         </button>
       </form>

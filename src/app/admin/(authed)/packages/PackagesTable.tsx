@@ -22,6 +22,16 @@ import { useTranslations } from "next-intl";
 import { reorderPackages, setFeatured, setPublished, deletePackage, duplicatePackage } from "./actions";
 import { SortableRow } from "./PackagesTableRow";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
+import { EmptyState } from "@/components/admin/EmptyState/EmptyState";
+import { Map } from "lucide-react";
+import {
+  toastError,
+  toastPublished,
+  toastUnpublished,
+  toastDeleted,
+  toastDuplicated,
+  toastReordered,
+} from "@/lib/admin/toast";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -47,11 +57,13 @@ function ConfirmDialog({
   onClose,
   onConfirm,
   deleting,
+  name,
 }: {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
   deleting?: boolean;
+  name?: string;
 }) {
   const t = useTranslations("admin");
   if (!open) return null;
@@ -68,7 +80,14 @@ function ConfirmDialog({
           {t("confirm.deletePackageTitle")}
         </p>
         <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">
-          {t("confirm.deletePackageBody")}
+          {name ? (
+            <>
+              Delete <span className="text-ink font-semibold">&quot;{name}&quot;</span>?
+              This permanently removes the tour and can&apos;t be undone.
+            </>
+          ) : (
+            t("confirm.deletePackageBody")
+          )}
         </p>
         <div className="flex gap-3 justify-end">
           <button
@@ -112,19 +131,23 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
     const reordered = arrayMove(packages, oldIndex, newIndex);
     setPackages(reordered);
     const result = await reorderPackages(reordered.map((p) => p.id));
-    if (result.error) { setPackages(packages); toast.error(result.error); }
+    if (result.error) { setPackages(packages); toastError("reorder tours", result.error); }
+    else toastReordered("Tour");
   }, [packages]);
 
   const handleTogglePublished = useCallback(async (id: string, current: boolean) => {
     const next = !current;
+    const target = packages.find((p) => p.id === id);
     setPackages((prev) => prev.map((p) => p.id === id ? { ...p, isPublished: next, isFeatured: next ? p.isFeatured : false } : p));
     const result = await setPublished(id, next);
-    if (result.error) { setPackages(packages); toast.error(result.error); }
-    else toast.success(next ? "Published." : "Moved to draft.");
+    if (result.error) { setPackages(packages); toastError(next ? "publish tour" : "unpublish tour", result.error); }
+    else if (next) toastPublished("tour", target?.name);
+    else toastUnpublished("tour", target?.name);
   }, [packages]);
 
   const handleToggleFeatured = useCallback(async (id: string, current: boolean) => {
     const next = !current;
+    const target = packages.find((p) => p.id === id);
     setPackages((prev) => prev.map((p) => (p.id === id ? { ...p, isFeatured: next } : p)));
     const result = await setFeatured(id, next);
     if (result.error) {
@@ -132,43 +155,48 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
       if (result.error.includes("Maximum 3")) {
         toast.error(result.error, { style: { background: "#c05a3a", color: "#f5ede0", border: "1px solid #c05a3a" } });
       } else {
-        toast.error(result.error);
+        toastError("update featured status", result.error);
       }
     } else {
-      toast.success(next ? "Now featured." : "Removed from featured.");
+      const q = target?.name ? `"${target.name}"` : "tour";
+      toast.success(next ? `${q} added to featured` : `${q} removed from featured`);
     }
   }, [packages]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
     const id = deleteTarget;
+    const target = packages.find((p) => p.id === id);
     setDeleting(true);
     const result = await deletePackage(id);
     setDeleting(false);
     setDeleteTarget(null);
-    if (result.error) { toast.error(result.error); }
-    else { setPackages((prev) => prev.filter((p) => p.id !== id)); toast.success("Tour deleted."); }
-  }, [deleteTarget]);
+    if (result.error) { toastError("delete tour", result.error); }
+    else { setPackages((prev) => prev.filter((p) => p.id !== id)); toastDeleted("tour", target?.name); }
+  }, [deleteTarget, packages]);
 
   const handleDuplicate = useCallback(async (id: string) => {
+    const target = packages.find((p) => p.id === id);
     const result = await duplicatePackage(id);
-    if (result.error) toast.error(result.error);
-    else { toast.success("Duplicated. Edit the copy."); router.push(`/admin/packages/${result.newSlug}`); }
-  }, [router]);
+    if (result.error) toastError("duplicate tour", result.error);
+    else { toastDuplicated("tour", target?.name); router.push(`/admin/packages/${result.newSlug}`); }
+  }, [router, packages]);
 
   if (packages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-6">
-        <p className="text-[24px] text-ink-soft italic" style={{ fontFamily: "var(--font-fraunces)" }}>
-          {t("pages.packages.title")}
-        </p>
-        <Link
-          href="/admin/packages/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:opacity-80"
-        >
-          {t("pages.packages.new")}
-        </Link>
-      </div>
+      <EmptyState
+        icon={Map}
+        title="No tours yet"
+        description="Create your first tour to start building the catalog. You can save as draft and publish whenever you're ready."
+        action={
+          <Link
+            href="/admin/packages/new"
+            className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:opacity-80"
+          >
+            {t("pages.packages.new")}
+          </Link>
+        }
+      />
     );
   }
 
@@ -179,6 +207,7 @@ export function PackagesTable({ initialPackages }: { initialPackages: AdminPacka
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleConfirmDelete}
         deleting={deleting}
+        name={packages.find((p) => p.id === deleteTarget)?.name}
       />
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="overflow-x-auto">

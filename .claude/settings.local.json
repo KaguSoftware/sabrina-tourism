@@ -103,7 +103,8 @@
       "Bash(grep -E \"\\\\.\\(png|jpg|jpeg|webp\\)$\")",
       "Bash(xargs -I '{}' bash -c 'ls -lh \"{}\" 2>/dev/null | awk \"{print \\\\$5, \\\\$NF}\"')",
       "Bash(Get-ChildItem -Path \"src\\\\components\\\\layout\\\\SiteHeader\" -Filter \"*.tsx\" -Recurse)",
-      "PowerShell(npm run typecheck 2>&1)"
+      "PowerShell(npm run typecheck 2>&1)",
+      "Bash(grep -E \"^\\\\S.*\\\\.tsx?$|error\\\\s+Error\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",

@@ -113,15 +113,32 @@ export const SortableRow = memo(function SortableRow({
       </td>
 
       <td className="px-3 py-3 w-28">
-        <div className="flex items-center gap-1">
-          <a href={`/admin/packages/${pkg.slug}`} title={t("edit")} className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
-            <Pencil size={14} />
+        <div className="flex items-center gap-1.5">
+          <a
+            href={`/admin/packages/${pkg.slug}`}
+            title={t("edit")}
+            aria-label={t("edit")}
+            className="inline-flex items-center justify-center p-1.5 border border-rule bg-cream-warm/60 text-ink-soft hover:border-ochre hover:bg-cream-deep hover:text-ink transition-colors rounded-sm"
+          >
+            <Pencil size={13} />
           </a>
-          <button onClick={() => onDuplicate(pkg.id)} title={t("duplicate")} className="p-1.5 text-ink/70 hover:text-ink transition-colors rounded">
-            <Copy size={14} />
+          <button
+            type="button"
+            onClick={() => onDuplicate(pkg.id)}
+            title={t("duplicate")}
+            aria-label={t("duplicate")}
+            className="inline-flex items-center justify-center p-1.5 border border-rule bg-cream-warm/60 text-ink-soft hover:border-ochre hover:bg-cream-deep hover:text-ink transition-colors rounded-sm"
+          >
+            <Copy size={13} />
           </button>
-          <button onClick={() => onDelete(pkg.id)} title={t("delete")} className="p-1.5 text-ink/70 hover:text-terracotta transition-colors rounded">
-            <Trash2 size={14} />
+          <button
+            type="button"
+            onClick={() => onDelete(pkg.id)}
+            title={t("delete")}
+            aria-label={t("delete")}
+            className="inline-flex items-center justify-center p-1.5 border border-rule bg-cream-warm/60 text-ink-soft hover:border-terracotta hover:bg-terracotta hover:text-cream transition-colors rounded-sm"
+          >
+            <Trash2 size={13} />
           </button>
         </div>
       </td>

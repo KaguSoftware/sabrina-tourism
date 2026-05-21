@@ -7,11 +7,19 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Pencil, Copy, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { GripVertical, Pencil, Copy, Trash2, CalendarRange } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { reorderPremadePackages, setPremadePublished, deletePremadePackage, duplicatePremadePackage } from "./actions";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
+import { EmptyState } from "@/components/admin/EmptyState/EmptyState";
+import {
+  toastError,
+  toastPublished,
+  toastUnpublished,
+  toastDeleted,
+  toastDuplicated,
+  toastReordered,
+} from "@/lib/admin/toast";
 
 export interface AdminPremadeRow {
   id: string;
@@ -21,14 +29,16 @@ export interface AdminPremadeRow {
   sortOrder: number;
 }
 
-function ConfirmDialog({ open, onClose, onConfirm, deleting }: { open: boolean; onClose: () => void; onConfirm: () => void; deleting?: boolean }) {
+function ConfirmDialog({ open, onClose, onConfirm, deleting, name }: { open: boolean; onClose: () => void; onConfirm: () => void; deleting?: boolean; name?: string }) {
   const t = useTranslations("admin");
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={deleting ? undefined : onClose}>
       <div className="bg-cream border border-rule p-8 max-w-sm w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink font-semibold mb-3">{t("confirm.deletePackageTitle")}</p>
-        <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">{t("confirm.deletePackageBody")}</p>
+        <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">
+          {name ? (<>Delete <span className="text-ink font-semibold">&quot;{name}&quot;</span>? This permanently removes the tour and can&apos;t be undone.</>) : t("confirm.deletePackageBody")}
+        </p>
         <div className="flex gap-3 justify-end">
           <button onClick={onClose} disabled={deleting} className="inline-flex items-center px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium text-ink-soft hover:text-ink transition-colors disabled:opacity-40">{t("common.cancel")}</button>
           <button onClick={onConfirm} disabled={deleting} className="inline-flex items-center justify-center gap-2 min-w-20 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-transparent text-terracotta border border-terracotta/40 hover:bg-terracotta hover:text-cream hover:border-terracotta transition-all duration-200 active:opacity-80 disabled:opacity-60">{deleting ? <Spinner size="sm" /> : t("common.delete")}</button>
@@ -67,9 +77,9 @@ const SortableRow = memo(function SortableRow({ pkg, onTogglePublished, onDelete
       </td>
       <td className="px-3 py-3 w-28">
         <div className="flex items-center gap-1">
-          <Link href={`/admin/fixed-dates/${pkg.id}`} className="inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft border border-rule hover:border-ochre hover:text-ochre transition-colors"><Pencil size={11} /></Link>
-          <button onClick={() => onDuplicate(pkg.id)} className="inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft border border-rule hover:border-ochre hover:text-ochre transition-colors"><Copy size={11} /></button>
-          <button onClick={() => onDelete(pkg.id)} className="inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft border border-rule hover:border-terracotta hover:text-terracotta transition-colors"><Trash2 size={11} /></button>
+          <Link href={`/admin/fixed-dates/${pkg.id}`} title={t("edit")} aria-label={t("edit")} className="inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft border border-rule hover:border-ochre hover:text-ochre transition-colors"><Pencil size={11} /></Link>
+          <button onClick={() => onDuplicate(pkg.id)} title={t("duplicate")} aria-label={t("duplicate")} className="inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft border border-rule hover:border-ochre hover:text-ochre transition-colors"><Copy size={11} /></button>
+          <button onClick={() => onDelete(pkg.id)} title={t("delete")} aria-label={t("delete")} className="inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-[10px] tracking-[0.14em] uppercase text-ink-soft border border-rule hover:border-terracotta hover:text-terracotta transition-colors"><Trash2 size={11} /></button>
         </div>
       </td>
     </tr>
@@ -93,46 +103,55 @@ export function FixedDatesTable({ initialPackages }: { initialPackages: AdminPre
     const reordered = arrayMove(packages, oldIndex, newIndex);
     setPackages(reordered);
     const result = await reorderPremadePackages(reordered.map((p) => p.id));
-    if (result.error) { setPackages(packages); toast.error(result.error); }
+    if (result.error) { setPackages(packages); toastError("reorder tours", result.error); }
+    else toastReordered("Tour");
   }, [packages]);
 
   const handleTogglePublished = useCallback(async (id: string, current: boolean) => {
     const next = !current;
+    const target = packages.find((p) => p.id === id);
     setPackages((prev) => prev.map((p) => p.id === id ? { ...p, isPublished: next } : p));
     const result = await setPremadePublished(id, next);
-    if (result.error) { setPackages(packages); toast.error(result.error); }
-    else toast.success(next ? "Published." : "Moved to draft.");
+    if (result.error) { setPackages(packages); toastError(next ? "publish tour" : "unpublish tour", result.error); }
+    else if (next) toastPublished("tour", target?.name);
+    else toastUnpublished("tour", target?.name);
   }, [packages]);
 
   const handleConfirmDelete = useCallback(async () => {
     if (!deleteTarget) return;
     const id = deleteTarget;
+    const target = packages.find((p) => p.id === id);
     setDeleting(true);
     const result = await deletePremadePackage(id);
     setDeleting(false);
     setDeleteTarget(null);
-    if (result.error) { toast.error(result.error); }
-    else { setPackages((prev) => prev.filter((p) => p.id !== id)); toast.success("Package deleted."); }
-  }, [deleteTarget]);
+    if (result.error) { toastError("delete tour", result.error); }
+    else { setPackages((prev) => prev.filter((p) => p.id !== id)); toastDeleted("tour", target?.name); }
+  }, [deleteTarget, packages]);
 
   const handleDuplicate = useCallback(async (id: string) => {
+    const target = packages.find((p) => p.id === id);
     const result = await duplicatePremadePackage(id);
-    if (result.error) toast.error(result.error);
-    else { toast.success("Duplicated. Edit the copy."); router.push(`/admin/fixed-dates/${result.newId}`); }
-  }, [router]);
+    if (result.error) toastError("duplicate tour", result.error);
+    else { toastDuplicated("tour", target?.name); router.push(`/admin/fixed-dates/${result.newId}`); }
+  }, [router, packages]);
 
   if (packages.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-6">
-        <p className="text-[24px] text-ink-soft italic" style={{ fontFamily: "var(--font-fraunces)" }}>{t("pages.fixedDates.title")}</p>
-        <Link href="/admin/fixed-dates/new" className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:opacity-80">{t("pages.fixedDates.new")}</Link>
-      </div>
+      <EmptyState
+        icon={CalendarRange}
+        title="No fixed-date tours yet"
+        description="Add your first scheduled tour. Customers will see published tours on the public site."
+        action={
+          <Link href="/admin/fixed-dates/new" className="inline-flex items-center gap-2 px-4 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy border border-ochre hover:bg-gold hover:border-gold transition-all duration-200 active:opacity-80">{t("pages.fixedDates.new")}</Link>
+        }
+      />
     );
   }
 
   return (
     <>
-      <ConfirmDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} onConfirm={handleConfirmDelete} deleting={deleting} />
+      <ConfirmDialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} onConfirm={handleConfirmDelete} deleting={deleting} name={packages.find((p) => p.id === deleteTarget)?.name} />
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">

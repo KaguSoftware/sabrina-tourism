@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { toastSaved, toastError } from "@/lib/admin/toast";
 import { saveHotel } from "@/app/admin/(authed)/hotels/[id]/actions";
 import { HotelSchema, type HotelFormValues } from "@/app/admin/(authed)/hotels/[id]/schema";
 import type { HotelRow } from "@/lib/db/hotels";
@@ -93,7 +94,7 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
   const [activeTab, setActiveTab] = useState<Tab>("Basics");
   const [saving, setSaving] = useState(false);
 
-  const methods = useForm<HotelFormValues>({ resolver: zodResolver(HotelSchema), defaultValues: defaultValues(hotel), mode: "onBlur" });
+  const methods = useForm<HotelFormValues>({ resolver: zodResolver(HotelSchema), defaultValues: defaultValues(hotel), mode: "onTouched", reValidateMode: "onChange" });
   const { handleSubmit, watch, reset, formState: { isDirty, errors } } = methods;
 
   useEffect(() => {
@@ -110,8 +111,8 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
     setSaving(true);
     try {
       const result = await saveHotel(data);
-      if (result.error) { toast.error(result.error); return; }
-      toast.success("Saved.");
+      if (result.error) { toastError("save hotel", result.error); return; }
+      toastSaved("hotel", data.name);
       reset(data);
       if (!hotel) router.push(`/admin/hotels/${result.id}`);
       else router.refresh();
