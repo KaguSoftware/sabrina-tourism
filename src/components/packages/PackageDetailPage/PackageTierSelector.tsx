@@ -80,8 +80,8 @@ export function PackageTierSelector({
               <button
                 className={`w-full text-left flex flex-col p-8 border transition-all duration-300 cursor-pointer ${
                   active
-                    ? "border-ochre bg-[#faf7f0] shadow-[0_4px_40px_-20px_rgba(201,169,97,0.4)]"
-                    : "border-rule hover:border-ochre/50 bg-cream"
+                    ? "border-2 border-ochre bg-[#fffef9] gold-glow-active"
+                    : "border-rule hover:border-ochre/50 bg-white hover:-translate-y-1.5 hover:[box-shadow:10px_14px_0_-2px_#1b4d5c] will-change-transform relative hover:z-10"
                 }`}
                 onClick={() => onSelect(tier.name)}
                 aria-pressed={active}
@@ -97,7 +97,7 @@ export function PackageTierSelector({
                 </div>
                 <Hairline className="mb-6 opacity-50" />
                 {tier.hotel && (
-                  <div className="mb-5 flex items-start gap-3 border border-rule bg-cream-deep p-3">
+                  <div className="mb-5 flex items-start gap-3 border border-rule bg-[#fffef9] p-3">
                     {tier.hotel.bedroomImage && (
                       <div className="relative w-16 h-16 shrink-0 overflow-hidden border border-rule">
                         <Image
