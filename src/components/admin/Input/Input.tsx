@@ -7,7 +7,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <input
         ref={ref}
-        className={`w-full bg-cream-deep border border-cream-deep text-ink font-sans text-[16px] px-3 py-2.5 rounded-sm focus:outline-none focus:border-ochre focus:bg-cream transition-colors duration-200 placeholder:text-muted/50 ${className}`}
+        className={`w-full bg-cream border border-rule text-ink font-sans text-[16px] px-3 py-2.5 rounded-sm hover:border-ink-soft/50 focus:outline-none focus:border-ochre focus:ring-2 focus:ring-ochre/20 focus:bg-cream transition-colors duration-150 placeholder:text-muted/60 disabled:opacity-60 disabled:bg-cream-warm disabled:cursor-not-allowed aria-invalid:border-terracotta aria-invalid:ring-terracotta/20 ${className}`}
         {...props}
       />
     );

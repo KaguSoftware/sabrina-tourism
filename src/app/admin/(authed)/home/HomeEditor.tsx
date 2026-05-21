@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { Spinner } from "@/components/admin/Spinner/Spinner";
+import { SaveBar, SaveButton } from "@/components/admin/SaveBar/SaveBar";
+import { toastSaved, toastError } from "@/lib/admin/toast";
 import { SiteContentTranslationsTab } from "@/components/admin/SiteContentTranslationsTab";
 import type { TranslatableField, TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
 import { saveHomeContent } from "./actions";
@@ -99,7 +99,7 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
     resolver: zodResolver(homeContentSchema),
     defaultValues,
   });
-  const { handleSubmit, watch, control } = methods;
+  const { handleSubmit, watch, control, formState: { errors, isDirty } } = methods;
 
   // Track step count for translation field generation only — sections own
   // their own useFieldArray for rendering.
@@ -113,14 +113,16 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
     setSaving(true);
     try {
       const result = await saveHomeContent(values);
-      if (result.error) toast.error(result.error);
-      else toast.success("Home page saved.");
+      if (result.error) toastError("save home page", result.error);
+      else toastSaved("home page");
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toastError("save home page", "Something went wrong. Please try again.");
     } finally {
       setSaving(false);
     }
   }
+
+  const errorCount = Object.keys(errors).length;
 
   // Translation fields per content key — read from the live form via watch().
   const translationSections: Array<{ contentKey: string; label: string; fields: TranslatableField[] }> = [
@@ -217,21 +219,19 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit, (errs) => {
-              const first = Object.entries(errs).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join("; ");
-              // eslint-disable-next-line no-console
-              console.error("Form validation failed", errs);
-              toast.error(`Validation: ${first}`);
+              const count = Object.keys(errs).length;
+              toastError("save", `${count} ${count === 1 ? "field needs" : "fields need"} attention`);
             })}
             noValidate
           >
             <div className="flex justify-end mb-6">
-              <button
-                type="submit"
-                disabled={saving}
-                className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-              >
-                {saving ? <Spinner size="sm" /> : "Save home page"}
-              </button>
+              <SaveButton
+                isDirty={isDirty}
+                saving={saving}
+                hasErrors={errorCount > 0}
+                errorCount={errorCount}
+                label="Save home page"
+              />
             </div>
             <div className="space-y-3">
               <HeroSection open={openSection === "hero"} onToggle={() => toggleSection("hero")} />
@@ -242,6 +242,13 @@ export function HomeEditor({ hero, about, howItWorks, featured, featuredHotels, 
               <FeaturedHotelsSection open={openSection === "featured_hotels"} onToggle={() => toggleSection("featured_hotels")} />
               <QuoteSection open={openSection === "quote"} onToggle={() => toggleSection("quote")} />
             </div>
+            <SaveBar
+              isDirty={isDirty}
+              saving={saving}
+              hasErrors={errorCount > 0}
+              errorCount={errorCount}
+              label="Save home page"
+            />
           </form>
         </FormProvider>
       )}

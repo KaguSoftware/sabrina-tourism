@@ -80,7 +80,7 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
     setTranslating(true);
     try {
       const { results, error } = await translateAllLocalesWithAI(ns, nsFlat.en);
-      if (error) { toast.error(error); return; }
+      if (error) { toast.error(`Couldn't translate "${ns}" — ${error}`); return; }
       if (!results) return;
 
       // Merge all locale results into messages state
@@ -100,8 +100,8 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
           nonEnglish.map((l) => [l, next[l] as Record<string, unknown>])
         ) as Record<Locale, Record<string, unknown>>
       );
-      if (saveError) toast.error(saveError);
-      else toast.success(`Translated & saved "${ns}" to all ${nonEnglish.length} languages`);
+      if (saveError) toast.error(`Couldn't save translations — ${saveError}`);
+      else toast.success(`Translated & saved "${ns}" to ${nonEnglish.length} languages`);
     } finally {
       setTranslating(false);
     }
@@ -115,8 +115,8 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
           nonEnglish.map((l) => [l, messages[l] as Record<string, unknown>])
         ) as Record<Locale, Record<string, unknown>>
       );
-      if (error) toast.error(error);
-      else toast.success(`Saved all languages`);
+      if (error) toast.error(`Couldn't save translations — ${error}`);
+      else toast.success(`Saved "${ns}" across ${nonEnglish.length} languages`);
     } finally {
       setSaving(false);
     }
