@@ -45,7 +45,7 @@ export const SortableRow = memo(function SortableRow({
   return (
     <tr
       ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }}
+      style={isDragging ? { transform: CSS.Transform.toString(transform), transition, opacity: 0.5, position: "relative", zIndex: 1 } : undefined}
       className="border-b border-rule hover:bg-cream-warm transition-colors"
     >
       <td className="pl-3 pr-2 py-3 w-8">

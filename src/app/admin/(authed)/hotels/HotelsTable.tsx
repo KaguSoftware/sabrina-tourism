@@ -36,7 +36,7 @@ const SortableRow = memo(function SortableRow({ hotel, onTogglePublished, onDele
   const t = useTranslations("admin.common");
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: hotel.id });
   return (
-    <tr ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }} className="border-b border-rule hover:bg-cream-warm transition-colors">
+    <tr ref={setNodeRef} style={isDragging ? { transform: CSS.Transform.toString(transform), transition, opacity: 0.5, position: "relative", zIndex: 1 } : undefined} className="border-b border-rule hover:bg-cream-warm transition-colors">
       <td className="pl-3 pr-2 py-3 w-8">
         <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-ink-soft hover:text-ink transition-colors touch-none" aria-label={t("dragToReorder")}><GripVertical size={16} /></button>
       </td>

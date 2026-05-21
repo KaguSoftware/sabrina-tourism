@@ -47,7 +47,9 @@ const SortableRow = memo(function SortableRow({ pkg, onTogglePublished, onDelete
 }) {
   const t = useTranslations("admin.common");
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: pkg.id });
-  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 };
+  const style = isDragging
+    ? { transform: CSS.Transform.toString(transform), transition, opacity: 0.4, position: "relative" as const, zIndex: 1 }
+    : undefined;
 
   return (
     <tr ref={setNodeRef} style={style} className="border-b border-rule hover:bg-cream-warm/40 transition-colors">
