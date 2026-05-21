@@ -218,6 +218,7 @@
       "singleRoomOccupancy": "Single-room occupancy",
       "addChildren": "+ Add children",
       "childAge": "Age",
+      "childAgeMax": "Max age 6",
       "removeChild": "Remove child"
     },
     "step3": {
@@ -633,8 +634,9 @@
     "kicker": "Group rates",
     "heading": "Price per person",
     "doubleRoom": "In double room",
-    "singleRoom": "In single room",
+    "singleRoom": "+ Single room",
     "child": "Child",
+    "childAges": "Ages 2–6",
     "babiesFree": "Babies under 2 travel free.",
     "baby": "Baby (under 2)",
     "free": "Free"
@@ -684,6 +686,7 @@
     "singleRoomOccupancyWithPrice": "Single-room occupancy (+{amount})",
     "addChildren": "+ Add children",
     "childAge": "Age",
+    "childAgeMax": "Max age 6",
     "removeChild": "Remove child"
   },
   "packageFilters": {

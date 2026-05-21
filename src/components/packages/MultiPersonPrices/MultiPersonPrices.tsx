@@ -38,35 +38,20 @@ export function MultiPersonPrices({ pricing }: MultiPersonPricesProps) {
     icon: React.ReactNode;
     price: number;
     prefix: string;
-    isFree: false;
   };
-  type FreeSlot = {
-    key: string;
-    label: string;
-    icon: React.ReactNode;
-    isFree: true;
-  };
-  type Slot = PaidSlot | FreeSlot;
 
-  const priceSlots: PaidSlot[] = (
+  const allSlots: PaidSlot[] = (
     [
       { key: "doubleRoom", label: t("doubleRoom"), price: pricing.twoPeople, prefix: "", icon: <DoubleRoomIcon /> },
-      { key: "singleRoom", label: t("singleRoom"), price: pricing.singleRoomSupplement ?? null, prefix: "+ ", icon: <BedSingle className="w-full h-full" strokeWidth={1.75} /> },
+      { key: "singleRoom", label: t("singleRoom"), price: pricing.singleRoomSupplement ?? null, prefix: "", icon: <BedSingle className="w-full h-full" strokeWidth={1.75} /> },
       { key: "child", label: t("child"), price: pricing.pricePerChild ?? null, prefix: "", icon: <Baby className="w-full h-full" strokeWidth={1.75} /> },
     ] as Array<{ key: string; label: string; price: number | null; prefix: string; icon: React.ReactNode }>
   )
-    .filter((s): s is { key: string; label: string; price: number; prefix: string; icon: React.ReactNode } => s.price !== null)
-    .map((s) => ({ ...s, isFree: false as const }));
+    .filter((s): s is { key: string; label: string; price: number; prefix: string; icon: React.ReactNode } => s.price !== null);
 
-  // Baby column is ALWAYS shown — babies under 2 travel free.
-  const babySlot: FreeSlot = {
-    key: "baby",
-    label: t.has("baby") ? t("baby") : "Baby (under 2)",
-    icon: <Baby className="w-full h-full" strokeWidth={1.75} />,
-    isFree: true,
-  };
-
-  const allSlots: Slot[] = [...priceSlots, babySlot];
+  const babiesFreeNote = t.has("babiesFree") ? t("babiesFree") : "Babies under 2 travel free.";
+  const childAgesTag = t.has("childAges") ? t("childAges") : "Ages 2–6";
+  const hasChild = allSlots.some((s) => s.key === "child");
 
   return (
     <Reveal>
@@ -78,29 +63,37 @@ export function MultiPersonPrices({ pricing }: MultiPersonPricesProps) {
           </p>
         </div>
         <div className={`grid gap-px bg-rule ${
-          allSlots.length === 4 ? "grid-cols-2 sm:grid-cols-4"
-          : allSlots.length === 3 ? "grid-cols-1 sm:grid-cols-3"
+          allSlots.length === 3 ? "grid-cols-1 sm:grid-cols-3"
           : allSlots.length === 2 ? "grid-cols-1 sm:grid-cols-2"
           : "grid-cols-1"
         }`}>
           {allSlots.map((slot) => (
-            <div key={slot.key} className="bg-cream flex flex-col items-center py-5 px-3 gap-2.5">
+            <div key={slot.key} className="bg-cream flex flex-col items-center justify-center py-5 px-3 gap-2.5">
+              {slot.key === "child" ? (
+                <span className="inline-block font-mono text-[8.5px] tracking-[0.14em] uppercase text-ochre bg-ochre/10 border border-ochre/30 px-1.5 py-0.5 rounded-sm">
+                  {childAgesTag}
+                </span>
+              ) : null}
               <div className="w-8 h-8 text-ochre">{slot.icon}</div>
               <p className="font-mono text-[9px] tracking-[0.16em] uppercase text-muted text-center leading-snug">
                 {slot.label}
               </p>
-              {slot.isFree ? (
-                <p className="font-display text-[20px] font-semibold tracking-tight text-ochre leading-none">
-                  {t.has("free") ? t("free") : "Free"}
+              <p className="font-display text-[20px] font-semibold tracking-tight text-ink leading-none">
+                {slot.prefix}{formatPrice(slot.price)}
+              </p>
+              {slot.key === "child" ? (
+                <p className="font-mono text-[9px] tracking-[0.12em] uppercase text-muted text-center leading-snug mt-1">
+                  {babiesFreeNote}
                 </p>
-              ) : (
-                <p className="font-display text-[20px] font-semibold tracking-tight text-ink leading-none">
-                  {slot.prefix}{formatPrice(slot.price)}
-                </p>
-              )}
+              ) : null}
             </div>
           ))}
         </div>
+        {!hasChild ? (
+          <p className="font-mono text-[10px] tracking-[0.12em] uppercase text-muted mt-3">
+            {babiesFreeNote}
+          </p>
+        ) : null}
       </div>
     </Reveal>
   );

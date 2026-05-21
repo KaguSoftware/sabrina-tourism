@@ -218,6 +218,7 @@
       "singleRoomOccupancy": "إقامة في غرفة فردية",
       "addChildren": "+ إضافة أطفال",
       "childAge": "العمر",
+      "childAgeMax": "الحد الأقصى للعمر 6",
       "removeChild": "إزالة الطفل"
     },
     "step3": {
@@ -632,8 +633,9 @@
     "kicker": "أسعار المجموعات",
     "heading": "السعر للشخص",
     "doubleRoom": "في غرفة مزدوجة",
-    "singleRoom": "في غرفة فردية",
+    "singleRoom": "+ غرفة فردية",
     "child": "طفل",
+    "childAges": "الأعمار 2–6",
     "babiesFree": "الرضّع دون سن الثانية يسافرون مجانًا.",
     "baby": "رضيع (أقل من سنتين)",
     "free": "مجاناً"
@@ -683,6 +685,7 @@
     "singleRoomOccupancyWithPrice": "إقامة في غرفة فردية (+{amount})",
     "addChildren": "+ إضافة أطفال",
     "childAge": "العمر",
+    "childAgeMax": "الحد الأقصى للعمر 6",
     "removeChild": "إزالة الطفل"
   },
   "packageFilters": {
