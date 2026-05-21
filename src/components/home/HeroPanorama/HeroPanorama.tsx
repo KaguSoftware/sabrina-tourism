@@ -23,7 +23,7 @@ export async function HeroPanorama({
   const locale = await getLocale();
   const localePfx = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
   return (
-    <section className="relative min-h-160 md:min-h-0 md:aspect-[1716/917] max-h-screen w-full flex items-center pt-32 md:pt-[clamp(120px,18vw,200px)] pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
+    <section className="relative min-h-160 md:min-h-0 md:aspect-[1716/917] max-h-screen w-full flex items-start pt-32 md:pt-[clamp(100px,15vw,170px)] pb-16 px-[clamp(20px,4vw,56px)] overflow-hidden">
       {/* Illustrated background */}
       <div className="absolute inset-0 z-[-1] overflow-hidden">
         <KenBurnsImage src="/Istanbul_Alternative1.webp" alt="Hero panorama" />

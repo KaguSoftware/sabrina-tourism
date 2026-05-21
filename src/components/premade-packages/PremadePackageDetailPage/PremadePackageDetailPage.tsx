@@ -63,6 +63,10 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
       : t("singleRoomOccupancy");
 
   const dateLabel = `${formatDate(selectedDate.startDate, locale)} → ${formatDate(selectedDate.endDate, locale)}`;
+  const hasOverAgeChild = children.some((c) => {
+    const n = Number(c.age);
+    return c.age !== "" && Number.isFinite(n) && n > 6;
+  });
   const childrenAges = children.map((c) => c.age || "?");
   const childrenSuffix =
     children.length > 0
@@ -168,30 +172,41 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
         {/* Children */}
         <Reveal delay={215}>
           <div className="mb-8 max-w-140 flex flex-col gap-2">
-            {children.map((child) => (
-              <div key={child.id} className="flex items-center gap-3">
-                <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted min-w-[3ch]">{t("childAge")}</span>
-                <input
-                  type="number"
-                  min={0}
-                  max={17}
-                  value={child.age}
-                  onChange={(e) => updateChildAge(child.id, e.target.value)}
-                  className="w-20 border-b border-rule bg-transparent font-sans text-base md:text-[14px] text-ink pb-1.5 focus:outline-none focus:border-ochre transition-colors duration-200"
-                />
-                {pricePerChild != null && (
-                  <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre">
-                    + {fmt(pricePerChild)}
-                  </span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => removeChild(child.id)}
-                  aria-label={t("removeChild")}
-                  className="text-ink-soft hover:text-ochre transition-colors text-[18px] leading-none px-2"
-                >×</button>
-              </div>
-            ))}
+            {children.map((child) => {
+              const ageNum = Number(child.age);
+              const overAge = child.age !== "" && Number.isFinite(ageNum) && ageNum > 6;
+              return (
+                <div key={child.id} className="flex items-center gap-3">
+                  <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted min-w-[3ch]">{t("childAge")}</span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={6}
+                    aria-invalid={overAge || undefined}
+                    value={child.age}
+                    onChange={(e) => updateChildAge(child.id, e.target.value)}
+                    className={`w-20 border-b bg-transparent font-sans text-base md:text-[14px] pb-1.5 focus:outline-none transition-colors duration-200 ${overAge ? "border-terracotta text-terracotta focus:border-terracotta" : "border-rule text-ink focus:border-ochre"}`}
+                  />
+                  {overAge ? (
+                    <span className="font-mono text-[11px] tracking-[0.04em] text-terracotta">
+                      {t.has("childAgeMax") ? t("childAgeMax") : "Max age 6"}
+                    </span>
+                  ) : (
+                    pricePerChild != null && (
+                      <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre">
+                        + {fmt(pricePerChild)}
+                      </span>
+                    )
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeChild(child.id)}
+                    aria-label={t("removeChild")}
+                    className="text-ink-soft hover:text-ochre transition-colors text-[18px] leading-none px-2 ml-auto"
+                  >×</button>
+                </div>
+              );
+            })}
             <button
               type="button"
               onClick={addChild}
@@ -245,9 +260,13 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
         <Reveal delay={280}>
           <button
             type="button"
-            onClick={() => openWhatsApp(waHref)}
+            disabled={hasOverAgeChild}
+            onClick={() => {
+              if (hasOverAgeChild) return;
+              openWhatsApp(waHref);
+            }}
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
-            className="inline-flex items-center gap-4 px-10 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] group"
+            className="inline-flex items-center gap-4 px-10 py-5 font-mono text-[13px] tracking-[0.16em] uppercase font-semibold shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] transition-all duration-300 hover:shadow-[0_8px_40px_-6px_rgba(11,26,46,0.35)] hover:scale-[1.02] active:scale-[0.99] group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[0_4px_32px_-6px_rgba(11,26,46,0.45)] disabled:hover:scale-100"
           >
             <span>{tCommon("reserveWhatsapp")}</span>
             <span className="text-[16px] transition-transform duration-300 group-hover:translate-x-1.5">→</span>
@@ -560,7 +579,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
       {(pkg.pricing || pkg.included || pkg.notIncluded) && (
         <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
           {pkg.pricing && (
-            <div className="max-w-3xl mx-auto mb-12">
+            <div className="max-w-4xl mx-auto mb-12">
               <MultiPersonPrices pricing={pkg.pricing} />
             </div>
           )}
