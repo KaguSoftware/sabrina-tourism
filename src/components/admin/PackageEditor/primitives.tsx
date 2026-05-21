@@ -137,7 +137,7 @@ export function ConfirmDialog({
       onClick={busy ? undefined : onClose}
     >
       <div
-        className="bg-cream border border-rule p-8 max-w-sm w-full mx-4 shadow-xl"
+        className="bg-cream border border-rule p-8 max-w-sm w-[calc(100vw-24px)] mx-3 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-2 mb-3">
@@ -254,7 +254,7 @@ export function ReadinessPanel({
                 <button
                   type="button"
                   onClick={() => onJumpToTab(issue.tab)}
-                  className="font-sans text-[13px] text-terracotta hover:underline text-left"
+                  className="font-sans text-[13px] text-terracotta hover:underline text-left min-w-0 break-words flex-1"
                 >
                   {issue.message}
                 </button>

@@ -103,7 +103,7 @@ export function GalleryTab() {
         </p>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={fields.map((_, i) => `gallery-${i}`)} strategy={verticalListSortingStrategy}>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {fields.map((field, i) => (
                 <SortableGalleryItem
                   key={field.id}

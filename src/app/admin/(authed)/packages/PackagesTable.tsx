@@ -73,7 +73,7 @@ function ConfirmDialog({
       onClick={deleting ? undefined : onClose}
     >
       <div
-        className="bg-cream border border-rule rounded-none p-8 max-w-sm w-full mx-4 shadow-xl"
+        className="bg-cream border border-rule rounded-none p-8 max-w-sm w-[calc(100vw-24px)] mx-3 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink font-semibold mb-3">

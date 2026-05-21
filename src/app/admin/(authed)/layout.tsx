@@ -29,7 +29,7 @@ export default async function AuthedAdminLayout({
     <div className="min-h-screen bg-cream flex">
       <AdminSidebar email={email} />
 
-      <main className="flex-1 min-w-0 overflow-y-auto md:pt-0 pt-14">
+      <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden md:pt-0 pt-14">
         <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-10">
           {children}
         </div>

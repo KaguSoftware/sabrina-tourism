@@ -188,13 +188,13 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
     <FormProvider {...methods}>
       <form onSubmit={onSubmit} noValidate>
         {/* Page header */}
-        <div className="flex items-start justify-between gap-6 pb-6 border-b border-rule mb-0">
-          <div className="space-y-1">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 pb-6 border-b border-rule mb-0">
+          <div className="space-y-1 min-w-0">
             <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">
               Tour
             </p>
             <h1
-              className="text-[28px] text-ink leading-tight"
+              className="text-[22px] sm:text-[28px] text-ink leading-tight break-words"
               style={{ fontFamily: "var(--font-fraunces)" }}
             >
               {name || "New tour"}
@@ -224,7 +224,7 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
               )}
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0 pt-1">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 flex-shrink-0 sm:pt-1">
             {pkg && isPublished && (
               <a
                 href={`/packages/${computedSlug}`}

@@ -81,11 +81,11 @@ export function SaveBar({
     <div
       className={`${
         sticky ? "sticky bottom-0 left-0 right-0 z-20" : ""
-      } border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex items-center justify-between gap-4 mt-12 transition-opacity duration-200 ${
+      } border-t border-rule bg-cream/95 backdrop-blur-sm px-4 sm:px-6 py-3 flex items-center justify-between gap-3 mt-12 transition-opacity duration-200 ${
         visible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
     >
-      <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-ink-soft">
+      <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-ink-soft min-w-0 truncate">
         {statusText}
       </p>
       <SaveButton

@@ -46,7 +46,7 @@ export function InclusionIconPicker({ value, onChange, size = 16 }: Props) {
 
       {open && (
         <div
-          className="absolute z-50 top-[calc(100%+6px)] left-0 w-[280px] bg-cream border border-rule shadow-xl p-3 rounded-sm"
+          className="absolute z-50 top-[calc(100%+6px)] left-0 w-[min(280px,calc(100vw-32px))] bg-cream border border-rule shadow-xl p-3 rounded-sm"
           style={{ background: "#f5ede0" }}
         >
           <div className="grid grid-cols-5 gap-1.5">

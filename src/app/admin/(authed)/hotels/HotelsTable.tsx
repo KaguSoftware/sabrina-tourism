@@ -28,7 +28,7 @@ function ConfirmDialog({ open, onClose, onConfirm, deleting, name }: { open: boo
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm" onClick={deleting ? undefined : onClose}>
-      <div className="bg-cream border border-rule p-8 max-w-sm w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-cream border border-rule p-8 max-w-sm w-[calc(100vw-24px)] mx-3 shadow-xl" onClick={(e) => e.stopPropagation()}>
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink font-semibold mb-3">{t("confirm.deleteHotelTitle")}</p>
         <p className="font-sans text-[14px] text-ink-soft leading-relaxed mb-8">
           {name ? (<>Delete <span className="text-ink font-semibold">&quot;{name}&quot;</span>? This permanently removes the hotel and can&apos;t be undone.</>) : t("confirm.deleteHotelBody")}

@@ -92,7 +92,7 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
           errorCount={errorCount}
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
         <FormField label="Heading top" required error={errors.hero_heading_top?.message}>
           <Input {...register("hero_heading_top")} placeholder="e.g. Travel in" />
         </FormField>
@@ -162,14 +162,14 @@ const SortableAirportRow = memo(function SortableAirportRow({
       <input
         {...register(`airports.${index}.code`)}
         placeholder="IST"
-        className="w-16 bg-transparent border-0 border-b border-rule text-ink font-mono text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors uppercase"
+        className="w-14 sm:w-16 shrink-0 bg-transparent border-0 border-b border-rule text-ink font-mono text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors uppercase"
         style={{ textTransform: "uppercase" }}
         maxLength={6}
       />
       <input
         {...register(`airports.${index}.label`)}
         placeholder="Istanbul Airport"
-        className="flex-1 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
+        className="flex-1 min-w-0 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
       />
       <button
         type="button"
@@ -219,12 +219,12 @@ const SortableVehicleRow = memo(function SortableVehicleRow({
         <input
           {...register(`vehicles.${index}.vehicle_id`)}
           placeholder="sedan"
-          className="w-24 bg-transparent border-0 border-b border-rule text-ink font-mono text-[13px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
+          className="w-20 sm:w-24 shrink-0 bg-transparent border-0 border-b border-rule text-ink font-mono text-[13px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
         />
         <input
           {...register(`vehicles.${index}.label`)}
           placeholder="Sedan"
-          className="flex-1 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
+          className="flex-1 min-w-0 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
         />
         <button
           type="button"
@@ -236,7 +236,7 @@ const SortableVehicleRow = memo(function SortableVehicleRow({
           <X size={13} />
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-3 pl-7">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:pl-7">
         <input
           {...register(`vehicles.${index}.capacity`)}
           placeholder="1–3 pax"
@@ -355,7 +355,7 @@ function FleetTab({
           errorCount={errorCount}
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Airports */}
         <div>
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-4">
