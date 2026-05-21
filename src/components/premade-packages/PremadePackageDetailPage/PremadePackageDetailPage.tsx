@@ -523,7 +523,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                     </div>
                     <Hairline className="mb-6 opacity-50" />
                     {tierItem.hotel && (
-                      <div className="mb-5 overflow-hidden border border-rule bg-[#fffef9]">
+                      <div className="-mx-8 mb-5 overflow-hidden border-y border-rule bg-[#fffef9]">
                         {tierItem.hotel.bedroomImage && (
                           <div className="relative aspect-[4/2.1]">
                             <Image

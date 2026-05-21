@@ -97,21 +97,21 @@ export function PackageTierSelector({
                 </div>
                 <Hairline className="mb-6 opacity-50" />
                 {tier.hotel && (
-                  <div className="mb-5 flex items-start gap-3 border border-rule bg-[#fffef9] p-3">
+                  <div className="-mx-8 mb-5 overflow-hidden border-y border-rule bg-[#fffef9]">
                     {tier.hotel.bedroomImage && (
-                      <div className="relative w-16 h-16 shrink-0 overflow-hidden border border-rule">
+                      <div className="relative aspect-[4/2.1]">
                         <Image
                           src={tier.hotel.bedroomImage}
                           alt={tier.hotel.name}
                           fill
                           className="object-cover"
-                          sizes="64px"
+                          sizes="(max-width: 1024px) 100vw, 33vw"
                         />
                       </div>
                     )}
-                    <div className="flex-1 min-w-0">
+                    <div className="px-8 py-3">
                       <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">{t("hotel")}</p>
-                      <p className="font-display text-[16px] leading-tight text-ink truncate">{tier.hotel.name}</p>
+                      <p className="font-display text-[16px] leading-tight text-ink">{tier.hotel.name}</p>
                       <div className="flex items-center gap-2 mt-1">
                         {tier.hotel.stars > 0 && (
                           <span className="flex items-center gap-0.5 text-ochre" aria-label={`${tier.hotel.stars} star hotel`}>
