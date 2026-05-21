@@ -17,13 +17,12 @@ export function DailyPrices({ adultPrice, childPrice }: DailyPricesProps) {
   const { currency, rates } = useCurrency();
   const format = (n: number) => formatCurrency(n, currency, rates, locale);
 
-  const freeLabel = t.has("free") ? t("free") : "Free";
-  const babyLabel = t.has("baby") ? t("baby") : "Baby (under 2)";
+  const babiesFreeNote = t.has("babiesFree") ? t("babiesFree") : "Babies under 2 travel free.";
+  const childAgesTag = t.has("childAges") ? t("childAges") : "Ages 2–6";
 
   const slots = [
-    { key: "adult", label: "Adult", value: format(adultPrice), highlight: false, icon: <User className="w-full h-full" strokeWidth={1.75} /> },
-    { key: "child", label: "Child", value: format(childPrice), highlight: false, icon: <Baby className="w-full h-full" strokeWidth={1.75} /> },
-    { key: "baby", label: babyLabel, value: freeLabel, highlight: true, icon: <Baby className="w-full h-full" strokeWidth={1.75} /> },
+    { key: "adult", label: "Adult", value: format(adultPrice), icon: <User className="w-full h-full" strokeWidth={1.75} /> },
+    { key: "child", label: "Child", value: format(childPrice), icon: <Baby className="w-full h-full" strokeWidth={1.75} /> },
   ];
 
   return (
@@ -35,16 +34,26 @@ export function DailyPrices({ adultPrice, childPrice }: DailyPricesProps) {
             Price per person
           </p>
         </div>
-        <div className="grid gap-px bg-rule grid-cols-1 sm:grid-cols-3">
+        <div className="grid gap-px bg-rule grid-cols-1 sm:grid-cols-2">
           {slots.map((slot) => (
-            <div key={slot.key} className="bg-cream flex flex-col items-center py-5 px-3 gap-2.5">
+            <div key={slot.key} className="bg-cream flex flex-col items-center justify-center py-5 px-3 gap-2.5">
+              {slot.key === "child" ? (
+                <span className="inline-block font-mono text-[8.5px] tracking-[0.14em] uppercase text-ochre bg-ochre/10 border border-ochre/30 px-1.5 py-0.5 rounded-sm">
+                  {childAgesTag}
+                </span>
+              ) : null}
               <div className="w-8 h-8 text-ochre">{slot.icon}</div>
               <p className="font-mono text-[9px] tracking-[0.16em] uppercase text-muted text-center leading-snug">
                 {slot.label}
               </p>
-              <p className={`font-display text-[20px] font-semibold tracking-tight leading-none ${slot.highlight ? "text-ochre" : "text-ink"}`}>
+              <p className="font-display text-[20px] font-semibold tracking-tight leading-none text-ink">
                 {slot.value}
               </p>
+              {slot.key === "child" ? (
+                <p className="font-mono text-[9px] tracking-[0.12em] uppercase text-muted text-center leading-snug mt-1">
+                  {babiesFreeNote}
+                </p>
+              ) : null}
             </div>
           ))}
         </div>

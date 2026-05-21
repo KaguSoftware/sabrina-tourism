@@ -99,9 +99,7 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
   const factCount = facts.length;
 
   const pricing = pkg.pricing;
-  type PaidRow = { icon: string; label: string; value: number; isFree: false };
-  type FreeRow = { icon: string; label: string; isFree: true };
-  type Row = PaidRow | FreeRow;
+  type Row = { icon: string; label: string; value: number };
   const pricingRowsAll: Array<{ icon: string; label: string; value: number | null | undefined }> = pricing
     ? [
         { icon: "user",  label: "Single",   value: pricing.onePerson },
@@ -109,11 +107,9 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
         { icon: "baby",  label: "Child",    value: pricing.pricePerChild },
       ]
     : [];
-  const paidRows: PaidRow[] = pricingRowsAll
-    .filter((r): r is { icon: string; label: string; value: number } => r.value != null)
-    .map((r) => ({ ...r, isFree: false as const }));
-  // Baby column is ALWAYS shown — babies under 2 travel free.
-  const pricingRows: Row[] = [...paidRows, { icon: "baby", label: "Baby (under 2)", isFree: true }];
+  const pricingRows: Row[] = pricingRowsAll
+    .filter((r): r is Row => r.value != null);
+  const hasChild = pricingRows.some((r) => r.label === "Child");
   const singleRoomSupplement = pricing?.singleRoomSupplement ?? null;
 
   return (
@@ -211,14 +207,29 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
               <View style={{ flexDirection: "row", gap: 1, backgroundColor: C.rule }}>
                 {pricingRows.map((row, i) => (
                   <View key={i} style={{ flex: 1, backgroundColor: C.cream, alignItems: "center", paddingVertical: 14, paddingHorizontal: 8, gap: 6 }}>
+                    {row.label === "Child" ? (
+                      <View style={{ borderWidth: 1, borderColor: C.ochre, paddingVertical: 1, paddingHorizontal: 4 }}>
+                        <Text style={{ fontFamily: fonts.mono, fontSize: 7, color: C.ochre, letterSpacing: 0.6 }}>AGES 2–6</Text>
+                      </View>
+                    ) : null}
                     <PdfIcon name={row.icon} size={18} color={C.ochre} />
                     <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, textAlign: "center", letterSpacing: 0.6 }}>{upper(row.label)}</Text>
-                    <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: row.isFree ? C.ochre : C.ink, textAlign: "center" }}>
-                      {row.isFree ? "FREE" : fmtPrice(row.value, pkg.currency ?? "USD")}
+                    <Text style={{ fontFamily: fonts.display, fontWeight: 300, fontSize: 14, color: C.ink, textAlign: "center" }}>
+                      {fmtPrice(row.value, pkg.currency ?? "USD")}
                     </Text>
+                    {row.label === "Child" ? (
+                      <Text style={{ fontFamily: fonts.body, fontSize: 8, color: C.inkSoft, textAlign: "center", letterSpacing: 0.4, marginTop: 2 }}>
+                        Babies under 2 travel free.
+                      </Text>
+                    ) : null}
                   </View>
                 ))}
               </View>
+            ) : null}
+            {!hasChild && pricingRows.length > 0 ? (
+              <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, marginTop: 8 }}>
+                Babies under 2 travel free.
+              </Text>
             ) : null}
             {singleRoomSupplement != null ? (
               <Text style={{ fontFamily: fonts.body, fontSize: 9, color: C.inkSoft, marginTop: 8, textAlign: fonts.rtl ? "left" : "right" }}>
