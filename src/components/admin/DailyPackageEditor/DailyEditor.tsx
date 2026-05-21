@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { toastSaved, toastError } from "@/lib/admin/toast";
 import { collectErrors, useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
 import { saveDailyPackage } from "@/app/admin/(authed)/daily/[id]/actions";
 import { DailySchema, type DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
@@ -82,7 +83,7 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("Basics");
   const [saving, setSaving] = useState(false);
 
-  const methods = useForm<DailyFormValues>({ resolver: zodResolver(DailySchema), defaultValues: defaultValues(pkg), mode: "onBlur" });
+  const methods = useForm<DailyFormValues>({ resolver: zodResolver(DailySchema), defaultValues: defaultValues(pkg), mode: "onTouched", reValidateMode: "onChange" });
   const { handleSubmit, watch, reset, formState: { isDirty, errors } } = methods;
 
   useDirtyBeforeUnload(isDirty);
@@ -95,8 +96,8 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
     setSaving(true);
     try {
       const result = await saveDailyPackage(data);
-      if (result.error) { toast.error(result.error); return; }
-      toast.success("Saved.");
+      if (result.error) { toastError("save daily tour", result.error); return; }
+      toastSaved("daily tour", data.name);
       reset(data);
       if (!pkg) router.push(`/admin/daily/${result.id}`);
       else router.refresh();
@@ -120,7 +121,7 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
           <div className="flex items-center gap-3 flex-shrink-0 pt-1"><SaveButton /></div>
         </div>
 
-        <div className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
+        <div className="sticky top-14 md:top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto -mx-4 md:mx-0" style={{ background: "#f5ede0" }}>
           {TABS.map((tab) => (
             <button key={tab} type="button" onClick={() => setActiveTab(tab)}
               className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"

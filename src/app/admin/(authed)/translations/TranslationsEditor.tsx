@@ -80,7 +80,7 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
     setTranslating(true);
     try {
       const { results, error } = await translateAllLocalesWithAI(ns, nsFlat.en);
-      if (error) { toast.error(error); return; }
+      if (error) { toast.error(`Couldn't translate "${ns}" — ${error}`); return; }
       if (!results) return;
 
       // Merge all locale results into messages state
@@ -100,8 +100,8 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
           nonEnglish.map((l) => [l, next[l] as Record<string, unknown>])
         ) as Record<Locale, Record<string, unknown>>
       );
-      if (saveError) toast.error(saveError);
-      else toast.success(`Translated & saved "${ns}" to all ${nonEnglish.length} languages`);
+      if (saveError) toast.error(`Couldn't save translations — ${saveError}`);
+      else toast.success(`Translated & saved "${ns}" to ${nonEnglish.length} languages`);
     } finally {
       setTranslating(false);
     }
@@ -115,8 +115,8 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
           nonEnglish.map((l) => [l, messages[l] as Record<string, unknown>])
         ) as Record<Locale, Record<string, unknown>>
       );
-      if (error) toast.error(error);
-      else toast.success(`Saved all languages`);
+      if (error) toast.error(`Couldn't save translations — ${error}`);
+      else toast.success(`Saved "${ns}" across ${nonEnglish.length} languages`);
     } finally {
       setSaving(false);
     }
@@ -127,7 +127,7 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-cream-deep transition-colors duration-150"
+        className="w-full flex items-center justify-between gap-3 px-4 sm:px-6 py-5 text-left hover:bg-cream-deep transition-colors duration-150"
       >
         <div>
           <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted mb-0.5">Namespace</p>
@@ -138,38 +138,40 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
       </button>
 
       {open && (
-        <div className="px-6 pb-8 pt-4 border-t border-rule space-y-5">
-          {/* Locale tabs */}
-          <div className="flex items-center gap-1 border-b border-rule pb-3">
-            {LOCALES.filter((l) => l !== "en").map((loc) => (
-              <button
-                key={loc}
-                type="button"
-                onClick={() => setActiveLocale(loc)}
-                className={`font-mono text-[11px] tracking-[0.16em] uppercase px-3 py-1.5 border transition-colors duration-150 ${
-                  activeLocale === loc
-                    ? "border-ochre bg-ochre/10 text-ink font-bold"
-                    : "border-rule text-ink-soft hover:border-ochre/50"
-                }`}
-              >
-                {LOCALE_LABELS[loc]}
-              </button>
-            ))}
-            <div className="ml-auto flex gap-2">
+        <div className="px-4 sm:px-6 pb-8 pt-4 border-t border-rule space-y-5">
+          {/* Locale tabs + actions */}
+          <div className="flex flex-wrap items-center gap-2 border-b border-rule pb-3">
+            <div className="flex flex-wrap items-center gap-1">
+              {LOCALES.filter((l) => l !== "en").map((loc) => (
+                <button
+                  key={loc}
+                  type="button"
+                  onClick={() => setActiveLocale(loc)}
+                  className={`font-mono text-[11px] tracking-[0.16em] uppercase px-3 py-1.5 border transition-colors duration-150 ${
+                    activeLocale === loc
+                      ? "border-ochre bg-ochre/10 text-ink font-bold"
+                      : "border-rule text-ink-soft hover:border-ochre/50"
+                  }`}
+                >
+                  {LOCALE_LABELS[loc]}
+                </button>
+              ))}
+            </div>
+            <div className="sm:ml-auto flex flex-wrap gap-2 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={handleTranslateAndSaveAll}
                 disabled={translating || saving}
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.16em] uppercase px-3 py-1.5 border border-ochre text-ochre hover:bg-ochre/10 transition-colors duration-150 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.16em] uppercase px-3 py-1.5 border border-ochre text-ochre hover:bg-ochre/10 transition-colors duration-150 disabled:opacity-50 whitespace-nowrap"
               >
                 <Sparkles size={12} />
-                {translating ? "Translating all…" : "Translate all with AI"}
+                {translating ? "Translating…" : "Translate all"}
               </button>
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={saving || translating}
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.16em] uppercase px-3 py-1.5 bg-navy text-ochre hover:bg-navy/80 transition-colors duration-150 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.16em] uppercase px-3 py-1.5 bg-navy text-ochre hover:bg-navy/80 transition-colors duration-150 disabled:opacity-50 whitespace-nowrap"
               >
                 <Save size={12} />
                 {saving ? "Saving…" : "Save all"}
@@ -180,7 +182,7 @@ function NamespaceEditor({ ns, messages, onMessagesChange }: NSEditorProps) {
           {/* Keys table */}
           <div className="space-y-3">
             {enKeys.map((key) => (
-              <div key={key} className="grid grid-cols-[1fr_1fr] gap-4 border-b border-rule/50 pb-3 last:border-0 last:pb-0">
+              <div key={key} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 border-b border-rule/50 pb-3 last:border-0 last:pb-0">
                 <div className="space-y-1">
                   <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted">{key}</p>
                   <p className="text-[13px] text-ink-soft leading-[1.5] bg-cream border border-rule px-3 py-2 min-h-[38px]">

@@ -15,6 +15,7 @@ import {
   Sun,
   Languages,
   ReceiptText,
+  LogOut,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth/actions";
@@ -68,7 +69,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 px-4 py-2.5 transition-colors duration-200 border-l-4 ${
+            className={`flex items-center gap-3 px-4 py-3 md:py-2.5 transition-colors duration-200 border-l-4 active:bg-cream-deep ${
               active
                 ? "border-ochre bg-cream-deep text-ink"
                 : "border-transparent text-ink-soft hover:bg-cream-warm hover:text-ink"
@@ -76,7 +77,7 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
           >
             <Icon size={16} className="text-ochre flex-shrink-0" />
             <span
-              className={`font-mono text-[11px] tracking-[0.16em] uppercase ${
+              className={`font-mono text-[12px] md:text-[11px] tracking-[0.16em] uppercase ${
                 active ? "font-bold" : "font-medium"
               }`}
             >
@@ -114,8 +115,9 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
       <form action={signOut}>
         <button
           type="submit"
-          className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-terracotta transition-colors duration-200"
+          className="inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft border border-rule hover:border-terracotta hover:text-terracotta hover:bg-cream-deep transition-colors duration-200 px-3 py-2 rounded-sm"
         >
+          <LogOut size={12} />
           {t("signOut")}
         </button>
       </form>
@@ -133,46 +135,48 @@ export function AdminSidebar({ email }: AdminSidebarProps) {
       </aside>
 
       {/* Mobile top bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-cream-warm border-b border-rule px-4 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 bg-cream-warm border-b border-rule px-4 h-14 flex items-center justify-between shadow-sm">
         {brand}
         <button
           onClick={() => setDrawerOpen(true)}
           aria-label={t("openMenu")}
-          className="p-1.5 text-ink-soft hover:text-ink transition-colors"
+          aria-expanded={drawerOpen}
+          className="inline-flex items-center justify-center p-2.5 -mr-1 text-ink border border-rule hover:border-ochre hover:bg-cream-deep transition-colors rounded-sm"
         >
           <Menu size={20} />
         </button>
       </div>
 
       {/* Mobile drawer overlay */}
-      {drawerOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-50 bg-ink/40"
-          onClick={() => setDrawerOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Mobile drawer */}
       <div
-        className={`md:hidden fixed top-0 left-0 bottom-0 z-50 w-[280px] bg-cream-warm flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
-          drawerOpen ? "translate-x-0" : "-translate-x-full"
+        className={`md:hidden fixed inset-0 z-50 bg-ink/50 transition-opacity duration-300 ${
+          drawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setDrawerOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile drawer — slides from the right to match hamburger position */}
+      <div
+        className={`md:hidden fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-cream-warm border-l border-rule flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] shadow-2xl ${
+          drawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
         aria-modal="true"
+        aria-label={t("adminNavigation")}
         aria-hidden={!drawerOpen}
       >
-        <div className="px-5 py-5 border-b border-rule flex items-center justify-between">
+        <div className="px-5 h-14 border-b border-rule flex items-center justify-between">
           {brand}
           <button
             onClick={() => setDrawerOpen(false)}
             aria-label={t("closeMenu")}
-            className="p-1.5 text-ink-soft hover:text-ink transition-colors"
+            className="inline-flex items-center justify-center p-2 -mr-1 text-ink-soft border border-rule hover:border-ochre hover:bg-cream-deep hover:text-ink transition-colors rounded-sm"
           >
             <X size={18} />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto py-4">{navContent}</div>
+        <div className="flex-1 overflow-y-auto py-3">{navContent}</div>
         <AdminLocaleSwitcher />
         {footer}
       </div>

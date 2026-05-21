@@ -131,15 +131,17 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
           <button
             type="button"
             onClick={() => { const prev = value; onChange(null); void deleteStored(prev); }}
-            className="absolute top-2 right-2 w-6 h-6 bg-ink/70 text-cream flex items-center justify-center text-sm hover:bg-terracotta transition-colors"
+            className="absolute top-2 right-2 w-7 h-7 bg-ink/70 text-cream flex items-center justify-center text-sm border border-cream/30 hover:bg-terracotta hover:border-cream transition-colors rounded-sm"
             aria-label="Remove image"
+            title="Remove image"
           >
             ×
           </button>
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="absolute bottom-2 right-2 font-mono text-[10px] tracking-[0.2em] uppercase bg-cream/90 text-ink px-2.5 py-1.5 hover:bg-cream transition-colors"
+            className="absolute bottom-2 right-2 inline-flex items-center font-mono text-[10px] tracking-[0.2em] uppercase font-medium bg-cream text-ink border border-rule hover:border-ochre hover:bg-cream-deep px-3 py-2 transition-colors rounded-sm shadow-sm"
+            title="Replace image"
           >
             Replace
           </button>

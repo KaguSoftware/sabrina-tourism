@@ -80,8 +80,8 @@ export function PackageTierSelector({
               <button
                 className={`w-full text-left flex flex-col p-8 border transition-all duration-300 cursor-pointer ${
                   active
-                    ? "border-ochre bg-[#faf7f0] shadow-[0_4px_40px_-20px_rgba(201,169,97,0.4)]"
-                    : "border-rule hover:border-ochre/50 bg-cream"
+                    ? "border-2 border-ochre bg-[#fffef9] gold-glow-active"
+                    : "border-rule hover:border-ochre/50 bg-white hover:-translate-y-1.5 hover:[box-shadow:10px_14px_0_-2px_#1b4d5c] will-change-transform relative hover:z-10"
                 }`}
                 onClick={() => onSelect(tier.name)}
                 aria-pressed={active}
@@ -97,21 +97,21 @@ export function PackageTierSelector({
                 </div>
                 <Hairline className="mb-6 opacity-50" />
                 {tier.hotel && (
-                  <div className="mb-5 flex items-start gap-3 border border-rule bg-cream-deep p-3">
+                  <div className="-mx-8 mb-5 overflow-hidden border-y border-rule bg-[#fffef9]">
                     {tier.hotel.bedroomImage && (
-                      <div className="relative w-16 h-16 shrink-0 overflow-hidden border border-rule">
+                      <div className="relative aspect-[4/2.1]">
                         <Image
                           src={tier.hotel.bedroomImage}
                           alt={tier.hotel.name}
                           fill
                           className="object-cover"
-                          sizes="64px"
+                          sizes="(max-width: 1024px) 100vw, 33vw"
                         />
                       </div>
                     )}
-                    <div className="flex-1 min-w-0">
+                    <div className="px-8 py-3">
                       <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">{t("hotel")}</p>
-                      <p className="font-display text-[16px] leading-tight text-ink truncate">{tier.hotel.name}</p>
+                      <p className="font-display text-[16px] leading-tight text-ink">{tier.hotel.name}</p>
                       <div className="flex items-center gap-2 mt-1">
                         {tier.hotel.stars > 0 && (
                           <span className="flex items-center gap-0.5 text-ochre" aria-label={`${tier.hotel.stars} star hotel`}>

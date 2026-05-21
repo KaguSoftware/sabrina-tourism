@@ -13,7 +13,7 @@ export function BaseCard({ href, image, children, ariaLabel }: BaseCardProps) {
     <Link
       href={href}
       aria-label={ariaLabel}
-      className="group block bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-1.5 hover:[box-shadow:10px_14px_0_-2px_#1b4d5c] h-full"
+      className="group block bg-[#fcf5ec] border border-rule shadow-[4px_6px_0_-1px_#1b4d5c] sm:shadow-none transition-[transform,box-shadow] motion-safe:transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] will-change-transform motion-safe:hover:-translate-y-1.5 hover:[box-shadow:10px_14px_0_-2px_#1b4d5c] h-full"
     >
       <div className="flex h-full flex-col">
         <div className="relative aspect-[4/3.2] overflow-hidden bg-navy-soft">
