@@ -192,21 +192,45 @@ export function PaperPlanePath() {
       resizeTimer = setTimeout(measure, 150);
     };
     window.addEventListener("resize", onResize);
+    // Observe document.body — its height grows with content, whereas
+    // documentElement's height is usually `auto` and doesn't fire RO.
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver(onResize);
-      ro.observe(document.documentElement);
+      if (document.body) ro.observe(document.body);
+    }
+    // Catch fonts / images that change layout after first paint.
+    window.addEventListener("load", measure);
+    if ("fonts" in document) {
+      document.fonts.ready.then(measure).catch(() => {});
     }
     return () => {
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("load", measure);
       if (ro) ro.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // On route change the new page's content may not be laid out yet when this
+  // effect runs (async server components, streamed children, images). Re-measure
+  // across several frames + a fallback timeout to catch late-arriving content.
   useIsoLayoutEffect(() => {
     measure();
+    let raf1 = 0, raf2 = 0;
+    raf1 = requestAnimationFrame(() => {
+      measure();
+      raf2 = requestAnimationFrame(measure);
+    });
+    const t1 = setTimeout(measure, 200);
+    const t2 = setTimeout(measure, 600);
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
