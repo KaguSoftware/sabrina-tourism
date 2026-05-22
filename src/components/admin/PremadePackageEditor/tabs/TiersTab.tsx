@@ -50,6 +50,7 @@ function TagList({
 export function TiersTab({ availableHotels = [] }: { availableHotels?: PremadeHotelOption[] }) {
   const { register, control, watch, setValue } = useFormContext<PremadeFormValues>();
   const { fields, append, remove } = useFieldArray({ control, name: "tiers" });
+  const numberOpts = { setValueAs: (v: unknown) => (v === "" || v === null || v === undefined ? null : Number(v)) };
 
   return (
     <div className="space-y-8">
@@ -103,6 +104,18 @@ export function TiersTab({ availableHotels = [] }: { availableHotels?: PremadeHo
               </FormField>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <FormField label="In double room (per person)" hint="Per-person rate when two share a room.">
+                <Input type="number" min={0} step="0.01" {...register(`tiers.${i}.price_2_people`, numberOpts)} placeholder="e.g. 1500" />
+              </FormField>
+              <FormField label="Single-room supplement" hint='Added on top of the double-room rate; shown as "+ amount" under "In single room".'>
+                <Input type="number" min={0} step="0.01" {...register(`tiers.${i}.price_single_room_supplement`, numberOpts)} placeholder="e.g. 300" />
+              </FormField>
+              <FormField label="Per-child price" hint="Per-child rate shown in the pricing panel.">
+                <Input type="number" min={0} step="0.01" {...register(`tiers.${i}.price_per_child`, numberOpts)} placeholder="e.g. 400" />
+              </FormField>
+            </div>
+
             <FormField label="Guide languages">
               <TagList
                 values={guideLanguages}
@@ -124,7 +137,7 @@ export function TiersTab({ availableHotels = [] }: { availableHotels?: PremadeHo
 
       <button
         type="button"
-        onClick={() => append({ tier_name: "", vehicle_class: "", accommodation: "", hotel_id: null, group_size: "", guide_languages: [], meals_included: "", highlights: [] })}
+        onClick={() => append({ tier_name: "", vehicle_class: "", accommodation: "", hotel_id: null, group_size: "", guide_languages: [], meals_included: "", highlights: [], price_2_people: null, price_single_room_supplement: null, price_per_child: null })}
         className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors"
       >
         <Plus size={12} /> Add tier
