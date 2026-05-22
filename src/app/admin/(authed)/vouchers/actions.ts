@@ -61,7 +61,7 @@ export async function fetchPackageDefaults(
     name: t.name,
     hotelName: t.hotel?.name ?? t.accommodation ?? "",
     perksShort: buildTierPerks(t),
-    unitPrice: pickTierUnitPrice(pkg.pricing),
+    unitPrice: pickTierUnitPrice(t.pricing ?? pkg.pricing),
   }));
 
   const defaultUnitPrice =

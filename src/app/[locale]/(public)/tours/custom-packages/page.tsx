@@ -52,7 +52,7 @@ export default async function CustomPackagesPage({ params }: { params: Promise<{
       <section className="relative z-10 overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
-            src="/MaidensTower.png"
+            src="/sabrina_trabzon_private_tours.webp"
             alt="Tours hero"
             fill
             className="object-cover object-[center_60%]"
