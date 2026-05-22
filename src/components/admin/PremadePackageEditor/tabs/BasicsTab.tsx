@@ -92,16 +92,6 @@ export function BasicsTab() {
         </FormField>
       </div>
 
-      <FormField label={tl("priceStartingFrom")}>
-        <Input
-          type="number"
-          min="0"
-          step="1"
-          {...register("price", { setValueAs: (v) => (v === "" || v == null ? null : Number(v)) })}
-          placeholder="e.g. 1200"
-        />
-      </FormField>
-
       <FormField label={tl("currency")}>
         <Input {...register("currency")} placeholder="e.g. USD" />
       </FormField>

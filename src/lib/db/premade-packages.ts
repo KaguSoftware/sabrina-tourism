@@ -23,6 +23,7 @@ export interface PremadeTierPublic {
   guideLanguages: string[];
   mealsIncluded: string;
   highlights: string[];
+  pricing: PremadePricingPublic | null;
 }
 
 export interface PremadeItineraryDayPublic {
@@ -113,7 +114,7 @@ export interface PremadePackageRaw {
   premade_package_gallery: Array<{ id: string; url: string; sort_order: number }>;
   premade_package_dates: Array<{ id: string; start_date: string; end_date: string; sort_order: number }>;
   premade_package_itinerary_days: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
-  premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown }>;
+  premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }>;
   premade_package_inclusions: Array<{ id: string; kind: string; text: string; icon: string | null; sort_order: number }>;
 }
 
@@ -161,7 +162,7 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     title: t(d.title_translations, locale, d.title),
     description: t(d.description_translations, locale, d.description),
   }));
-  const tiers = byOrder(row.premade_package_tiers ?? []).map((tier: { tier_name: string; vehicle_class: string; accommodation: string; hotel_id?: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown }) => ({
+  const tiers = byOrder(row.premade_package_tiers ?? []).map((tier: { tier_name: string; vehicle_class: string; accommodation: string; hotel_id?: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }) => ({
     name: t(tier.tier_name_translations, locale, tier.tier_name),
     vehicleClass: t(tier.vehicle_class_translations, locale, tier.vehicle_class),
     accommodation: tier.accommodation,
@@ -175,6 +176,15 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     highlights: locale !== 'en' && tier.highlights_translations
       ? (t(tier.highlights_translations, locale, '') || '').split('\n').filter(Boolean)
       : tier.highlights ?? [],
+    pricing: (tier.price_2_people != null || tier.price_single_room_supplement != null || tier.price_per_child != null)
+      ? {
+          onePerson: null,
+          twoPeople: tier.price_2_people ?? null,
+          baby: null,
+          singleRoomSupplement: tier.price_single_room_supplement ?? null,
+          pricePerChild: tier.price_per_child ?? null,
+        }
+      : null,
   }));
   const inclusions = byOrder(row.premade_package_inclusions ?? []);
   const included = inclusions
@@ -194,6 +204,26 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
   const overviewTranslated = locale !== 'en' && row.overview_translations?.[locale]
     ? row.overview_translations[locale].split('\n').filter(Boolean)
     : null;
+
+  const tierTwoPersonPrices = tiers.map(t => t.pricing?.twoPeople).filter((v): v is number => v != null);
+  const minTierPrice = tierTwoPersonPrices.length > 0 ? Math.min(...tierTwoPersonPrices) : null;
+  const cheapestTier = tiers.reduce<typeof tiers[number] | null>((best, tier) => {
+    const tp = tier.pricing?.twoPeople;
+    if (tp == null) return best;
+    if (!best || tp < (best.pricing?.twoPeople ?? Infinity)) return tier;
+    return best;
+  }, null);
+  const derivedPricing = cheapestTier?.pricing ?? (
+    (row.price_1_person ?? row.price_2_people ?? row.price_baby ?? row.price_single_room_supplement ?? row.price_per_child) != null
+      ? {
+          onePerson: row.price_1_person ?? null,
+          twoPeople: row.price_2_people ?? null,
+          baby: row.price_baby ?? null,
+          singleRoomSupplement: row.price_single_room_supplement ?? null,
+          pricePerChild: row.price_per_child ?? null,
+        }
+      : null
+  );
 
   return {
     id: row.id,
@@ -221,15 +251,9 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     availableFrom: row.available_from ?? null,
     availableTo: row.available_to ?? null,
     overview: overviewTranslated ?? overviewEn,
-    price: row.price ?? null,
+    price: minTierPrice ?? row.price ?? null,
     currency: row.currency ?? 'USD',
-    pricing: (row.price_1_person ?? row.price_2_people ?? row.price_baby ?? row.price_single_room_supplement ?? row.price_per_child) != null ? {
-      onePerson: row.price_1_person ?? null,
-      twoPeople: row.price_2_people ?? null,
-      baby: row.price_baby ?? null,
-      singleRoomSupplement: row.price_single_room_supplement ?? null,
-      pricePerChild: row.price_per_child ?? null,
-    } : null,
+    pricing: derivedPricing,
     tiers,
     itinerary,
     included,

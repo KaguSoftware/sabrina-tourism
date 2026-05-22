@@ -17,7 +17,10 @@ export async function SiteFooter() {
         { label: t("aegean"), href: `${pfx}/regions/aegean` },
         { label: t("mediterranean"), href: `${pfx}/regions/mediterranean` },
         { label: t("blackSea"), href: `${pfx}/regions/black-sea` },
-        { label: t("easternAnatolia"), href: `${pfx}/regions/eastern-anatolia` },
+        {
+          label: t("easternAnatolia"),
+          href: `${pfx}/regions/eastern-anatolia`,
+        },
       ],
     },
     {
@@ -121,11 +124,9 @@ export async function SiteFooter() {
               WhatsApp
             </a>
             <a
-              href="mailto:info@sabrinaturizm.com"
+              href="/"
               className="text-sm py-1 text-cream/80 hover:text-cream transition-colors duration-200"
-            >
-              info@sabrinaturizm.com
-            </a>
+            ></a>
           </div>
         </div>
       </div>

@@ -78,13 +78,9 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     available_from: data.available_from || null,
     available_to: data.available_to || null,
     overview: data.overview || null,
-    price: data.price ?? null,
     currency: data.currency || 'USD',
     price_1_person: data.price_1_person ?? null,
-    price_2_people: data.price_2_people ?? null,
     price_baby: data.price_baby ?? null,
-    price_single_room_supplement: data.price_single_room_supplement ?? null,
-    price_per_child: data.price_per_child ?? null,
   };
 
   if (pkgId) {
@@ -165,6 +161,9 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
         guide_languages: t.guide_languages,
         meals_included: t.meals_included,
         highlights: t.highlights,
+        price_2_people: t.price_2_people ?? null,
+        price_single_room_supplement: t.price_single_room_supplement ?? null,
+        price_per_child: t.price_per_child ?? null,
         sort_order: i,
         tier_name_translations: existingTiers?.[i]?.tier_name_translations ?? null,
         vehicle_class_translations: existingTiers?.[i]?.vehicle_class_translations ?? null,

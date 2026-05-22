@@ -14,7 +14,7 @@ export async function PremadePackagesPage({ locale = 'en' }: { locale?: string }
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
-            src="/homepage.png"
+            src="/istanbul_group_tour.webp"
             alt="Premade packages hero"
             fill
             className="object-cover object-center"

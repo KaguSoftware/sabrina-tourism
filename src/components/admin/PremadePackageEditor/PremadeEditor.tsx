@@ -20,15 +20,13 @@ import { OverviewTab } from "./tabs/OverviewTab";
 import { ItineraryTab } from "./tabs/ItineraryTab";
 import { TiersTab } from "./tabs/TiersTab";
 import { InclusionsTab } from "./tabs/InclusionsTab";
-import { PricingTab } from "./tabs/PricingTab";
 import { PremadeTranslationsTab } from "./tabs/TranslationsTab";
 import type { TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
 
-const TABS = ["Basics", "Pricing", "Overview", "Itinerary", "Tiers", "Inclusions", "Imagery", "Accommodation", "Vehicle", "Translations"] as const;
+const TABS = ["Basics", "Overview", "Itinerary", "Tiers", "Inclusions", "Imagery", "Accommodation", "Vehicle", "Translations"] as const;
 type Tab = typeof TABS[number];
 const TAB_LABEL_KEYS: Record<Tab, string> = {
   Basics: "basics",
-  Pricing: "pricing",
   Overview: "overview",
   Itinerary: "itinerary",
   Tiers: "tiers",
@@ -76,6 +74,9 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
         guide_languages: t.guide_languages ?? [],
         meals_included: t.meals_included,
         highlights: t.highlights ?? [],
+        price_2_people: t.price_2_people ?? null,
+        price_single_room_supplement: t.price_single_room_supplement ?? null,
+        price_per_child: t.price_per_child ?? null,
       })),
       itinerary: sorted(pkg.premade_package_itinerary_days ?? []).map((d) => ({
         day_number: d.day_number,
@@ -84,14 +85,10 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
       })),
       included: (pkg.premade_package_inclusions ?? []).filter((i) => i.kind === "included").sort((a, b) => a.sort_order - b.sort_order).map((i) => ({ text: i.text, icon: i.icon ?? null })),
       not_included: (pkg.premade_package_inclusions ?? []).filter((i) => i.kind === "not_included").sort((a, b) => a.sort_order - b.sort_order).map((i) => ({ text: i.text, icon: i.icon ?? null })),
-      price: pkg.price ?? null,
       currency: pkg.currency ?? "USD",
       season: (pkg.season ?? null) as PremadeFormValues["season"],
       price_1_person: pkg.price_1_person ?? null,
-      price_2_people: pkg.price_2_people ?? null,
       price_baby: pkg.price_baby ?? null,
-      price_single_room_supplement: pkg.price_single_room_supplement ?? null,
-      price_per_child: pkg.price_per_child ?? null,
     };
   }
   return {
@@ -107,8 +104,8 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
     available_from: "", available_to: "",
     overview: "", tiers: [], itinerary: [],
     included: [], not_included: [],
-    price: null, currency: "USD",
-    price_1_person: null, price_2_people: null, price_baby: null, price_single_room_supplement: null, price_per_child: null,
+    currency: "USD",
+    price_1_person: null, price_baby: null,
   };
 }
 
@@ -182,7 +179,6 @@ export function PremadeEditor({
         <div className="pt-8">
           {errorMessages.length > 0 && <ErrorCallout errors={errorMessages} />}
           {activeTab === "Basics" && <BasicsTab />}
-          {activeTab === "Pricing" && <PricingTab />}
           {activeTab === "Overview" && <OverviewTab />}
           {activeTab === "Itinerary" && <ItineraryTab />}
           {activeTab === "Tiers" && <TiersTab availableHotels={availableHotels} />}
