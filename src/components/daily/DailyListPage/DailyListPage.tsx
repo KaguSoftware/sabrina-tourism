@@ -31,7 +31,7 @@ export function DailyListPage({ packages }: DailyListPageProps) {
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)]">
         <div className="absolute inset-0">
           <Image
-            src="/homepage.png"
+            src="/sabrina_istanbul_daily_tours.webp"
             alt="Daily tours hero"
             fill
             className="object-cover object-center"

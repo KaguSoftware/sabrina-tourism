@@ -9,6 +9,9 @@ const TierSchema = z.object({
   guide_languages: z.array(z.string()),
   meals_included: z.string(),
   highlights: z.array(z.string()),
+  price_2_people: z.number().min(0).nullable().optional(),
+  price_single_room_supplement: z.number().min(0).nullable().optional(),
+  price_per_child: z.number().min(0).nullable().optional(),
 });
 
 const ItineraryDaySchema = z.object({
@@ -56,14 +59,12 @@ export const PremadeSchema = z.object({
   itinerary: z.array(ItineraryDaySchema),
   included: z.array(InclusionItemSchema),
   not_included: z.array(InclusionItemSchema),
-  price: z.number().min(0).nullable(),
   currency: z.string(),
-  // Pricing buckets
+  // Package-level pricing buckets retained for legacy/out-of-scope fields.
+  // The double-room, single-room supplement, per-child and starts-from
+  // prices have moved to TierSchema.
   price_1_person: z.number().min(0).nullable().optional(),
-  price_2_people: z.number().min(0).nullable().optional(),
   price_baby: z.number().min(0).nullable().optional(),
-  price_single_room_supplement: z.number().min(0).nullable().optional(),
-  price_per_child: z.number().min(0).nullable().optional(),
 });
 
 export type PremadeFormValues = z.infer<typeof PremadeSchema>;

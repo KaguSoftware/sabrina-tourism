@@ -55,8 +55,11 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
   const [singleRoom, setSingleRoom] = useState(false);
   const [children, setChildren] = useState<Array<{ id: string; age: string }>>([]);
 
-  const singleRoomSupplement = pkg.pricing?.singleRoomSupplement ?? null;
-  const pricePerChild = pkg.pricing?.pricePerChild ?? null;
+  const selectedTierObj = pkg.tiers.find((tr) => tr.name === tier) ?? pkg.tiers[0] ?? null;
+  const tierPricing = selectedTierObj?.pricing ?? pkg.pricing;
+  const singleRoomSupplement = tierPricing?.singleRoomSupplement ?? null;
+  const pricePerChild = tierPricing?.pricePerChild ?? null;
+  const startingFrom = tierPricing?.twoPeople ?? pkg.price ?? null;
   const singleRoomLabel =
     singleRoomSupplement != null
       ? t("singleRoomOccupancyWithPrice", { amount: fmt(singleRoomSupplement) })
@@ -95,12 +98,12 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
             {pkg.name}, {tier} tier.
           </GoldUnderlineHeading>
         </Reveal>
-        {pkg.price != null && (
+        {startingFrom != null && (
           <Reveal delay={140}>
             <div className="mb-8">
               <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-muted mb-1">{t("startingFrom")}</p>
               <p className="font-display text-[42px] leading-none tracking-[-0.02em] text-ochre mb-1">
-                {fmt(pkg.price)}
+                {fmt(startingFrom)}
               </p>
               <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">{t("perPerson")}</p>
             </div>
@@ -576,13 +579,17 @@ export function PremadePackageDetailPage({ pkg }: Props) {
       })()}
 
       {/* Smaller pricing panel + inclusions directly underneath */}
-      {(pkg.pricing || pkg.included || pkg.notIncluded) && (
+      {(pkg.tiers.some((tr) => tr.pricing) || pkg.pricing || pkg.included || pkg.notIncluded) && (
         <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pb-[clamp(80px,10vw,130px)]">
-          {pkg.pricing && (
-            <div className="max-w-4xl mx-auto mb-12">
-              <MultiPersonPrices pricing={pkg.pricing} />
-            </div>
-          )}
+          {(() => {
+            const sel = pkg.tiers.find((tr) => tr.name === tier);
+            const p = sel?.pricing ?? pkg.pricing;
+            return p ? (
+              <div className="max-w-4xl mx-auto mb-12">
+                <MultiPersonPrices pricing={p} />
+              </div>
+            ) : null;
+          })()}
           {(pkg.included || pkg.notIncluded) && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
               {pkg.included && (
