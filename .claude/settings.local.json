@@ -106,7 +106,9 @@
       "WebSearch",
       "PowerShell(npm run typecheck 2>&1)",
       "Bash(grep -E \"^\\\\S.*\\\\.tsx?$|error\\\\s+Error\")",
-      "Bash(Get-ChildItem -Path \"c:/Users/p.mansouri/Desktop/kagu/sabrina-tourism/src\" -Recurse -Directory)"
+      "Bash(Get-ChildItem -Path \"c:/Users/p.mansouri/Desktop/kagu/sabrina-tourism/src\" -Recurse -Directory)",
+      "Bash(git pull *)",
+      "Bash(grep -A 2 \"src.components.primitives.PaperPlanePath.PaperPlanePath.tsx$\")"
     ],
     "additionalDirectories": [
       "/Users/saitaydin/Pictures/turizm",
