@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
 import { ImageUploader } from "@/components/admin/ImageUploader/ImageUploader";
 import { ImagePresetPicker } from "@/components/admin/ImagePresetPicker/ImagePresetPicker";
-import { Spinner } from "@/components/admin/Spinner/Spinner";
+import { SaveBar, SaveButton } from "@/components/admin/SaveBar/SaveBar";
+import { toastSaved, toastError } from "@/lib/admin/toast";
 import { SiteContentTranslationsTab } from "@/components/admin/SiteContentTranslationsTab";
 import type { TranslationsState } from "@/components/admin/ContentTranslationsTab/ContentTranslationsTab";
 import { saveToursPage } from "./actions";
@@ -31,7 +31,7 @@ export function ToursPageEditor({ data, initialTranslations }: ToursPageEditorPr
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<ToursPageFormValues>({
     resolver: zodResolver(toursPageSchema),
     defaultValues: {
@@ -47,15 +47,18 @@ export function ToursPageEditor({ data, initialTranslations }: ToursPageEditorPr
   const onSubmit = handleSubmit(
     async (values) => {
       const result = await saveToursPage(values);
-      if (result.error) toast.error(result.error);
-      else toast.success("Saved.");
+      if (result.error) toastError("save tours page", result.error);
+      else toastSaved("tours page");
     },
     (errs) => {
+      const count = Object.keys(errs).length;
       const first = Object.values(errs)[0];
-      const msg = (first as any)?.message ?? "Please fix the errors above.";
-      toast.error(msg);
+      const msg = (first as { message?: string })?.message ?? `${count} ${count === 1 ? "field needs" : "fields need"} attention`;
+      toastError("save", msg);
     },
   );
+
+  const errorCount = Object.keys(errors).length;
 
   const translationFields = [
     { key: "kicker", label: "Kicker", englishValue: watch("kicker") },
@@ -86,13 +89,12 @@ export function ToursPageEditor({ data, initialTranslations }: ToursPageEditorPr
       {activeTab === "edit" && (
         <form onSubmit={onSubmit} noValidate className="space-y-8">
           <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-            >
-              {isSubmitting ? <Spinner size="sm" /> : "Save"}
-            </button>
+            <SaveButton
+              isDirty={isDirty}
+              saving={isSubmitting}
+              hasErrors={errorCount > 0}
+              errorCount={errorCount}
+            />
           </div>
           <FormField label="Kicker" hint="Small label above the heading" required error={errors.kicker?.message}>
             <Input {...register("kicker")} placeholder="e.g. Explore" />
@@ -119,15 +121,12 @@ export function ToursPageEditor({ data, initialTranslations }: ToursPageEditorPr
             />
           </FormField>
 
-          <div className="flex justify-end pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-            >
-              {isSubmitting ? <Spinner size="sm" /> : "Save"}
-            </button>
-          </div>
+          <SaveBar
+            isDirty={isDirty}
+            saving={isSubmitting}
+            hasErrors={errorCount > 0}
+            errorCount={errorCount}
+          />
         </form>
       )}
 

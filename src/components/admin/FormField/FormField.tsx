@@ -137,7 +137,15 @@ export function FormField({ label, hint, error, children, required }: FormFieldP
         className="font-mono text-[11px] tracking-[0.25em] uppercase text-ink-soft font-medium mb-1"
       >
         {translatedLabel}
-        {required && <span className="text-ochre ml-1">*</span>}
+        {required && (
+          <span
+            className="text-terracotta ml-1 text-[13px] leading-none align-middle"
+            aria-label="required"
+            title="Required"
+          >
+            *
+          </span>
+        )}
       </label>
       {wired}
       {translatedHint && !error && (

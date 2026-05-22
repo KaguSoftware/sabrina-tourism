@@ -15,6 +15,10 @@ interface Props {
 export function Step2People({ state, onChange, onNext, onBack }: Props) {
   const t = useTranslations("customTour.step2");
   const [raw, setRaw] = useState(String(state.people));
+  const hasOverAgeChild = state.children.some((c) => {
+    const n = Number(c.age);
+    return c.age !== "" && Number.isFinite(n) && n > 6;
+  });
 
   function setPeople(next: number) {
     const clamped = Math.min(Math.max(next, 1), 99);
@@ -90,39 +94,51 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
         )}
 
         <div className="mt-6 w-full max-w-sm flex flex-col items-stretch gap-2">
-          {state.children.map((child, idx) => (
-            <div
-              key={child.id}
-              className="flex items-center gap-3 bg-cream-warm border border-rule rounded-xl px-4 py-2"
-            >
-              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted shrink-0">
-                {t("childAge")}
-              </span>
-              <input
-                type="number"
-                min={0}
-                max={17}
-                value={child.age}
-                onChange={(e) => {
-                  const nextChildren = state.children.map((c, i) =>
-                    i === idx ? { ...c, age: e.target.value } : c
-                  );
-                  onChange({ children: nextChildren });
-                }}
-                className="flex-1 bg-transparent outline-none border border-ochre/40 rounded-md px-2 py-1 text-ink font-mono text-sm focus:border-ochre transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  onChange({ children: state.children.filter((_, i) => i !== idx) });
-                }}
-                aria-label={t("removeChild")}
-                className="w-7 h-7 flex items-center justify-center text-ink hover:text-ochre transition-colors"
+          {state.children.map((child, idx) => {
+            const ageNum = Number(child.age);
+            const overAge = child.age !== "" && Number.isFinite(ageNum) && ageNum > 6;
+            return (
+              <div
+                key={child.id}
+                className="flex flex-col bg-cream-warm border border-rule rounded-xl px-4 py-2"
               >
-                ×
-              </button>
-            </div>
-          ))}
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted shrink-0">
+                    {t("childAge")}
+                  </span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={6}
+                    aria-invalid={overAge || undefined}
+                    value={child.age}
+                    onChange={(e) => {
+                      const nextChildren = state.children.map((c, i) =>
+                        i === idx ? { ...c, age: e.target.value } : c
+                      );
+                      onChange({ children: nextChildren });
+                    }}
+                    className={`flex-1 bg-transparent outline-none border rounded-md px-2 py-1 font-mono text-sm transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${overAge ? "border-terracotta text-terracotta focus:border-terracotta" : "border-ochre/40 text-ink focus:border-ochre"}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange({ children: state.children.filter((_, i) => i !== idx) });
+                    }}
+                    aria-label={t("removeChild")}
+                    className="w-7 h-7 flex items-center justify-center text-ink hover:text-ochre transition-colors"
+                  >
+                    ×
+                  </button>
+                </div>
+                {overAge ? (
+                  <p className="font-mono text-[10px] tracking-[0.04em] text-terracotta mt-1">
+                    {t.has("childAgeMax") ? t("childAgeMax") : "Max age 6"}
+                  </p>
+                ) : null}
+              </div>
+            );
+          })}
           <button
             type="button"
             onClick={() => {
@@ -151,7 +167,8 @@ export function Step2People({ state, onChange, onNext, onBack }: Props) {
         <button
           type="button"
           onClick={onNext}
-          style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "#0b1a2e", color: "#c99a3f", fontWeight: 600, border: "none" }}
+          disabled={hasOverAgeChild}
+          style={{ fontFamily: "inherit", fontSize: "14px", padding: "10px 28px", borderRadius: "16px", cursor: hasOverAgeChild ? "not-allowed" : "pointer", transition: "background 0.2s, color 0.2s", backgroundColor: "#0b1a2e", color: "#c99a3f", fontWeight: 600, border: "none", opacity: hasOverAgeChild ? 0.5 : 1 }}
         >
           {t("next")}
         </button>

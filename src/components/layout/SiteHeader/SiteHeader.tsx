@@ -104,7 +104,7 @@ export function SiteHeader({
           {/* Brand */}
           <Link
             href={`${localePfx}/`}
-            className="inline-flex w-24 md:w-35 shrink-0 flex-col items-center group ml-8 md:ml-0"
+            className="inline-flex w-24 md:w-35 shrink-0 flex-col items-center group"
             aria-label={t("homeAriaLabel")}
           >
             <span className="relative inline-block h-8 md:h-12 w-auto">

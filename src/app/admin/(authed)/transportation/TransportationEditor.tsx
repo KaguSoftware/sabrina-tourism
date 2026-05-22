@@ -3,7 +3,6 @@
 import { useState, memo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import {
   DndContext,
   closestCenter,
@@ -19,7 +18,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, X, Plus } from "lucide-react";
-import { Spinner } from "@/components/admin/Spinner/Spinner";
+import { SaveBar, SaveButton } from "@/components/admin/SaveBar/SaveBar";
+import { toastSaved, toastError } from "@/lib/admin/toast";
 
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
@@ -54,7 +54,7 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<TransportHeroFormValues>({
     resolver: zodResolver(transportHeroSchema),
     defaultValues: {
@@ -71,27 +71,28 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
   const onSubmit = handleSubmit(
     async (values) => {
       const result = await saveTransportHero(values);
-      if (result.error) toast.error(result.error);
-      else toast.success("Saved.");
+      if (result.error) toastError("save transportation page", result.error);
+      else toastSaved("transportation hero");
     },
     (errs) => {
-      const first = Object.values(errs)[0];
-      toast.error((first as any)?.message ?? "Please fix the errors above.");
+      const count = Object.keys(errs).length;
+      toastError("save", `${count} ${count === 1 ? "field needs" : "fields need"} attention`);
     },
   );
+
+  const errorCount = Object.keys(errors).length;
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-8 pt-8">
       <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-        >
-          {isSubmitting ? <Spinner size="sm" /> : "Save"}
-        </button>
+        <SaveButton
+          isDirty={isDirty}
+          saving={isSubmitting}
+          hasErrors={errorCount > 0}
+          errorCount={errorCount}
+        />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
         <FormField label="Heading top" required error={errors.hero_heading_top?.message}>
           <Input {...register("hero_heading_top")} placeholder="e.g. Travel in" />
         </FormField>
@@ -117,15 +118,12 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
         />
       </FormField>
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-        >
-          {isSubmitting ? <Spinner size="sm" /> : "Save"}
-        </button>
-      </div>
+      <SaveBar
+        isDirty={isDirty}
+        saving={isSubmitting}
+        hasErrors={errorCount > 0}
+        errorCount={errorCount}
+      />
     </form>
   );
 }
@@ -164,22 +162,23 @@ const SortableAirportRow = memo(function SortableAirportRow({
       <input
         {...register(`airports.${index}.code`)}
         placeholder="IST"
-        className="w-16 bg-transparent border-0 border-b border-rule text-ink font-mono text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors uppercase"
+        className="w-14 sm:w-16 shrink-0 bg-transparent border-0 border-b border-rule text-ink font-mono text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors uppercase"
         style={{ textTransform: "uppercase" }}
         maxLength={6}
       />
       <input
         {...register(`airports.${index}.label`)}
         placeholder="Istanbul Airport"
-        className="flex-1 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
+        className="flex-1 min-w-0 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
       />
       <button
         type="button"
         onClick={onRemove}
-        className="text-ink-soft hover:text-terracotta transition-colors shrink-0 p-1"
+        className="border border-rule hover:border-terracotta hover:bg-terracotta hover:text-cream text-ink-soft transition-colors shrink-0 p-1.5 rounded-sm"
         aria-label="Remove airport"
+        title="Remove airport"
       >
-        <X size={14} />
+        <X size={13} />
       </button>
     </div>
   );
@@ -220,23 +219,24 @@ const SortableVehicleRow = memo(function SortableVehicleRow({
         <input
           {...register(`vehicles.${index}.vehicle_id`)}
           placeholder="sedan"
-          className="w-24 bg-transparent border-0 border-b border-rule text-ink font-mono text-[13px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
+          className="w-20 sm:w-24 shrink-0 bg-transparent border-0 border-b border-rule text-ink font-mono text-[13px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
         />
         <input
           {...register(`vehicles.${index}.label`)}
           placeholder="Sedan"
-          className="flex-1 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
+          className="flex-1 min-w-0 bg-transparent border-0 border-b border-rule text-ink font-sans text-[14px] px-0 py-1.5 focus:outline-none focus:border-ochre transition-colors"
         />
         <button
           type="button"
           onClick={onRemove}
-          className="text-ink-soft hover:text-terracotta transition-colors shrink-0 p-1"
+          className="border border-rule hover:border-terracotta hover:bg-terracotta hover:text-cream text-ink-soft transition-colors shrink-0 p-1.5 rounded-sm"
           aria-label="Remove vehicle"
+          title="Remove vehicle"
         >
-          <X size={14} />
+          <X size={13} />
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-3 pl-7">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:pl-7">
         <input
           {...register(`vehicles.${index}.capacity`)}
           placeholder="1–3 pax"
@@ -272,7 +272,7 @@ function FleetTab({
     register,
     handleSubmit,
     control,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isDirty, errors },
   } = useForm<FleetFormValues>({
     resolver: zodResolver(fleetSchema),
     defaultValues: {
@@ -333,28 +333,29 @@ function FleetTab({
         vehicles: values.vehicles.map((v, i) => ({ ...v, sort_order: i })),
       };
       const result = await saveFleet(withOrder);
-      if (result.error) toast.error(result.error);
-      else toast.success("Saved.");
+      if (result.error) toastError("save fleet", result.error);
+      else toastSaved("fleet");
     },
     (errs) => {
       const flat = Object.values(errs.airports ?? {}).concat(Object.values(errs.vehicles ?? {}));
-      const first = flat[0] as any;
-      toast.error(first?.message ?? "Please fix the errors above.");
+      const count = flat.length;
+      toastError("save fleet", `${count} ${count === 1 ? "field needs" : "fields need"} attention`);
     },
   );
+
+  const errorCount = (errors.airports ? Object.keys(errors.airports).length : 0) + (errors.vehicles ? Object.keys(errors.vehicles).length : 0);
 
   return (
     <form onSubmit={onSubmit} noValidate className="pt-8 space-y-10">
       <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-        >
-          {isSubmitting ? <Spinner size="sm" /> : "Save"}
-        </button>
+        <SaveButton
+          isDirty={isDirty}
+          saving={isSubmitting}
+          hasErrors={errorCount > 0}
+          errorCount={errorCount}
+        />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Airports */}
         <div>
           <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-4">
@@ -387,7 +388,7 @@ function FleetTab({
             onClick={() =>
               appendAirport({ code: "", label: "", sort_order: airportFields.length })
             }
-            className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors mt-3"
+            className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink border border-rule hover:border-ochre hover:text-ochre transition-colors mt-3 px-3 py-2 rounded-sm"
           >
             <Plus size={12} /> Add airport
           </button>
@@ -432,22 +433,19 @@ function FleetTab({
                 sort_order: vehicleFields.length,
               })
             }
-            className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors mt-3"
+            className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink border border-rule hover:border-ochre hover:text-ochre transition-colors mt-3 px-3 py-2 rounded-sm"
           >
             <Plus size={12} /> Add vehicle
           </button>
         </div>
       </div>
 
-      <div className="flex justify-end border-t border-rule pt-6">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center"
-        >
-          {isSubmitting ? <Spinner size="sm" /> : "Save"}
-        </button>
-      </div>
+      <SaveBar
+        isDirty={isDirty}
+        saving={isSubmitting}
+        hasErrors={errorCount > 0}
+        errorCount={errorCount}
+      />
     </form>
   );
 }
@@ -466,32 +464,17 @@ export function TransportationEditor({
   return (
     <div>
       {/* Tab bar */}
-      <div className="sticky top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto" style={{ background: "#f5ede0" }}>
+      <div className="flex gap-1 border-b border-rule mb-2">
         {(["hero", "fleet"] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
-            style={
+            className={`font-mono text-[11px] tracking-[0.16em] uppercase px-5 py-3 border-b-2 transition-colors duration-150 cursor-pointer ${
               activeTab === tab
-                ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" }
-                : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }
-            }
-            onMouseEnter={(e) => {
-              if (activeTab !== tab) {
-                (e.currentTarget as HTMLButtonElement).style.background = "#e8dac8";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#4a4036";
-                (e.currentTarget as HTMLButtonElement).style.color = "#1f1a14";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeTab !== tab) {
-                (e.currentTarget as HTMLButtonElement).style.background = "#efe4d2";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#c5b99e";
-                (e.currentTarget as HTMLButtonElement).style.color = "#4a4036";
-              }
-            }}
+                ? "border-ochre text-ink font-bold"
+                : "border-transparent text-ink-soft hover:text-ink hover:border-rule"
+            }`}
           >
             {tab === "hero" ? "Hero" : "Fleet & airports"}
           </button>

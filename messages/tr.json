@@ -30,6 +30,7 @@
     "otherHotel": "& {count} other hotel",
     "otherHotels": "& {count} other hotels",
     "partneredPropertiesAcrossTurkey": "{count} partnered properties across Türkiye",
+    "exploreRegion": "Bölgeyi keşfet",
     "regions": {
       "istanbul": "İstanbul",
       "cappadocia": "Kapadokya",
@@ -216,6 +217,7 @@
       "singleRoomOccupancy": "Tek kişilik oda konaklaması",
       "addChildren": "+ Çocuk ekle",
       "childAge": "Yaş",
+      "childAgeMax": "Maks. yaş 6",
       "removeChild": "Çocuğu kaldır"
     },
     "step3": {
@@ -630,8 +632,9 @@
     "kicker": "Grup fiyatları",
     "heading": "Kişi başı fiyat",
     "doubleRoom": "Çift kişilik odada",
-    "singleRoom": "Tek kişilik odada",
+    "singleRoom": "+ Tek kişilik oda",
     "child": "Çocuk",
+    "childAges": "2–6 yaş",
     "babiesFree": "2 yaş altı bebekler ücretsiz seyahat eder.",
     "baby": "Bebek (2 yaş altı)",
     "free": "Ücretsiz"
@@ -681,6 +684,7 @@
     "singleRoomOccupancyWithPrice": "Tek kişilik oda konaklaması (+{amount})",
     "addChildren": "+ Çocuk ekle",
     "childAge": "Yaş",
+    "childAgeMax": "Maks. yaş 6",
     "removeChild": "Çocuğu kaldır"
   },
   "packageFilters": {
