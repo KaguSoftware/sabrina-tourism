@@ -1,16 +1,15 @@
 "use client";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { m, useScroll, useTransform, useMotionTemplate } from "framer-motion";
 import {
   PATH_MARGIN_FRACTION,
   PATH_STROKE_COLOR,
   PATH_STROKE_WIDTH,
   PATH_DASH_ARRAY,
   PLANE_SIZE,
-  SAMPLE_STEP_PX,
-  SPRING_K,
-  ANGLE_SMOOTH_PX,
-  TRAIL_THROTTLE_BYPASS_DELTA,
+  PLANE_SIZE_MOBILE,
+  SAMPLE_COUNT,
 } from "./constants";
 
 function catmullRomPath(points: { x: number; y: number }[]): string {
@@ -30,293 +29,185 @@ function catmullRomPath(points: { x: number; y: number }[]): string {
   return d;
 }
 
+function buildRawPoints(w: number, h: number) {
+  const isMobile = w < 640;
+  const mid = w / 2;
+  const lx = isMobile ? w * 0.06 : Math.min(120, w * PATH_MARGIN_FRACTION) + 40;
+  const rx = isMobile ? w * 0.94 : w - Math.min(120, w * PATH_MARGIN_FRACTION) - 40;
+
+  const rawPts = isMobile
+    ? [
+        { x: mid, y: 160 },
+        { x: rx, y: 380 },
+        { x: lx, y: 620 },
+        { x: rx, y: 900 },
+        { x: mid * 0.4, y: 1180 },
+        { x: rx, y: 1480 },
+        { x: lx, y: 1780 },
+        { x: mid * 1.6, y: 2080 },
+        { x: lx, y: 2400 },
+        { x: rx, y: 2720 },
+        { x: lx, y: 3060 },
+        { x: mid, y: h - 160 },
+      ]
+    : [
+        { x: mid - 40, y: 180 },
+        { x: rx, y: 480 },
+        { x: mid + 20, y: 860 },
+        { x: lx, y: 1260 },
+        { x: mid + 60, y: 1700 },
+        { x: lx, y: 2150 },
+        { x: rx - 40, y: 2600 },
+        { x: lx + 80, y: 3100 },
+        { x: mid, y: h - 200 },
+      ];
+
+  const refH = isMobile ? 3200 : 3500;
+  const scale = h / refH;
+  return rawPts.map((p, i) =>
+    i === rawPts.length - 1 ? p : { x: p.x, y: p.y * scale }
+  );
+}
+
+type Sample = { x: number; y: number; rot: number };
+
+// Sample N points evenly along an SVG path; angle = direction to next sample,
+// smoothed by looking +/-1 sample to kill apex jitter.
+function samplePath(pathEl: SVGPathElement, count: number): Sample[] {
+  const total = pathEl.getTotalLength();
+  if (total === 0) return [];
+  const xs = new Float32Array(count);
+  const ys = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    const t = i / (count - 1);
+    const p = pathEl.getPointAtLength(t * total);
+    xs[i] = p.x;
+    ys[i] = p.y;
+  }
+  const out: Sample[] = [];
+  for (let i = 0; i < count; i++) {
+    const a = Math.max(0, i - 1);
+    const b = Math.min(count - 1, i + 1);
+    const rot = (Math.atan2(ys[b] - ys[a], xs[b] - xs[a]) * 180) / Math.PI;
+    out.push({ x: xs[i], y: ys[i], rot });
+  }
+  return out;
+}
+
+function buildKeyframesCss(
+  samples: Sample[],
+  planeSize: number,
+  animName: string
+): string {
+  const half = planeSize / 2;
+  const stops = samples
+    .map((s, i) => {
+      const pct = ((i / (samples.length - 1)) * 100).toFixed(3);
+      const tx = (s.x - half).toFixed(2);
+      const ty = (s.y - half).toFixed(2);
+      return `${pct}% { transform: translate3d(${tx}px, ${ty}px, 0) rotate(${s.rot.toFixed(2)}deg); }`;
+    })
+    .join("\n");
+  return `@keyframes ${animName} {\n${stops}\n}`;
+}
+
+function PlaneSVG({ size }: { size: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="-6 -6 36 36"
+      fill="#f5ede0"
+      stroke="#8a6529"
+      strokeWidth={1}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ display: "block" }}
+    >
+      <g transform="rotate(45 12 12)">
+        <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
+      </g>
+    </svg>
+  );
+}
+
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+type Geom = {
+  width: number;
+  height: number;
+  pathD: string;
+  samples: Sample[];
+  planeSize: number;
+};
+
 export function PaperPlanePath() {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const trailRef = useRef<SVGPathElement>(null);
-  const planeRef = useRef<HTMLDivElement>(null);
-  const totalLenRef = useRef(0);
-
-  // Pre-sampled path: [x0,y0,a0, x1,y1,a1, ...] in CSS pixels / radians.
-  const samplesRef = useRef<Float32Array>(new Float32Array(0));
-  const sampleCountRef = useRef(0);
-  const planeSizeRef = useRef(PLANE_SIZE);
-
-  const targetRef = useRef(0);
-  const currentRef = useRef(0);
-  const rafRef = useRef(0);
-  const lastTsRef = useRef(0);
-  const reducedRef = useRef(false);
-  const lastTrailTsRef = useRef(0);
-  const lastTrailPRef = useRef(0);
-
+  const measurePathRef = useRef<SVGPathElement>(null);
+  const [geom, setGeom] = useState<Geom | null>(null);
+  const [supportsNative, setSupportsNative] = useState(false);
+  const [reduced, setReduced] = useState(false);
   const pathname = usePathname();
 
-  // ---- build path + sample table ------------------------------------------
-  const buildPath = () => {
-    const svg = svgRef.current;
-    const pathEl = pathRef.current;
-    if (!svg || !pathEl) return;
-
-    const w = document.documentElement.clientWidth;
-    planeSizeRef.current = w < 640 ? 28 : PLANE_SIZE;
-
-    // measure document height excluding our own wrapper
-    const wrapper = wrapperRef.current;
-    if (wrapper) wrapper.style.display = "none";
-    const h = document.documentElement.scrollHeight;
-    if (wrapper) {
-      wrapper.style.display = "";
-      wrapper.style.height = `${h}px`;
-      wrapper.style.width = `${w}px`;
-    }
-    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
-    svg.setAttribute("width", String(w));
-    svg.setAttribute("height", String(h));
-    svg.style.height = `${h}px`;
-
-    const isMobile = w < 640;
-    const mid = w / 2;
-    const lx = isMobile ? w * 0.06 : Math.min(120, w * PATH_MARGIN_FRACTION) + 40;
-    const rx = isMobile ? w * 0.94 : w - Math.min(120, w * PATH_MARGIN_FRACTION) - 40;
-
-    const rawPts = isMobile
-      ? [
-          { x: mid, y: 160 },
-          { x: rx, y: 380 },
-          { x: lx, y: 620 },
-          { x: rx, y: 900 },
-          { x: mid * 0.4, y: 1180 },
-          { x: rx, y: 1480 },
-          { x: lx, y: 1780 },
-          { x: mid * 1.6, y: 2080 },
-          { x: lx, y: 2400 },
-          { x: rx, y: 2720 },
-          { x: lx, y: 3060 },
-          { x: mid, y: h - 160 },
-        ]
-      : [
-          { x: mid - 40, y: 180 },
-          { x: rx, y: 480 },
-          { x: mid + 20, y: 860 },
-          { x: lx, y: 1260 },
-          { x: mid + 60, y: 1700 },
-          { x: lx, y: 2150 },
-          { x: rx - 40, y: 2600 },
-          { x: lx + 80, y: 3100 },
-          { x: mid, y: h - 200 },
-        ];
-
-    const refH = isMobile ? 3200 : 3500;
-    const scale = h / refH;
-    const pts = rawPts.map((p, i) =>
-      i === rawPts.length - 1 ? p : { x: p.x, y: p.y * scale }
-    );
-
-    const d = catmullRomPath(pts);
-    pathEl.setAttribute("d", d);
-    const trailEl = trailRef.current;
-    if (trailEl) trailEl.setAttribute("d", d);
-
-    // Pre-sample once. Lookup is O(1) after this; no getPointAtLength on the
-    // hot path. Angles are smoothed over ANGLE_SMOOTH_PX of arc to kill apex
-    // wobble.
-    const total = pathEl.getTotalLength();
-    const count = Math.max(2, Math.ceil(total / SAMPLE_STEP_PX) + 1);
-    const samples = new Float32Array(count * 3);
-    const xs = new Float32Array(count);
-    const ys = new Float32Array(count);
-    for (let i = 0; i < count; i++) {
-      const dist = Math.min(total, i * SAMPLE_STEP_PX);
-      const pt = pathEl.getPointAtLength(dist);
-      xs[i] = pt.x;
-      ys[i] = pt.y;
-    }
-    const smoothSteps = Math.max(1, Math.round(ANGLE_SMOOTH_PX / SAMPLE_STEP_PX));
-    for (let i = 0; i < count; i++) {
-      const a = Math.max(0, i - smoothSteps);
-      const b = Math.min(count - 1, i + smoothSteps);
-      samples[i * 3] = xs[i];
-      samples[i * 3 + 1] = ys[i];
-      samples[i * 3 + 2] = Math.atan2(ys[b] - ys[a], xs[b] - xs[a]);
-    }
-    samplesRef.current = samples;
-    sampleCountRef.current = count;
-    totalLenRef.current = total;
-    if (trailEl) {
-      trailEl.setAttribute("stroke-dasharray", String(total));
-      trailEl.setAttribute("stroke-dashoffset", String(total));
-    }
-  };
-
-  // ---- write transform from progress --------------------------------------
-  // `nowMs` lets us throttle the trail update independently of the plane.
-  const applyProgress = (progress: number, nowMs: number = 0) => {
-    const planeEl = planeRef.current;
-    const count = sampleCountRef.current;
-    const samples = samplesRef.current;
-    if (!planeEl || count < 2) return;
-
-    const p = progress <= 0 ? 0 : progress >= 1 ? 1 : progress;
-    const f = p * (count - 1);
-    const i0 = Math.floor(f);
-    const i1 = Math.min(count - 1, i0 + 1);
-    const t = f - i0;
-
-    const x0 = samples[i0 * 3];
-    const y0 = samples[i0 * 3 + 1];
-    const a0 = samples[i0 * 3 + 2];
-    const x1 = samples[i1 * 3];
-    const y1 = samples[i1 * 3 + 1];
-    let a1 = samples[i1 * 3 + 2];
-
-    const da = a1 - a0;
-    if (da > Math.PI) a1 -= Math.PI * 2;
-    else if (da < -Math.PI) a1 += Math.PI * 2;
-
-    const x = x0 + (x1 - x0) * t;
-    const y = y0 + (y1 - y0) * t;
-    const ang = (a0 + (a1 - a0) * t) * (180 / Math.PI);
-    const ps = planeSizeRef.current;
-    const s = ps / PLANE_SIZE;
-    const cx = x - ps / 2;
-    const cy = y - ps / 2;
-
-    // Plane: GPU-composited transform on a real DOM <div>, every frame.
-    // Single transform on a single element — no nested transforms — gives
-    // the compositor a stable layer to move without re-layering each frame.
-    planeEl.style.transform = `translate3d(${cx.toFixed(2)}px, ${cy.toFixed(2)}px, 0) rotate(${ang.toFixed(2)}deg) scale(${s})`;
-
-    // Trail: throttle to ~30Hz on slow scroll (the dashed reveal repaints a
-    // huge SVG path — the dominant cost). On FAST scroll, the throttle would
-    // make the trail jump in visible steps, so we bypass it when the per-frame
-    // progress delta is large and keep the trail glued to the plane.
-    const trailEl = trailRef.current;
-    const total = totalLenRef.current;
-    if (trailEl && total) {
-      const delta = Math.abs(p - lastTrailPRef.current);
-      const throttled = nowMs !== 0 && nowMs - lastTrailTsRef.current < 33;
-      const bypass = delta >= TRAIL_THROTTLE_BYPASS_DELTA;
-      if (!throttled || bypass) {
-        lastTrailTsRef.current = nowMs;
-        lastTrailPRef.current = p;
-        trailEl.style.strokeDashoffset = (total - p * total).toFixed(2);
-      }
-    }
-  };
-
-  const readTargetProgress = () => {
-    const docH = document.documentElement.scrollHeight - window.innerHeight;
-    const raw = docH > 0 ? Math.min(1, window.scrollY / docH) : 0;
-    const bias = window.scrollY / document.documentElement.scrollHeight;
-    return Math.min(1, raw * 0.4 + bias * 0.6);
-  };
-
-  // ---- spring loop --------------------------------------------------------
-  const tick = (ts: number) => {
-    const last = lastTsRef.current || ts;
-    const dt = Math.min(0.064, (ts - last) / 1000);
-    lastTsRef.current = ts;
-
-    const target = targetRef.current;
-    let cur = currentRef.current;
-    // Fixed-step integration smooths frames where dt > 16ms (slow frame,
-    // tab returning from background, etc.) — without it a single big dt
-    // causes a visible jump along the path.
-    const STEP = 1 / 120; // 8.3ms
-    let remaining = dt;
-    while (remaining > 0) {
-      const h = remaining > STEP ? STEP : remaining;
-      const alpha = 1 - Math.exp(-h * SPRING_K);
-      cur = cur + (target - cur) * alpha;
-      remaining -= h;
-    }
-    const next = cur;
-    currentRef.current = next;
-    applyProgress(next, ts);
-
-    if (Math.abs(target - next) > 0.00025) {
-      rafRef.current = requestAnimationFrame(tick);
-    } else {
-      currentRef.current = target;
-      applyProgress(target, ts);
-      rafRef.current = 0;
-      lastTsRef.current = 0;
-    }
-  };
-
-  const kick = () => {
-    if (rafRef.current || reducedRef.current) return;
-    lastTsRef.current = 0;
-    rafRef.current = requestAnimationFrame(tick);
-  };
-
-  // ---- mount: build, listeners --------------------------------------------
   useEffect(() => {
-    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setSupportsNative(
+      typeof CSS !== "undefined" &&
+        typeof CSS.supports === "function" &&
+        CSS.supports("animation-timeline: scroll()")
+    );
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onMq = () => setReduced(mq.matches);
+    mq.addEventListener("change", onMq);
+    return () => mq.removeEventListener("change", onMq);
+  }, []);
 
-    buildPath();
-    targetRef.current = readTargetProgress();
-    currentRef.current = targetRef.current;
-    applyProgress(targetRef.current);
+  const measure = () => {
+    const wrapper = wrapperRef.current;
+    const measurePath = measurePathRef.current;
+    if (!wrapper || !measurePath) return;
+    const w = document.documentElement.clientWidth;
+    const planeSize = w < 640 ? PLANE_SIZE_MOBILE : PLANE_SIZE;
 
-    const onScroll = () => {
-      targetRef.current = readTargetProgress();
-      if (reducedRef.current) {
-        currentRef.current = targetRef.current;
-        applyProgress(targetRef.current);
-      } else {
-        kick();
-      }
-    };
+    // hide our wrapper so its height doesn't bias the document measurement
+    const prevDisplay = wrapper.style.display;
+    wrapper.style.display = "none";
+    const h = document.documentElement.scrollHeight;
+    wrapper.style.display = prevDisplay;
 
+    const pathD = catmullRomPath(buildRawPoints(w, h));
+    measurePath.setAttribute("d", pathD);
+    const samples = samplePath(measurePath, SAMPLE_COUNT);
+
+    setGeom({ width: w, height: h, pathD, samples, planeSize });
+  };
+
+  useIsoLayoutEffect(() => {
+    measure();
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
     const onResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        buildPath();
-        targetRef.current = readTargetProgress();
-        applyProgress(currentRef.current);
-        kick();
-      }, 150);
+      resizeTimer = setTimeout(measure, 150);
     };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-
     let ro: ResizeObserver | null = null;
     if (typeof ResizeObserver !== "undefined") {
       ro = new ResizeObserver(onResize);
       ro.observe(document.documentElement);
     }
-
     return () => {
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (ro) ro.disconnect();
       if (resizeTimer) clearTimeout(resizeTimer);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = 0;
-      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---- route change: rebuild synchronously after ScrollToTop --------------
   useIsoLayoutEffect(() => {
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = 0;
-    }
-    buildPath();
-    targetRef.current = readTargetProgress();
-    currentRef.current = targetRef.current;
-    applyProgress(targetRef.current);
+    measure();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   return (
@@ -327,81 +218,146 @@ export function PaperPlanePath() {
         position: "absolute",
         top: 0,
         left: 0,
+        width: geom?.width ?? 0,
+        height: geom?.height ?? 0,
         pointerEvents: "none",
         zIndex: 6,
         overflow: "hidden",
       }}
     >
+      {/* offscreen measurer for getPointAtLength sampling */}
       <svg
-        ref={svgRef}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          overflow: "hidden",
-        }}
+        style={{ position: "absolute", width: 0, height: 0, visibility: "hidden" }}
       >
-        <path
-          ref={pathRef}
-          fill="none"
-          stroke={PATH_STROKE_COLOR}
-          strokeWidth={PATH_STROKE_WIDTH}
-          strokeDasharray={PATH_DASH_ARRAY}
-          strokeLinecap="round"
-          opacity="0.35"
-        />
-        {/* solid gold trail revealed behind the plane via stroke-dashoffset.
-            NO shapeRendering/vectorEffect — both force per-paint geometry
-            recompute on this huge path and cause visible chop. */}
-        <path
-          ref={trailRef}
-          fill="none"
-          stroke="#cdb47a"
-          strokeWidth={PATH_STROKE_WIDTH}
-          strokeLinecap="round"
-          opacity="0.95"
-        />
+        <path ref={measurePathRef} />
       </svg>
-      {/* Plane lives in the DOM, NOT inside the SVG. CSS transforms on real
-          HTML elements are 100% reliable across browsers.
-          `contain: layout style paint` + translateZ isolates this into its own
-          compositor layer so other elements' reveal animations don't trigger
-          relayout/style invalidation that competes with our rAF. */}
-      {/* Single-element plane wrapper. No nested transforms, no contain, no
-          filters — every frame the only thing that changes is one CSS
-          transform on this one div, which the compositor can move on the GPU
-          without re-layering. The 45° icon rotation is baked into the SVG
-          itself (inside the viewBox via <g transform>) so it never compounds
-          with the JS transform on this div. */}
+
+      {geom && !reduced && (
+        <Overlay geom={geom} supportsNative={supportsNative} />
+      )}
+      {geom && reduced && <StaticOverlay geom={geom} />}
+    </div>
+  );
+}
+
+function StaticPathSVG({ geom }: { geom: Geom }) {
+  // Static dashed path. Painted ONCE. No animation on this SVG, so the
+  // document-tall layer is composited cheaply on scroll (no invalidation).
+  return (
+    <svg
+      width={geom.width}
+      height={geom.height}
+      viewBox={`0 0 ${geom.width} ${geom.height}`}
+      style={{ position: "absolute", top: 0, left: 0 }}
+    >
+      <path
+        d={geom.pathD}
+        fill="none"
+        stroke={PATH_STROKE_COLOR}
+        strokeWidth={PATH_STROKE_WIDTH}
+        strokeDasharray={PATH_DASH_ARRAY}
+        strokeLinecap="round"
+        opacity={0.5}
+      />
+    </svg>
+  );
+}
+
+function Overlay({
+  geom,
+  supportsNative,
+}: {
+  geom: Geom;
+  supportsNative: boolean;
+}) {
+  return supportsNative ? (
+    <NativeOverlay geom={geom} />
+  ) : (
+    <FallbackOverlay geom={geom} />
+  );
+}
+
+function NativeOverlay({ geom }: { geom: Geom }) {
+  // Build keyframes from the precomputed samples. The plane's transform is
+  // the only animated property; animation-timeline: scroll(root) drives it
+  // on the compositor.
+  const css = buildKeyframesCss(geom.samples, geom.planeSize, "plane-fly");
+  return (
+    <>
+      <StaticPathSVG geom={geom} />
+      <style>{css}</style>
       <div
-        ref={planeRef}
         style={{
           position: "absolute",
           top: 0,
           left: 0,
-          width: PLANE_SIZE,
-          height: PLANE_SIZE,
-          transformOrigin: `${PLANE_SIZE / 2}px ${PLANE_SIZE / 2}px`,
+          width: geom.planeSize,
+          height: geom.planeSize,
           willChange: "transform",
+          animation: "plane-fly linear both",
+          animationTimeline: "scroll(root block)",
         }}
       >
-        <svg
-          width={PLANE_SIZE}
-          height={PLANE_SIZE}
-          viewBox="-6 -6 36 36"
-          fill="#f5ede0"
-          stroke="#8a6529"
-          strokeWidth={1}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ display: "block" }}
-        >
-          <g transform="rotate(45 12 12)">
-            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" />
-          </g>
-        </svg>
+        <PlaneSVG size={geom.planeSize} />
       </div>
-    </div>
+    </>
+  );
+}
+
+function FallbackOverlay({ geom }: { geom: Geom }) {
+  // Motion fallback: scrollYProgress → x/y/rot via N-stop useTransform.
+  // One MotionValue, one transform write per scroll frame.
+  const half = geom.planeSize / 2;
+  const inputs = geom.samples.map((_, i) => i / (geom.samples.length - 1));
+  const xs = geom.samples.map((s) => s.x - half);
+  const ys = geom.samples.map((s) => s.y - half);
+  const rots = geom.samples.map((s) => s.rot);
+
+  const { scrollYProgress } = useScroll();
+  const x = useTransform(scrollYProgress, inputs, xs);
+  const y = useTransform(scrollYProgress, inputs, ys);
+  const rot = useTransform(scrollYProgress, inputs, rots);
+  const transform = useMotionTemplate`translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`;
+
+  return (
+    <>
+      <StaticPathSVG geom={geom} />
+      <m.div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: geom.planeSize,
+          height: geom.planeSize,
+          willChange: "transform",
+          transform,
+        }}
+      >
+        <PlaneSVG size={geom.planeSize} />
+      </m.div>
+    </>
+  );
+}
+
+function StaticOverlay({ geom }: { geom: Geom }) {
+  // prefers-reduced-motion: show the path but pin the plane at the start.
+  const half = geom.planeSize / 2;
+  const s = geom.samples[0];
+  return (
+    <>
+      <StaticPathSVG geom={geom} />
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: geom.planeSize,
+          height: geom.planeSize,
+          transform: `translate3d(${s.x - half}px, ${s.y - half}px, 0) rotate(${s.rot}deg)`,
+        }}
+      >
+        <PlaneSVG size={geom.planeSize} />
+      </div>
+    </>
   );
 }
