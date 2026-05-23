@@ -165,9 +165,9 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
             {/* hover bridge */}
             <div className="absolute -top-3 left-0 right-0 h-3" />
 
-        <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden flex flex-col max-h-[calc(100vh-6rem)]">
+        <div className="relative bg-cream border border-rule shadow-[0_12px_48px_-8px_rgba(11,26,46,0.22)] overflow-hidden">
           {/* Header band */}
-          <div className="relative shrink-0 flex items-start justify-between gap-6 px-7 pt-6 pb-5 border-b border-rule">
+          <div className="relative flex items-start justify-between gap-6 px-7 pt-6 pb-5 border-b border-rule">
             <div>
               <div className="flex items-center gap-3">
                 <span aria-hidden className="block h-px w-6 bg-ochre" />
@@ -196,7 +196,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
           </div>
 
           {/* Region cards — last row centers so odd counts feel intentional */}
-          <div className="flex flex-wrap justify-center overflow-y-auto min-h-0">
+          <div className="flex flex-wrap justify-center">
             {visibleRegions.map((region, idx) => {
               const hotelList = hotelsByRegion[region] ?? [];
               const first = hotelList[0]!;
@@ -220,7 +220,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                   href={`${pfx}/regions/${REGION_SLUGS[region]}`}
                   onKeyDown={(e) => handleItemKeyDown(e, idx)}
                   style={{ flexBasis: itemBasis }}
-                  className={`group relative flex flex-col gap-3 p-5 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+                  className={`group relative flex flex-col gap-2.5 p-4 hover:bg-ochre/5 transition-colors duration-300 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
                     showLeftDivider ? "border-l border-rule" : ""
                   } ${showTopDivider ? "border-t border-rule" : ""} ${
                     isCenteredTrailing
@@ -229,7 +229,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                   }`}
                   role="menuitem"
                 >
-                  <div className="relative w-full aspect-16/10 overflow-hidden border border-rule">
+                  <div className="relative w-full aspect-video overflow-hidden border border-rule">
                     <Image
                       src={first.images[0]}
                       alt={first.name}
@@ -248,14 +248,14 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
                   </div>
 
                   <div>
-                    <p className="relative inline-block font-display font-semibold text-[22px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
+                    <p className="relative inline-block font-display font-semibold text-[18px] leading-[1.15] tracking-tight text-navy group-hover:text-ochre transition-colors duration-300 after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-ochre after:scale-x-0 after:origin-left after:transition-transform after:duration-300 group-hover:after:scale-x-100">
                       {t(`regions.${regionKey}`)}
                     </p>
-                    <p className="mt-1.5 font-display font-normal text-[13px] leading-[1.2] tracking-tight text-ink-soft truncate">
+                    <p className="mt-1 font-display font-normal text-[13px] leading-[1.2] tracking-tight text-ink-soft truncate">
                       {first.name}
                     </p>
                     {remaining > 0 && (
-                      <p className="mt-1 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
+                      <p className="mt-0.5 font-mono text-[10px] tracking-[0.12em] uppercase text-muted">
                         {remaining === 1
                           ? t("otherHotel", { count: remaining })
                           : t("otherHotels", { count: remaining })}
@@ -268,7 +268,7 @@ export function NavHotel({ currentPath, transparent, hotelsByRegion }: NavHotelP
           </div>
 
           {/* Footer band */}
-          <div className="shrink-0 border-t border-rule px-7 py-3">
+          <div className="border-t border-rule px-7 py-3">
             <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted">
               {t("partneredPropertiesAcrossTurkey", { count: totalProperties })}
             </p>
