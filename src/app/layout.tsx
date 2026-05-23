@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { getLocale } from "next-intl/server";
 import { isRTL } from "@/i18n/locales";
 import { fraunces, inter, jetbrainsMono } from "./fonts";
@@ -49,7 +50,10 @@ export default async function RootLayout({
         )}
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
       </head>
-      <body className="relative">{children}</body>
+      <body className="relative">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
