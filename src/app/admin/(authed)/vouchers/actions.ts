@@ -414,7 +414,7 @@ export async function translateVoucherFields(
   const briefedInput = buildBriefedInput(cleaned);
   const groq = new Groq({ apiKey });
 
-  const systemPrompt = `You are the in-house translator for Sabrina Turizm, a boutique luxury tour operator based in Karaköy, Istanbul. You translate official travel-voucher copy from English into ${localeName}.
+  const systemPrompt = `You are the in-house translator for Sabrina Turizm, a boutique luxury tour operator based in Taksim, Istanbul. You translate official travel-voucher copy from English into ${localeName}.
 
 The voucher is a single-page A4 PDF handed (or emailed) to paying guests. It's a customer-facing official document, not internal copy — register matters. Imagine the prose of a top-tier hotel's welcome letter, not a generic invoice or Google-Translate output.
 

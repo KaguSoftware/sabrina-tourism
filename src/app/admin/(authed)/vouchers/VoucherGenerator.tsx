@@ -790,7 +790,7 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
               />
             </FormField>
             <FormField label="Dropoff location" required error={errors.dropoffLocation?.message}>
-              <Input placeholder="Karaköy · Hotel address" {...register("dropoffLocation")} />
+              <Input placeholder="Taksim · Hotel address" {...register("dropoffLocation")} />
             </FormField>
             <FormField label="Dropoff date">
               <Controller

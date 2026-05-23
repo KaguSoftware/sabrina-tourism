@@ -413,7 +413,7 @@ export function VoucherPDF({ payload }: VoucherPDFProps) {
               <Text style={{ fontFamily: fonts.body, fontSize: 8.5, color: COLOR.ivory, lineHeight: 1.5 }}>
                 {T("Sabrina Turizm")}
                 {"\n"}
-                {T("Karaköy, Istanbul · Türkiye")}
+                {T("Taksim, Istanbul · Türkiye")}
               </Text>
               <Text style={{ fontFamily: fonts.body, fontSize: 8.5, color: COLOR.ivory, lineHeight: 1.5, marginTop: mm(1.5) }}>
                 {T("WhatsApp · +90 531 896 5134")}
