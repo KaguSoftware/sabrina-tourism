@@ -14,12 +14,11 @@ export const guestSchema = z.object({
     .string()
     .regex(ISO_DATE, "Pick a date of birth")
     .refine((v) => {
-      // Guest must be at least 18 today.
       const dob = new Date(v + "T00:00:00");
-      const cutoff = new Date();
-      cutoff.setFullYear(cutoff.getFullYear() - 18);
-      return dob <= cutoff;
-    }, "Guest must be at least 18 years old"),
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return dob <= today;
+    }, "Date of birth cannot be in the future"),
   passport: z.string().min(1, "Passport is required"),
 });
 

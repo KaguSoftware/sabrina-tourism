@@ -6,7 +6,7 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCard } from "@/components/regions/HotelCard/HotelCard";
 import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
-import { HOTELS } from "@/lib/regions/hotels";
+import { getHotelsByRegion } from "@/lib/db/hotels";
 
 const REGION_COPY: Record<
   (typeof REGIONS)[number],
@@ -45,7 +45,7 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const region = slugToRegion(slug);
@@ -66,14 +66,14 @@ export async function generateMetadata({
 export default async function RegionPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const region = slugToRegion(slug);
   if (!region) notFound();
 
   const { heading, lede } = REGION_COPY[region];
-  const hotels = HOTELS[region];
+  const hotels = await getHotelsByRegion(region, { locale });
 
   return (
     <>
@@ -121,7 +121,7 @@ export default async function RegionPage({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
           {hotels.map((hotel, i) => (
-            <Reveal key={hotel.id} delay={i * 70}>
+            <Reveal key={hotel.id} delay={i * 70} className="relative z-10">
               <HotelCard hotel={hotel} regionSlug={slug} />
             </Reveal>
           ))}

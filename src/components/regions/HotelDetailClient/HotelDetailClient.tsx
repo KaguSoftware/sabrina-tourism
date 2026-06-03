@@ -6,11 +6,11 @@ import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarous
 import { HotelBookingPanel } from "@/components/primitives/HotelBookingPanel/HotelBookingPanel";
 import { AirportTransferPanel } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
 import type { TransferDetails } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
-import type { HotelCardData } from "@/lib/regions/hotels";
+import type { HotelPublic } from "@/lib/db/hotels";
 import type { Airport, Vehicle } from "@/lib/transport/types";
 
 interface HotelDetailClientProps {
-  hotel: HotelCardData;
+  hotel: HotelPublic;
   region: string;
   slug: string;
   waPhone?: string;
@@ -32,7 +32,7 @@ export function HotelDetailClient({ hotel, region, slug, waPhone, airports, vehi
         <Reveal>
           <div className="mb-10 relative" style={{ zIndex: 10 }}>
             <HotelCarousel
-              images={hotel.images}
+              images={hotel.images.length > 0 ? hotel.images : hotel.bedroomImage ? [hotel.bedroomImage] : []}
               hotelName={hotel.name}
               roomTypes={hotel.roomTypes}
               activeRoomIndex={selectedRoomIndex}
@@ -75,20 +75,20 @@ export function HotelDetailClient({ hotel, region, slug, waPhone, airports, vehi
               Property details
             </p>
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 mb-5">
-              <Detail icon="bed" label={`${hotel.properties.bedrooms} bedroom${hotel.properties.bedrooms > 1 ? "s" : ""}`} />
-              <Detail icon="bath" label={`${hotel.properties.bathrooms} bathroom${hotel.properties.bathrooms > 1 ? "s" : ""}`} />
-              <Detail icon="map" label={`${hotel.properties.distanceKm} km from centre`} />
+              <Detail icon="bed" label={`${hotel.bedrooms} bedroom${hotel.bedrooms > 1 ? "s" : ""}`} />
+              <Detail icon="bath" label={`${hotel.bathrooms} bathroom${hotel.bathrooms > 1 ? "s" : ""}`} />
+              <Detail icon="map" label={`${hotel.distanceKm} km from centre`} />
               <Detail icon="clock" label={`Check-in ${hotel.checkInTime}`} />
               <Detail icon="clock-out" label={`Check-out ${hotel.checkOutTime}`} />
               <Detail icon="lang" label={hotel.languages.join(", ")} />
-              {hotel.properties.freeWifi && <Detail icon="wifi" label="Free Wi-Fi" />}
-              {hotel.properties.freeCancellation && <Detail icon="check" label="Free cancellation" />}
-              {hotel.properties.freeParking && <Detail icon="parking" label="Free parking" />}
-              {hotel.properties.bedBreakfast && <Detail icon="coffee" label="Bed &amp; breakfast" />}
-              {hotel.properties.balcony && <Detail icon="balcony" label="Balcony" />}
-              {hotel.properties.washer && <Detail icon="washer" label="Washing machine" />}
-              {hotel.properties.ac && <Detail icon="ac" label="Air conditioning" />}
-              {hotel.properties.tv && <Detail icon="tv" label="Television" />}
+              {hotel.freeWifi && <Detail icon="wifi" label="Free Wi-Fi" />}
+              {hotel.freeCancellation && <Detail icon="check" label="Free cancellation" />}
+              {hotel.freeParking && <Detail icon="parking" label="Free parking" />}
+              {hotel.bedBreakfast && <Detail icon="coffee" label="Bed &amp; breakfast" />}
+              {hotel.balcony && <Detail icon="balcony" label="Balcony" />}
+              {hotel.washer && <Detail icon="washer" label="Washing machine" />}
+              {hotel.ac && <Detail icon="ac" label="Air conditioning" />}
+              {hotel.tv && <Detail icon="tv" label="Television" />}
             </div>
           </div>
         </Reveal>

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
-import type { HotelCardData } from "@/lib/regions/hotels";
+import type { HotelPublic } from "@/lib/db/hotels";
 
-export type { HotelCardData };
+export type { HotelPublic as HotelCardData };
 
 export function HotelCard({
   hotel,
@@ -11,26 +11,32 @@ export function HotelCard({
   stayLabel = "Curated Stay",
   ctaLabel = "View hotel",
 }: {
-  hotel: HotelCardData;
+  hotel: HotelPublic;
   regionSlug: string;
   eyebrowLabel?: string;
   stayLabel?: string;
   ctaLabel?: string;
 }) {
+  const image = hotel.images[0] ?? hotel.bedroomImage;
+
   return (
     <BaseCard
       href={`/regions/${regionSlug}/${hotel.slug}`}
       ariaLabel={hotel.name}
       image={
         <>
-          <Image
-            src={hotel.images[0]}
-            alt={hotel.name}
-            fill
-            loading="lazy"
-            className="object-cover transition-transform duration-1400 ease-out group-hover:scale-[1.06]"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+          {image ? (
+            <Image
+              src={image}
+              alt={hotel.name}
+              fill
+              loading="lazy"
+              className="object-cover transition-transform duration-1400 ease-out group-hover:scale-[1.06]"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-navy-soft" />
+          )}
           <span className="absolute top-4 left-4 bg-navy/78 text-cream font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 backdrop-blur-sm">
             {hotel.tags[0]}
           </span>

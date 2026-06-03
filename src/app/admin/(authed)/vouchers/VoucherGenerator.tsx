@@ -36,7 +36,6 @@ import {
 } from "./actions";
 import {
   todayIso,
-  maxDobIso,
   nightsBetween,
   fmtDateForDisplay,
   isCurrency,
@@ -60,7 +59,7 @@ const TAB_META: Array<{ type: VoucherType; label: string; sublabel: string }> = 
   { type: "transfer", label: "Transfer", sublabel: "Private chauffeur" },
 ];
 
-const MAX_DOB = maxDobIso();
+const MAX_DOB = todayIso();
 
 const DEFAULT_VALUES: VoucherPayload = {
   voucherType: "group",
@@ -657,7 +656,7 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
                 <FormField label="Full name" required error={errors.guests?.[i]?.name?.message}>
                   <Input placeholder="Cherif Fkih Romdhane" {...register(`guests.${i}.name`)} />
                 </FormField>
-                <FormField label="Date of birth (18+)" required error={errors.guests?.[i]?.dateOfBirth?.message}>
+                <FormField label="Date of birth" required error={errors.guests?.[i]?.dateOfBirth?.message}>
                   <Controller
                     control={control}
                     name={`guests.${i}.dateOfBirth`}
@@ -960,4 +959,3 @@ export function VoucherGenerator({ packages, dailyPackages, hotels, vehicles }: 
     </form>
   );
 }
-

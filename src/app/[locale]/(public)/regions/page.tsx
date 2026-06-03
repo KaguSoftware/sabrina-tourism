@@ -7,7 +7,7 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelCard } from "@/components/regions/HotelCard/HotelCard";
 import { REGIONS, REGION_SLUGS } from "@/lib/packages/constants";
-import { HOTELS } from "@/lib/regions/hotels";
+import { getAllHotels } from "@/lib/db/hotels";
 import { getSiteContent } from "@/lib/db/site-content";
 
 type Region = (typeof REGIONS)[number];
@@ -53,7 +53,12 @@ export default async function RegionsIndexPage({ params }: { params: Promise<{ l
     getSiteContent("hotels_page", locale),
     getTranslations("nav"),
   ]);
-  const totalHotels = REGIONS.reduce((sum, r) => sum + HOTELS[r].length, 0);
+  const allHotels = await getAllHotels({ locale });
+  const hotelsByRegion = new Map<Region, typeof allHotels>();
+  for (const region of REGIONS) {
+    hotelsByRegion.set(region, allHotels.filter((hotel) => hotel.region === region));
+  }
+  const totalHotels = allHotels.length;
   const kicker = pageContent.region_index_kicker ?? "Where you stay";
   const heading = pageContent.region_index_heading ?? "Partnered Hotels";
   const lede = applyTemplate(
@@ -104,7 +109,7 @@ export default async function RegionsIndexPage({ params }: { params: Promise<{ l
       {/* Region sections */}
       <div className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] pt-20 pb-28 space-y-24">
         {REGIONS.map((region) => {
-          const hotels = HOTELS[region];
+          const hotels = hotelsByRegion.get(region) ?? [];
           const regionSlug = REGION_SLUGS[region];
           const regionName = navT(`regions.${REGION_TO_NAV_KEY[region]}`);
 
@@ -132,7 +137,7 @@ export default async function RegionsIndexPage({ params }: { params: Promise<{ l
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
                 {hotels.map((hotel, i) => (
-                  <Reveal key={hotel.id} delay={i * 70}>
+                  <Reveal key={hotel.id} delay={i * 70} className="relative z-10">
                     <HotelCard
                       hotel={hotel}
                       regionSlug={regionSlug}
