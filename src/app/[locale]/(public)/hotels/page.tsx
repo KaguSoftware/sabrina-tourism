@@ -39,7 +39,7 @@ export default async function HotelsPage({
 }) {
   const { locale } = await params;
   const [hotels, pageContent] = await Promise.all([
-    getAllHotels(),
+    getAllHotels({ locale }),
     getSiteContent("hotels_page", locale),
   ]);
 
@@ -97,7 +97,7 @@ export default async function HotelsPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(20px,2.5vw,36px)]">
             {hotels.map((hotel, i) => (
-              <Reveal key={hotel.id} delay={i * 70}>
+              <Reveal key={hotel.id} delay={i * 70} className="relative z-10">
                 <HotelCard hotel={hotel} ctaLabel={hotelCardCtaLabel} />
               </Reveal>
             ))}

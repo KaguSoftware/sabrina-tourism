@@ -7,22 +7,24 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { HotelBackButton } from "@/components/regions/HotelBackButton/HotelBackButton";
 import { HotelDetailClient } from "@/components/regions/HotelDetailClient/HotelDetailClient";
-import { REGIONS, REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
-import { HOTELS } from "@/lib/regions/hotels";
+import { REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
+import { getAllHotels, getHotelBySlug } from "@/lib/db/hotels";
 import { getAirports, getVehicles } from "@/lib/db/transport";
 
-export function generateStaticParams() {
-  return REGIONS.flatMap((region) =>
-    HOTELS[region].map((hotel) => ({ slug: REGION_SLUGS[region], hotelSlug: hotel.slug }))
-  );
+export async function generateStaticParams() {
+  const hotels = await getAllHotels();
+  return hotels.flatMap((hotel) => {
+    const regionSlug = REGION_SLUGS[hotel.region as keyof typeof REGION_SLUGS];
+    return regionSlug ? [{ slug: regionSlug, hotelSlug: hotel.slug }] : [];
+  });
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string; hotelSlug: string }> }): Promise<Metadata> {
-  const { slug, hotelSlug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; hotelSlug: string; locale: string }> }): Promise<Metadata> {
+  const { slug, hotelSlug, locale } = await params;
   const region = slugToRegion(slug);
   if (!region) return {};
-  const hotel = HOTELS[region].find((h) => h.slug === hotelSlug);
-  if (!hotel) return {};
+  const hotel = await getHotelBySlug(hotelSlug, locale);
+  if (!hotel || hotel.region !== region) return {};
   return {
     title: `${hotel.name} — Sabrina Turizm`,
     description: hotel.description,
@@ -39,16 +41,17 @@ export default async function HotelDetailPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ slug: string; hotelSlug: string }>;
+  params: Promise<{ slug: string; hotelSlug: string; locale: string }>;
   searchParams: Promise<{ from?: string }>;
 }) {
-  const { slug, hotelSlug } = await params;
+  const { slug, hotelSlug, locale } = await params;
   const { from } = await searchParams;
   const region = slugToRegion(slug);
   if (!region) notFound();
 
-  const hotel = HOTELS[region].find((h) => h.slug === hotelSlug);
-  if (!hotel) notFound();
+  const hotel = await getHotelBySlug(hotelSlug, locale);
+  if (!hotel || hotel.region !== region) notFound();
+  const heroImage = hotel.images[0] ?? hotel.bedroomImage ?? "/hotel-hero.webp";
 
   const [airportRows, vehicleRows] = await Promise.all([getAirports(), getVehicles()]);
   const airports = airportRows.map((a) => ({ code: a.code, label: a.label }));
@@ -66,7 +69,7 @@ export default async function HotelDetailPage({
       {/* Hero — matches main page height */}
       <section className="relative overflow-hidden min-h-[70vh] flex items-end pb-20 px-[clamp(20px,4vw,56px)] bg-ink">
         <Image
-          src={hotel.images[0]}
+          src={heroImage}
           alt={hotel.name}
           fill
           className="object-cover"

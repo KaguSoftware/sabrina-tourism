@@ -2,17 +2,6 @@ import type { VoucherPayload } from "./schema";
 
 export const todayIso = () => new Date().toISOString().slice(0, 10);
 
-/**
- * Latest DOB allowed = today minus 18 years. Used by the DOB picker as both
- * `max` (disables more recent days) and as the picker's initial cursor month
- * so the admin doesn't have to page back ~216 months from the current date.
- */
-export function maxDobIso(): string {
-  const d = new Date();
-  d.setFullYear(d.getFullYear() - 18);
-  return d.toISOString().slice(0, 10);
-}
-
 /** Whole calendar nights between two ISO dates. Returns 0 on malformed input. */
 export function nightsBetween(startIso: string, endIso: string): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startIso) || !/^\d{4}-\d{2}-\d{2}$/.test(endIso)) return 0;

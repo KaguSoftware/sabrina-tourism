@@ -39,9 +39,8 @@ export function DatePicker({
   error?: boolean;
 }) {
   const today = new Date();
-  // Picker opens at value's month if set; otherwise at max's month if provided
-  // (so a "DOB max = 18 years ago" picker doesn't open in the current year and
-  // force the admin to page back through hundreds of months); otherwise today.
+  // Picker opens at value's month if set; otherwise at max's month if provided;
+  // otherwise today.
   const initial =
     parseYMD(value) ?? parseYMD(max ?? "") ?? today;
   const [open, setOpen] = useState(false);
@@ -225,10 +224,15 @@ export function DatePicker({
       tabIndex={-1}
       onKeyDown={onPanelKeyDown}
       style={{ position: "absolute", top: panelPos.top, left: panelPos.left, zIndex: 9999, outline: "none" }}
-      className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] p-4 w-72 select-none ${isClosing ? "picker-exit" : "picker-enter"}`}
+      className={`bg-cream border border-rule shadow-[0_8px_32px_-8px_rgba(31,26,20,0.18)] p-4 w-80 select-none ${isClosing ? "picker-exit" : "picker-enter"}`}
     >
-      {/* Header — year-prev, month-prev, label, month-next, year-next */}
+      {/* Header — decade, year, and month navigation */}
       <div className="flex items-center justify-between mb-3 gap-1">
+        <button type="button" aria-label="Previous 10 years" onClick={() => setCursor(new Date(year - 10, month, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M6 1L1 6l5 5M11 1L6 6l5 5M15 1l-5 5 5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
         <button type="button" aria-label="Previous year" onClick={() => setCursor(new Date(year - 1, month, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M6 1L1 6l5 5M11 1L6 6l5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -244,6 +248,11 @@ export function DatePicker({
         <button type="button" aria-label="Next year" onClick={() => setCursor(new Date(year + 1, month, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M1 1l5 5-5 5M6 1l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <button type="button" aria-label="Next 10 years" onClick={() => setCursor(new Date(year + 10, month, 1))} className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+            <path d="M1 1l5 5-5 5M6 1l5 5-5 5M10 1l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
       </div>

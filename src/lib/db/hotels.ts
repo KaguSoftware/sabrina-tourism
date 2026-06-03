@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
 import { tags } from '@/lib/cache/tags';
+import { getPublicUrl } from '@/lib/supabase/storage';
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
@@ -96,7 +97,7 @@ function assembleHotel(row: HotelRow, locale = 'en'): HotelPublic {
     stars: row.stars ?? 0,
     svgVariant: row.svg_variant,
     location: tr(row.location_translations, locale, row.location),
-    bedroomImage: row.bedroom_image,
+    bedroomImage: row.bedroom_image ? getPublicUrl(row.bedroom_image) : '',
     checkInTime: row.check_in_time,
     checkOutTime: row.check_out_time,
     languages: row.languages ?? [],
@@ -121,7 +122,10 @@ function assembleHotel(row: HotelRow, locale = 'en'): HotelPublic {
       imageIndex: r.image_index,
       highlights: r.highlights ?? [],
     })),
-    images: sorted(row.hotel_images ?? []).map((i) => i.url),
+    images: sorted(row.hotel_images ?? [])
+      .map((i) => i.url?.trim())
+      .filter((url): url is string => !!url)
+      .map((url) => getPublicUrl(url)),
   };
 }
 
