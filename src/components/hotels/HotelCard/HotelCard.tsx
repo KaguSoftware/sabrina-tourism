@@ -1,8 +1,10 @@
+"use client";
 import Image from "next/image";
 import { Star } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
 import type { HotelPublic } from "@/lib/db/hotels";
-import { REGION_SLUGS } from "@/lib/packages/constants";
+import { REGION_SLUGS, regionKey } from "@/lib/packages/constants";
 
 interface HotelCardProps {
   hotel: HotelPublic;
@@ -13,10 +15,15 @@ interface HotelCardProps {
   ctaLabel?: string;
 }
 
-export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel = "View hotel" }: HotelCardProps) {
+export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel }: HotelCardProps) {
+  const t = useTranslations("cards");
+  const tRegions = useTranslations("tours.regions");
   const image = hotel.images[0] ?? hotel.bedroomImage;
   const regionSlug = REGION_SLUGS[hotel.region as keyof typeof REGION_SLUGS] ?? hotel.region.toLowerCase().replace(/\s+/g, "-");
   const starCount = Math.min(5, Math.max(0, hotel.stars));
+  const region = tRegions(regionKey(hotel.region));
+  const cta = ctaLabel ?? t("viewHotel");
+  const bedroomsLabel = hotel.bedrooms === 1 ? t("bedroom") : t("bedrooms");
 
   const cardBody = (
     <div className="flex h-full flex-col">
@@ -34,11 +41,11 @@ export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel = "View ho
           <div className="absolute inset-0 bg-navy-soft" />
         )}
         <span className="absolute top-4 left-4 bg-navy/78 text-cream font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 backdrop-blur-sm">
-          {hotel.region}
+          {region}
         </span>
         {selected && (
           <span className="absolute bottom-3 left-3 bg-ochre text-navy font-mono text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 shadow-[0_2px_8px_-2px_rgba(11,26,46,0.4)] z-10">
-            Selected
+            {t("selected")}
           </span>
         )}
       </div>
@@ -48,7 +55,7 @@ export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel = "View ho
           {hotel.bedrooms > 0 && (
             <>
               <span className="mx-1.5 text-rule">·</span>
-              {hotel.bedrooms} {hotel.bedrooms === 1 ? "bedroom" : "bedrooms"}
+              {hotel.bedrooms} {bedroomsLabel}
             </>
           )}
         </p>
@@ -70,7 +77,7 @@ export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel = "View ho
         </p>
         {!onSelect && (
           <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre w-fit">
-            {ctaLabel}{" "}
+            {cta}{" "}
             <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
               →
             </em>

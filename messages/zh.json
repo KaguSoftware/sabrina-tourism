@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "团队游",
+    "hotel": "酒店：",
+    "vehicle": "车辆：",
+    "perPerson": "/ 每人",
+    "viewDetails": "查看详情",
+    "viewExperience": "查看体验",
+    "viewHotel": "查看酒店",
+    "selected": "已选择",
+    "guests": "位客人",
+    "bedroom": "间卧室",
+    "bedrooms": "间卧室"
+  },
   "nav": {
     "home": "首页",
     "tours": "旅游",

@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "جولة جماعية",
+    "hotel": "الفندق:",
+    "vehicle": "المركبة:",
+    "perPerson": "/ للشخص",
+    "viewDetails": "عرض التفاصيل",
+    "viewExperience": "عرض التجربة",
+    "viewHotel": "عرض الفندق",
+    "selected": "محدد",
+    "guests": "ضيوف",
+    "bedroom": "غرفة نوم",
+    "bedrooms": "غرف نوم"
+  },
   "nav": {
     "home": "الرئيسية",
     "tours": "الجولات",

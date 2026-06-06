@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "グループツアー",
+    "hotel": "ホテル：",
+    "vehicle": "車両：",
+    "perPerson": "/ 1名",
+    "viewDetails": "詳細を見る",
+    "viewExperience": "体験を見る",
+    "viewHotel": "ホテルを見る",
+    "selected": "選択済み",
+    "guests": "名",
+    "bedroom": "ベッドルーム",
+    "bedrooms": "ベッドルーム"
+  },
   "nav": {
     "home": "ホーム",
     "tours": "ツアー",

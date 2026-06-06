@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { useCurrency } from "@/lib/currency/context";
@@ -13,6 +13,7 @@ interface PremadePackageCardProps {
 
 export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
   const locale = useLocale();
+  const t = useTranslations("cards");
   const { currency, rates } = useCurrency();
   return (
     <BaseCard
@@ -29,7 +30,7 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           <div className="absolute top-4 left-4 bg-navy/80 backdrop-blur-sm px-3 py-2 flex flex-col gap-0.5">
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre">Group Tour</span>
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre">{t("groupTour")}</span>
             <span className="font-mono text-[11px] tracking-[0.12em] text-cream">
               {formatDate(pkg.startDate, "en-GB")} — {formatDate(pkg.endDate, "en-GB")}
             </span>
@@ -53,21 +54,21 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
       </p>
       <div className="flex flex-col gap-1 mb-4 border-l-2 border-ochre pl-3">
         <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
-          <span className="text-ink">Hotel:</span> {pkg.accommodation.name}
+          <span className="text-ink">{t("hotel")}</span> {pkg.accommodation.name}
         </span>
         <span className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted">
-          <span className="text-ink">Vehicle:</span> {pkg.vehicle.model}
+          <span className="text-ink">{t("vehicle")}</span> {pkg.vehicle.model}
         </span>
       </div>
       <div className="mt-auto flex items-center justify-between">
         {pkg.price != null ? (
           <p className="font-display italic text-[20px] text-ochre">
             {formatPrice(pkg.price, currency, rates, locale)}
-            <span className="font-sans not-italic text-[13px] text-muted ml-1">/ person</span>
+            <span className="font-sans not-italic text-[13px] text-muted ml-1">{t("perPerson")}</span>
           </p>
         ) : <div />}
         <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre">
-          View details{" "}
+          {t("viewDetails")}{" "}
           <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">→</em>
         </span>
       </div>

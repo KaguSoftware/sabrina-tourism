@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "Gruppenreise",
+    "hotel": "Hotel:",
+    "vehicle": "Fahrzeug:",
+    "perPerson": "/ Person",
+    "viewDetails": "Details ansehen",
+    "viewExperience": "Erlebnis ansehen",
+    "viewHotel": "Hotel ansehen",
+    "selected": "Ausgewählt",
+    "guests": "Gäste",
+    "bedroom": "Schlafzimmer",
+    "bedrooms": "Schlafzimmer"
+  },
   "nav": {
     "home": "Startseite",
     "tours": "Touren",

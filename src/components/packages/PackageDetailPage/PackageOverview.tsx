@@ -2,6 +2,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Kicker } from "@/components/primitives/Kicker/Kicker";
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
+import { regionKey } from "@/lib/packages/constants";
 import type { Package } from "@/lib/packages/types";
 
 function prettyMonth(iso: string, locale: string) {
@@ -10,6 +11,8 @@ function prettyMonth(iso: string, locale: string) {
 
 export function PackageOverview({ pkg }: { pkg: Package }) {
   const t = useTranslations("packageDetail");
+  const tRegions = useTranslations("tours.regions");
+  const tCards = useTranslations("cards");
   const locale = useLocale();
   return (
     <section className="relative z-10 max-w-[1320px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(80px,10vw,130px)] grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-[clamp(40px,6vw,100px)]">
@@ -21,8 +24,8 @@ export function PackageOverview({ pkg }: { pkg: Package }) {
           <ul className="mt-6 list-none p-0">
             {[
               [t("duration"), pkg.duration],
-              [t("region"), pkg.region],
-              [t("groupSize"), `${pkg.minPeople}–${pkg.maxPeople} guests`],
+              [t("region"), tRegions(regionKey(pkg.region))],
+              [t("groupSize"), `${pkg.minPeople}–${pkg.maxPeople} ${tCards("guests")}`],
               [t("available"), `${prettyMonth(pkg.availableFrom, locale)} – ${prettyMonth(pkg.availableTo, locale)}`],
             ].map(([label, val]) => (
               <li key={label} className="flex justify-between gap-4 py-3.5 border-b border-rule text-[14px]">

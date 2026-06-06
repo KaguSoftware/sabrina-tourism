@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "Group Tour",
+    "hotel": "Hotel:",
+    "vehicle": "Vehicle:",
+    "perPerson": "/ person",
+    "viewDetails": "View details",
+    "viewExperience": "View experience",
+    "viewHotel": "View hotel",
+    "selected": "Selected",
+    "guests": "guests",
+    "bedroom": "bedroom",
+    "bedrooms": "bedrooms"
+  },
   "nav": {
     "home": "Home",
     "tours": "Tours",

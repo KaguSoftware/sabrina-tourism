@@ -1,13 +1,16 @@
 "use client";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { BaseCard } from "@/components/primitives/BaseCard/BaseCard";
 import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
+import { regionKey } from "@/lib/packages/constants";
 
 export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackagePublic; priority?: boolean }) {
   const locale = useLocale();
+  const t = useTranslations("cards");
+  const tRegions = useTranslations("tours.regions");
   const { currency, rates } = useCurrency();
   return (
     <BaseCard
@@ -25,7 +28,7 @@ export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackageP
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           <span className="absolute top-4 left-4 bg-navy/78 text-cream font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 backdrop-blur-sm">
-            {pkg.region}
+            {tRegions(regionKey(pkg.region))}
           </span>
           <span className="absolute bottom-4 left-4 bg-ochre text-navy font-mono text-[11px] tracking-[0.18em] uppercase px-3 py-1.5">
             {pkg.startTime} – {pkg.endTime}
@@ -43,7 +46,7 @@ export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackageP
         {pkg.shortDescription}
       </p>
       <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-muted mb-4">
-        <span className="text-ink">Vehicle:</span> {pkg.vehicle}
+        <span className="text-ink">{t("vehicle")}</span> {pkg.vehicle}
       </p>
       <div className="flex gap-2 mb-5">
         {pkg.groupImages.slice(0, 3).map((src, i) => (
@@ -66,11 +69,11 @@ export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackageP
         <p className="font-display italic text-[20px] text-ochre">
           {formatPrice(pkg.price, currency, rates, locale)}
           <span className="font-sans not-italic text-[13px] text-muted ml-1">
-            / person
+            {t("perPerson")}
           </span>
         </p>
         <span className="inline-block font-mono text-[12px] tracking-[0.16em] uppercase border-b border-ochre pb-0.5 transition-colors duration-200 group-hover:text-ochre">
-          View experience{" "}
+          {t("viewExperience")}{" "}
           <em className="not-italic inline-block transition-transform duration-300 group-hover:translate-x-1">
             →
           </em>

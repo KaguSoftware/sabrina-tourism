@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "Grup Turu",
+    "hotel": "Otel:",
+    "vehicle": "Araç:",
+    "perPerson": "/ kişi",
+    "viewDetails": "Ayrıntıları gör",
+    "viewExperience": "Deneyimi gör",
+    "viewHotel": "Oteli gör",
+    "selected": "Seçildi",
+    "guests": "misafir",
+    "bedroom": "yatak odası",
+    "bedrooms": "yatak odası"
+  },
   "nav": {
     "home": "Ana Sayfa",
     "tours": "Turlar",

@@ -1,4 +1,17 @@
 {
+  "cards": {
+    "groupTour": "Групповой тур",
+    "hotel": "Отель:",
+    "vehicle": "Транспорт:",
+    "perPerson": "/ чел.",
+    "viewDetails": "Подробнее",
+    "viewExperience": "Смотреть тур",
+    "viewHotel": "Смотреть отель",
+    "selected": "Выбрано",
+    "guests": "гостей",
+    "bedroom": "спальня",
+    "bedrooms": "спальни"
+  },
   "nav": {
     "home": "Главная",
     "tours": "Туры",
