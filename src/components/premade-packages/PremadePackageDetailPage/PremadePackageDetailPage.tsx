@@ -504,7 +504,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
           <div className={tierGrid}>
             {pkg.tiers.map((tierItem, i) => {
               const active = tierItem.name === tier;
-              const hotelImage = tierItem.hotel?.images?.[0] || tierItem.hotel?.bedroomImage || "";
+              const hotelImage = tierItem.hotel?.images?.[0] || "";
               return (
                 <Reveal key={tierItem.name} delay={i * 80}>
                   <button
