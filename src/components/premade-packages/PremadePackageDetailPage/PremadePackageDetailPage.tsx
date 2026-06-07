@@ -504,6 +504,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
           <div className={tierGrid}>
             {pkg.tiers.map((tierItem, i) => {
               const active = tierItem.name === tier;
+              const hotelImage = tierItem.hotel?.images?.[0] || tierItem.hotel?.bedroomImage || "";
               return (
                 <Reveal key={tierItem.name} delay={i * 80}>
                   <button
@@ -527,10 +528,10 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                     <Hairline className="mb-6 opacity-50" />
                     {tierItem.hotel && (
                       <div className="-mx-8 mb-5 overflow-hidden border-y border-rule bg-[#fffef9]">
-                        {tierItem.hotel.bedroomImage && (
+                        {hotelImage && (
                           <div className="relative aspect-[4/2.1]">
                             <Image
-                              src={tierItem.hotel.bedroomImage}
+                              src={hotelImage}
                               alt={tierItem.hotel.name}
                               fill
                               className="object-cover"

@@ -136,6 +136,7 @@ const useIsoLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 type Geom = {
+  id: number;
   width: number;
   height: number;
   pathD: string;
@@ -146,6 +147,7 @@ type Geom = {
 export function PaperPlanePath() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const measurePathRef = useRef<SVGPathElement>(null);
+  const geomIdRef = useRef(0);
   const [geom, setGeom] = useState<Geom | null>(null);
   const [supportsNative, setSupportsNative] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -181,7 +183,8 @@ export function PaperPlanePath() {
     measurePath.setAttribute("d", pathD);
     const samples = samplePath(measurePath, SAMPLE_COUNT);
 
-    setGeom({ width: w, height: h, pathD, samples, planeSize });
+    geomIdRef.current += 1;
+    setGeom({ id: geomIdRef.current, width: w, height: h, pathD, samples, planeSize });
   };
 
   useIsoLayoutEffect(() => {
@@ -257,9 +260,9 @@ export function PaperPlanePath() {
       </svg>
 
       {geom && !reduced && (
-        <Overlay geom={geom} supportsNative={supportsNative} />
+        <Overlay key={geom.id} geom={geom} supportsNative={supportsNative} />
       )}
-      {geom && reduced && <StaticOverlay geom={geom} />}
+      {geom && reduced && <StaticOverlay key={geom.id} geom={geom} />}
     </div>
   );
 }
@@ -305,7 +308,8 @@ function NativeOverlay({ geom }: { geom: Geom }) {
   // Build keyframes from the precomputed samples. The plane's transform is
   // the only animated property; animation-timeline: scroll(root) drives it
   // on the compositor.
-  const css = buildKeyframesCss(geom.samples, geom.planeSize, "plane-fly");
+  const animationName = `plane-fly-${geom.id}`;
+  const css = buildKeyframesCss(geom.samples, geom.planeSize, animationName);
   return (
     <>
       <StaticPathSVG geom={geom} />
@@ -318,7 +322,7 @@ function NativeOverlay({ geom }: { geom: Geom }) {
           width: geom.planeSize,
           height: geom.planeSize,
           willChange: "transform",
-          animation: "plane-fly linear both",
+          animation: `${animationName} linear both`,
           animationTimeline: "scroll(root block)",
         }}
       >

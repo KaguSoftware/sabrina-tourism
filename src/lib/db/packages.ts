@@ -34,10 +34,16 @@ interface HotelLookupRow {
   stars: number;
   description: string;
   bedroom_image: string;
+  hotel_images?: Array<{ url: string; sort_order: number }>;
 }
 
 function toTierHotelSummary(row: HotelLookupRow | undefined): TierHotelSummary | null {
   if (!row) return null;
+  const images = [...(row.hotel_images ?? [])]
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((i) => i.url?.trim())
+    .filter((url): url is string => !!url)
+    .map((url) => getPublicUrl(url));
   return {
     id: row.id,
     slug: row.slug,
@@ -46,6 +52,7 @@ function toTierHotelSummary(row: HotelLookupRow | undefined): TierHotelSummary |
     stars: row.stars,
     description: row.description,
     bedroomImage: row.bedroom_image ? getPublicUrl(row.bedroom_image) : '',
+    images,
   };
 }
 
@@ -118,7 +125,7 @@ async function fetchHotelsForTiers(
   if (unique.length === 0) return new Map();
   const { data, error } = await supabase
     .from('hotels')
-    .select('id, slug, name, region, stars, description, bedroom_image')
+    .select('id, slug, name, region, stars, description, bedroom_image, hotel_images(url, sort_order)')
     .in('id', unique);
   if (error || !data) return new Map();
   return new Map((data as HotelLookupRow[]).map((h) => [h.id, h]));
