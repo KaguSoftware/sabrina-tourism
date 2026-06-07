@@ -75,7 +75,7 @@ export function PackageTierSelector({
       <div className={gridClass}>
         {tiers.map((tier, i) => {
           const active = tier.name === activeTierName;
-          const hotelImage = tier.hotel?.images?.[0] || tier.hotel?.bedroomImage || "";
+          const hotelImage = tier.hotel?.images?.[0] || "";
           return (
             <Reveal key={tier.name} delay={i * 80}>
               <button
