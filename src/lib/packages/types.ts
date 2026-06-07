@@ -22,6 +22,7 @@ export interface TierHotelSummary {
   stars: number;
   description: string;
   bedroomImage: string;
+  images: string[];
 }
 
 export interface Tier {

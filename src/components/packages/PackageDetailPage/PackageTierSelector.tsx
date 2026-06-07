@@ -75,6 +75,7 @@ export function PackageTierSelector({
       <div className={gridClass}>
         {tiers.map((tier, i) => {
           const active = tier.name === activeTierName;
+          const hotelImage = tier.hotel?.images?.[0] || tier.hotel?.bedroomImage || "";
           return (
             <Reveal key={tier.name} delay={i * 80}>
               <button
@@ -98,10 +99,10 @@ export function PackageTierSelector({
                 <Hairline className="mb-6 opacity-50" />
                 {tier.hotel && (
                   <div className="-mx-8 mb-5 overflow-hidden border-y border-rule bg-[#fffef9]">
-                    {tier.hotel.bedroomImage && (
+                    {hotelImage && (
                       <div className="relative aspect-[4/2.1]">
                         <Image
-                          src={tier.hotel.bedroomImage}
+                          src={hotelImage}
                           alt={tier.hotel.name}
                           fill
                           className="object-cover"
