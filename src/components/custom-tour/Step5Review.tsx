@@ -7,6 +7,7 @@ import { DESTINATIONS } from "./types";
 import type { CustomTourState } from "./types";
 import type { Vehicle } from "@/lib/transport/types";
 import { formatDate } from "@/lib/format/date";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 
 interface Props {
   state: CustomTourState;
@@ -135,7 +136,7 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
     t("whatsappConfirmQuote"),
   ].filter(Boolean).join(" ");
 
-  const waNum = process.env.NEXT_PUBLIC_WA_PHONE?.replace(/[^\d+]/g, "") ?? "";
+  const waNum = WA_PHONE.replace(/[^\d+]/g, "");
   const waHref = `https://wa.me/${waNum}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (

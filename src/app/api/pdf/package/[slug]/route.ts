@@ -1,4 +1,5 @@
 import { renderPackagePdf } from "@/lib/pdf/render";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 
 export const runtime = "nodejs";
 
@@ -8,7 +9,7 @@ export async function GET(
 ) {
   const { slug } = await params;
   const baseUrl = new URL(req.url).origin;
-  const waPhone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
+  const waPhone = WA_PHONE;
 
   let bytes: ArrayBuffer | null;
   try {

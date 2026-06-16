@@ -3,6 +3,7 @@ import { useState } from "react";
 import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import type { RoomType } from "@/lib/regions/hotels";
 import type { TransferDetails } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 
 function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -117,7 +118,7 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
     transferLine,
   ].filter(Boolean).join(" ");
 
-  const waHref = `https://wa.me/${waPhone ?? ""}?text=${encodeURIComponent(waMessage)}`;
+  const waHref = `https://wa.me/${waPhone ?? WA_PHONE}?text=${encodeURIComponent(waMessage)}`;
 
   const datesSelected = !!(checkIn && checkOut);
 

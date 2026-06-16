@@ -10,6 +10,7 @@ import { HotelDetailClient } from "@/components/regions/HotelDetailClient/HotelD
 import { REGION_SLUGS, slugToRegion } from "@/lib/packages/constants";
 import { getAllHotels, getHotelBySlug } from "@/lib/db/hotels";
 import { getAirports, getVehicles } from "@/lib/db/transport";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 
 export async function generateStaticParams() {
   const hotels = await getAllHotels();
@@ -108,7 +109,7 @@ export default async function HotelDetailPage({
       <section className="max-w-330 mx-auto px-[clamp(20px,4vw,56px)] pt-16 pb-28 relative" style={{ zIndex: 10 }}>
         {from === "custom-tour" && <HotelBackButton />}
 
-        <HotelDetailClient hotel={hotel} region={region} slug={slug} waPhone={process.env.NEXT_PUBLIC_WA_PHONE} airports={airports} vehicles={vehicles} />
+        <HotelDetailClient hotel={hotel} region={region} slug={slug} waPhone={WA_PHONE} airports={airports} vehicles={vehicles} />
       </section>
     </>
   );
