@@ -15,6 +15,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
 import { formatDate } from "@/lib/format/date";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 
 function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -36,8 +37,7 @@ function bookMessage(
   children: number,
   locale: string,
 ): string {
-  const phone = process.env.NEXT_PUBLIC_WA_PHONE ?? "";
-  const num = phone.replace(/[^\d+]/g, "");
+  const num = WA_PHONE.replace(/[^\d+]/g, "");
   const dateStr = date ? formatDate(date, locale, "full") : "a date TBD";
   const text = encodeURIComponent(
     `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`,

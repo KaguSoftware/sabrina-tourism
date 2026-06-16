@@ -163,7 +163,7 @@ function toTierHotel(row: HotelLookupRow | undefined): PremadeTierPublic['hotel'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRow> = new Map()): PremadePackagePublic {
-  const gallery = byOrder(row.premade_package_gallery ?? []).map((g: { url: string }) => g.url);
+  const gallery = byOrder(row.premade_package_gallery ?? []).map((g: { url: string }) => getPublicUrl(g.url));
   const dates = byOrder(row.premade_package_dates ?? []).map((d: { start_date: string; end_date: string }) => ({ startDate: d.start_date, endDate: d.end_date }));
   const itinerary = byOrder(row.premade_package_itinerary_days ?? []).map((d: { day_number: number; title: string; description: string; title_translations: unknown; description_translations: unknown }) => ({
     day: d.day_number,
@@ -240,13 +240,13 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     startDate: row.start_date,
     endDate: row.end_date,
     destinations: row.destinations ?? [],
-    heroImage: row.hero_image,
-    cardImage: row.card_image,
+    heroImage: getPublicUrl(row.hero_image),
+    cardImage: getPublicUrl(row.card_image),
     shortDescription: t(row.short_description_translations, locale, row.short_description),
     accommodation: {
       name: t(row.accommodation_name_translations, locale, row.accommodation_name),
       description: t(row.accommodation_description_translations, locale, row.accommodation_description),
-      images: [row.accommodation_image_a, row.accommodation_image_b],
+      images: [getPublicUrl(row.accommodation_image_a), getPublicUrl(row.accommodation_image_b)],
     },
     vehicle: { model: row.vehicle_model, features: row.vehicle_features ?? [] },
     gallery,

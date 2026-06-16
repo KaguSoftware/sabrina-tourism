@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { createAnonClient, createServiceClient } from '@/lib/supabase/server';
 import { tags } from '@/lib/cache/tags';
+import { getPublicUrl } from '@/lib/supabase/storage';
 
 const REVALIDATE_SECONDS = 60 * 60 * 24 * 30; // 30 days
 
@@ -87,8 +88,8 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
     date: row.tour_date,
     startTime: row.start_time,
     endTime: row.end_time,
-    heroImage: row.hero_image,
-    cardImage: row.card_image,
+    heroImage: getPublicUrl(row.hero_image),
+    cardImage: getPublicUrl(row.card_image),
     vehicle: row.vehicle,
     driver: row.driver,
     price: row.price,
@@ -113,7 +114,7 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
       icon: i.icon ?? null,
     })),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    groupImages: sortBy(row.daily_package_gallery ?? []).map((g: any) => g.url),
+    groupImages: sortBy(row.daily_package_gallery ?? []).map((g: any) => getPublicUrl(g.url)),
     pricing: (row.price_1_person ?? row.price_2_people ?? row.price_baby ?? row.price_single_room_supplement ?? row.price_per_child) != null ? {
       onePerson: row.price_1_person ?? null,
       twoPeople: row.price_2_people ?? null,

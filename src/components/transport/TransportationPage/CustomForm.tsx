@@ -14,6 +14,7 @@ import { GUIDE_LANGUAGES } from "./guideOptions";
 import type { GuideType } from "./guideOptions";
 import type { Vehicle } from "@/lib/transport/types";
 import { openWhatsApp } from "@/lib/whatsapp/open";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 import { InfoTooltip } from "@/components/primitives/InfoTooltip/InfoTooltip";
 
 interface CustomFormProps {
@@ -164,7 +165,7 @@ export function CustomForm({
     t, pickup, pickupTime, destinations, startDate, endDate, passengers,
     luggage, vehicleId, vehicleSummary, guideNeeded, guideType, guideLanguage,
   ]);
-  const waNum = process.env.NEXT_PUBLIC_WA_PHONE?.replace(/[^\d+]/g, "") ?? "";
+  const waNum = WA_PHONE.replace(/[^\d+]/g, "");
   const href = useMemo(
     () => vehicleId ? `https://wa.me/${waNum}?text=${encodeURIComponent(previewMessage)}` : "#",
     [vehicleId, waNum, previewMessage],

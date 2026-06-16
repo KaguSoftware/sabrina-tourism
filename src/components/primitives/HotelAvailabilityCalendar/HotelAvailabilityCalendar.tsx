@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { WA_PHONE } from "@/lib/whatsapp/constants";
 
 const DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 const MONTHS = [
@@ -163,7 +164,7 @@ export function HotelAvailabilityCalendar({ hotelName, region, waPhone }: { hote
     ? `Hi, I'd like to check availability at ${hotelName} in ${region} — check-in ${formatShort(selection.checkIn)}, check-out ${formatShort(selection.checkOut)} (${nights} night${nights !== 1 ? "s" : ""}).`
     : `Hi, I'd like to check availability at ${hotelName} in ${region}.`;
 
-  const waHref = `https://wa.me/${waPhone ?? ""}?text=${encodeURIComponent(waMessage)}`;
+  const waHref = `https://wa.me/${waPhone ?? WA_PHONE}?text=${encodeURIComponent(waMessage)}`;
 
   return (
     <div className="border border-rule p-6">
