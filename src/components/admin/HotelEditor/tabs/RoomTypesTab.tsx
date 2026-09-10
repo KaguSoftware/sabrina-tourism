@@ -52,10 +52,10 @@ export function RoomTypesTab() {
                 {highlights.map((_, hi) => (
                   <div key={hi} className="flex items-center gap-2">
                     <Input {...register(`room_types.${i}.highlights.${hi}`)} placeholder="e.g. Strait view" className="flex-1" />
-                    <button type="button" onClick={() => { const next = highlights.filter((_, idx) => idx !== hi); setValue(`room_types.${i}.highlights`, next); }} className="text-ink-soft hover:text-terracotta transition-colors p-1"><X size={14} /></button>
+                    <button type="button" onClick={() => { const next = highlights.filter((_, idx) => idx !== hi); setValue(`room_types.${i}.highlights`, next, { shouldDirty: true }); }} className="text-ink-soft hover:text-terracotta transition-colors p-1"><X size={14} /></button>
                   </div>
                 ))}
-                <button type="button" onClick={() => setValue(`room_types.${i}.highlights`, [...highlights, ""])}
+                <button type="button" onClick={() => setValue(`room_types.${i}.highlights`, [...highlights, ""], { shouldDirty: true })}
                   className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors">
                   <Plus size={12} /> {t("addHighlight")}
                 </button>

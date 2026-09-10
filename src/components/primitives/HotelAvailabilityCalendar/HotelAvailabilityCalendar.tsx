@@ -12,6 +12,20 @@ function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+// This calendar renders on the server, and "today" reaches the markup (which
+// day is highlighted, which months are disabled). Local date parts differ
+// between a UTC server and a visitor in another timezone for hours every day,
+// which hydrates as a mismatch — so anchor both to UTC.
+function todayUTC() {
+  return new Date().toISOString().split("T")[0];
+}
+
+/** First day of the current UTC month, as a local Date for the grid maths. */
+function currentMonthStart() {
+  const [y, m] = todayUTC().split("-").map(Number);
+  return new Date(y, m - 1, 1);
+}
+
 function parseYMD(s: string) {
   const [y, m, d] = s.split("-").map(Number);
   return new Date(y, m - 1, d);
@@ -126,11 +140,8 @@ function MonthGrid({
 }
 
 export function HotelAvailabilityCalendar({ hotelName, region, waPhone }: { hotelName: string; region: string; waPhone?: string }) {
-  const today = toYMD(new Date());
-  const [cursor, setCursor] = useState(() => {
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), 1);
-  });
+  const today = todayUTC();
+  const [cursor, setCursor] = useState(currentMonthStart);
   const [selection, setSelection] = useState<Selection>({ checkIn: "", checkOut: "" });
   const [hovered, setHovered] = useState("");
 

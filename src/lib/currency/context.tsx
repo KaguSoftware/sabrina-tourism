@@ -8,6 +8,7 @@ import {
 } from "@/i18n/currencies";
 import type { Rates } from "@/lib/currency/format";
 import type { Locale } from "@/i18n/locales";
+import { readCookie, writeCookie } from "@/lib/utils/cookies";
 
 interface CurrencyContextValue {
   currency: Currency;
@@ -21,19 +22,6 @@ const CurrencyContext = createContext<CurrencyContextValue | null>(null);
 
 const COOKIE_CURRENCY = "NEXT_CURRENCY";
 const COOKIE_MANUAL = "NEXT_CURRENCY_MANUAL";
-const COOKIE_MAX_AGE = 31536000;
-
-function readCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-function writeCookie(name: string, value: string) {
-  if (typeof document === "undefined") return;
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${COOKIE_MAX_AGE}`;
-}
-
 export function CurrencyProvider({
   locale,
   children,

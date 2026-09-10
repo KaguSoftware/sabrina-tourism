@@ -18,10 +18,10 @@ function AccomImageField({ label, name }: { label: string; name: "accommodation_
         <div className="relative aspect-4/3 border border-rule overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={previewUrl} alt="" className="w-full h-full object-cover" />
-          <button type="button" onClick={() => setValue(name, "")} className="absolute top-1 right-1 w-6 h-6 bg-ink/70 text-cream flex items-center justify-center text-sm hover:bg-terracotta transition-colors">×</button>
+          <button type="button" onClick={() => setValue(name, "", { shouldDirty: true })} className="absolute top-1 right-1 w-6 h-6 bg-ink/70 text-cream flex items-center justify-center text-sm hover:bg-terracotta transition-colors">×</button>
         </div>
       ) : (
-        <ImageUploader value={null} onChange={(p) => { if (p) setValue(name, p); }} folder="premade/accommodation" aspectRatio="4/3" />
+        <ImageUploader value={null} onChange={(p) => { if (p) setValue(name, p, { shouldDirty: true }); }} folder="premade/accommodation" aspectRatio="4/3" />
       )}
       <Input {...register(name)} placeholder="Or paste URL…" className="mt-2" />
     </FormField>

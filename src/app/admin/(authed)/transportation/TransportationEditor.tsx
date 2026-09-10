@@ -112,7 +112,7 @@ function HeroTab({ hero }: { hero: TransportationEditorProps["hero"] }) {
       <FormField label="Hero image" hint="16:9 recommended">
         <ImageUploader
           value={heroImage ?? null}
-          onChange={(p) => setValue("hero_image", p)}
+          onChange={(p) => setValue("hero_image", p, { shouldDirty: true })}
           folder="transport"
           aspectRatio="16/9"
         />

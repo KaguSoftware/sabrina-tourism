@@ -157,10 +157,18 @@ async function _getHotelsByRegion(region: string, { publishedOnly = true, locale
   return (data ?? []).map((row: HotelRow) => assembleHotel(row, locale));
 }
 
-async function _getHotelBySlug(slug: string, locale = 'en'): Promise<HotelPublic | null> {
+async function _getHotelBySlug(
+  slug: string,
+  locale = 'en',
+  includeUnpublished = false,
+): Promise<HotelPublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
-  const { data, error } = await supabase.from('hotels').select(SELECT).eq('slug', slug).maybeSingle();
+  let q = supabase.from('hotels').select(SELECT).eq('slug', slug);
+  // Unpublished hotels must not be reachable by guessing the URL. Admin callers
+  // (the voucher generator) opt back in explicitly.
+  if (!includeUnpublished) q = q.eq('is_published', true);
+  const { data, error } = await q.maybeSingle();
   if (error || !data) return null;
   return assembleHotel(data, locale);
 }
@@ -185,10 +193,15 @@ export async function getHotelsByRegion(region: string, opts?: { publishedOnly?:
   )();
 }
 
-export async function getHotelBySlug(slug: string, locale = 'en'): Promise<HotelPublic | null> {
+export async function getHotelBySlug(
+  slug: string,
+  locale = 'en',
+  opts: { includeUnpublished?: boolean } = {},
+): Promise<HotelPublic | null> {
+  const includeUnpublished = opts.includeUnpublished ?? false;
   return unstable_cache(
-    () => _getHotelBySlug(slug, locale),
-    ['hotels:bySlug', slug, locale],
+    () => _getHotelBySlug(slug, locale, includeUnpublished),
+    ['hotels:bySlug', slug, locale, String(includeUnpublished)],
     { tags: [tags.hotels.bySlug(slug), tags.hotels.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }

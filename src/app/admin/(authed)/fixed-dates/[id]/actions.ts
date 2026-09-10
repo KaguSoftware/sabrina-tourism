@@ -4,6 +4,7 @@ import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { PremadeSchema, type PremadeFormValues } from "./schema";
+import { replaceChildren } from "@/lib/admin/replace-children";
 
 async function requireAuth(): Promise<{ error?: string }> {
   const supabase = await createServerClient();
@@ -34,6 +35,15 @@ async function findUniqueSlug(supabase: any, table: string, baseSlug: string, ex
   return `${baseSlug}-${n}`;
 }
 
+function deriveDateSpan(
+  dates: Array<{ start_date: string; end_date: string }>,
+): { start: string; end: string } | null {
+  const starts = dates.map((d) => d.start_date).filter(Boolean).sort();
+  const ends = dates.map((d) => d.end_date).filter(Boolean).sort();
+  if (!starts.length || !ends.length) return null;
+  return { start: starts[0], end: ends[ends.length - 1] };
+}
+
 export async function savePremadePackage(payload: PremadeFormValues): Promise<{ error?: string; id?: string }> {
   const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = PremadeSchema.safeParse(payload);
@@ -43,6 +53,13 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   const supabase = db();
   let slug = slugify(data.name);
   if (!slug) return { error: "Name produces an empty slug." };
+
+  // `premade_packages.start_date` / `end_date` are legacy NOT NULL columns kept
+  // for backwards compatibility. Departures now live in `premade_package_dates`,
+  // so derive the legacy span from the earliest / latest departure rather than
+  // trusting the (no longer edited) top-level form fields.
+  const span = deriveDateSpan(data.dates);
+  if (!span) return { error: "Add at least one departure date before saving." };
 
   let pkgId = data.id;
   let storedSlug: string | null = null;
@@ -57,8 +74,8 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
 
   const coreFields = {
     name: data.name,
-    start_date: data.start_date,
-    end_date: data.end_date,
+    start_date: span.start,
+    end_date: span.end,
     destinations: data.destinations,
     short_description: data.short_description,
     hero_image: data.hero_image,
@@ -103,79 +120,70 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     if (error || !row) return { error: error?.message ?? "Insert failed" };
     pkgId = row.id;
   }
+  if (!pkgId) return { error: "Save failed — no package id" };
 
-  // Replace gallery
-  await supabase.from("premade_package_gallery").delete().eq("package_id", pkgId);
-  if (data.gallery.length) {
-    await supabase.from("premade_package_gallery").insert(
-      data.gallery.map((g, i) => ({ package_id: pkgId, url: g.url, sort_order: i }))
-    );
-  }
+  // Every child table is replaced wholesale. replaceChildren inserts before it
+  // deletes and reports failures, so a bad write can no longer wipe a tour's
+  // itinerary or departures while the editor claims the save succeeded.
 
-  // Replace dates
-  await supabase.from("premade_package_dates").delete().eq("package_id", pkgId);
-  if (data.dates.length) {
-    await supabase.from("premade_package_dates").insert(
-      data.dates.map((d, i) => ({ package_id: pkgId, start_date: d.start_date, end_date: d.end_date, sort_order: i }))
-    );
-  }
+  // "Add image" seeds a blank row; drop any the editor left unfilled so the
+  // public gallery never renders placeholder tiles.
+  const galleryRows = data.gallery
+    .filter((g) => g.url.trim())
+    .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), sort_order: i }));
 
-  // Replace itinerary — preserve existing translations
+  const dateRows = data.dates.map((d, i) => ({
+    package_id: pkgId,
+    start_date: d.start_date,
+    end_date: d.end_date,
+    sort_order: i,
+  }));
+
+  // Translations live on the child rows, so carry them across by position.
   const { data: existingDays } = await supabase
     .from("premade_package_itinerary_days")
     .select("sort_order, title_translations, description_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
-  await supabase.from("premade_package_itinerary_days").delete().eq("package_id", pkgId);
-  if (data.itinerary.length) {
-    const sorted = [...data.itinerary].sort((a, b) => a.day_number - b.day_number);
-    await supabase.from("premade_package_itinerary_days").insert(
-      sorted.map((d, i) => ({
-        package_id: pkgId,
-        day_number: d.day_number,
-        title: d.title,
-        description: d.description,
-        sort_order: i,
-        title_translations: existingDays?.[i]?.title_translations ?? null,
-        description_translations: existingDays?.[i]?.description_translations ?? null,
-      }))
-    );
-  }
+  const itineraryRows = [...data.itinerary]
+    .sort((a, b) => a.day_number - b.day_number)
+    .map((d, i) => ({
+      package_id: pkgId,
+      day_number: d.day_number,
+      title: d.title,
+      description: d.description,
+      sort_order: i,
+      title_translations: existingDays?.[i]?.title_translations ?? null,
+      description_translations: existingDays?.[i]?.description_translations ?? null,
+    }));
 
-  // Replace tiers — preserve existing translations
   const { data: existingTiers } = await supabase
     .from("premade_package_tiers")
     .select("sort_order, tier_name_translations, vehicle_class_translations, group_size_translations, meals_included_translations, guide_languages_translations, highlights_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
-  await supabase.from("premade_package_tiers").delete().eq("package_id", pkgId);
-  if (data.tiers.length) {
-    await supabase.from("premade_package_tiers").insert(
-      data.tiers.map((t, i) => ({
-        package_id: pkgId,
-        tier_name: t.tier_name,
-        vehicle_class: t.vehicle_class,
-        accommodation: t.accommodation,
-        hotel_id: t.hotel_id ?? null,
-        group_size: t.group_size,
-        guide_languages: t.guide_languages,
-        meals_included: t.meals_included,
-        highlights: t.highlights,
-        price_2_people: t.price_2_people ?? null,
-        price_single_room_supplement: t.price_single_room_supplement ?? null,
-        price_per_child: t.price_per_child ?? null,
-        sort_order: i,
-        tier_name_translations: existingTiers?.[i]?.tier_name_translations ?? null,
-        vehicle_class_translations: existingTiers?.[i]?.vehicle_class_translations ?? null,
-        group_size_translations: existingTiers?.[i]?.group_size_translations ?? null,
-        meals_included_translations: existingTiers?.[i]?.meals_included_translations ?? null,
-        guide_languages_translations: existingTiers?.[i]?.guide_languages_translations ?? null,
-        highlights_translations: existingTiers?.[i]?.highlights_translations ?? null,
-      }))
-    );
-  }
+  const tierRows = data.tiers.map((t, i) => ({
+    package_id: pkgId,
+    tier_name: t.tier_name,
+    vehicle_class: t.vehicle_class,
+    accommodation: t.accommodation,
+    hotel_id: t.hotel_id ?? null,
+    group_size: t.group_size,
+    guide_languages: t.guide_languages,
+    meals_included: t.meals_included,
+    highlights: t.highlights,
+    price_2_people: t.price_2_people ?? null,
+    price_single_room_supplement: t.price_single_room_supplement ?? null,
+    price_per_child: t.price_per_child ?? null,
+    sort_order: i,
+    tier_name_translations: existingTiers?.[i]?.tier_name_translations ?? null,
+    vehicle_class_translations: existingTiers?.[i]?.vehicle_class_translations ?? null,
+    group_size_translations: existingTiers?.[i]?.group_size_translations ?? null,
+    meals_included_translations: existingTiers?.[i]?.meals_included_translations ?? null,
+    guide_languages_translations: existingTiers?.[i]?.guide_languages_translations ?? null,
+    highlights_translations: existingTiers?.[i]?.highlights_translations ?? null,
+  }));
 
-  // Replace inclusions — preserve existing translations
   const { data: existingIncluded } = await supabase
     .from("premade_package_inclusions")
     .select("sort_order, text_translations")
@@ -186,7 +194,6 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     .select("sort_order, text_translations")
     .eq("package_id", pkgId).eq("kind", "not_included")
     .order("sort_order");
-  await supabase.from("premade_package_inclusions").delete().eq("package_id", pkgId);
   const inclusionRows = [
     ...data.included.map((item, i) => ({
       package_id: pkgId, kind: "included", text: item.text, icon: item.icon ?? null, sort_order: i,
@@ -197,8 +204,17 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
       text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
     })),
   ];
-  if (inclusionRows.length) {
-    await supabase.from("premade_package_inclusions").insert(inclusionRows);
+
+  const children: Array<[string, Record<string, unknown>[], string]> = [
+    ["premade_package_gallery", galleryRows, "Gallery"],
+    ["premade_package_dates", dateRows, "Departure dates"],
+    ["premade_package_itinerary_days", itineraryRows, "Itinerary"],
+    ["premade_package_tiers", tierRows, "Tiers"],
+    ["premade_package_inclusions", inclusionRows, "Inclusions"],
+  ];
+  for (const [table, rows, label] of children) {
+    const { error } = await replaceChildren(supabase, table, "package_id", pkgId, rows, label);
+    if (error) return { error };
   }
 
   revalidateAll(slug, storedSlug);

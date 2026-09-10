@@ -7,20 +7,24 @@ const GAP = 10;
 
 export function InfoTooltip({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [pos, setPos] = useState({ top: 0, left: 0, arrow: 8 });
   const btnRef = useRef<HTMLButtonElement>(null);
   const tooltipId = useId();
 
+  // Measure once per open, not during render: the button's rect is only
+  // meaningful after layout, and reading a ref while rendering is unsafe.
   function calcPos() {
     if (!btnRef.current) return;
     const r = btnRef.current.getBoundingClientRect();
     const top = r.top - GAP;
-    const idealLeft = r.left + r.width / 2 - TOOLTIP_W / 2;
+    const center = r.left + r.width / 2;
     const clampedLeft = Math.min(
-      Math.max(idealLeft, 8),
+      Math.max(center - TOOLTIP_W / 2, 8),
       window.innerWidth - TOOLTIP_W - 8
     );
-    setPos({ top, left: clampedLeft });
+    // Keep the arrow under the button even when the bubble was clamped.
+    const arrow = Math.min(Math.max(center - clampedLeft - 5, 8), TOOLTIP_W - 18);
+    setPos({ top, left: clampedLeft, arrow });
   }
 
   useEffect(() => {
@@ -41,11 +45,6 @@ export function InfoTooltip({ text }: { text: string }) {
       document.removeEventListener("keydown", handleKey);
     };
   }, [open]);
-
-  const arrowLeft = Math.min(
-    Math.max((btnRef.current?.getBoundingClientRect().left ?? 0) + (btnRef.current?.getBoundingClientRect().width ?? 0) / 2 - pos.left - 5, 8),
-    TOOLTIP_W - 18
-  );
 
   return (
     <span className="relative inline-flex items-center">
@@ -78,7 +77,7 @@ export function InfoTooltip({ text }: { text: string }) {
         >
           {text}
           <span
-            style={{ left: arrowLeft }}
+            style={{ left: pos.arrow }}
             className="absolute top-full w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] border-t-navy"
           />
         </span>,

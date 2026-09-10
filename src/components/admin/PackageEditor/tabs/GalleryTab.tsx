@@ -82,7 +82,7 @@ export function GalleryTab() {
         <FormField label="Hero image" hint="Used on the detail page top" required>
           <ImageUploader
             value={heroImage || null}
-            onChange={(p) => setValue("hero_image", p ?? "")}
+            onChange={(p) => setValue("hero_image", p ?? "", { shouldDirty: true })}
             folder="packages/hero"
             aspectRatio="16/9"
           />
@@ -90,7 +90,7 @@ export function GalleryTab() {
         <FormField label="Card image" hint="Optional — used on listing cards. Falls back to hero.">
           <ImageUploader
             value={cardImage ?? null}
-            onChange={(p) => setValue("card_image", p)}
+            onChange={(p) => setValue("card_image", p, { shouldDirty: true })}
             folder="packages/card"
             aspectRatio="4/3"
           />

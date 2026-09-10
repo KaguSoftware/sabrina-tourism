@@ -44,7 +44,7 @@ export function HeroSection({ open, onToggle }: { open: boolean; onToggle: () =>
           <FormField label="Hero background image">
             <ImageUploader
               value={watch("hero.hero_image") ?? null}
-              onChange={(path) => setValue("hero.hero_image", path)}
+              onChange={(path) => setValue("hero.hero_image", path, { shouldDirty: true })}
               folder="pages/home"
               aspectRatio="16/7"
             />

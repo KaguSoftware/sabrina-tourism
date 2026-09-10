@@ -4,6 +4,7 @@ import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { DailySchema, type DailyFormValues } from "./schema";
+import { replaceChildren } from "@/lib/admin/replace-children";
 
 async function requireAuth(): Promise<{ error?: string }> {
   const supabase = await createServerClient();
@@ -88,62 +89,59 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     if (error || !row) return { error: error?.message ?? "Insert failed" };
     pkgId = row.id;
   }
+  if (!pkgId) return { error: "Save failed — no package id" };
 
-  // Replace stops — preserve existing translations
+  // Every child table is replaced wholesale. replaceChildren inserts before it
+  // deletes and reports failures, so a bad write can no longer wipe a tour's
+  // stops or inclusions while the editor claims the save succeeded.
+  // Translations live on the child rows, so carry them across by position.
+
   const { data: existingStops } = await supabase
     .from("daily_package_stops")
     .select("sort_order, place_translations, description_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
-  await supabase.from("daily_package_stops").delete().eq("package_id", pkgId);
-  if (data.stops.length) {
-    await supabase.from("daily_package_stops").insert(
-      data.stops.map((s, i) => ({
-        package_id: pkgId, stop_time: "", place: s.place, description: s.description, sort_order: i,
-        place_translations: existingStops?.[i]?.place_translations ?? null,
-        description_translations: existingStops?.[i]?.description_translations ?? null,
-      }))
-    );
-  }
+  const stopRows = data.stops.map((s, i) => ({
+    package_id: pkgId, stop_time: "", place: s.place, description: s.description, sort_order: i,
+    place_translations: existingStops?.[i]?.place_translations ?? null,
+    description_translations: existingStops?.[i]?.description_translations ?? null,
+  }));
 
-  // Replace inclusions — preserve existing translations
   const { data: existingIncluded } = await supabase
     .from("daily_package_included")
     .select("sort_order, text_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
-  await supabase.from("daily_package_included").delete().eq("package_id", pkgId);
-  if (data.included.length) {
-    await supabase.from("daily_package_included").insert(
-      data.included.map((item, i) => ({
-        package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
-        text_translations: existingIncluded?.[i]?.text_translations ?? null,
-      }))
-    );
-  }
+  const includedRows = data.included.map((item, i) => ({
+    package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
+    text_translations: existingIncluded?.[i]?.text_translations ?? null,
+  }));
 
-  // Replace not-included
   const { data: existingNotIncluded } = await supabase
     .from("daily_package_not_included")
     .select("sort_order, text_translations")
     .eq("package_id", pkgId)
     .order("sort_order");
-  await supabase.from("daily_package_not_included").delete().eq("package_id", pkgId);
-  if (data.not_included.length) {
-    await supabase.from("daily_package_not_included").insert(
-      data.not_included.map((item, i) => ({
-        package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
-        text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
-      }))
-    );
-  }
+  const notIncludedRows = data.not_included.map((item, i) => ({
+    package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
+    text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
+  }));
 
-  // Replace gallery
-  await supabase.from("daily_package_gallery").delete().eq("package_id", pkgId);
-  if (data.gallery.length) {
-    await supabase.from("daily_package_gallery").insert(
-      data.gallery.map((g, i) => ({ package_id: pkgId, url: g.url, sort_order: i }))
-    );
+  // "Add image" seeds a blank row; drop any the editor left unfilled so the
+  // public gallery never renders placeholder tiles.
+  const galleryRows = data.gallery
+    .filter((g) => g.url.trim())
+    .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), sort_order: i }));
+
+  const children: Array<[string, Record<string, unknown>[], string]> = [
+    ["daily_package_stops", stopRows, "Stops"],
+    ["daily_package_included", includedRows, "Inclusions"],
+    ["daily_package_not_included", notIncludedRows, "Exclusions"],
+    ["daily_package_gallery", galleryRows, "Gallery"],
+  ];
+  for (const [table, rows, label] of children) {
+    const { error } = await replaceChildren(supabase, table, "package_id", pkgId, rows, label);
+    if (error) return { error };
   }
 
   revalidateAll(storedSlug ?? slug);

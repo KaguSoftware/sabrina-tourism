@@ -5,9 +5,6 @@ import type { RoomType } from "@/lib/regions/hotels";
 import type { TransferDetails } from "@/components/primitives/AirportTransferPanel/AirportTransferPanel";
 import { WA_PHONE } from "@/lib/whatsapp/constants";
 
-function toYMD(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 function parseYMD(s: string) {
   const [y, m, d] = s.split("-").map(Number);
   return new Date(y, m - 1, d);
@@ -29,7 +26,9 @@ interface HotelBookingPanelProps {
 }
 
 export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIndex, onRoomSelect, waPhone, airportTransfer, onAirportTransferChange, transferDetails }: HotelBookingPanelProps) {
-  const today = toYMD(new Date());
+  // Rendered as the date input's `min`, so it must not depend on the
+  // renderer's timezone — see HotelAvailabilityCalendar for the full reasoning.
+  const today = new Date().toISOString().split("T")[0];
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState<string>("1");

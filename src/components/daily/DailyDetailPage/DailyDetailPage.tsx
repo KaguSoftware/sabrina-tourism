@@ -21,6 +21,15 @@ function toYMD(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+// "Today" is rendered into the markup (the date input's `min`), so it has to be
+// computed identically on the server and in the browser. toYMD reads local date
+// parts, which differ whenever the server's timezone and the visitor's fall on
+// opposite sides of midnight — a hydration mismatch for hours every day. UTC is
+// the same everywhere.
+function todayUTC() {
+  return new Date().toISOString().split("T")[0];
+}
+
 const CHILD_DISCOUNT = 0.25;
 
 function partyText(adults: number, children: number): string {
@@ -51,7 +60,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
   const tA = useTranslations("aria");
   const tNav = useTranslations("nav");
   const { currency, rates } = useCurrency();
-  const today = toYMD(new Date());
+  const today = todayUTC();
   const MAX_ADULTS = 20;
   const MAX_CHILDREN = 10;
   const [selectedDate, setSelectedDate] = useState("");

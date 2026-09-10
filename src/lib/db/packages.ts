@@ -179,10 +179,12 @@ async function _getPackageBySlug(
 ): Promise<Package | { redirectTo: string } | null> {
   const supabase = createAnonClient();
 
+  // Unpublished tours must not be reachable by guessing the URL.
   const { data, error } = await supabase
     .from('packages')
     .select(PACKAGE_SELECT)
     .eq('slug', slug)
+    .eq('is_published', true)
     .maybeSingle();
 
   if (error) {
@@ -219,6 +221,7 @@ async function _getPackageBySlug(
     .from('packages')
     .select('slug')
     .eq('id', history.package_id)
+    .eq('is_published', true)
     .maybeSingle() as unknown as { data: { slug: string } | null; error: { message: string } | null };
 
   if (currentError) {

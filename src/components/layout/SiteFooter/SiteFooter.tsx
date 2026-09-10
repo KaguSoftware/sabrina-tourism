@@ -123,10 +123,6 @@ export async function SiteFooter() {
             >
               WhatsApp
             </a>
-            <a
-              href="/"
-              className="text-sm py-1 text-cream/80 hover:text-cream transition-colors duration-200"
-            ></a>
           </div>
         </div>
       </div>

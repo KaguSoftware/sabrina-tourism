@@ -14,19 +14,10 @@ const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const blobCache = new Map<string, Blob>();
 function blobKey(file: File) { return `${file.name}-${file.size}-${file.lastModified}`; }
 
-function isStoragePath(p: string | null): p is string {
-  return !!p && !p.startsWith("http://") && !p.startsWith("https://") && !p.startsWith("/");
-}
-
-async function deleteStored(path: string | null) {
-  if (!isStoragePath(path)) return;
-  try {
-    const supabase = createBrowserClient();
-    await supabase.storage.from(BUCKET).remove([path]);
-  } catch {
-    // Non-fatal: leave orphan rather than block the UI.
-  }
-}
+// Replacing or clearing an image must NOT delete the old file straight away:
+// the form has not been saved yet, so the database still points at it. Deleting
+// eagerly meant abandoning an edit left the live site with a broken image.
+// An unreferenced upload is a harmless orphan; a deleted live image is not.
 
 interface ImageUploaderProps {
   value: string | null;
@@ -81,7 +72,6 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
       toast.error("Image too large — please upload under 20 MB.");
       return;
     }
-    const previous = value;
     setUploadError(null);
     setUploading(true);
     try {
@@ -97,7 +87,6 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
       });
       if (error) throw new Error(error.message);
       onChange(path);
-      void deleteStored(previous);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Upload failed";
       setUploadError(msg);
@@ -105,7 +94,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
     } finally {
       setUploading(false);
     }
-  }, [folder, onChange, value]);
+  }, [folder, onChange]);
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -130,7 +119,7 @@ export function ImageUploader({ value, onChange, folder, aspectRatio = "16/9" }:
           <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
           <button
             type="button"
-            onClick={() => { const prev = value; onChange(null); void deleteStored(prev); }}
+            onClick={() => onChange(null)}
             className="absolute top-2 right-2 w-7 h-7 bg-ink/70 text-cream flex items-center justify-center text-sm border border-cream/30 hover:bg-terracotta hover:border-cream transition-colors rounded-sm"
             aria-label="Remove image"
             title="Remove image"

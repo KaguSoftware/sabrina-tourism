@@ -4,6 +4,7 @@ import { createServiceClient, createServerClient } from "@/lib/supabase/server";
 import { tags } from "@/lib/cache/tags";
 import { slugify } from "@/lib/utils/slug";
 import { HotelSchema, type HotelFormValues } from "./schema";
+import { replaceChildren } from "@/lib/admin/replace-children";
 
 async function requireAuth(): Promise<{ error?: string }> {
   const supabase = await createServerClient();
@@ -96,46 +97,52 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     if (error || !newH) return { error: error?.message ?? "Insert failed" };
     hotelId = newH.id;
   }
+  if (!hotelId) return { error: "Save failed — no hotel id" };
 
-  // Replace amenities — preserve existing translations by row order.
+  // Every child table is replaced wholesale. replaceChildren inserts before it
+  // deletes and reports failures, so a bad write can no longer wipe a hotel's
+  // rooms or amenities while the editor claims the save succeeded.
+  // Translations live on the child rows, so carry them across by position.
+
   const { data: existingAmenities } = await supabase
     .from("hotel_amenities")
     .select("sort_order, text_translations")
     .eq("hotel_id", hotelId)
     .order("sort_order");
-  await supabase.from("hotel_amenities").delete().eq("hotel_id", hotelId);
-  if (data.amenities.length) {
-    await supabase.from("hotel_amenities").insert(data.amenities.map((a, i) => ({
-      hotel_id: hotelId,
-      text: a.text,
-      is_property: false,
-      sort_order: i,
-      text_translations: existingAmenities?.[i]?.text_translations ?? null,
-    })));
-  }
+  const amenityRows = data.amenities.map((a, i) => ({
+    hotel_id: hotelId,
+    text: a.text,
+    is_property: false,
+    sort_order: i,
+    text_translations: existingAmenities?.[i]?.text_translations ?? null,
+  }));
 
-  // Replace room types — preserve existing translations by row order.
   const { data: existingRoomTypes } = await supabase
     .from("hotel_room_types")
     .select("sort_order, name_translations, beds_translations, size_translations, highlights_translations")
     .eq("hotel_id", hotelId)
     .order("sort_order");
-  await supabase.from("hotel_room_types").delete().eq("hotel_id", hotelId);
-  if (data.room_types.length) {
-    await supabase.from("hotel_room_types").insert(data.room_types.map((r, i) => ({
-      hotel_id: hotelId, name: r.name, capacity: r.capacity, beds: r.beds,
-      size: r.size, image_index: r.image_index, highlights: r.highlights, sort_order: i,
-      name_translations: existingRoomTypes?.[i]?.name_translations ?? null,
-      beds_translations: existingRoomTypes?.[i]?.beds_translations ?? null,
-      size_translations: existingRoomTypes?.[i]?.size_translations ?? null,
-      highlights_translations: existingRoomTypes?.[i]?.highlights_translations ?? null,
-    })));
-  }
+  const roomTypeRows = data.room_types.map((r, i) => ({
+    hotel_id: hotelId, name: r.name, capacity: r.capacity, beds: r.beds,
+    size: r.size, image_index: r.image_index, highlights: r.highlights, sort_order: i,
+    name_translations: existingRoomTypes?.[i]?.name_translations ?? null,
+    beds_translations: existingRoomTypes?.[i]?.beds_translations ?? null,
+    size_translations: existingRoomTypes?.[i]?.size_translations ?? null,
+    highlights_translations: existingRoomTypes?.[i]?.highlights_translations ?? null,
+  }));
 
-  // Replace images
-  await supabase.from("hotel_images").delete().eq("hotel_id", hotelId);
-  if (data.images.length) {
-    await supabase.from("hotel_images").insert(data.images.map((img, i) => ({ hotel_id: hotelId, url: img.url, label: img.label, sort_order: i })));
+  const imageRows = data.images
+    .filter((img) => img.url.trim())
+    .map((img, i) => ({ hotel_id: hotelId, url: img.url.trim(), label: img.label, sort_order: i }));
+
+  const children: Array<[string, Record<string, unknown>[], string]> = [
+    ["hotel_amenities", amenityRows, "Amenities"],
+    ["hotel_room_types", roomTypeRows, "Room types"],
+    ["hotel_images", imageRows, "Images"],
+  ];
+  for (const [table, rows, label] of children) {
+    const { error } = await replaceChildren(supabase, table, "hotel_id", hotelId, rows, label);
+    if (error) return { error };
   }
 
   revalidateAll(slug, [data.region, previousRegion]);

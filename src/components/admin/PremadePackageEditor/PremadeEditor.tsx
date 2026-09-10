@@ -37,14 +37,24 @@ const TAB_LABEL_KEYS: Record<Tab, string> = {
   Translations: "translations",
 };
 
+// Departures live in `premade_package_dates`. Packages created before that table
+// existed only carry the legacy top-level start_date/end_date, so surface those
+// as a single departure rather than opening the editor with an empty list.
+function departureDates(pkg: PremadePackageRaw): Array<{ start_date: string; end_date: string }> {
+  const rows = [...(pkg.premade_package_dates ?? [])].sort((a, b) => a.sort_order - b.sort_order);
+  if (rows.length) return rows.map((d) => ({ start_date: d.start_date, end_date: d.end_date }));
+  if (pkg.start_date && pkg.end_date) {
+    return [{ start_date: pkg.start_date, end_date: pkg.end_date }];
+  }
+  return [];
+}
+
 function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
   if (pkg) {
     const sorted = <T extends { sort_order: number }>(arr: T[]) => [...arr].sort((a, b) => a.sort_order - b.sort_order);
     return {
       id: pkg.id,
       name: pkg.name,
-      start_date: pkg.start_date,
-      end_date: pkg.end_date,
       destinations: pkg.destinations ?? [],
       short_description: pkg.short_description,
       hero_image: pkg.hero_image ?? "",
@@ -56,7 +66,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
       vehicle_model: pkg.vehicle_model ?? "",
       vehicle_features: pkg.vehicle_features ?? [],
       gallery: sorted(pkg.premade_package_gallery ?? []).map((g) => ({ url: g.url })),
-      dates: sorted(pkg.premade_package_dates ?? []).map((d) => ({ start_date: d.start_date, end_date: d.end_date })),
+      dates: departureDates(pkg),
       is_published: pkg.is_published,
       region: pkg.region ?? "",
       duration: pkg.duration ?? "",
@@ -92,7 +102,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
     };
   }
   return {
-    name: "", start_date: "", end_date: "",
+    name: "",
     dates: [], destinations: [], short_description: "",
     hero_image: "", card_image: "",
     accommodation_name: "", accommodation_description: "",

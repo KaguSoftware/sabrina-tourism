@@ -89,7 +89,10 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
     startTime: row.start_time,
     endTime: row.end_time,
     heroImage: getPublicUrl(row.hero_image),
-    cardImage: getPublicUrl(row.card_image),
+    // Card image is optional in the editor and falls back to the hero, the same
+    // way PackageCard treats it. Without this an empty card_image resolves to
+    // the placeholder even when a hero was uploaded.
+    cardImage: getPublicUrl(row.card_image || row.hero_image),
     vehicle: row.vehicle,
     driver: row.driver,
     price: row.price,
@@ -160,10 +163,18 @@ async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}
   return (data ?? []).map((row: DailyPackageRaw) => assemble({ ...row, daily_package_not_included: notIncludedById.get(row.id) ?? [] }, locale));
 }
 
-async function _getDailyPackageBySlug(slug: string, locale = 'en'): Promise<DailyPackagePublic | null> {
+async function _getDailyPackageBySlug(
+  slug: string,
+  locale = 'en',
+  includeUnpublished = false,
+): Promise<DailyPackagePublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
-  const { data, error } = await supabase.from('daily_packages').select(SELECT).eq('slug', slug).maybeSingle();
+  let q = supabase.from('daily_packages').select(SELECT).eq('slug', slug);
+  // Unpublished tours must not be reachable by guessing the URL. Admin callers
+  // (the voucher generator) opt back in explicitly.
+  if (!includeUnpublished) q = q.eq('is_published', true);
+  const { data, error } = await q.maybeSingle();
   if (error || !data) return null;
   const notIncludedById = await fetchNotIncludedByPackageIds(supabase, [data.id]);
   return assemble({ ...data, daily_package_not_included: notIncludedById.get(data.id) ?? [] }, locale);
@@ -179,10 +190,15 @@ export async function getAllDailyPackages(opts?: { publishedOnly?: boolean; loca
   )();
 }
 
-export async function getDailyPackageBySlug(slug: string, locale = 'en'): Promise<DailyPackagePublic | null> {
+export async function getDailyPackageBySlug(
+  slug: string,
+  locale = 'en',
+  opts: { includeUnpublished?: boolean } = {},
+): Promise<DailyPackagePublic | null> {
+  const includeUnpublished = opts.includeUnpublished ?? false;
   return unstable_cache(
-    () => _getDailyPackageBySlug(slug, locale),
-    ['daily:bySlug', slug, locale],
+    () => _getDailyPackageBySlug(slug, locale, includeUnpublished),
+    ['daily:bySlug', slug, locale, String(includeUnpublished)],
     { tags: [tags.daily.bySlug(slug), tags.daily.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }

@@ -20,10 +20,10 @@ export function VehicleTab() {
           {features.map((_, i) => (
             <div key={i} className="flex items-center gap-2">
               <Input {...register(`vehicle_features.${i}` as const)} placeholder="e.g. Air conditioning" className="flex-1" />
-              <button type="button" onClick={() => setValue("vehicle_features", features.filter((_, idx) => idx !== i))} className="text-ink-soft hover:text-terracotta transition-colors p-1"><X size={14} /></button>
+              <button type="button" onClick={() => setValue("vehicle_features", features.filter((_, idx) => idx !== i), { shouldDirty: true })} className="text-ink-soft hover:text-terracotta transition-colors p-1"><X size={14} /></button>
             </div>
           ))}
-          <button type="button" onClick={() => setValue("vehicle_features", [...features, ""])}
+          <button type="button" onClick={() => setValue("vehicle_features", [...features, ""], { shouldDirty: true })}
             className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors">
             <Plus size={12} /> Add feature
           </button>

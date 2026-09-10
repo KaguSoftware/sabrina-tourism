@@ -54,7 +54,8 @@ export async function fetchPackageDefaults(
   const auth = await requireAdmin();
   if (auth.error) return auth;
 
-  const pkg = await getPremadePackageBySlug(slug);
+  // Admin tool: vouchers are issued for drafts too, so read past the publish gate.
+  const pkg = await getPremadePackageBySlug(slug, 'en', { includeUnpublished: true });
   if (!pkg) return { error: "Package not found" };
 
   const tiers: PackageDefaultsTier[] = (pkg.tiers ?? []).map((t) => ({
@@ -142,7 +143,7 @@ export async function fetchDailyPackageDefaults(
   const auth = await requireAdmin();
   if (auth.error) return auth;
 
-  const pkg = await getDailyPackageBySlug(slug);
+  const pkg = await getDailyPackageBySlug(slug, 'en', { includeUnpublished: true });
   if (!pkg) return { error: "Daily package not found" };
   return {
     defaults: {
@@ -181,7 +182,7 @@ export async function fetchHotelDefaults(
   const auth = await requireAdmin();
   if (auth.error) return auth;
 
-  const hotel = await getHotelBySlug(slug);
+  const hotel = await getHotelBySlug(slug, 'en', { includeUnpublished: true });
   if (!hotel) return { error: "Hotel not found" };
   return {
     defaults: {

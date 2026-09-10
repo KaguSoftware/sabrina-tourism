@@ -241,7 +241,10 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     endDate: row.end_date,
     destinations: row.destinations ?? [],
     heroImage: getPublicUrl(row.hero_image),
-    cardImage: getPublicUrl(row.card_image),
+    // Card image is optional in the editor and falls back to the hero, the same
+    // way PackageCard treats it. Without this an empty card_image resolves to
+    // the placeholder even when a hero was uploaded.
+    cardImage: getPublicUrl(row.card_image || row.hero_image),
     shortDescription: t(row.short_description_translations, locale, row.short_description),
     accommodation: {
       name: t(row.accommodation_name_translations, locale, row.accommodation_name),
@@ -297,10 +300,18 @@ async function _getAllPremadePackages({ publishedOnly = true, locale = 'en' } = 
   return (data ?? []).map((row: unknown) => assemble(row, locale, hotelsById));
 }
 
-async function _getPremadePackageBySlug(slug: string, locale = 'en'): Promise<PremadePackagePublic | null> {
+async function _getPremadePackageBySlug(
+  slug: string,
+  locale = 'en',
+  includeUnpublished = false,
+): Promise<PremadePackagePublic | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
-  const { data, error } = await supabase.from('premade_packages').select(SELECT).eq('slug', slug).maybeSingle();
+  let q = supabase.from('premade_packages').select(SELECT).eq('slug', slug);
+  // Unpublished tours must not be reachable by guessing the URL. Admin callers
+  // (the voucher generator) opt back in explicitly.
+  if (!includeUnpublished) q = q.eq('is_published', true);
+  const { data, error } = await q.maybeSingle();
   if (error || !data) return null;
   const hotelsById = await fetchHotelsForTiers(supabase, [data]);
   return assemble(data, locale, hotelsById);
@@ -323,10 +334,15 @@ export async function getAllPremadePackages(opts: { publishedOnly?: boolean; loc
   )();
 }
 
-export async function getPremadePackageBySlug(slug: string, locale = 'en'): Promise<PremadePackagePublic | null> {
+export async function getPremadePackageBySlug(
+  slug: string,
+  locale = 'en',
+  opts: { includeUnpublished?: boolean } = {},
+): Promise<PremadePackagePublic | null> {
+  const includeUnpublished = opts.includeUnpublished ?? false;
   return unstable_cache(
-    () => _getPremadePackageBySlug(slug, locale),
-    ['premade:bySlug', slug, locale],
+    () => _getPremadePackageBySlug(slug, locale, includeUnpublished),
+    ['premade:bySlug', slug, locale, String(includeUnpublished)],
     { tags: [tags.premade.bySlug(slug), tags.premade.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }

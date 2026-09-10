@@ -17,7 +17,7 @@ export function AmenitiesTab() {
         items={amenities}
         onAdd={() => append({ text: "" })}
         onRemove={remove}
-        onChange={(i, val) => setValue(`amenities.${i}.text`, val)}
+        onChange={(i, val) => setValue(`amenities.${i}.text`, val, { shouldDirty: true })}
         placeholder="e.g. Private Hammam"
       />
     </div>

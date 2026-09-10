@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import { DEFAULT_LOCALE, LOCALE_LABELS } from "@/i18n/locales";
+import { writeCookie } from "@/lib/utils/cookies";
 
 const LOCALE_FLAGS: Record<string, string> = {
   en: "🇬🇧",
@@ -42,7 +43,7 @@ export function LanguageSwitcher({ transparent }: { transparent?: boolean }) {
   function switchLocale(next: string) {
     if (next === locale) return;
     setOpen(false);
-    document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000`;
+    writeCookie("NEXT_LOCALE", next);
     const search = window.location.search;
     const hash = window.location.hash;
     const target = next === DEFAULT_LOCALE

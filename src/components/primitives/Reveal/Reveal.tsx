@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, createElement } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { RevealProps } from "./types";
 
 // One shared IntersectionObserver across every Reveal on the page.
@@ -65,5 +65,12 @@ export function Reveal({
     willChange: shown ? undefined : "opacity, transform",
   };
 
-  return createElement(as, { ref, className, style }, children);
+  // Rendered as JSX rather than createElement so `ref` is understood as a ref
+  // attribute instead of an ordinary prop read during render.
+  const Tag = as;
+  return (
+    <Tag ref={ref as React.Ref<never>} className={className} style={style}>
+      {children}
+    </Tag>
+  );
 }

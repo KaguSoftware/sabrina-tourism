@@ -111,7 +111,7 @@ export function ToursPageEditor({ data, initialTranslations }: ToursPageEditorPr
           <FormField label="Hero image" hint="16:9 — used as the tours listing page banner">
             <ImageUploader
               value={heroImage ?? null}
-              onChange={(p) => setValue("hero_image", p)}
+              onChange={(p) => setValue("hero_image", p, { shouldDirty: true })}
               folder="tours-page"
               aspectRatio="16/9"
             />

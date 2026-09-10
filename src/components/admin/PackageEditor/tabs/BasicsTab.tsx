@@ -110,7 +110,7 @@ export function BasicsTab() {
               checked={field.value}
               onChange={(v) => {
                 field.onChange(v);
-                if (!v) setValue("is_featured", false);
+                if (!v) setValue("is_featured", false, { shouldDirty: true });
               }}
             />
           )}

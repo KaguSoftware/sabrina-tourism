@@ -48,7 +48,7 @@ export function GalleryGrid({ folder, itemLabel = "Image", heading = "Gallery" }
                   <img src={previewUrl} alt="" className="w-full h-full object-cover" />
                   <button
                     type="button"
-                    onClick={() => setValue(`gallery.${i}.url`, "")}
+                    onClick={() => setValue(`gallery.${i}.url`, "", { shouldDirty: true })}
                     className="absolute top-1 right-1 w-6 h-6 bg-ink/70 text-cream flex items-center justify-center text-sm hover:bg-terracotta transition-colors"
                   >
                     ×
@@ -57,7 +57,7 @@ export function GalleryGrid({ folder, itemLabel = "Image", heading = "Gallery" }
               ) : (
                 <ImageUploader
                   value={null}
-                  onChange={(p) => { if (p) setValue(`gallery.${i}.url`, p); }}
+                  onChange={(p) => { if (p) setValue(`gallery.${i}.url`, p, { shouldDirty: true }); }}
                   folder={folder}
                   aspectRatio="4/3"
                 />

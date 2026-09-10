@@ -142,16 +142,16 @@ const PACKAGES = [
     shortDescription:
       "Hagia Sophia at first light, the Bosphorus at dusk, and the bazaars between.",
     heroImage: "/istanbul-hero1.png",
-    cardImage: "/istanbul-ifr3.png",
+    cardImage: "/istanbul-ifr3.webp",
     overview: [
       "A measured, deliberate introduction to Istanbul — a city that does not reveal itself in a hurry. We move slowly through the old peninsula at the hours when the crowds are thin, then drift north along the Bosphorus to the quieter neighborhoods of Bebek and Arnavutköy.",
       "Mornings are spent inside the great monuments. Afternoons unfold over long lunches and walks through Karaköy and Galata. Evenings are reserved — a private dinner above the strait, a hammam at the Çemberlitaş, a final raki on a wooden boat.",
     ],
     gallery: [
-      "/istanbul-ifr1.png",
-      "/istanbul-ifr2.png",
-      "/istanbul-ifr3.png",
-      "/istanbul-ifr4.png",
+      "/istanbul-ifr1.webp",
+      "/istanbul-ifr2.webp",
+      "/istanbul-ifr3.webp",
+      "/istanbul-ifr4.webp",
     ],
     itinerary: [
       {
@@ -219,9 +219,9 @@ const PACKAGES = [
     ],
     gallery: [
       "/cappadocia-ifr1.png",
-      "/cappadocia-ifr2.png",
+      "/cappadocia-ifr2.jpg",
       "/cappadocia-ifr3.png",
-      "/cappadocia-ifr4.png",
+      "/cappadocia-ifr4.webp",
     ],
     itinerary: [
       {
@@ -303,7 +303,7 @@ const PACKAGES = [
       "Between the two we lunch in Şirince, a hill village of stone houses and fruit wine, and sleep above the Aegean.",
     ],
     gallery: [
-      "/pamukkale-ifr1.png",
+      "/Pamukkale-hero.png",
       "/pamukkale-ifr2.png",
       "/pamukkale-ifr3.png",
       "/pamukkale-ifr4.png",
@@ -362,7 +362,7 @@ const PACKAGES = [
       "Hotels are small and well-chosen. Three of the days are spent on a private wooden gulet, anchoring in coves only locals know.",
     ],
     gallery: [
-      "/antalya-ifr1.png",
+      "/Antalya_Alternative1.png",
       "/antalya-ifr2.png",
       "/antalya-ifr3.png",
       "/antalya-ifr4.png",
@@ -433,7 +433,7 @@ const PACKAGES = [
     ],
     gallery: [
       "/blacksea-ifr1.png",
-      "/blacksea-ifr2.png",
+      "/TrabzonRize_alternative1.png",
       "/blacksea-ifr3.png",
       "/blacksea-ifr4.png",
     ],
@@ -638,7 +638,7 @@ const SITE_CONTENT = [
       heading_em: "and the road of your choosing.",
       sub: "Mercedes E-Class, V-Class and S-Class. English-speaking, licensed, in dark suits. From an airport pickup to a multi-day cross-country drive — quoted by the hour or by the route.",
       fleet_heading: "Four vehicle classes.",
-      image: "/chauffer.png",
+      image: "/driver.webp",
     },
   },
 ];
@@ -716,7 +716,7 @@ async function main() {
   const pageImages: { local: string; storagePath: string }[] = [
     { local: "/home.png", storagePath: "pages/home/home.png" },
     { local: "/tours.png", storagePath: "pages/tours/tours.png" },
-    { local: "/chauffer.png", storagePath: "pages/transport/chauffer.png" },
+    { local: "/driver.webp", storagePath: "pages/transport/driver.webp" },
   ];
 
   for (const img of pageImages) {
@@ -734,7 +734,7 @@ async function main() {
     if (row.id === "home_hero") data.image = "pages/home/home.png";
     if (row.id === "tours_hero") data.image = "pages/tours/tours.png";
     if (row.id === "transport_hero")
-      data.image = "pages/transport/chauffer.png";
+      data.image = "pages/transport/driver.webp";
     return { id: row.id, data };
   });
 
