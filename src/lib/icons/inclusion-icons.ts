@@ -1,5 +1,6 @@
 // Curated catalog of icons used for inclusion/exclusion rows and PDF facts.
-// Each entry's `key` is what gets stored in the DB (package_inclusions.icon)
+// Each entry's `key` is what gets stored in the DB (premade_package_inclusions.icon,
+// daily_package_included.icon, daily_package_not_included.icon)
 // and what the PDF and public renderers look up.
 //
 // Names match lucide-react icon names exactly so admin/public can render

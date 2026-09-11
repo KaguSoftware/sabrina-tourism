@@ -6,7 +6,7 @@ import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Select } from "@/components/admin/Input/Select";
 import { Textarea } from "@/components/admin/Input/Textarea";
-import { Toggle } from "@/components/admin/PackageEditor/primitives";
+import { Toggle } from "@/components/admin/shared/primitives";
 import type { HotelFormValues } from "@/app/admin/(authed)/hotels/[id]/schema";
 
 const REGIONS = ["Istanbul","Cappadocia","Aegean","Mediterranean","Black Sea","Eastern Anatolia"] as const;

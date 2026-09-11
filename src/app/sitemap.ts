@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { LOCALES, DEFAULT_LOCALE, type Locale } from "@/i18n/locales";
-import { getAllSlugs } from "@/lib/db/packages";
 import { getAllPremadeSlugs } from "@/lib/db/premade-packages";
 import { getAllDailyPackages } from "@/lib/db/daily-packages";
 import { REGION_SLUGS } from "@/lib/packages/constants";
@@ -54,8 +53,7 @@ const STATIC_ROUTES: RouteSpec[] = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [packageSlugs, premadeSlugs, dailyPackages] = await Promise.all([
-    getAllSlugs(),
+  const [premadeSlugs, dailyPackages] = await Promise.all([
     getAllPremadeSlugs(),
     getAllDailyPackages({ publishedOnly: true }),
   ]);
@@ -72,20 +70,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: urlFor(locale, route.path),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
-        alternates: { languages },
-      });
-    }
-  }
-
-  // Dynamic: package detail pages → /packages/{slug}
-  for (const slug of packageSlugs) {
-    const path = `/packages/${slug}`;
-    const languages = alternatesFor(path);
-    for (const locale of LOCALES) {
-      entries.push({
-        url: urlFor(locale, path),
-        changeFrequency: "weekly",
-        priority: 0.8,
         alternates: { languages },
       });
     }

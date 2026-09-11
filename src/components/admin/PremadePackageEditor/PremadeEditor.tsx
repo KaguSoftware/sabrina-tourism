@@ -8,10 +8,11 @@ import { toastSaved, toastError, toastValidationIssues } from "@/lib/admin/toast
 import { useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
 import { revealFirstError, jumpToField, flattenFieldErrors, withTabs } from "@/lib/admin/form-errors";
 import { PREMADE_FIELD_TAB } from "@/lib/admin/field-tabs";
+import { getPremadeTabIssues, statusForTab, summarizeIssues } from "@/lib/admin/tab-completeness";
 import { savePremadePackage } from "@/app/admin/(authed)/fixed-dates/[id]/actions";
 import { PremadeSchema, type PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
 import type { PremadePackageRaw } from "@/lib/db/premade-packages";
-import { ErrorCallout } from "@/components/admin/PackageEditor/primitives";
+import { ReadinessPanel } from "@/components/admin/shared/primitives";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { BasicsTab } from "./tabs/BasicsTab";
 import { ImageryTab } from "./tabs/ImageryTab";
@@ -148,6 +149,8 @@ export function PremadeEditor({
   const name = watch("name");
   const formValues = watch();
   const fieldErrors = withTabs(flattenFieldErrors(errors), PREMADE_FIELD_TAB);
+  const issues = getPremadeTabIssues(formValues, errors);
+  const { errorCount, warningCount } = summarizeIssues(issues);
 
   const onSubmit = handleSubmit(
     async (data) => {
@@ -194,21 +197,39 @@ export function PremadeEditor({
         </div>
 
         <div className="sticky top-14 md:top-0 z-20 flex gap-3 px-4 py-4 overflow-x-auto -mx-4 md:mx-0" style={{ background: "#f5ede0" }}>
-          {TABS.map((tab) => (
-            <button key={tab} type="button" onClick={() => setActiveTab(tab)}
-              className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md"
-              style={activeTab === tab ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" } : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }}
-            >{tabT(TAB_LABEL_KEYS[tab])}</button>
-          ))}
+          {TABS.map((tab) => {
+            // Translations has no validation of its own; a dot there would
+            // always read "ok" and imply the tab had been checked.
+            const tabStatus = tab === "Translations" ? null : statusForTab(issues, tab);
+            const dotColor =
+              tabStatus === "error"
+                ? "#c46b4f"
+                : tabStatus === "warning"
+                  ? "#c99a3f"
+                  : tabStatus === "ok"
+                    ? "#1a6b66"
+                    : "transparent";
+            return (
+              <button key={tab} type="button" onClick={() => setActiveTab(tab)}
+                className="px-5 py-3 font-mono text-[10px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150 rounded-md inline-flex items-center gap-2"
+                style={activeTab === tab ? { background: "#1b4d5c", border: "1px solid #1b4d5c", color: "#f5ede0" } : { background: "#efe4d2", border: "1px solid #c5b99e", color: "#4a4036" }}
+              >
+                {tabT(TAB_LABEL_KEYS[tab])}
+                <span
+                  aria-hidden="true"
+                  className="inline-block w-1.5 h-1.5 rounded-full"
+                  style={{ background: dotColor }}
+                />
+              </button>
+            );
+          })}
         </div>
 
         <div className="pt-8">
-          {fieldErrors.length > 0 && (
-            <ErrorCallout
-              items={fieldErrors}
-              onJump={(path) =>
-                jumpToField({ path, fieldToTab: PREMADE_FIELD_TAB, currentTab: activeTab, setTab: setActiveTab })
-              }
+          {activeTab !== "Translations" && (
+            <ReadinessPanel
+              issues={issues}
+              onJumpToTab={(tab) => setActiveTab(tab as Tab)}
             />
           )}
           {activeTab === "Basics" && <BasicsTab />}
@@ -237,8 +258,10 @@ export function PremadeEditor({
             }
             className={`font-mono text-[10px] tracking-[0.16em] uppercase text-left ${fieldErrors.length > 0 ? "text-terracotta hover:underline" : "text-ink-soft"}`}
           >
-            {fieldErrors.length > 0
-              ? `${fieldErrors.length} ${fieldErrors.length === 1 ? "issue" : "issues"} to fix`
+            {errorCount > 0
+              ? `${errorCount} ${errorCount === 1 ? "issue" : "issues"} to fix${
+                  warningCount > 0 ? ` · ${warningCount} suggested` : ""
+                }`
               : isDirty
                 ? "Unsaved changes"
                 : "All changes saved"}

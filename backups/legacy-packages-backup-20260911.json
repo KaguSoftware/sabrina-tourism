@@ -1,0 +1,1826 @@
+{
+  "packages": [
+    {
+      "id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "slug": "antalya-coast",
+      "name": "Antalya & the Lycian Coast",
+      "region": "Mediterranean",
+      "duration": "6 days / 5 nights",
+      "duration_days": 6,
+      "short_description": "Old harbours, quiet coves, and the ruined cities of the Lycian shore.",
+      "overview": "From Kaleiçi's stone alleys we move west along the coast — to the rock tombs of Myra, the sunken city of Kekova, and the long lunches that the Mediterranean demands.\r\nHotels are small and well-chosen. Three of the days are spent on a private wooden gulet, anchoring in coves only locals know.",
+      "hero_image": "/Antalya-hero.png",
+      "card_image": "/antalya-ifr3.png",
+      "min_people": 2,
+      "max_people": 8,
+      "available_from": "2026-05-01",
+      "available_to": "2026-10-15",
+      "is_published": true,
+      "is_featured": false,
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:30:12.740743+00:00",
+      "season": null
+    },
+    {
+      "id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "slug": "pamukkale-and-ephesus",
+      "name": "Pamukkale & Ephesus",
+      "region": "Aegean",
+      "duration": "4 days / 3 nights",
+      "duration_days": 4,
+      "short_description": "White travertine terraces and the marble streets of an ancient capital.",
+      "overview": "Two of Turkey's most photographed sites, walked at the right hours and read with the right voices. Ephesus is opened by a classical archaeologist; Pamukkale is timed for late afternoon, when the terraces glow.\r\nBetween the two we lunch in Şirince, a hill village of stone houses and fruit wine, and sleep above the Aegean.",
+      "hero_image": "/Pamukkale-hero.png",
+      "card_image": "/pamukkale-ifr3.png",
+      "min_people": 1,
+      "max_people": 6,
+      "available_from": "2026-04-01",
+      "available_to": "2026-10-31",
+      "is_published": true,
+      "is_featured": false,
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-06T18:48:27.171195+00:00",
+      "season": null
+    },
+    {
+      "id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "slug": "istanbul-classics",
+      "name": "Istanbul, Classics",
+      "region": "Istanbul",
+      "duration": "5 days / 4 nights",
+      "duration_days": 5,
+      "short_description": "Hagia Sophia at first light, the Bosphorus at dusk, and the bazaars between.",
+      "overview": "A measured, deliberate introduction to Istanbul — a city that does not reveal itself in a hurry. We move slowly through the old peninsula at the hours when the crowds are thin, then drift north along the Bosphorus to the quieter neighborhoods of Bebek and Arnavutköy.\r\nMornings are spent inside the great monuments. Afternoons unfold over long lunches and walks through Karaköy and Galata. Evenings are reserved — a private dinner above the strait, a hammam at the Çemberlitaş, a final raki on a wooden boat.",
+      "hero_image": "/istanbul-hero1.png",
+      "card_image": "/istanbul-ifr3.png",
+      "min_people": 1,
+      "max_people": 6,
+      "available_from": "2026-03-01",
+      "available_to": "2026-11-30",
+      "is_published": true,
+      "is_featured": true,
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:30:13.723567+00:00",
+      "season": null
+    },
+    {
+      "id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "slug": "eastern-anatolia-nemrut-van",
+      "name": "Eastern Anatolia — Mount Nemrut & Lake Van",
+      "region": "Eastern Anatolia",
+      "duration": "7 days / 6 nights",
+      "duration_days": 7,
+      "short_description": "Toppled stone heads at sunrise, an inland sea, and the deep east.",
+      "overview": "Eastern Anatolia is the Turkey few visitors see. We move from the colossal heads of Mount Nemrut to the Armenian churches on Akdamar Island, and on to the high citadel of Hoşap.\r\nLogistics here are the hardest part of any Turkey itinerary — which is why we plan it day-by-day with our most experienced fixers.",
+      "hero_image": "/Eastern-hero.png",
+      "card_image": "/eastern-ifr3.png",
+      "min_people": 2,
+      "max_people": 6,
+      "available_from": "2026-04-15",
+      "available_to": "2026-10-31",
+      "is_published": true,
+      "is_featured": false,
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:30:13.987719+00:00",
+      "season": null
+    },
+    {
+      "id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "slug": "cappadocia-and-balloons",
+      "name": "Cappadocia & the Hot Air Balloons",
+      "region": "Cappadocia",
+      "duration": "4 days / 3 nights",
+      "duration_days": 4,
+      "short_description": "Sunrise above the fairy chimneys, then long afternoons in the valleys.",
+      "overview": "Cappadocia is best understood from above and below. We rise before dawn for the balloons, then spend the rest of the day at ground level — walking the Rose and Red valleys, lunching in stone houses in Mustafapaşa, watching the light fall on Uçhisar.\r\nAccommodation is in restored cave suites, not hotels pretending to be caves. Each evening ends with dinner on a quiet terrace.",
+      "hero_image": "/capadocia-hero.png",
+      "card_image": "/cappadocia-ifr3.png",
+      "min_people": 1,
+      "max_people": 8,
+      "available_from": "2026-03-15",
+      "available_to": "2026-11-15",
+      "is_published": true,
+      "is_featured": true,
+      "sort_order": 0,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:31:01.637971+00:00",
+      "season": null
+    },
+    {
+      "id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "slug": "black-sea-and-sumela",
+      "name": "Black Sea & Sumela Monastery",
+      "region": "Black Sea",
+      "duration": "5 days / 4 nights",
+      "duration_days": 5,
+      "short_description": "Cliffside monasteries, mountain plateaus, and the green of the Pontic Alps.",
+      "overview": "The Black Sea coast is Turkey's quiet alternative — cooler, greener, and far from the cruise routes. We base in Trabzon and move inland to the Sumela Monastery and the high plateaus of Ayder.\r\nTea is taken seriously here. So is hospitality.",
+      "hero_image": "/black-sea-hero.png",
+      "card_image": "/blacksea-ifr3.png",
+      "min_people": 2,
+      "max_people": 6,
+      "available_from": "2026-05-15",
+      "available_to": "2026-09-30",
+      "is_published": true,
+      "is_featured": true,
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-04T06:25:50.768686+00:00",
+      "season": null
+    },
+    {
+      "id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "slug": "test-911",
+      "name": "test 9/11",
+      "region": "Istanbul",
+      "duration": "TEST DAYS",
+      "duration_days": 5,
+      "short_description": "TEST DESCRIPTION ",
+      "overview": "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------OVERVIEW TEST -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+      "hero_image": "packages/hero/1789120353047-sabtest.jpg",
+      "card_image": "packages/card/1789120372593-whatsapp-image-2026-08-11-at-22.51.33.jpg",
+      "min_people": 1,
+      "max_people": 8,
+      "available_from": "2026-09-11",
+      "available_to": "2026-09-12",
+      "is_published": false,
+      "is_featured": false,
+      "sort_order": 6,
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00",
+      "season": "Spring"
+    },
+    {
+      "id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "slug": "test-911-2",
+      "name": "test 9/11",
+      "region": "Istanbul",
+      "duration": "TEST DAYS",
+      "duration_days": 5,
+      "short_description": "TEST DESCRIPTION ",
+      "overview": "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------OVERVIEW TEST -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------",
+      "hero_image": "packages/hero/1789120353047-sabtest.jpg",
+      "card_image": "packages/card/1789120372593-whatsapp-image-2026-08-11-at-22.51.33.jpg",
+      "min_people": 1,
+      "max_people": 8,
+      "available_from": "2026-09-11",
+      "available_to": "2026-09-12",
+      "is_published": false,
+      "is_featured": false,
+      "sort_order": 7,
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00",
+      "season": "Spring"
+    },
+    {
+      "id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "slug": "dfb",
+      "name": "dfb",
+      "region": "Istanbul",
+      "duration": "dfberb",
+      "duration_days": 1,
+      "short_description": "wegfwer",
+      "overview": "wdcdsc",
+      "hero_image": "packages/hero/1789128468641-whatsapp-image-2026-09-09-at-14.28.48-1-.jpg",
+      "card_image": "packages/card/1789128472524-whatsapp-image-2026-09-09-at-14.28.48-2-.jpg",
+      "min_people": 1,
+      "max_people": 8,
+      "available_from": "2012-03-12",
+      "available_to": "2121-02-21",
+      "is_published": false,
+      "is_featured": false,
+      "sort_order": 8,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "season": "Autumn"
+    }
+  ],
+  "package_itinerary_days": [
+    {
+      "id": "7f29ed0b-23ca-42b7-bd85-ae22b93425f1",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "day_number": 5,
+      "title": "A long breakfast, then home",
+      "description": "Slow morning. Private transfer to the airport.",
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "9c50dd37-8872-4680-b16c-60dc93bada06",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "day_number": 4,
+      "title": "Galata, Pera, the new Istanbul",
+      "description": "Coffee in Karaköy, a long walk through Galata. Afternoon at the Pera Museum and Istanbul Modern. Hammam at Çemberlitaş.",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "4cfb4f5f-d2e3-4af9-b4ed-4cf8036d6698",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "day_number": 3,
+      "title": "The Bosphorus, properly",
+      "description": "Private wooden boat from Bebek to Anadolu Kavağı. Lunch on the Asian shore. Evening at a restored Ottoman mansion overlooking the strait.",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "b661a3c0-02dd-4647-906d-2514e1098d0c",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "day_number": 2,
+      "title": "Hagia Sophia, Cistern, Topkapı",
+      "description": "Skip-the-line morning entries with a licensed historian. Lunch at a chef-run kitchen in Eminönü. Afternoon at leisure in the Grand Bazaar.",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "3b7fd54a-f381-444b-bd68-d02049850419",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "day_number": 1,
+      "title": "Arrival & the Old City at dusk",
+      "description": "Private transfer from IST. Late-afternoon walk through Sultanahmet as the call to prayer crosses the rooftops. Welcome dinner at a meyhane in Karaköy.",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "496f5da0-add6-4100-a58c-30ab914a37aa",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "day_number": 4,
+      "title": "Slow morning, return",
+      "description": "Optional second balloon flight. Transfer to Kayseri or onward.",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "5fff950b-9b10-4b97-8f07-8ea3cdab9777",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "day_number": 3,
+      "title": "Underground cities & ceramic villages",
+      "description": "Morning in Derinkuyu's underground city. Lunch in Mustafapaşa. Visit to a working ceramic atelier in Avanos.",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "bfbe5842-bc5e-4e4e-a427-4f714772b6d5",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "day_number": 2,
+      "title": "Balloons at first light",
+      "description": "Pre-dawn balloon flight over the valleys. Long breakfast on return. Afternoon walking tour of the Rose & Red valleys.",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "b71e11bc-a1ed-418e-a9e5-bec06a5e2c7d",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "day_number": 1,
+      "title": "Arrival in Göreme",
+      "description": "Private transfer from Kayseri. Settle into your cave suite. Sunset at Uçhisar Castle, dinner in a stone-walled cellar.",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "c6797ce9-2e8e-40b4-bd6b-1e06a6452f02",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "day_number": 4,
+      "title": "Return",
+      "description": "Slow morning at Hierapolis necropolis. Transfer to Denizli or Izmir.",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "36474e9b-99c9-4425-96cb-237145340ba0",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "day_number": 3,
+      "title": "On to Pamukkale",
+      "description": "Drive inland through olive country. Late-afternoon walk on the travertines and a swim in the Cleopatra Pool. Dinner in Karahayıt.",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "2e72abbf-fa89-4296-a076-913ecada95d2",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "day_number": 2,
+      "title": "Ephesus, with an archaeologist",
+      "description": "Early morning entry to Ephesus before the cruise crowds. Lunch in Şirince. Afternoon at the House of the Virgin Mary.",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "aa30d3b6-c2ae-4a92-9201-4a98999e078b",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "day_number": 1,
+      "title": "Izmir & the road to Selçuk",
+      "description": "Arrival at ADB. Private transfer to a country hotel near Selçuk. Welcome dinner of Aegean meze.",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "424d98d0-e9b3-4524-a839-bc62190c0db5",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "day_number": 6,
+      "title": "Disembark & return",
+      "description": "Morning swim. Transfer to Antalya or Dalaman airport.",
+      "sort_order": 6,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "05e9e837-767c-4d80-9b06-a6f666807eaf",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "day_number": 5,
+      "title": "Myra & the rock tombs",
+      "description": "Morning ashore at Myra. Afternoon at sea. Sunset anchor in a private cove.",
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "0ceaf307-3c24-42c3-b986-3f36b2e45843",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "day_number": 4,
+      "title": "Kekova & the sunken city",
+      "description": "Swimming over Lycian ruins. Lunch on board. Anchor in Üçağız for the evening.",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "066f37eb-6d8d-4f22-acbb-654e2adf090d",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "day_number": 3,
+      "title": "On to the gulet",
+      "description": "Drive west to Kaş. Board a private wooden gulet for three nights at sea.",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "80c717d2-b3e2-4bab-89ac-9f5bc20c644c",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "day_number": 2,
+      "title": "Perge & Aspendos",
+      "description": "Two of the great Roman sites, with a classical historian. Lunch on the river at Köprülü.",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "713557b6-2968-47df-87f8-3b0fea973fe0",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "day_number": 1,
+      "title": "Arrival in Antalya",
+      "description": "Private transfer from AYT. Settle into a Kaleiçi boutique hotel. Evening walk to the old harbour.",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "7d814e52-fe61-415b-b5c8-cbfa2f11ba35",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "day_number": 5,
+      "title": "Return",
+      "description": "Slow morning. Transfer to Trabzon airport.",
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "02995ddb-2326-4518-bf8d-2e94a728d1f7",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "day_number": 4,
+      "title": "Ayder plateau",
+      "description": "High mountain villages, wooden houses, and a hot spring at sundown.",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "21911084-46b4-49ad-86e5-a686ce2ff7d1",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "day_number": 3,
+      "title": "Uzungöl & the high country",
+      "description": "Morning at the lake. Afternoon at a working tea plantation in Of.",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "8a61d396-39cc-4ada-865c-033f60abf948",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "day_number": 2,
+      "title": "Sumela Monastery",
+      "description": "Drive into the Altındere valley. Walk up to the cliff-face monastery. Lunch of trout in Maçka.",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "5cf1a904-8da5-4957-968b-a5bd74cba6da",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "day_number": 1,
+      "title": "Arrival in Trabzon",
+      "description": "Private transfer. Walk through the old town and Atatürk Köşkü.",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "18c495b9-fe8f-43d4-9e4d-6698c9aa7b73",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 7,
+      "title": "Return",
+      "description": "Transfer to Van airport (VAN).",
+      "sort_order": 7,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "48ac7265-d66b-40bf-8325-5f2b50c598f6",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 6,
+      "title": "Akdamar Island & Hoşap Castle",
+      "description": "Boat to the Armenian Church of the Holy Cross. Afternoon at Hoşap.",
+      "sort_order": 6,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "263a2814-8263-4e1e-a655-6a033c18bfa9",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 5,
+      "title": "On to Lake Van",
+      "description": "Drive east. Evening swim in the lake; dinner with a local family.",
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "e1ae2991-72c3-4ab6-b6e6-b57dab3cd3f2",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 4,
+      "title": "Diyarbakır",
+      "description": "The black basalt walls and the great mosque. Long lunch in a stone-walled courtyard.",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "b3c02a4f-fead-4d72-a315-45f1a4b1a247",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 3,
+      "title": "On to Şanlıurfa",
+      "description": "The pools of Abraham, Göbekli Tepe, and the bazaar at dusk.",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "e6ca3063-3e61-4e07-848e-fa9ace59ad24",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 2,
+      "title": "Mount Nemrut at sunrise",
+      "description": "Pre-dawn ascent to the eastern terrace. Breakfast at the summit. Visit Arsameia and the Cendere Bridge.",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "56153079-ecc9-4c57-a214-dde6acd4272a",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "day_number": 1,
+      "title": "Arrival in Adıyaman",
+      "description": "Private transfer. Evening at leisure.",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00"
+    },
+    {
+      "id": "91f849f0-8f46-4ad3-b4e7-cf8b1a5750fc",
+      "package_id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "day_number": 1,
+      "title": "day 1 ",
+      "description": "TEST DAY 1 ITENRARY ",
+      "sort_order": 0,
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00"
+    },
+    {
+      "id": "6ae69c95-0197-450c-8862-3677f8bbec5b",
+      "package_id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "day_number": 2,
+      "title": "DAY 2 TEST ",
+      "description": "TEST 2 ITENRARY ",
+      "sort_order": 1,
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00"
+    },
+    {
+      "id": "1cc0af52-8c82-4077-ab1e-857dd5cad4d7",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "day_number": 1,
+      "title": "day 1 ",
+      "description": "TEST DAY 1 ITENRARY ",
+      "sort_order": 0,
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00"
+    },
+    {
+      "id": "a354ed37-2f8c-4067-bd2c-08e27c78dc1a",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "day_number": 2,
+      "title": "DAY 2 TEST ",
+      "description": "TEST 2 ITENRARY ",
+      "sort_order": 1,
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00"
+    },
+    {
+      "id": "6bf79734-6124-4491-b0f5-2c99bc059bc4",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "day_number": 1,
+      "title": "sdvsdv",
+      "description": "sdvsdv",
+      "sort_order": 0,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00"
+    },
+    {
+      "id": "df6dee2e-3033-4fce-b575-4a761fb92757",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "day_number": 2,
+      "title": "sdvsdv",
+      "description": "sdvsdv",
+      "sort_order": 1,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00"
+    },
+    {
+      "id": "5aab2f09-5b96-4b49-9976-bbfe2fa06078",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "day_number": 3,
+      "title": "sdvsdv",
+      "description": "sdvsdv",
+      "sort_order": 2,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00"
+    }
+  ],
+  "package_tiers": [
+    {
+      "id": "5ef80103-24de-4165-88ce-9ae10baed258",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "tier_name": "Private",
+      "vehicle_class": "Mercedes S-Class with chauffeur",
+      "accommodation": "5★ heritage & cave suites",
+      "group_size": "Strictly private — your party only",
+      "guide_languages": [
+        "English",
+        "French",
+        "Arabic",
+        "German"
+      ],
+      "meals_included": "Breakfast + all dinners, hosted",
+      "highlights": [
+        "Private after-hours museum & monument access",
+        "Personal concierge available 24/7 in-country",
+        "Helicopter or private boat transfers where relevant"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "0872410d-85f0-4511-8cef-e1d365951974",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "tier_name": "Signature",
+      "vehicle_class": "Mercedes V-Class with private driver",
+      "accommodation": "4★ design hotels",
+      "group_size": "Private — up to 6",
+      "guide_languages": [
+        "English",
+        "French"
+      ],
+      "meals_included": "Breakfast + 3 curated dinners",
+      "highlights": [
+        "Skip-the-line entry to all major sites",
+        "Private licensed historian & guide",
+        "Two reserved tastings at chef-led restaurants"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "fde0a250-3fae-4f5d-b727-ce5a2f233489",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "tier_name": "Essential",
+      "vehicle_class": "Premium sedan or shared van",
+      "accommodation": "3★ boutique",
+      "group_size": "Small group up to 8",
+      "guide_languages": [
+        "English"
+      ],
+      "meals_included": "Daily breakfast",
+      "highlights": [
+        "All transfers in air-conditioned vehicles",
+        "Curated city walks with a licensed guide",
+        "Hand-picked local restaurant recommendations"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "7c11ed8e-6787-4452-bc1f-3abf93a0fb64",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "tier_name": "Private",
+      "vehicle_class": "Mercedes S-Class with chauffeur",
+      "accommodation": "5★ heritage & cave suites",
+      "group_size": "Strictly private — your party only",
+      "guide_languages": [
+        "English",
+        "French",
+        "Arabic",
+        "German"
+      ],
+      "meals_included": "Breakfast + all dinners, hosted",
+      "highlights": [
+        "Private balloon for your party only",
+        "Private chef dinner in a cave cellar",
+        "5★ heritage cave suite with private terrace"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "0e1857e7-1991-4525-b88f-3ff715f5c525",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "tier_name": "Signature",
+      "vehicle_class": "Mercedes V-Class with private driver",
+      "accommodation": "4★ design hotels",
+      "group_size": "Private — up to 6",
+      "guide_languages": [
+        "English",
+        "French"
+      ],
+      "meals_included": "Breakfast + 3 curated dinners",
+      "highlights": [
+        "Smaller balloon basket (8 guests)",
+        "Private guide & vehicle throughout",
+        "Restored boutique cave suite"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "f94b8ca8-30a8-44e2-ad41-8073f0e2b059",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "tier_name": "Essential",
+      "vehicle_class": "Premium sedan or shared van",
+      "accommodation": "3★ boutique",
+      "group_size": "Small group up to 8",
+      "guide_languages": [
+        "English"
+      ],
+      "meals_included": "Daily breakfast",
+      "highlights": [
+        "Group balloon flight (16 guests)",
+        "Walking tour of Göreme valleys",
+        "Cave hotel, 3★ category"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "e3c49482-4d70-4b51-b01c-b536bbc757bb",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "tier_name": "Private",
+      "vehicle_class": "Mercedes S-Class with chauffeur",
+      "accommodation": "5★ heritage & cave suites",
+      "group_size": "Strictly private — your party only",
+      "guide_languages": [
+        "English",
+        "French",
+        "Arabic",
+        "German"
+      ],
+      "meals_included": "Breakfast + all dinners, hosted",
+      "highlights": [
+        "Private after-hours museum & monument access",
+        "Personal concierge available 24/7 in-country",
+        "Helicopter or private boat transfers where relevant"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "65165771-fe3e-495c-9269-87c20d8c88ce",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "tier_name": "Signature",
+      "vehicle_class": "Mercedes V-Class with private driver",
+      "accommodation": "4★ design hotels",
+      "group_size": "Private — up to 6",
+      "guide_languages": [
+        "English",
+        "French"
+      ],
+      "meals_included": "Breakfast + 3 curated dinners",
+      "highlights": [
+        "Skip-the-line entry to all major sites",
+        "Private licensed historian & guide",
+        "Two reserved tastings at chef-led restaurants"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "d1f081c8-3d5a-4ebc-917d-5535f8e00d18",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "tier_name": "Essential",
+      "vehicle_class": "Premium sedan or shared van",
+      "accommodation": "3★ boutique",
+      "group_size": "Small group up to 8",
+      "guide_languages": [
+        "English"
+      ],
+      "meals_included": "Daily breakfast",
+      "highlights": [
+        "All transfers in air-conditioned vehicles",
+        "Curated city walks with a licensed guide",
+        "Hand-picked local restaurant recommendations"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "f19489ab-2f4c-4327-bb70-dfc04b6d3122",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "tier_name": "Private",
+      "vehicle_class": "Mercedes S-Class with chauffeur",
+      "accommodation": "5★ heritage & cave suites",
+      "group_size": "Strictly private — your party only",
+      "guide_languages": [
+        "English",
+        "French",
+        "Arabic",
+        "German"
+      ],
+      "meals_included": "Breakfast + all dinners, hosted",
+      "highlights": [
+        "Private after-hours museum & monument access",
+        "Personal concierge available 24/7 in-country",
+        "Helicopter or private boat transfers where relevant"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "2274058f-ff22-4098-b149-74947cdc63be",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "tier_name": "Signature",
+      "vehicle_class": "Mercedes V-Class with private driver",
+      "accommodation": "4★ design hotels",
+      "group_size": "Private — up to 6",
+      "guide_languages": [
+        "English",
+        "French"
+      ],
+      "meals_included": "Breakfast + 3 curated dinners",
+      "highlights": [
+        "Skip-the-line entry to all major sites",
+        "Private licensed historian & guide",
+        "Two reserved tastings at chef-led restaurants"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "a7b070f7-74a0-4274-a506-2163f9a24494",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "tier_name": "Essential",
+      "vehicle_class": "Premium sedan or shared van",
+      "accommodation": "3★ boutique",
+      "group_size": "Small group up to 8",
+      "guide_languages": [
+        "English"
+      ],
+      "meals_included": "Daily breakfast",
+      "highlights": [
+        "All transfers in air-conditioned vehicles",
+        "Curated city walks with a licensed guide",
+        "Hand-picked local restaurant recommendations"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "b62a1244-d90b-428a-b619-3fc736888bf2",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "tier_name": "Private",
+      "vehicle_class": "Mercedes S-Class with chauffeur",
+      "accommodation": "5★ heritage & cave suites",
+      "group_size": "Strictly private — your party only",
+      "guide_languages": [
+        "English",
+        "French",
+        "Arabic",
+        "German"
+      ],
+      "meals_included": "Breakfast + all dinners, hosted",
+      "highlights": [
+        "Private after-hours museum & monument access",
+        "Personal concierge available 24/7 in-country",
+        "Helicopter or private boat transfers where relevant"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "291e2835-ed38-4ae2-bc1d-4647d1d41ac9",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "tier_name": "Signature",
+      "vehicle_class": "Mercedes V-Class with private driver",
+      "accommodation": "4★ design hotels",
+      "group_size": "Private — up to 6",
+      "guide_languages": [
+        "English",
+        "French"
+      ],
+      "meals_included": "Breakfast + 3 curated dinners",
+      "highlights": [
+        "Skip-the-line entry to all major sites",
+        "Private licensed historian & guide",
+        "Two reserved tastings at chef-led restaurants"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "ae3c29b8-a54c-44cb-a21d-63817b9e4cd3",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "tier_name": "Essential",
+      "vehicle_class": "Premium sedan or shared van",
+      "accommodation": "3★ boutique",
+      "group_size": "Small group up to 8",
+      "guide_languages": [
+        "English"
+      ],
+      "meals_included": "Daily breakfast",
+      "highlights": [
+        "All transfers in air-conditioned vehicles",
+        "Curated city walks with a licensed guide",
+        "Hand-picked local restaurant recommendations"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "df4cb0d4-084a-4f49-9733-df1f2374755b",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "tier_name": "Private",
+      "vehicle_class": "Mercedes S-Class with chauffeur",
+      "accommodation": "5★ heritage & cave suites",
+      "group_size": "Strictly private — your party only",
+      "guide_languages": [
+        "English",
+        "French",
+        "Arabic",
+        "German"
+      ],
+      "meals_included": "Breakfast + all dinners, hosted",
+      "highlights": [
+        "Private after-hours museum & monument access",
+        "Personal concierge available 24/7 in-country",
+        "Helicopter or private boat transfers where relevant"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "fddc97d5-cdb5-469f-b005-bf9e80f465d7",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "tier_name": "Signature",
+      "vehicle_class": "Mercedes V-Class with private driver",
+      "accommodation": "4★ design hotels",
+      "group_size": "Private — up to 6",
+      "guide_languages": [
+        "English",
+        "French"
+      ],
+      "meals_included": "Breakfast + 3 curated dinners",
+      "highlights": [
+        "Skip-the-line entry to all major sites",
+        "Private licensed historian & guide",
+        "Two reserved tastings at chef-led restaurants"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "df39873f-5ac0-4cbb-a29f-279358e30e92",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "tier_name": "Essential",
+      "vehicle_class": "Premium sedan or shared van",
+      "accommodation": "3★ boutique",
+      "group_size": "Small group up to 8",
+      "guide_languages": [
+        "English"
+      ],
+      "meals_included": "Daily breakfast",
+      "highlights": [
+        "All transfers in air-conditioned vehicles",
+        "Curated city walks with a licensed guide",
+        "Hand-picked local restaurant recommendations"
+      ],
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "f00629fd-3f0e-47fc-846a-d83df54be810",
+      "package_id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "tier_name": "Essential",
+      "vehicle_class": "TEST CLASS ",
+      "accommodation": "TEST STAR HOTEL ",
+      "group_size": "2-6 ",
+      "guide_languages": [
+        "ENGLISH"
+      ],
+      "meals_included": "BREAKFAST",
+      "highlights": [],
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00",
+      "hotel_id": "b9edb51a-94a6-46e2-95eb-159ffd035ed8"
+    },
+    {
+      "id": "a4ba19ce-4334-48b0-8ea9-64649cc40fc3",
+      "package_id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "tier_name": "Signature",
+      "vehicle_class": "ASD",
+      "accommodation": "ASD",
+      "group_size": "ASDASD",
+      "guide_languages": [
+        "ASD"
+      ],
+      "meals_included": "ASD",
+      "highlights": [],
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00",
+      "hotel_id": "bcba2ef6-6885-4a3f-a0b2-2b7f6024465f"
+    },
+    {
+      "id": "7adc9d3c-9fd3-4594-b95b-b07576a84ea9",
+      "package_id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "tier_name": "Private",
+      "vehicle_class": "ASD",
+      "accommodation": "AASD",
+      "group_size": "ASD",
+      "guide_languages": [
+        "ASD"
+      ],
+      "meals_included": "ASD",
+      "highlights": [],
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00",
+      "hotel_id": "60dbd09e-7882-4be2-abf7-28f979463649"
+    },
+    {
+      "id": "2ca37682-f29c-4fc1-ad8b-a312254cac34",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "tier_name": "Essential",
+      "vehicle_class": "TEST CLASS ",
+      "accommodation": "TEST STAR HOTEL ",
+      "group_size": "2-6 ",
+      "guide_languages": [
+        "ENGLISH"
+      ],
+      "meals_included": "BREAKFAST",
+      "highlights": [],
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00",
+      "hotel_id": "b9edb51a-94a6-46e2-95eb-159ffd035ed8"
+    },
+    {
+      "id": "7f6f66a3-6f03-4d06-af2a-b404cb4e331f",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "tier_name": "Signature",
+      "vehicle_class": "ASD",
+      "accommodation": "ASD",
+      "group_size": "ASDASD",
+      "guide_languages": [
+        "ASD"
+      ],
+      "meals_included": "ASD",
+      "highlights": [],
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00",
+      "hotel_id": "bcba2ef6-6885-4a3f-a0b2-2b7f6024465f"
+    },
+    {
+      "id": "e612f58e-ed7c-45de-9421-35219164b000",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "tier_name": "Private",
+      "vehicle_class": "ASD",
+      "accommodation": "AASD",
+      "group_size": "ASD",
+      "guide_languages": [
+        "ASD"
+      ],
+      "meals_included": "ASD",
+      "highlights": [],
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00",
+      "hotel_id": "60dbd09e-7882-4be2-abf7-28f979463649"
+    },
+    {
+      "id": "f7879479-54a3-4842-be54-794e1ef21e6b",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "tier_name": "Essential",
+      "vehicle_class": "wdcxqsc",
+      "accommodation": "wdscxe",
+      "group_size": "wdecxqs",
+      "guide_languages": [
+        "wedc"
+      ],
+      "meals_included": "wdvwrev",
+      "highlights": [
+        "wervwed"
+      ],
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "hotel_id": "660fd8bf-75e3-4dbf-a9de-e9243cd4ac4d"
+    },
+    {
+      "id": "9441bde6-ee31-4ba6-8079-1b47ba5e1593",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "tier_name": "Signature",
+      "vehicle_class": "sdvwrv",
+      "accommodation": "",
+      "group_size": "s",
+      "guide_languages": [],
+      "meals_included": "dc",
+      "highlights": [
+        "wcedcvwde",
+        "sdv"
+      ],
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "hotel_id": null
+    },
+    {
+      "id": "483bdc4b-d7d6-484a-9c43-feaa201ee10f",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "tier_name": "Private",
+      "vehicle_class": "sdvwr",
+      "accommodation": "sdvwd",
+      "group_size": "dvwdv",
+      "guide_languages": [
+        "sdver"
+      ],
+      "meals_included": "w",
+      "highlights": [],
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "hotel_id": "660fd8bf-75e3-4dbf-a9de-e9243cd4ac4d"
+    }
+  ],
+  "package_gallery": [
+    {
+      "id": "8eb49e71-7527-4397-82b5-41f80b214bf2",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "image_path": "/istanbul-ifr4.png",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "c755bfcb-358d-40ce-9a32-a6fb4498af71",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "image_path": "/istanbul-ifr3.png",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "0239d9ad-9f6d-4154-ab3d-2a86166c3a0a",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "image_path": "/istanbul-ifr2.png",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "6bac67a6-14e1-4f9c-a891-6c5c97a0b7c0",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "image_path": "/istanbul-ifr1.png",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "fa576589-2833-4b17-8810-61f71848a90f",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "image_path": "/cappadocia-ifr4.png",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "afcfd89a-57c2-449c-94de-d324a93e0c6c",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "image_path": "/cappadocia-ifr3.png",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "7c522c89-3b99-4cff-8b26-a519b5dc3e77",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "image_path": "/cappadocia-ifr2.png",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "a07e547f-a768-4fac-bfc0-e7195970458c",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "image_path": "/cappadocia-ifr1.png",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "d200ceb2-5b34-446f-a91f-03d05b8658c0",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "image_path": "/pamukkale-ifr4.png",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "172f7c87-3449-489a-913b-32472b48746d",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "image_path": "/pamukkale-ifr3.png",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "ffef7f17-e94f-443a-8d6a-a7897b68fc89",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "image_path": "/pamukkale-ifr2.png",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "2ef2a843-4a89-44dc-94a3-fac5a2e044dc",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "image_path": "/pamukkale-ifr1.png",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "353fdf32-8684-44ca-9407-c7d718041c63",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "image_path": "/antalya-ifr4.png",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "55193978-3537-48b6-b791-4a8f570cd197",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "image_path": "/antalya-ifr3.png",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "d042dd31-eb95-4ae0-80eb-4e5a8306c2c3",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "image_path": "/antalya-ifr2.png",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "277bcb5e-c2c5-429d-a80a-7378f78b1846",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "image_path": "/antalya-ifr1.png",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "2fbc18f4-a1b5-4147-a12e-e998b6b64b6a",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "image_path": "/blacksea-ifr4.png",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "398128dc-dc71-4125-b728-056421c4b1b5",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "image_path": "/blacksea-ifr3.png",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "1cc54090-2323-487c-a88f-e0f1b369173a",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "image_path": "/blacksea-ifr2.png",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "0e8869c6-610b-4f52-a168-4f25ac2fe3fd",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "image_path": "/blacksea-ifr1.png",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "216a74de-444d-4036-b709-1b469f682be6",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "image_path": "/eastern-ifr4.png",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "571fc707-bf57-48f3-ac96-1ce2886c9725",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "image_path": "/eastern-ifr3.png",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "563707c2-d078-400d-b168-65f19e621008",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "image_path": "/eastern-ifr2.png",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "1f8c3bd0-7269-4068-b56d-fd61ff1750d1",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "image_path": "/eastern-ifr1.png",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:13:20.294317+00:00"
+    },
+    {
+      "id": "a35e2e83-3f04-430d-b093-c999704739de",
+      "package_id": "642b0657-5e32-4a76-879e-bd7f708707f9",
+      "image_path": "packages/gallery/1789120449483-sabtest.jpg",
+      "sort_order": 0,
+      "created_at": "2026-09-11T09:55:14.566436+00:00",
+      "updated_at": "2026-09-11T09:55:14.566436+00:00"
+    },
+    {
+      "id": "d0f27f12-ed94-4af1-bee9-e5c997cce460",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "image_path": "packages/gallery/1789120449483-sabtest.jpg",
+      "sort_order": 0,
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00"
+    },
+    {
+      "id": "d5249764-15b0-48c9-a3b5-720b9626302b",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "image_path": "packages/gallery/1789128475707-whatsapp-image-2026-09-09-at-14.28.48-1-.jpg",
+      "sort_order": 0,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00"
+    },
+    {
+      "id": "8f0dabcc-c53a-470e-8bc9-362e6448a2a3",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "image_path": "packages/gallery/1789128480167-whatsapp-image-2026-09-09-at-14.28.48-2-.jpg",
+      "sort_order": 1,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00"
+    }
+  ],
+  "package_inclusions": [
+    {
+      "id": "2edc5cfb-c12c-4543-a3b0-bb6437da1ddf",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "not_included",
+      "text": "Personal expenses & gratuities",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "b522ce2f-b971-4b18-a81c-43dc56a79e40",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "not_included",
+      "text": "Lunches and dinners not listed",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "c829bb38-6b83-4dc9-abf7-f1de3e7de0dd",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "not_included",
+      "text": "Travel insurance",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "0d416142-62d5-4928-a7e4-19478fa57ffc",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "not_included",
+      "text": "International flights",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "99ad102d-df18-4b58-8147-16ced9d0f1be",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "included",
+      "text": "One welcome dinner",
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "ab93f1c7-f0b6-4982-89ec-6841a36ab6b0",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "included",
+      "text": "Daily breakfast",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "55f28329-5116-4574-8573-55e2968d50e6",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "included",
+      "text": "All entry tickets to listed monuments",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "8cf54412-b8d4-4b72-a3f0-8bbcc587a88a",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "included",
+      "text": "Licensed English-speaking guide",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "8f95a989-b462-4e68-a83d-91bf06ce7275",
+      "package_id": "0a623776-dbcc-4862-a0dd-edd805f6b88a",
+      "kind": "included",
+      "text": "All private transfers in-country",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "d27f4c09-1bf8-464c-bcec-f46429aa57b6",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "not_included",
+      "text": "Lunches and dinners not listed",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "748798fd-7c75-4211-b1ef-ff7221e4b233",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "not_included",
+      "text": "Travel insurance",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "e9543bf1-c7bb-4f58-a035-ff4f07d9a937",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "not_included",
+      "text": "Flights to/from Cappadocia",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "01d30334-b41b-4751-ab74-2868d9ca1538",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "included",
+      "text": "Daily breakfast",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "f867dcac-5d05-45fb-8c7a-db40ad80a1c4",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "included",
+      "text": "All entries to underground cities & monasteries",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "5379e4bc-3eaf-4956-9614-3135a2cb402c",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "included",
+      "text": "One hot-air balloon flight (weather permitting)",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "8c886a93-f887-4d09-8cd8-4256c3984aa7",
+      "package_id": "5efc54bf-c59d-46a7-9434-c05b5c393308",
+      "kind": "included",
+      "text": "Private transfers from/to Kayseri (ASR)",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "6096bbb1-608e-4c16-8903-235aaa1dd300",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "kind": "not_included",
+      "text": "Lunches and dinners not listed",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "5f60dccc-3cb3-4a4c-b1dd-58af21e3c4d8",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "kind": "not_included",
+      "text": "Flights",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "b54ecfe5-4ee5-4fd9-afde-a4a2f33d68be",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "kind": "included",
+      "text": "Daily breakfast",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "359cd1e1-96ab-47c9-81aa-be8f5dba15ee",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "kind": "included",
+      "text": "All entry tickets",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "6e51e8a2-f824-4f0d-9d8b-d44e0c5a1e00",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "kind": "included",
+      "text": "Licensed archaeologist for Ephesus",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "3244b364-9235-4543-9c17-5502f2ccac2a",
+      "package_id": "d6b0df1a-4220-43f9-99be-1e8b5e0cedad",
+      "kind": "included",
+      "text": "Private transfers throughout",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "a0543798-1063-4106-81e9-9daea1d9567a",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "kind": "not_included",
+      "text": "Lunches and dinners on land days",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "74cdb8cd-9e51-4132-b1d9-ebdc8a0b4c52",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "kind": "not_included",
+      "text": "Flights",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "102c2aaf-e910-4c46-b567-9aa983286280",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "kind": "included",
+      "text": "All meals on board",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "a79cf3b1-16b2-4c75-89b9-1783b9cf9de5",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "kind": "included",
+      "text": "All entry tickets",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "453f729c-792c-48c1-8e98-10403c519a5b",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "kind": "included",
+      "text": "Three nights on a private gulet",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "c3f63d7d-9b61-418c-9b1b-ae28632e7c05",
+      "package_id": "2fbf656c-9a57-46ca-b12a-86cfef6de056",
+      "kind": "included",
+      "text": "Private transfers",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "592bbc0f-7ea3-4e43-a23e-73494db2cff4",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "kind": "not_included",
+      "text": "Lunches and dinners not listed",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "4ffa96a3-738a-420f-b372-517fc4efd540",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "kind": "not_included",
+      "text": "Flights to Trabzon",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "6a2c44a1-abd4-4c16-8434-db6facda4def",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "kind": "included",
+      "text": "Daily breakfast",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "21abd073-6bb0-4965-b7fe-7e04b19264d2",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "kind": "included",
+      "text": "All entry tickets",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "5f81dffa-3d62-428f-bd18-f8feeed4b902",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "kind": "included",
+      "text": "Licensed regional guide",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "6a71353c-88d9-4feb-89a0-c394b562e3a6",
+      "package_id": "33b2eb0b-8c82-4c02-98eb-96076a096e61",
+      "kind": "included",
+      "text": "Private transfers",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "7247987f-3254-43ca-95ec-af8393de2554",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "not_included",
+      "text": "Lunches not listed",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "d37a7c1e-eae8-4e98-9300-cfb0b9263d2a",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "not_included",
+      "text": "Domestic flights to/from Adıyaman & Van",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "89aec9d2-b1b2-4a49-a31a-bdf42547b6f5",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "included",
+      "text": "Two hosted dinners",
+      "sort_order": 5,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "1fd0e2c8-f81e-4a00-8b6b-0a7f6131f040",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "included",
+      "text": "Daily breakfast",
+      "sort_order": 4,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "d2d2142a-5ec3-4a3c-aaca-76447551bc7f",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "included",
+      "text": "All entries",
+      "sort_order": 3,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "6918c2d5-efcb-42e2-ae42-6bcb2381298a",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "included",
+      "text": "Licensed regional guide",
+      "sort_order": 2,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "7a89c1da-de1f-491b-9161-1360341c8d62",
+      "package_id": "1aaad2eb-5ab4-4709-86d9-3c6795829780",
+      "kind": "included",
+      "text": "Private transfers throughout",
+      "sort_order": 1,
+      "created_at": "2026-05-02T15:09:04.631275+00:00",
+      "updated_at": "2026-05-02T15:09:04.631275+00:00",
+      "icon": null
+    },
+    {
+      "id": "e4741db9-2d1a-4d15-9368-4b0775618f9d",
+      "package_id": "2b9c968c-39b8-401a-a1d2-362ba29f538c",
+      "kind": "included",
+      "text": "ASD",
+      "sort_order": 0,
+      "created_at": "2026-09-11T09:55:25.340563+00:00",
+      "updated_at": "2026-09-11T09:55:25.340563+00:00",
+      "icon": null
+    },
+    {
+      "id": "d76f3565-c9b5-4a56-a85a-5a0e6e0bcc84",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "kind": "included",
+      "text": "sdvsd",
+      "sort_order": 0,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "icon": null
+    },
+    {
+      "id": "15d71282-7a48-49e1-bf5a-25a789e3f9e7",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "kind": "included",
+      "text": "sdvsd",
+      "sort_order": 1,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "icon": null
+    },
+    {
+      "id": "32c3449b-a68b-481c-9ddf-18433543e2be",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "kind": "included",
+      "text": "sdvsdfbv",
+      "sort_order": 2,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "icon": null
+    },
+    {
+      "id": "53481acf-a002-4942-a66b-7034df443cd5",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "kind": "not_included",
+      "text": "efbefb",
+      "sort_order": 0,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "icon": null
+    },
+    {
+      "id": "d4d9b593-961c-40d2-8977-3c1ccd06f5ab",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "kind": "not_included",
+      "text": "fb dsf",
+      "sort_order": 1,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "icon": null
+    },
+    {
+      "id": "79e2cebf-9cd2-4810-9363-c3c35ece4935",
+      "package_id": "1bb2b1d6-49e3-474b-825f-7b2ef103750f",
+      "kind": "not_included",
+      "text": "sdvsfrb",
+      "sort_order": 2,
+      "created_at": "2026-09-11T12:09:26.641833+00:00",
+      "updated_at": "2026-09-11T12:09:26.641833+00:00",
+      "icon": null
+    }
+  ],
+  "package_slug_history": []
+}

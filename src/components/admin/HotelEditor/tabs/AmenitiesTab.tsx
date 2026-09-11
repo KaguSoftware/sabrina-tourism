@@ -1,6 +1,6 @@
 "use client";
 import { useFormContext, useFieldArray } from "react-hook-form";
-import { ListEditor } from "@/components/admin/PackageEditor/primitives";
+import { ListEditor } from "@/components/admin/shared/primitives";
 import type { HotelFormValues } from "@/app/admin/(authed)/hotels/[id]/schema";
 
 export function AmenitiesTab() {

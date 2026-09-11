@@ -11,7 +11,7 @@ import { DAILY_FIELD_TAB } from "@/lib/admin/field-tabs";
 import { saveDailyPackage } from "@/app/admin/(authed)/daily/[id]/actions";
 import { DailySchema, type DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";
 import type { DailyPackageRaw } from "@/lib/db/daily-packages";
-import { ErrorCallout } from "@/components/admin/PackageEditor/primitives";
+import { ErrorCallout } from "@/components/admin/shared/primitives";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { BasicsTab } from "./tabs/BasicsTab";
 import { ImageryTab } from "./tabs/ImageryTab";

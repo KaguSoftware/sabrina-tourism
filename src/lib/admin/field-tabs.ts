@@ -5,30 +5,17 @@
  * Keys are root field names (the part before the first dot), which is enough:
  * every element of `tiers[]` lives on the Tiers tab, and so on. Anything not
  * listed falls back to the editor's first tab.
+ *
+ * These maps have to match where each field is actually rendered. A wrong entry
+ * is worse than a missing one: the readiness panel labels the issue with the
+ * wrong tab, and clicking it opens a tab that has no such field — leaving the
+ * admin with a blocking error and nowhere to fix it. When a field moves between
+ * tabs, move it here too.
+ *
+ * Fields driven by `setValue` rather than `register` (image uploaders, date
+ * pickers, tag lists) have no `name` in the DOM, so their container also needs
+ * `data-field="<path>"` for the scroll-to-field jump to land.
  */
-
-export const PACKAGE_FIELD_TAB = {
-  name: "Basics",
-  region: "Basics",
-  season: "Basics",
-  duration: "Basics",
-  duration_days: "Basics",
-  hero_image: "Basics",
-  card_image: "Basics",
-  min_people: "Basics",
-  max_people: "Basics",
-  available_from: "Basics",
-  available_to: "Basics",
-  is_published: "Basics",
-  is_featured: "Basics",
-  short_description: "Overview",
-  overview: "Overview",
-  itinerary: "Itinerary",
-  tiers: "Tiers",
-  gallery: "Gallery",
-  included: "Inclusions",
-  not_included: "Inclusions",
-} as const;
 
 export const PREMADE_FIELD_TAB = {
   name: "Basics",
@@ -72,9 +59,9 @@ export const DAILY_FIELD_TAB = {
   vehicle: "Basics",
   driver: "Basics",
   short_description: "Basics",
+  price: "Basics",
+  currency: "Basics",
   is_published: "Basics",
-  price: "Pricing",
-  currency: "Pricing",
   price_1_person: "Pricing",
   price_2_people: "Pricing",
   price_baby: "Pricing",
@@ -95,24 +82,24 @@ export const HOTEL_FIELD_TAB = {
   long_description: "Basics",
   tag_a: "Basics",
   tag_b: "Basics",
-  stars: "Basics",
   svg_variant: "Basics",
   location: "Basics",
+  check_in_time: "Basics",
+  check_out_time: "Basics",
+  languages: "Basics",
   is_published: "Basics",
-  check_in_time: "Properties",
-  check_out_time: "Properties",
-  languages: "Properties",
+  stars: "Properties",
   distance_km: "Properties",
   bedrooms: "Properties",
   bathrooms: "Properties",
-  free_wifi: "Amenities",
-  free_cancellation: "Amenities",
-  free_parking: "Amenities",
-  bed_breakfast: "Amenities",
-  balcony: "Amenities",
-  washer: "Amenities",
-  ac: "Amenities",
-  tv: "Amenities",
+  free_wifi: "Properties",
+  free_cancellation: "Properties",
+  free_parking: "Properties",
+  bed_breakfast: "Properties",
+  balcony: "Properties",
+  washer: "Properties",
+  ac: "Properties",
+  tv: "Properties",
   amenities: "Amenities",
   room_types: "Room Types",
   images: "Gallery",

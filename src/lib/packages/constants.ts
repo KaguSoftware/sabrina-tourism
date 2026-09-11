@@ -27,7 +27,7 @@ export const REGION_KEYS: Record<(typeof REGIONS)[number], string> = {
   "Eastern Anatolia": "easternAnatolia",
 };
 
-/** Maps a region name to its `tours.regions.*` translation key. Falls back to the raw value if unknown. */
+/** Maps a region name to its `nav.regions.*` translation key. Falls back to the raw value if unknown. */
 export function regionKey(region: string): string {
   return REGION_KEYS[region as (typeof REGIONS)[number]] ?? region;
 }

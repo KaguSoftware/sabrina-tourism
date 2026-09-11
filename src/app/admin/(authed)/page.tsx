@@ -4,37 +4,47 @@ import { createServerClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/admin/PageHeader/PageHeader";
 import { getAdminT } from "@/lib/admin/i18n";
 
+// The dashboard tracks the content types the sidebar actually exposes. The
+// legacy `packages` table still backs the public /packages pages but no longer
+// has an admin section, so counting it here only produced dead links.
 async function getDashboardStats() {
   const supabase = await createServerClient();
 
-  const { data, error } = await supabase
-    .from("packages")
-    .select("is_published, is_featured, name, slug, updated_at")
-    .order("updated_at", { ascending: false }) as unknown as {
-      data: { is_published: boolean; is_featured: boolean; name: string; slug: string; updated_at: string }[] | null;
+  const [tours, daily] = await Promise.all([
+    supabase
+      .from("premade_packages")
+      .select("id, name, is_published, updated_at")
+      .order("updated_at", { ascending: false }) as unknown as Promise<{
+        data: { id: string; name: string; is_published: boolean; updated_at: string }[] | null;
+        error: { message: string } | null;
+      }>,
+    supabase.from("daily_packages").select("id") as unknown as Promise<{
+      data: { id: string }[] | null;
       error: { message: string } | null;
-    };
+    }>,
+  ]);
 
-  if (error || !data) {
-    return { published: 0, featured: 0, drafts: 0, lastUpdated: null };
+  const rows = tours.error ? null : tours.data;
+  if (!rows) {
+    return { published: 0, drafts: 0, dailyCount: 0, lastUpdated: null };
   }
 
-  const published = data.filter((p) => p.is_published).length;
-  const featured = data.filter((p) => p.is_featured).length;
-  const drafts = data.filter((p) => !p.is_published).length;
-  const lastUpdated = data[0] ?? null;
-
-  return { published, featured, drafts, lastUpdated };
+  return {
+    published: rows.filter((p) => p.is_published).length,
+    drafts: rows.filter((p) => !p.is_published).length,
+    dailyCount: daily.error ? 0 : (daily.data?.length ?? 0),
+    lastUpdated: rows[0] ?? null,
+  };
 }
 
 export default async function AdminDashboardPage() {
   const { t } = await getAdminT();
-  const { published, featured, drafts, lastUpdated } = await getDashboardStats();
+  const { published, drafts, dailyCount, lastUpdated } = await getDashboardStats();
 
   const lastUpdatedLabel = lastUpdated ? lastUpdated.name : "—";
   const lastUpdatedHref = lastUpdated
-    ? `/admin/packages/${lastUpdated.slug}`
-    : "/admin/packages";
+    ? `/admin/fixed-dates/${lastUpdated.id}`
+    : "/admin/fixed-dates";
 
   const stats: Array<{
     value: string;
@@ -45,17 +55,17 @@ export default async function AdminDashboardPage() {
     {
       value: String(published),
       label: t("dashboard.publishedPackages"),
-      href: "/admin/packages",
-    },
-    {
-      value: `${featured}/3`,
-      label: t("dashboard.featuredSlotsUsed"),
-      href: "/admin/packages",
+      href: "/admin/fixed-dates",
     },
     {
       value: String(drafts),
       label: t("dashboard.draftPackages"),
-      href: "/admin/packages",
+      href: "/admin/fixed-dates",
+    },
+    {
+      value: String(dailyCount),
+      label: t("sidebar.dailyTours"),
+      href: "/admin/daily",
     },
     {
       value: lastUpdatedLabel,
@@ -66,7 +76,7 @@ export default async function AdminDashboardPage() {
   ];
 
   const quickActions = [
-    { href: "/admin/packages/new", label: "New tour", icon: Map },
+    { href: "/admin/fixed-dates/new", label: "New tour", icon: Map },
     { href: "/admin/hotels/new", label: "New hotel", icon: Hotel },
     { href: "/admin/daily/new", label: "New daily tour", icon: Sun },
   ];

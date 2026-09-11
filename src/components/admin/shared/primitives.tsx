@@ -28,11 +28,13 @@ export function Toggle({
       disabled={disabled}
       onClick={() => !disabled && onChange(!checked)}
       className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
-        checked ? "bg-ochre hover:bg-gold" : "bg-rule hover:bg-ink-soft/40"
-      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"} focus:outline-none focus:ring-2 focus:ring-ochre/30`}
+        checked
+          ? "bg-teal hover:bg-teal-deep"
+          : "bg-ink-soft/70 hover:bg-ink-soft/85"
+      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"} focus:outline-none focus:ring-2 focus:ring-ochre/40 focus:ring-offset-2 focus:ring-offset-cream`}
     >
       <span
-        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-cream transition-transform duration-200 ${
+        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-cream shadow-sm transition-transform duration-200 ${
           checked ? "translate-x-5" : "translate-x-0"
         }`}
       />

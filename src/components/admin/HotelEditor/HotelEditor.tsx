@@ -10,7 +10,7 @@ import { HOTEL_FIELD_TAB } from "@/lib/admin/field-tabs";
 import { saveHotel } from "@/app/admin/(authed)/hotels/[id]/actions";
 import { HotelSchema, type HotelFormValues } from "@/app/admin/(authed)/hotels/[id]/schema";
 import type { HotelRow } from "@/lib/db/hotels";
-import { ErrorCallout } from "@/components/admin/PackageEditor/primitives";
+import { ErrorCallout } from "@/components/admin/shared/primitives";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
 import { BasicsTab } from "./tabs/BasicsTab";
 import { PropertiesTab } from "./tabs/PropertiesTab";

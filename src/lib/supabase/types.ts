@@ -121,89 +121,6 @@ export interface SiteContentRow {
   updated_at: string;
 }
 
-export type PackageRegion =
-  | 'Istanbul'
-  | 'Cappadocia'
-  | 'Aegean'
-  | 'Mediterranean'
-  | 'Black Sea'
-  | 'Eastern Anatolia';
-
-export type PackageSeason = 'Spring' | 'Summer' | 'Autumn' | 'Winter' | 'Year-round';
-
-export interface PackageRow {
-  id: string;
-  slug: string;
-  name: string;
-  region: PackageRegion;
-  season: PackageSeason | null;
-  duration: string;
-  duration_days: number;
-  short_description: string;
-  overview: string;
-  hero_image: string;
-  card_image: string | null;
-  min_people: number;
-  max_people: number;
-  available_from: string;
-  available_to: string;
-  is_published: boolean;
-  is_featured: boolean;
-  sort_order: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface PackageItineraryDayRow {
-  id: string;
-  package_id: string;
-  day_number: number;
-  title: string;
-  description: string;
-  sort_order: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export type PackageTierName = 'Essential' | 'Signature' | 'Private';
-
-export interface PackageTierRow {
-  id: string;
-  package_id: string;
-  tier_name: PackageTierName;
-  vehicle_class: string;
-  accommodation: string;
-  hotel_id: string | null;
-  group_size: string;
-  guide_languages: string[];
-  meals_included: string;
-  highlights: string[];
-  created_at: string;
-  updated_at: string;
-}
-
-export interface PackageGalleryRow {
-  id: string;
-  package_id: string;
-  image_path: string;
-  sort_order: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export type InclusionKind = 'included' | 'not_included';
-
-export interface PackageInclusionRow {
-  id: string;
-  package_id: string;
-  kind: InclusionKind;
-  text: string;
-  icon: string | null;
-  sort_order: number;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface TransportAirportRow {
   id: string;
   code: string;
@@ -227,13 +144,6 @@ export interface TransportVehicleRow {
   updated_at: string;
 }
 
-export interface PackageSlugHistoryRow {
-  id: string;
-  package_id: string;
-  old_slug: string;
-  created_at: string;
-}
-
 // ---------------------------------------------------------------------------
 // Database shape for use with the Supabase client generic
 // ---------------------------------------------------------------------------
@@ -248,36 +158,6 @@ export interface Database {
         Update: Partial<Omit<SiteContentRow, 'id'>>;
         Relationships: [];
       };
-      packages: {
-        Row: PackageRow;
-        Insert: Omit<PackageRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<PackageRow, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<PackageRow, 'id'>>;
-        Relationships: [];
-      };
-      package_itinerary_days: {
-        Row: PackageItineraryDayRow;
-        Insert: Omit<PackageItineraryDayRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<PackageItineraryDayRow, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<PackageItineraryDayRow, 'id'>>;
-        Relationships: [];
-      };
-      package_tiers: {
-        Row: PackageTierRow;
-        Insert: Omit<PackageTierRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<PackageTierRow, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<PackageTierRow, 'id'>>;
-        Relationships: [];
-      };
-      package_gallery: {
-        Row: PackageGalleryRow;
-        Insert: Omit<PackageGalleryRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<PackageGalleryRow, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<PackageGalleryRow, 'id'>>;
-        Relationships: [];
-      };
-      package_inclusions: {
-        Row: PackageInclusionRow;
-        Insert: Omit<PackageInclusionRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<PackageInclusionRow, 'id' | 'created_at' | 'updated_at'>>;
-        Update: Partial<Omit<PackageInclusionRow, 'id'>>;
-        Relationships: [];
-      };
       transport_airports: {
         Row: TransportAirportRow;
         Insert: Omit<TransportAirportRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<TransportAirportRow, 'id' | 'created_at' | 'updated_at'>>;
@@ -288,12 +168,6 @@ export interface Database {
         Row: TransportVehicleRow;
         Insert: Omit<TransportVehicleRow, 'id' | 'created_at' | 'updated_at'> & Partial<Pick<TransportVehicleRow, 'id' | 'created_at' | 'updated_at'>>;
         Update: Partial<Omit<TransportVehicleRow, 'id'>>;
-        Relationships: [];
-      };
-      package_slug_history: {
-        Row: PackageSlugHistoryRow;
-        Insert: Omit<PackageSlugHistoryRow, 'id' | 'created_at'> & Partial<Pick<PackageSlugHistoryRow, 'id' | 'created_at'>>;
-        Update: Partial<Omit<PackageSlugHistoryRow, 'id'>>;
         Relationships: [];
       };
     };
