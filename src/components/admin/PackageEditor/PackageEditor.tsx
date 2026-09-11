@@ -15,7 +15,9 @@ import { slugify } from "@/lib/utils/slug";
 import type { PackageRaw } from "@/lib/db/packages";
 
 import { formatRelativeTime, useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
-import { toastSaved, toastError } from "@/lib/admin/toast";
+import { toastSaved, toastError, toastValidationIssues } from "@/lib/admin/toast";
+import { revealFirstError } from "@/lib/admin/form-errors";
+import { PACKAGE_FIELD_TAB } from "@/lib/admin/field-tabs";
 import {
   getPackageTabIssues,
   statusForTab,
@@ -101,38 +103,51 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
     ? formatRelativeTime(new Date(pkg.updated_at))
     : null;
 
-  const onSubmit = handleSubmit(async (data) => {
-    if (saving || isPending) return;
-    setSaving(true);
-    try {
-      const result = await savePackage(data);
-      if (result.error) {
-        if (result.error.includes("Maximum 3 featured")) {
-          toast.error(result.error, {
-            style: {
-              background: "#c05a3a",
-              color: "#f5ede0",
-              border: "1px solid #c05a3a",
-            },
-          });
-        } else {
-          toastError("save tour", result.error);
+  const onSubmit = handleSubmit(
+    async (data) => {
+      if (saving || isPending) return;
+      setSaving(true);
+      try {
+        const result = await savePackage(data);
+        if (result.error) {
+          if (result.error.includes("Maximum 3 featured")) {
+            toast.error(result.error, {
+              style: {
+                background: "#c05a3a",
+                color: "#f5ede0",
+                border: "1px solid #c05a3a",
+              },
+            });
+          } else {
+            toastError("save tour", result.error);
+          }
+          return;
         }
-        return;
+        toastSaved("tour", data.name);
+        reset(data);
+        if (!pkg) {
+          startTransition(() => router.push(`/admin/packages/${result.slug}`));
+        } else if (result.slug && result.slug !== pkg.slug) {
+          startTransition(() => router.push(`/admin/packages/${result.slug}`));
+        } else {
+          startTransition(() => router.refresh());
+        }
+      } catch (err) {
+        toastError("save tour", err instanceof Error ? err.message : "Unexpected error");
+      } finally {
+        setSaving(false);
       }
-      toastSaved("tour", data.name);
-      reset(data);
-      if (!pkg) {
-        startTransition(() => router.push(`/admin/packages/${result.slug}`));
-      } else if (result.slug && result.slug !== pkg.slug) {
-        startTransition(() => router.push(`/admin/packages/${result.slug}`));
-      } else {
-        startTransition(() => router.refresh());
-      }
-    } finally {
-      setSaving(false);
-    }
-  });
+    },
+    (formErrors) => {
+      const found = revealFirstError({
+        errors: formErrors,
+        fieldToTab: PACKAGE_FIELD_TAB,
+        currentTab: activeTab,
+        setTab: setActiveTab,
+      });
+      toastValidationIssues(found);
+    },
+  );
 
   const busy = saving || isPending;
   const hasErrors = errorCount > 0;
@@ -147,11 +162,13 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
       buttonLabel = (
         <>
           <AlertCircle size={13} />
-          Fix {errorCount} {errorCount === 1 ? "issue" : "issues"} to save
+          Fix {errorCount} {errorCount === 1 ? "issue" : "issues"}
         </>
       );
+      // Deliberately still clickable: submitting walks the admin to the next
+      // outstanding field, which is how they clear the list one at a time.
       extraClass =
-        "bg-terracotta/15 text-terracotta border border-terracotta/40 cursor-not-allowed";
+        "bg-terracotta/15 text-terracotta border border-terracotta/40 hover:bg-terracotta/25";
     } else if (!isDirty && pkg) {
       buttonLabel = (
         <>
@@ -162,7 +179,7 @@ export function PackageEditor({ pkg, availableHotels = [] }: PackageEditorProps)
       extraClass = "bg-cream-deep text-ink-soft cursor-default";
     }
 
-    const disabled = busy || hasErrors || (!isDirty && !!pkg);
+    const disabled = busy || (!isDirty && !!pkg && !hasErrors);
 
     return (
       <button

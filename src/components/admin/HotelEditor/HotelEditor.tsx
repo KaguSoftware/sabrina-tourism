@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { toastSaved, toastError } from "@/lib/admin/toast";
+import { toastSaved, toastError, toastValidationIssues } from "@/lib/admin/toast";
+import { revealFirstError, jumpToField, flattenFieldErrors, withTabs } from "@/lib/admin/form-errors";
+import { HOTEL_FIELD_TAB } from "@/lib/admin/field-tabs";
 import { saveHotel } from "@/app/admin/(authed)/hotels/[id]/actions";
 import { HotelSchema, type HotelFormValues } from "@/app/admin/(authed)/hotels/[id]/schema";
 import type { HotelRow } from "@/lib/db/hotels";
@@ -75,18 +76,6 @@ function defaultValues(hotel?: HotelRow): HotelFormValues {
   };
 }
 
-function collectErrors(errs: Record<string, unknown>): string[] {
-  const msgs: string[] = [];
-  function walk(obj: unknown) {
-    if (!obj || typeof obj !== "object") return;
-    const o = obj as Record<string, unknown>;
-    if (typeof o.message === "string") { msgs.push(o.message); return; }
-    for (const k of Object.keys(o)) walk(o[k]);
-  }
-  walk(errs);
-  return msgs;
-}
-
 export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: HotelRow; initialTranslations?: TranslationsState }) {
   const t = useTranslations("admin.editor");
   const tabT = useTranslations("admin.tabs");
@@ -105,19 +94,32 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
 
   const name = watch("name");
   const formValues = watch();
-  const errorMessages = collectErrors(errors as Record<string, unknown>);
+  const fieldErrors = withTabs(flattenFieldErrors(errors), HOTEL_FIELD_TAB);
 
-  const onSubmit = handleSubmit(async (data) => {
-    setSaving(true);
-    try {
-      const result = await saveHotel(data);
-      if (result.error) { toastError("save hotel", result.error); return; }
-      toastSaved("hotel", data.name);
-      reset(data);
-      if (!hotel) router.push(`/admin/hotels/${result.id}`);
-      else router.refresh();
-    } finally { setSaving(false); }
-  });
+  const onSubmit = handleSubmit(
+    async (data) => {
+      setSaving(true);
+      try {
+        const result = await saveHotel(data);
+        if (result.error) { toastError("save hotel", result.error); return; }
+        toastSaved("hotel", data.name);
+        reset(data);
+        if (!hotel) router.push(`/admin/hotels/${result.id}`);
+        else router.refresh();
+      } catch (err) {
+        toastError("save hotel", err instanceof Error ? err.message : "Unexpected error");
+      } finally { setSaving(false); }
+    },
+    (formErrors) => {
+      const found = revealFirstError({
+        errors: formErrors,
+        fieldToTab: HOTEL_FIELD_TAB,
+        currentTab: activeTab,
+        setTab: setActiveTab,
+      });
+      toastValidationIssues(found);
+    },
+  );
 
   const SaveButton = ({ label = t("save") }: { label?: string }) => (
     <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center">
@@ -146,7 +148,14 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
         </div>
 
         <div className="pt-8">
-          {errorMessages.length > 0 && <ErrorCallout errors={errorMessages} />}
+          {fieldErrors.length > 0 && (
+            <ErrorCallout
+              items={fieldErrors}
+              onJump={(path) =>
+                jumpToField({ path, fieldToTab: HOTEL_FIELD_TAB, currentTab: activeTab, setTab: setActiveTab })
+              }
+            />
+          )}
           {activeTab === "Basics" && <BasicsTab />}
           {activeTab === "Properties" && <PropertiesTab />}
           {activeTab === "Amenities" && <AmenitiesTab />}
@@ -160,7 +169,22 @@ export function HotelEditor({ hotel, initialTranslations = {} }: { hotel?: Hotel
           )}
         </div>
 
-        <div className={`sticky bottom-0 left-0 right-0 z-20 border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex justify-end mt-12 transition-opacity duration-200 ${isDirty && activeTab !== "Translations" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div className={`sticky bottom-0 left-0 right-0 z-20 border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex items-center justify-between gap-4 mt-12 transition-opacity duration-200 ${(isDirty || fieldErrors.length > 0) && activeTab !== "Translations" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+          <button
+            type="button"
+            disabled={fieldErrors.length === 0}
+            onClick={() =>
+              fieldErrors[0] &&
+              jumpToField({ path: fieldErrors[0].path, fieldToTab: HOTEL_FIELD_TAB, currentTab: activeTab, setTab: setActiveTab })
+            }
+            className={`font-mono text-[10px] tracking-[0.16em] uppercase text-left ${fieldErrors.length > 0 ? "text-terracotta hover:underline" : "text-ink-soft"}`}
+          >
+            {fieldErrors.length > 0
+              ? `${fieldErrors.length} ${fieldErrors.length === 1 ? "issue" : "issues"} to fix`
+              : isDirty
+                ? "Unsaved changes"
+                : "All changes saved"}
+          </button>
           <SaveButton label={t("saveChanges")} />
         </div>
       </form>

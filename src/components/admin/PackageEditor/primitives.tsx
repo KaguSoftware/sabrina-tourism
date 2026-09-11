@@ -5,6 +5,7 @@ import { X, Plus, AlertCircle, AlertTriangle, CheckCircle2 } from "lucide-react"
 import { Input } from "@/components/admin/Input/Input";
 import { Spinner } from "@/components/admin/Spinner/Spinner";
 import type { TabIssue } from "@/lib/admin/tab-completeness";
+import type { FlatFieldError } from "@/lib/admin/form-errors";
 
 // ---------------------------------------------------------------------------
 // Toggle switch
@@ -293,26 +294,48 @@ export function ReadinessPanel({
 }
 
 // ---------------------------------------------------------------------------
-// Backwards-compatible alias — kept so existing imports keep working.
+// Error callout — the simpler panel used by the editors without a readiness
+// model. Each entry is a link back to the field that produced it.
 // ---------------------------------------------------------------------------
 
-export function ErrorCallout({ errors }: { errors: string[] }) {
-  if (errors.length === 0) return null;
+export function ErrorCallout({
+  items,
+  onJump,
+}: {
+  items: FlatFieldError[];
+  onJump?: (path: string) => void;
+}) {
+  if (items.length === 0) return null;
   return (
     <div className="mb-6 border border-terracotta/40 bg-terracotta/10 p-4 rounded">
       <div className="flex items-center gap-2 mb-2">
         <AlertCircle size={14} className="text-terracotta" />
         <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta font-semibold">
-          Fix these issues before saving
+          Fix {items.length} {items.length === 1 ? "issue" : "issues"} before saving — click one to jump to it
         </p>
       </div>
-      <ul className="space-y-1">
-        {errors.map((e, i) => (
-          <li key={i} className="font-sans text-[13px] text-terracotta">
-            {e}
+      <ol className="space-y-1 list-decimal list-inside">
+        {items.map((item, i) => (
+          <li key={`${item.path}-${i}`} className="font-sans text-[13px] text-terracotta">
+            {item.tab && (
+              <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-terracotta/70 mr-2">
+                {item.tab}
+              </span>
+            )}
+            {onJump ? (
+              <button
+                type="button"
+                onClick={() => onJump(item.path)}
+                className="text-left hover:underline"
+              >
+                {item.message}
+              </button>
+            ) : (
+              item.message
+            )}
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   );
 }

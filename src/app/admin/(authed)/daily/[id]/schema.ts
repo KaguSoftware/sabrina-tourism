@@ -18,7 +18,7 @@ export const DailySchema = z.object({
   season: SeasonSchema,
   vehicle: z.string(),
   driver: z.string(),
-  price: z.number().min(0, "Price must be 0 or more"),
+  price: z.number("Price is required").min(0, "Price must be 0 or more"),
   currency: z.string(),
   short_description: z.string().min(1, "Short description is required"),
   hero_image: z.string(),
@@ -32,11 +32,11 @@ export const DailySchema = z.object({
   gallery: z.array(z.object({ url: z.string() })),
   is_published: z.boolean(),
   // Pricing buckets
-  price_1_person: z.number().min(0).nullable().optional(),
-  price_2_people: z.number().min(0).nullable().optional(),
-  price_baby: z.number().min(0).nullable().optional(),
-  price_single_room_supplement: z.number().min(0).nullable().optional(),
-  price_per_child: z.number().min(0).nullable().optional(),
+  price_1_person: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_2_people: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_baby: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_single_room_supplement: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_per_child: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
 });
 
 export type DailyFormValues = z.infer<typeof DailySchema>;

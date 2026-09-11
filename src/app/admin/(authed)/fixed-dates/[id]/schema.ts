@@ -9,13 +9,13 @@ const TierSchema = z.object({
   guide_languages: z.array(z.string()),
   meals_included: z.string(),
   highlights: z.array(z.string()),
-  price_2_people: z.number().min(0).nullable().optional(),
-  price_single_room_supplement: z.number().min(0).nullable().optional(),
-  price_per_child: z.number().min(0).nullable().optional(),
+  price_2_people: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_single_room_supplement: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_per_child: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
 });
 
 const ItineraryDaySchema = z.object({
-  day_number: z.number().int().min(1),
+  day_number: z.number("Day number is required").int().min(1, "Day number must be at least 1"),
   title: z.string().min(1, "Day title required"),
   description: z.string(),
 });
@@ -57,8 +57,8 @@ export const PremadeSchema = z.object({
   region: z.string(),
   season: SeasonSchema,
   duration: z.string(),
-  min_people: z.number().int().min(1).nullable(),
-  max_people: z.number().int().min(1).nullable(),
+  min_people: z.number("Min people must be a number").int().min(1, "Min people must be at least 1").nullable(),
+  max_people: z.number("Max people must be a number").int().min(1, "Max people must be at least 1").nullable(),
   available_from: z.string(),
   available_to: z.string(),
   overview: z.string(),
@@ -70,8 +70,8 @@ export const PremadeSchema = z.object({
   // Package-level pricing buckets retained for legacy/out-of-scope fields.
   // The double-room, single-room supplement, per-child and starts-from
   // prices have moved to TierSchema.
-  price_1_person: z.number().min(0).nullable().optional(),
-  price_baby: z.number().min(0).nullable().optional(),
+  price_1_person: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+  price_baby: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
 });
 
 export type PremadeFormValues = z.infer<typeof PremadeSchema>;

@@ -103,8 +103,8 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     .order("sort_order");
   const stopRows = data.stops.map((s, i) => ({
     package_id: pkgId, stop_time: "", place: s.place, description: s.description, sort_order: i,
-    place_translations: existingStops?.[i]?.place_translations ?? null,
-    description_translations: existingStops?.[i]?.description_translations ?? null,
+    place_translations: existingStops?.[i]?.place_translations ?? {},
+    description_translations: existingStops?.[i]?.description_translations ?? {},
   }));
 
   const { data: existingIncluded } = await supabase
@@ -114,7 +114,7 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     .order("sort_order");
   const includedRows = data.included.map((item, i) => ({
     package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
-    text_translations: existingIncluded?.[i]?.text_translations ?? null,
+    text_translations: existingIncluded?.[i]?.text_translations ?? {},
   }));
 
   const { data: existingNotIncluded } = await supabase
@@ -124,7 +124,7 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
     .order("sort_order");
   const notIncludedRows = data.not_included.map((item, i) => ({
     package_id: pkgId, text: item.text, icon: item.icon ?? null, sort_order: i,
-    text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
+    text_translations: existingNotIncluded?.[i]?.text_translations ?? {},
   }));
 
   // "Add image" seeds a blank row; drop any the editor left unfilled so the

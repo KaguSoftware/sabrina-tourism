@@ -3,10 +3,18 @@
 import { Children, cloneElement, isValidElement, useId } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { useTranslations } from "next-intl";
+import { useFormContext } from "react-hook-form";
+import { errorMessageAtPath } from "@/lib/admin/form-errors";
 
 interface FormFieldProps {
   label: string;
   hint?: string;
+  /**
+   * Overrides the message pulled from form context. Leave unset inside a
+   * react-hook-form editor: the field resolves its own error from the `name`
+   * of the input it wraps, so validation messages show up under every field
+   * without each call site having to wire them.
+   */
   error?: string;
   children: ReactNode;
   required?: boolean;
@@ -111,21 +119,42 @@ export function FormField({ label, hint, error, children, required }: FormFieldP
   const errorId = `${fieldId}-error`;
   const hintId = `${fieldId}-hint`;
 
+  // `null` outside a FormProvider — FormField is also used by the plain CMS
+  // editors, which don't run react-hook-form.
+  const form = useFormContext();
+
+  const arr = Children.toArray(children);
+  const onlyChild =
+    arr.length === 1 && isValidElement(arr[0])
+      ? (arr[0] as ReactElement<Record<string, unknown>>)
+      : null;
+
+  // `register("short_description")` puts the form path on the input as `name`,
+  // so a field wrapping a single registered input can look up its own error.
+  const childName = onlyChild
+    ? (() => {
+        const nameProp = (onlyChild.props as { name?: unknown }).name;
+        return typeof nameProp === "string" ? nameProp : undefined;
+      })()
+    : undefined;
+
+  const resolvedError =
+    error ?? (form && childName ? errorMessageAtPath(form.formState.errors, childName) : undefined);
+
   // Wire a11y attrs onto the single child input if it's a valid element.
   let wired: ReactNode = children;
-  const arr = Children.toArray(children);
-  if (arr.length === 1 && isValidElement(arr[0])) {
-    const child = arr[0] as ReactElement<Record<string, unknown>>;
+  if (onlyChild) {
+    const child = onlyChild;
     const existing = child.props as { id?: string; "aria-describedby"?: string; required?: boolean };
     const describedBy = [
-      error ? errorId : null,
-      translatedHint && !error ? hintId : null,
+      resolvedError ? errorId : null,
+      translatedHint && !resolvedError ? hintId : null,
       existing["aria-describedby"] ?? null,
     ].filter(Boolean).join(" ") || undefined;
     wired = cloneElement(child, {
       id: existing.id ?? fieldId,
       "aria-describedby": describedBy,
-      "aria-invalid": error ? true : undefined,
+      "aria-invalid": resolvedError ? true : undefined,
       required: required ?? existing.required,
     });
   }
@@ -148,12 +177,16 @@ export function FormField({ label, hint, error, children, required }: FormFieldP
         )}
       </label>
       {wired}
-      {translatedHint && !error && (
+      {translatedHint && !resolvedError && (
         <p id={hintId} className="font-sans text-[12px] text-muted">{translatedHint}</p>
       )}
-      {error && (
-        <p id={errorId} className="font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta">
-          {error}
+      {resolvedError && (
+        <p
+          id={errorId}
+          role="alert"
+          className="font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta"
+        >
+          {resolvedError}
         </p>
       )}
     </div>

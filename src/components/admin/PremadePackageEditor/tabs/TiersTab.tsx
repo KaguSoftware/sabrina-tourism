@@ -71,7 +71,7 @@ export function TiersTab({ availableHotels = [] }: { availableHotels?: PremadeHo
             <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-ochre">Tier {i + 1}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FormField label="Tier name" hint="e.g. Essential / Signature / Private">
+              <FormField label="Tier name" hint="e.g. Essential / Signature / Private" required>
                 <Input {...register(`tiers.${i}.tier_name`)} placeholder="Signature" />
               </FormField>
               <FormField label="Vehicle class">

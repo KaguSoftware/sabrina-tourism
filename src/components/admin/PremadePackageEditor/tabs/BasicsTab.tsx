@@ -23,6 +23,13 @@ export function BasicsTab() {
 
   const { fields: dateFields, append: appendDate, remove: removeDate } = useFieldArray({ control, name: "dates" });
 
+  // `dates` is a required array, and its per-row pickers aren't registered
+  // inputs, so FormField can't surface these on its own.
+  const datesError =
+    errors.dates?.message ??
+    (errors.dates as { root?: { message?: string } } | undefined)?.root?.message ??
+    dateFields.map((_, i) => errors.dates?.[i]?.start_date?.message ?? errors.dates?.[i]?.end_date?.message).find(Boolean);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="md:col-span-2">
@@ -32,9 +39,10 @@ export function BasicsTab() {
       </div>
 
       {/* Departure dates */}
-      <div className="md:col-span-2">
+      <div className="md:col-span-2" data-field="dates" tabIndex={-1}>
         <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-3">
           {tl("departureDates")}
+          <span className="text-terracotta ml-1 text-[13px] leading-none align-middle" aria-label="required" title="Required">*</span>
           <span className="ml-2 text-[9px] normal-case tracking-normal text-muted/60">{th("departurePills")}</span>
         </p>
         <div className="space-y-3">
@@ -68,6 +76,11 @@ export function BasicsTab() {
             <Plus size={12} /> {te("addDeparture")}
           </button>
         </div>
+        {datesError && (
+          <p role="alert" className="mt-2 font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta">
+            {datesError}
+          </p>
+        )}
       </div>
 
       <div className="md:col-span-2">

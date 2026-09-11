@@ -1,5 +1,6 @@
 import type { FieldErrors } from "react-hook-form";
 import type { PackageFormValues, Tab } from "@/components/admin/PackageEditor/types";
+import { PACKAGE_FIELD_TAB } from "@/lib/admin/field-tabs";
 
 export type TabStatus = "error" | "warning" | "ok" | "empty";
 
@@ -9,28 +10,6 @@ export interface TabIssue {
   message: string;
 }
 
-const PACKAGE_FIELD_TO_TAB: Record<string, Tab> = {
-  name: "Basics",
-  region: "Basics",
-  season: "Basics",
-  duration: "Basics",
-  duration_days: "Basics",
-  hero_image: "Basics",
-  card_image: "Basics",
-  min_people: "Basics",
-  max_people: "Basics",
-  available_from: "Basics",
-  available_to: "Basics",
-  is_published: "Basics",
-  is_featured: "Basics",
-  short_description: "Overview",
-  overview: "Overview",
-  itinerary: "Itinerary",
-  tiers: "Tiers",
-  gallery: "Gallery",
-  included: "Inclusions",
-  not_included: "Inclusions",
-};
 
 function fieldRootKey(path: string): string {
   return path.split(".")[0]!;
@@ -64,7 +43,7 @@ export function getPackageTabIssues(
 
   // Errors first (zod validation)
   for (const { path, message } of flattenErrors(errors)) {
-    const tab = PACKAGE_FIELD_TO_TAB[fieldRootKey(path)] ?? "Basics";
+    const tab = (PACKAGE_FIELD_TAB as Record<string, Tab>)[fieldRootKey(path)] ?? "Basics";
     issues.push({ tab, severity: "error", message });
   }
 

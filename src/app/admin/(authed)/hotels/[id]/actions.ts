@@ -114,7 +114,7 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
     text: a.text,
     is_property: false,
     sort_order: i,
-    text_translations: existingAmenities?.[i]?.text_translations ?? null,
+    text_translations: existingAmenities?.[i]?.text_translations ?? {},
   }));
 
   const { data: existingRoomTypes } = await supabase
@@ -125,10 +125,10 @@ export async function saveHotel(payload: HotelFormValues): Promise<{ error?: str
   const roomTypeRows = data.room_types.map((r, i) => ({
     hotel_id: hotelId, name: r.name, capacity: r.capacity, beds: r.beds,
     size: r.size, image_index: r.image_index, highlights: r.highlights, sort_order: i,
-    name_translations: existingRoomTypes?.[i]?.name_translations ?? null,
-    beds_translations: existingRoomTypes?.[i]?.beds_translations ?? null,
-    size_translations: existingRoomTypes?.[i]?.size_translations ?? null,
-    highlights_translations: existingRoomTypes?.[i]?.highlights_translations ?? null,
+    name_translations: existingRoomTypes?.[i]?.name_translations ?? {},
+    beds_translations: existingRoomTypes?.[i]?.beds_translations ?? {},
+    size_translations: existingRoomTypes?.[i]?.size_translations ?? {},
+    highlights_translations: existingRoomTypes?.[i]?.highlights_translations ?? {},
   }));
 
   const imageRows = data.images

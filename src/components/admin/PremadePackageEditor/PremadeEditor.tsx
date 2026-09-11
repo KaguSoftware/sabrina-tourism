@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { toastSaved, toastError } from "@/lib/admin/toast";
-import { collectErrors, useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
+import { toastSaved, toastError, toastValidationIssues } from "@/lib/admin/toast";
+import { useDirtyBeforeUnload } from "@/lib/admin/editor-helpers";
+import { revealFirstError, jumpToField, flattenFieldErrors, withTabs } from "@/lib/admin/form-errors";
+import { PREMADE_FIELD_TAB } from "@/lib/admin/field-tabs";
 import { savePremadePackage } from "@/app/admin/(authed)/fixed-dates/[id]/actions";
 import { PremadeSchema, type PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
 import type { PremadePackageRaw } from "@/lib/db/premade-packages";
@@ -146,19 +147,34 @@ export function PremadeEditor({
 
   const name = watch("name");
   const formValues = watch();
-  const errorMessages = collectErrors(errors as Record<string, unknown>);
+  const fieldErrors = withTabs(flattenFieldErrors(errors), PREMADE_FIELD_TAB);
 
-  const onSubmit = handleSubmit(async (data) => {
-    setSaving(true);
-    try {
-      const result = await savePremadePackage(data);
-      if (result.error) { toastError("save tour", result.error); return; }
-      toastSaved("tour", data.name);
-      reset(data);
-      if (!pkg) router.push(`/admin/fixed-dates/${result.id}`);
-      else router.refresh();
-    } finally { setSaving(false); }
-  });
+  const onSubmit = handleSubmit(
+    async (data) => {
+      setSaving(true);
+      try {
+        const result = await savePremadePackage(data);
+        if (result.error) { toastError("save tour", result.error); return; }
+        toastSaved("tour", data.name);
+        reset(data);
+        if (!pkg) router.push(`/admin/fixed-dates/${result.id}`);
+        else router.refresh();
+      } catch (err) {
+        // A thrown Server Action (network drop, redeploy mid-save) used to
+        // reject silently and leave the admin thinking the tour was created.
+        toastError("save tour", err instanceof Error ? err.message : "Unexpected error");
+      } finally { setSaving(false); }
+    },
+    (formErrors) => {
+      const found = revealFirstError({
+        errors: formErrors,
+        fieldToTab: PREMADE_FIELD_TAB,
+        currentTab: activeTab,
+        setTab: setActiveTab,
+      });
+      toastValidationIssues(found);
+    },
+  );
 
   const SaveButton = ({ label = "Save" }: { label?: string }) => (
     <button type="submit" disabled={saving} className="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[11px] tracking-[0.16em] uppercase font-medium bg-ochre text-navy hover:bg-gold transition-all duration-200 active:opacity-80 disabled:opacity-60 min-w-28 justify-center">
@@ -187,7 +203,14 @@ export function PremadeEditor({
         </div>
 
         <div className="pt-8">
-          {errorMessages.length > 0 && <ErrorCallout errors={errorMessages} />}
+          {fieldErrors.length > 0 && (
+            <ErrorCallout
+              items={fieldErrors}
+              onJump={(path) =>
+                jumpToField({ path, fieldToTab: PREMADE_FIELD_TAB, currentTab: activeTab, setTab: setActiveTab })
+              }
+            />
+          )}
           {activeTab === "Basics" && <BasicsTab />}
           {activeTab === "Overview" && <OverviewTab />}
           {activeTab === "Itinerary" && <ItineraryTab />}
@@ -204,7 +227,22 @@ export function PremadeEditor({
           )}
         </div>
 
-        <div className={`sticky bottom-0 left-0 right-0 z-20 border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex justify-end mt-12 transition-opacity duration-200 ${isDirty && activeTab !== "Translations" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div className={`sticky bottom-0 left-0 right-0 z-20 border-t border-rule bg-cream/95 backdrop-blur-sm px-6 py-3 flex items-center justify-between gap-4 mt-12 transition-opacity duration-200 ${(isDirty || fieldErrors.length > 0) && activeTab !== "Translations" ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+          <button
+            type="button"
+            disabled={fieldErrors.length === 0}
+            onClick={() =>
+              fieldErrors[0] &&
+              jumpToField({ path: fieldErrors[0].path, fieldToTab: PREMADE_FIELD_TAB, currentTab: activeTab, setTab: setActiveTab })
+            }
+            className={`font-mono text-[10px] tracking-[0.16em] uppercase text-left ${fieldErrors.length > 0 ? "text-terracotta hover:underline" : "text-ink-soft"}`}
+          >
+            {fieldErrors.length > 0
+              ? `${fieldErrors.length} ${fieldErrors.length === 1 ? "issue" : "issues"} to fix`
+              : isDirty
+                ? "Unsaved changes"
+                : "All changes saved"}
+          </button>
           <SaveButton label="Save changes" />
         </div>
       </form>

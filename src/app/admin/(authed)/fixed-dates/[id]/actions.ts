@@ -153,8 +153,8 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
       title: d.title,
       description: d.description,
       sort_order: i,
-      title_translations: existingDays?.[i]?.title_translations ?? null,
-      description_translations: existingDays?.[i]?.description_translations ?? null,
+      title_translations: existingDays?.[i]?.title_translations ?? {},
+      description_translations: existingDays?.[i]?.description_translations ?? {},
     }));
 
   const { data: existingTiers } = await supabase
@@ -176,12 +176,12 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     price_single_room_supplement: t.price_single_room_supplement ?? null,
     price_per_child: t.price_per_child ?? null,
     sort_order: i,
-    tier_name_translations: existingTiers?.[i]?.tier_name_translations ?? null,
-    vehicle_class_translations: existingTiers?.[i]?.vehicle_class_translations ?? null,
-    group_size_translations: existingTiers?.[i]?.group_size_translations ?? null,
-    meals_included_translations: existingTiers?.[i]?.meals_included_translations ?? null,
-    guide_languages_translations: existingTiers?.[i]?.guide_languages_translations ?? null,
-    highlights_translations: existingTiers?.[i]?.highlights_translations ?? null,
+    tier_name_translations: existingTiers?.[i]?.tier_name_translations ?? {},
+    vehicle_class_translations: existingTiers?.[i]?.vehicle_class_translations ?? {},
+    group_size_translations: existingTiers?.[i]?.group_size_translations ?? {},
+    meals_included_translations: existingTiers?.[i]?.meals_included_translations ?? {},
+    guide_languages_translations: existingTiers?.[i]?.guide_languages_translations ?? {},
+    highlights_translations: existingTiers?.[i]?.highlights_translations ?? {},
   }));
 
   const { data: existingIncluded } = await supabase
@@ -197,11 +197,11 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   const inclusionRows = [
     ...data.included.map((item, i) => ({
       package_id: pkgId, kind: "included", text: item.text, icon: item.icon ?? null, sort_order: i,
-      text_translations: existingIncluded?.[i]?.text_translations ?? null,
+      text_translations: existingIncluded?.[i]?.text_translations ?? {},
     })),
     ...data.not_included.map((item, i) => ({
       package_id: pkgId, kind: "not_included", text: item.text, icon: item.icon ?? null, sort_order: i,
-      text_translations: existingNotIncluded?.[i]?.text_translations ?? null,
+      text_translations: existingNotIncluded?.[i]?.text_translations ?? {},
     })),
   ];
 

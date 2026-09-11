@@ -30,7 +30,7 @@ export function ItineraryTab() {
             </button>
 
             <div className="grid grid-cols-1 sm:grid-cols-[80px_1fr] gap-4 items-start">
-              <FormField label="Day #">
+              <FormField label="Day #" required>
                 <Input
                   type="number"
                   min={1}
