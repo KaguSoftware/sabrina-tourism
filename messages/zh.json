@@ -10,7 +10,8 @@
     "selected": "已选择",
     "guests": "位客人",
     "bedroom": "间卧室",
-    "bedrooms": "间卧室"
+    "bedrooms": "间卧室",
+    "chooseYourDate": "自选日期"
   },
   "nav": {
     "home": "首页",
@@ -402,7 +403,13 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "chooseDepartureDate": "选择您的出发日期",
+    "selectDepartureDate": "选择日期",
+    "returnOn": "{date} 返回",
+    "flexibleDepartureHint": "任选出发日期——行程将从该日起逐日进行。",
+    "departureDateRequired": "请选择出发日期以继续。",
+    "anyDateYouChoose": "任选日期"
   },
   "packageFilters": {
     "group": "Group",

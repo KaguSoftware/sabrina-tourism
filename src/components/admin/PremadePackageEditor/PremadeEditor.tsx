@@ -67,7 +67,8 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
       vehicle_model: pkg.vehicle_model ?? "",
       vehicle_features: pkg.vehicle_features ?? [],
       gallery: sorted(pkg.premade_package_gallery ?? []).map((g) => ({ url: g.url })),
-      dates: departureDates(pkg),
+      flexible_departure: pkg.flexible_departure ?? false,
+      dates: pkg.flexible_departure ? [] : departureDates(pkg),
       is_published: pkg.is_published,
       region: pkg.region ?? "",
       duration: pkg.duration ?? "",
@@ -104,6 +105,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
   }
   return {
     name: "",
+    flexible_departure: false,
     dates: [], destinations: [], short_description: "",
     hero_image: "", card_image: "",
     accommodation_name: "", accommodation_description: "",

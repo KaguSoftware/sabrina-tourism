@@ -10,7 +10,8 @@
     "selected": "Ausgewählt",
     "guests": "Gäste",
     "bedroom": "Schlafzimmer",
-    "bedrooms": "Schlafzimmer"
+    "bedrooms": "Schlafzimmer",
+    "chooseYourDate": "Wählen Sie Ihr Datum"
   },
   "nav": {
     "home": "Startseite",
@@ -402,7 +403,13 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "chooseDepartureDate": "Wählen Sie Ihr Abreisedatum",
+    "selectDepartureDate": "Datum wählen",
+    "returnOn": "Rückkehr am {date}",
+    "flexibleDepartureHint": "Wählen Sie ein beliebiges Startdatum — die Reiseroute folgt Tag für Tag ab diesem Datum.",
+    "departureDateRequired": "Bitte wählen Sie ein Abreisedatum, um fortzufahren.",
+    "anyDateYouChoose": "Ein Datum Ihrer Wahl"
   },
   "packageFilters": {
     "group": "Group",

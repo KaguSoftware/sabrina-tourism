@@ -10,7 +10,8 @@
     "selected": "Selected",
     "guests": "guests",
     "bedroom": "bedroom",
-    "bedrooms": "bedrooms"
+    "bedrooms": "bedrooms",
+    "chooseYourDate": "Choose your date"
   },
   "nav": {
     "home": "Home",
@@ -537,7 +538,8 @@
       "twoAdults": "2 adults",
       "threeAdults": "3 adults",
       "babyInfant": "Baby / Infant",
-      "departureDates": "Departure dates"
+      "departureDates": "Departure dates",
+      "guestChoosesDeparture": "Guest chooses departure date"
     },
     "formHints": {
       "cards200": "~200 chars — used on cards",
@@ -560,7 +562,9 @@
       "threeTravellers": "Per person, three travellers",
       "babySupp": "Flat baby supplement (if any)",
       "overviewParagraphs": "Separate paragraphs with a blank line. First paragraph gets a drop-cap on the public page.",
-      "departurePills": "These appear as pills on the public page"
+      "departurePills": "These appear as pills on the public page",
+      "flexibleDepartureOn": "Guests pick their own departure date on the tour page and follow the itinerary day by day from it. Fixed departures are not used. Available from / to (Overview tab) limits which dates they can pick.",
+      "flexibleDepartureOff": "Off — guests choose from the fixed departures below."
     },
     "editor": {
       "published": "Published",
@@ -701,7 +705,13 @@
     "addChildren": "+ Add children",
     "childAge": "Age",
     "childAgeMax": "Max age 6",
-    "removeChild": "Remove child"
+    "removeChild": "Remove child",
+    "chooseDepartureDate": "Choose your departure date",
+    "selectDepartureDate": "Select a date",
+    "returnOn": "Return on {date}",
+    "flexibleDepartureHint": "Pick any start date — the itinerary follows day by day from there.",
+    "departureDateRequired": "Please choose a departure date to continue.",
+    "anyDateYouChoose": "Any date you choose"
   },
   "packageFilters": {
     "group": "Group",

@@ -10,7 +10,8 @@
     "selected": "محدد",
     "guests": "ضيوف",
     "bedroom": "غرفة نوم",
-    "bedrooms": "غرف نوم"
+    "bedrooms": "غرف نوم",
+    "chooseYourDate": "اختر تاريخك"
   },
   "nav": {
     "home": "الرئيسية",
@@ -536,7 +537,8 @@
       "twoAdults": "بالغان",
       "threeAdults": "٣ بالغين",
       "babyInfant": "رضيع / طفل صغير",
-      "departureDates": "تواريخ المغادرة"
+      "departureDates": "تواريخ المغادرة",
+      "guestChoosesDeparture": "الضيف يختار تاريخ المغادرة"
     },
     "formHints": {
       "cards200": "~200 حرف — يظهر على البطاقات",
@@ -559,7 +561,9 @@
       "threeTravellers": "للشخص الواحد، ثلاثة مسافرين",
       "babySupp": "رسوم الرضيع الثابتة (إن وجدت)",
       "overviewParagraphs": "افصل الفقرات بسطر فارغ. تحصل الفقرة الأولى على حرف كبير في الصفحة العامة.",
-      "departurePills": "تظهر كعلامات في الصفحة العامة"
+      "departurePills": "تظهر كعلامات في الصفحة العامة",
+      "flexibleDepartureOn": "يختار الضيوف تاريخ المغادرة بأنفسهم في صفحة الجولة ويتبعون البرنامج يومًا بيوم. لا تُستخدم مواعيد المغادرة الثابتة. يحدد «متاح من / إلى» (تبويب النظرة العامة) التواريخ المتاحة للاختيار.",
+      "flexibleDepartureOff": "متوقف — يختار الضيوف من مواعيد المغادرة الثابتة أدناه."
     },
     "editor": {
       "published": "منشور",
@@ -700,7 +704,13 @@
     "addChildren": "+ إضافة أطفال",
     "childAge": "العمر",
     "childAgeMax": "الحد الأقصى للعمر 6",
-    "removeChild": "إزالة الطفل"
+    "removeChild": "إزالة الطفل",
+    "chooseDepartureDate": "اختر تاريخ المغادرة",
+    "selectDepartureDate": "اختر تاريخًا",
+    "returnOn": "العودة في {date}",
+    "flexibleDepartureHint": "اختر أي تاريخ بدء — ويتبع البرنامج يومًا بيوم من ذلك التاريخ.",
+    "departureDateRequired": "يرجى اختيار تاريخ المغادرة للمتابعة.",
+    "anyDateYouChoose": "أي تاريخ تختاره"
   },
   "packageFilters": {
     "group": "جماعي",

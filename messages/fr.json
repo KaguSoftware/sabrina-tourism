@@ -10,7 +10,8 @@
     "selected": "Sélectionné",
     "guests": "voyageurs",
     "bedroom": "chambre",
-    "bedrooms": "chambres"
+    "bedrooms": "chambres",
+    "chooseYourDate": "Choisissez votre date"
   },
   "nav": {
     "home": "Accueil",
@@ -401,7 +402,13 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "chooseDepartureDate": "Choisissez votre date de départ",
+    "selectDepartureDate": "Sélectionnez une date",
+    "returnOn": "Retour le {date}",
+    "flexibleDepartureHint": "Choisissez n'importe quelle date de début — l'itinéraire suit jour par jour à partir de là.",
+    "departureDateRequired": "Veuillez choisir une date de départ pour continuer.",
+    "anyDateYouChoose": "La date de votre choix"
   },
   "packageFilters": {
     "group": "Group",

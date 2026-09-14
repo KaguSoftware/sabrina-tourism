@@ -10,7 +10,8 @@
     "selected": "Seçildi",
     "guests": "misafir",
     "bedroom": "yatak odası",
-    "bedrooms": "yatak odası"
+    "bedrooms": "yatak odası",
+    "chooseYourDate": "Tarihinizi seçin"
   },
   "nav": {
     "home": "Ana Sayfa",
@@ -534,7 +535,8 @@
       "twoAdults": "2 yetişkin",
       "threeAdults": "3 yetişkin",
       "babyInfant": "Bebek / Çocuk",
-      "departureDates": "Kalkış Tarihleri"
+      "departureDates": "Kalkış Tarihleri",
+      "guestChoosesDeparture": "Kalkış tarihini misafir seçer"
     },
     "formHints": {
       "cards200": "~200 karakter — kartlarda görünür",
@@ -557,7 +559,9 @@
       "threeTravellers": "Kişi başı, üç yolcu",
       "babySupp": "Sabit bebek ücreti (varsa)",
       "overviewParagraphs": "Paragrafları boş bir satırla ayırın. İlk paragraf genel sayfada büyük harfle başlar.",
-      "departurePills": "Bunlar genel sayfada etiket olarak görünür"
+      "departurePills": "Bunlar genel sayfada etiket olarak görünür",
+      "flexibleDepartureOn": "Misafirler tur sayfasında kendi kalkış tarihlerini seçer ve programı o günden itibaren gün gün takip eder. Sabit kalkışlar kullanılmaz. Genel Bakış sekmesindeki başlangıç / bitiş tarihleri seçilebilecek tarihleri sınırlar.",
+      "flexibleDepartureOff": "Kapalı — misafirler aşağıdaki sabit kalkışlardan seçer."
     },
     "editor": {
       "published": "Yayında",
@@ -698,7 +702,13 @@
     "addChildren": "+ Çocuk ekle",
     "childAge": "Yaş",
     "childAgeMax": "Maks. yaş 6",
-    "removeChild": "Çocuğu kaldır"
+    "removeChild": "Çocuğu kaldır",
+    "chooseDepartureDate": "Kalkış tarihinizi seçin",
+    "selectDepartureDate": "Bir tarih seçin",
+    "returnOn": "Dönüş: {date}",
+    "flexibleDepartureHint": "Dilediğiniz başlangıç tarihini seçin — program oradan gün gün devam eder.",
+    "departureDateRequired": "Devam etmek için lütfen bir kalkış tarihi seçin.",
+    "anyDateYouChoose": "Seçtiğiniz herhangi bir tarih"
   },
   "packageFilters": {
     "group": "Group",

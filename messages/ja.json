@@ -10,7 +10,8 @@
     "selected": "選択済み",
     "guests": "名",
     "bedroom": "ベッドルーム",
-    "bedrooms": "ベッドルーム"
+    "bedrooms": "ベッドルーム",
+    "chooseYourDate": "日程を選択"
   },
   "nav": {
     "home": "ホーム",
@@ -401,7 +402,13 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "chooseDepartureDate": "出発日を選択",
+    "selectDepartureDate": "日付を選択",
+    "returnOn": "{date} に帰着",
+    "flexibleDepartureHint": "お好きな出発日を選ぶと、その日から日程表どおりに進みます。",
+    "departureDateRequired": "続行するには出発日を選択してください。",
+    "anyDateYouChoose": "お好きな日付"
   },
   "packageFilters": {
     "group": "Group",

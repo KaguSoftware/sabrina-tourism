@@ -31,16 +31,19 @@ const SeasonSchema = z.enum(SEASON_OPTIONS).nullable().optional();
 export const PremadeSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
+  // When true the guest picks their own departure date on the public page, so
+  // fixed departures are neither required nor saved.
+  flexible_departure: z.boolean(),
   // Departures live in `dates`. The legacy top-level start_date/end_date columns
   // are derived from this array server-side and are no longer part of the form.
-  dates: z
-    .array(
-      z.object({
-        start_date: z.string().min(1, "Start date required"),
-        end_date: z.string().min(1, "End date required"),
-      }),
-    )
-    .min(1, "Add at least one departure date"),
+  // Row completeness is checked in superRefine below, since it only applies to
+  // fixed-departure tours.
+  dates: z.array(
+    z.object({
+      start_date: z.string(),
+      end_date: z.string(),
+    }),
+  ),
   destinations: z.array(z.string()),
   short_description: z.string().min(1, "Short description is required"),
   hero_image: z.string(),
@@ -72,6 +75,16 @@ export const PremadeSchema = z.object({
   // prices have moved to TierSchema.
   price_1_person: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
   price_baby: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+}).superRefine((data, ctx) => {
+  if (data.flexible_departure) return;
+  if (data.dates.length === 0) {
+    ctx.addIssue({ code: "custom", path: ["dates"], message: "Add at least one departure date" });
+    return;
+  }
+  data.dates.forEach((d, i) => {
+    if (!d.start_date) ctx.addIssue({ code: "custom", path: ["dates", i, "start_date"], message: "Start date required" });
+    if (!d.end_date) ctx.addIssue({ code: "custom", path: ["dates", i, "end_date"], message: "End date required" });
+  });
 });
 
 export type PremadeFormValues = z.infer<typeof PremadeSchema>;

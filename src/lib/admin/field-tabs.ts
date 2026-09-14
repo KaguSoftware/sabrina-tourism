@@ -32,6 +32,7 @@ export const PACKAGE_FIELD_TAB = {
 
 export const PREMADE_FIELD_TAB = {
   name: "Basics",
+  flexible_departure: "Basics",
   dates: "Basics",
   destinations: "Basics",
   short_description: "Basics",

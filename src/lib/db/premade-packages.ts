@@ -60,6 +60,12 @@ export interface PremadePackagePublic {
   vehicle: { model: string; features: string[] };
   gallery: string[];
   dates: Array<{ startDate: string; endDate: string }>;
+  // Guest picks their own start date and follows the itinerary from there;
+  // `dates` is empty for these tours.
+  flexibleDeparture: boolean;
+  // Length of the trip in days, from the itinerary (or the duration label as a
+  // fallback). Used to work out the return date for a guest-chosen departure.
+  tripDays: number | null;
   // Rich fields
   region: string | null;
   season: string | null;
@@ -84,6 +90,7 @@ export interface PremadePackageRaw {
   name: string;
   start_date: string;
   end_date: string;
+  flexible_departure: boolean | null;
   destinations: string[];
   hero_image: string;
   card_image: string;
@@ -159,6 +166,13 @@ function toTierHotel(row: HotelLookupRow | undefined): PremadeTierPublic['hotel'
     bedroomImage: row.bedroom_image ? getPublicUrl(row.bedroom_image) : '',
     images,
   };
+}
+
+function deriveTripDays(itinerary: PremadeItineraryDayPublic[], duration: string | null): number | null {
+  const lastDay = Math.max(0, ...itinerary.map((d) => d.day));
+  if (lastDay > 0) return lastDay;
+  const match = duration?.match(/(\d+)\s*day/i);
+  return match ? Number(match[1]) : null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -254,6 +268,8 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     vehicle: { model: row.vehicle_model, features: row.vehicle_features ?? [] },
     gallery,
     dates,
+    flexibleDeparture: row.flexible_departure === true,
+    tripDays: deriveTripDays(itinerary, row.duration),
     region: row.region ?? null,
     season: row.season ?? null,
     duration: row.duration ?? null,

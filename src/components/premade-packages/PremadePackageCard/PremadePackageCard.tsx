@@ -32,7 +32,9 @@ export function PremadePackageCard({ pkg }: PremadePackageCardProps) {
           <div className="absolute top-4 left-4 bg-navy/80 backdrop-blur-sm px-3 py-2 flex flex-col gap-0.5">
             <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ochre">{t("groupTour")}</span>
             <span className="font-mono text-[11px] tracking-[0.12em] text-cream">
-              {formatDate(pkg.startDate, "en-GB")} — {formatDate(pkg.endDate, "en-GB")}
+              {pkg.flexibleDeparture
+                ? t("chooseYourDate")
+                : `${formatDate(pkg.startDate, "en-GB")} — ${formatDate(pkg.endDate, "en-GB")}`}
             </span>
           </div>
           {pkg.season && (

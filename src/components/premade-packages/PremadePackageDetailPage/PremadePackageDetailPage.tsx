@@ -7,6 +7,7 @@ import { GoldUnderlineHeading } from "@/components/primitives/GoldUnderlineHeadi
 import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { Hairline } from "@/components/primitives/Hairline/Hairline";
 import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarousel";
+import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import type { PremadePackagePublic } from "@/lib/db/premade-packages";
 import { WA_BASE, WA_PHONE } from "@/lib/whatsapp/constants";
 import { openWhatsApp } from "@/lib/whatsapp/open";
@@ -26,6 +27,25 @@ const TIER_ROMAN = ["I", "II", "III"] as const;
 
 function prettyMonth(iso: string, locale: string) {
   return new Date(iso + "T00:00:00").toLocaleDateString(locale, { month: "short", year: "numeric" });
+}
+
+function toYMD(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function addDays(iso: string, days: number): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  return toYMD(new Date(y, m - 1, d + days));
+}
+
+// Bounds for a guest-chosen departure: no earlier than tomorrow or the start of
+// the availability window, and late enough that the trip still ends inside it.
+function flexibleDepartureBounds(pkg: PremadePackage): { min: string; max?: string } {
+  const tomorrow = addDays(toYMD(new Date()), 1);
+  const min = pkg.availableFrom && pkg.availableFrom > tomorrow ? pkg.availableFrom : tomorrow;
+  if (!pkg.availableTo) return { min };
+  const lastStart = addDays(pkg.availableTo, -Math.max(0, (pkg.tripDays ?? 1) - 1));
+  return { min, max: lastStart >= min ? lastStart : pkg.availableTo };
 }
 
 function waLink(message: string): string {
@@ -54,6 +74,12 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
   const [people, setPeople] = useState(2);
   const [singleRoom, setSingleRoom] = useState(false);
   const [children, setChildren] = useState<Array<{ id: string; age: string }>>([]);
+  const [customStart, setCustomStart] = useState("");
+
+  const flexible = pkg.flexibleDeparture;
+  const flexibleBounds = flexibleDepartureBounds(pkg);
+  const customEnd = customStart && pkg.tripDays ? addDays(customStart, pkg.tripDays - 1) : "";
+  const departureMissing = flexible && !customStart;
 
   const selectedTierObj = pkg.tiers.find((tr) => tr.name === tier) ?? pkg.tiers[0] ?? null;
   const tierPricing = selectedTierObj?.pricing ?? pkg.pricing;
@@ -65,7 +91,11 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
       ? t("singleRoomOccupancyWithPrice", { amount: fmt(singleRoomSupplement) })
       : t("singleRoomOccupancy");
 
-  const dateLabel = `${formatDate(selectedDate.startDate, locale)} → ${formatDate(selectedDate.endDate, locale)}`;
+  const dateLabel = flexible
+    ? customEnd
+      ? `${formatDate(customStart, locale)} → ${formatDate(customEnd, locale)}`
+      : formatDate(customStart, locale)
+    : `${formatDate(selectedDate.startDate, locale)} → ${formatDate(selectedDate.endDate, locale)}`;
   const hasOverAgeChild = children.some((c) => {
     const n = Number(c.age);
     return c.age !== "" && Number.isFinite(n) && n > 6;
@@ -76,7 +106,12 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
       ? tWa("childrenSuffix", { count: children.length, ages: childrenAges.join(", ") })
       : "";
   const singleRoomSuffix = people === 1 && singleRoom ? tWa("singleRoomSuffix") : "";
-  const previewMsg = `Hey Sabrina — I'd like to reserve "${pkg.name}" at the ${tier} tier for ${people} guest(s)${childrenSuffix}${singleRoomSuffix}, starting ${dateLabel}. Could you confirm availability?`;
+  const datePart = flexible
+    ? customStart
+      ? `, departing on my own chosen date: ${dateLabel}`
+      : ", departing on a date of my choice (to be selected)"
+    : `, starting ${dateLabel}`;
+  const previewMsg = `Hey Sabrina — I'd like to reserve "${pkg.name}" at the ${tier} tier for ${people} guest(s)${childrenSuffix}${singleRoomSuffix}${datePart}. Could you confirm availability?`;
   const waHref = waLink(previewMsg);
 
   const addChild = () => {
@@ -118,22 +153,42 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
         <Reveal delay={200}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-[560px] mb-8">
             {/* Date select */}
-            <div className="flex flex-col gap-2">
-              <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("departureDate")}</span>
-              <select
-                value={selectedDateIdx}
-                onChange={(e) => setSelectedDateIdx(Number(e.target.value))}
-                className="w-full border-b border-rule bg-transparent font-sans text-base md:text-[14px] text-ink pb-2.5 pr-6 focus:outline-none focus:border-ochre transition-colors duration-200 cursor-pointer appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c99a3f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 0 center" }}
-              >
-                {dates.map((d, i) => {
-                  const s = new Date(d.startDate + "T00:00:00");
-                  const e = new Date(d.endDate + "T00:00:00");
-                  const label = `${s.getDate()}–${e.getDate()} ${s.toLocaleDateString(locale, { month: "short", year: "numeric" })}`;
-                  return <option key={i} value={i}>{label}</option>;
-                })}
-              </select>
-            </div>
+            {flexible ? (
+              <div className="flex flex-col gap-2">
+                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("chooseDepartureDate")}</span>
+                <DatePicker
+                  value={customStart}
+                  onChange={setCustomStart}
+                  min={flexibleBounds.min}
+                  max={flexibleBounds.max}
+                  placeholder={t("selectDepartureDate")}
+                />
+                {customEnd ? (
+                  <span className="font-mono text-[11px] tracking-[0.08em] text-ochre">
+                    {t("returnOn", { date: formatDate(customEnd, locale) })}
+                  </span>
+                ) : (
+                  <span className="font-mono text-[11px] tracking-[0.04em] text-muted">{t("flexibleDepartureHint")}</span>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted">{t("departureDate")}</span>
+                <select
+                  value={selectedDateIdx}
+                  onChange={(e) => setSelectedDateIdx(Number(e.target.value))}
+                  className="w-full border-b border-rule bg-transparent font-sans text-base md:text-[14px] text-ink pb-2.5 pr-6 focus:outline-none focus:border-ochre transition-colors duration-200 cursor-pointer appearance-none"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c99a3f' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 0 center" }}
+                >
+                  {dates.map((d, i) => {
+                    const s = new Date(d.startDate + "T00:00:00");
+                    const e = new Date(d.endDate + "T00:00:00");
+                    const label = `${s.getDate()}–${e.getDate()} ${s.toLocaleDateString(locale, { month: "short", year: "numeric" })}`;
+                    return <option key={i} value={i}>{label}</option>;
+                  })}
+                </select>
+              </div>
+            )}
 
             {/* Group size stepper */}
             <div className="flex flex-col gap-2">
@@ -261,11 +316,14 @@ function ReserveSection({ pkg, tier, onTierChange, dates, selectedDateIdx, setSe
         </Reveal>
 
         <Reveal delay={280}>
+          {departureMissing && (
+            <p className="font-mono text-[11px] tracking-[0.04em] text-terracotta mb-4">{t("departureDateRequired")}</p>
+          )}
           <button
             type="button"
-            disabled={hasOverAgeChild}
+            disabled={hasOverAgeChild || departureMissing}
             onClick={() => {
-              if (hasOverAgeChild) return;
+              if (hasOverAgeChild || departureMissing) return;
               openWhatsApp(waHref);
             }}
             style={{ backgroundColor: "#0b1a2e", color: "#c99a3f" }}
@@ -358,6 +416,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
               <ul className="mt-6 list-none p-0">
                 {[
                   pkg.duration && [t("duration"), pkg.duration],
+                  pkg.flexibleDeparture && [t("departureDate"), t("anyDateYouChoose")],
                   pkg.region && [t("region"), pkg.region],
                   (pkg.minPeople != null && pkg.maxPeople != null) && [t("groupSize"), `${pkg.minPeople}–${pkg.maxPeople} guests`],
                   (pkg.availableFrom && pkg.availableTo) && [t("available"), `${prettyMonth(pkg.availableFrom, locale)} – ${prettyMonth(pkg.availableTo, locale)}`],

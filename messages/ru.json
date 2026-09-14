@@ -10,7 +10,8 @@
     "selected": "Выбрано",
     "guests": "гостей",
     "bedroom": "спальня",
-    "bedrooms": "спальни"
+    "bedrooms": "спальни",
+    "chooseYourDate": "Выберите дату"
   },
   "nav": {
     "home": "Главная",
@@ -402,7 +403,13 @@
     "noPaymentNote": "No payment now · We send a tailored quote first · You confirm only when ready",
     "startDate": "Start date",
     "required": "required",
-    "tierStickyLabel": "{tier} tier"
+    "tierStickyLabel": "{tier} tier",
+    "chooseDepartureDate": "Выберите дату отправления",
+    "selectDepartureDate": "Выберите дату",
+    "returnOn": "Возвращение {date}",
+    "flexibleDepartureHint": "Выберите любую дату начала — программа пойдёт день за днём с этой даты.",
+    "departureDateRequired": "Пожалуйста, выберите дату отправления, чтобы продолжить.",
+    "anyDateYouChoose": "Любая дата на ваш выбор"
   },
   "packageFilters": {
     "group": "Group",

@@ -76,6 +76,7 @@ export async function duplicatePremadePackage(id: string): Promise<{ error?: str
   const { data: newPkg, error: insertErr } = await supabase.from("premade_packages").insert({
     slug: newSlug, name: `${pkg.name} (Copy)`,
     start_date: pkg.start_date, end_date: pkg.end_date,
+    flexible_departure: pkg.flexible_departure ?? false,
     destinations: pkg.destinations, short_description: pkg.short_description,
     hero_image: pkg.hero_image, card_image: pkg.card_image,
     accommodation_name: pkg.accommodation_name, accommodation_description: pkg.accommodation_description,

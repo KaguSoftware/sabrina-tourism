@@ -17,6 +17,7 @@ export function BasicsTab() {
   const tc = useTranslations("admin.common");
 
   const isPublished = watch("is_published");
+  const flexibleDeparture = watch("flexible_departure");
 
   const { fields: destFields, append: appendDest, remove: removeDest } = useFieldArray({ control, name: "destinations" as never });
   const destinations = watch("destinations") as string[];
@@ -38,50 +39,64 @@ export function BasicsTab() {
         </FormField>
       </div>
 
-      {/* Departure dates */}
-      <div className="md:col-span-2" data-field="dates" tabIndex={-1}>
-        <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-3">
-          {tl("departureDates")}
-          <span className="text-terracotta ml-1 text-[13px] leading-none align-middle" aria-label="required" title="Required">*</span>
-          <span className="ml-2 text-[9px] normal-case tracking-normal text-muted/60">{th("departurePills")}</span>
+      {/* Departure mode */}
+      <div className="md:col-span-2 flex flex-col gap-3" data-field="flexible_departure">
+        <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium">{tl("guestChoosesDeparture")}</p>
+        <Toggle
+          checked={flexibleDeparture}
+          onChange={(v) => setValue("flexible_departure", v, { shouldDirty: true, shouldValidate: true })}
+        />
+        <p className="font-mono text-[10px] text-muted tracking-wide max-w-[70ch]">
+          {flexibleDeparture ? th("flexibleDepartureOn") : th("flexibleDepartureOff")}
         </p>
-        <div className="space-y-3">
-          {dateFields.map((field, i) => {
-            const startVal = watch(`dates.${i}.start_date`);
-            const endVal = watch(`dates.${i}.end_date`);
-            return (
-              <div key={field.id} className="flex items-center gap-3">
-                <div className="flex-1">
-                  <DateRangePicker
-                    start={startVal}
-                    end={endVal}
-                    onChange={(s, e) => {
-                      setValue(`dates.${i}.start_date`, s, { shouldDirty: true });
-                      setValue(`dates.${i}.end_date`, e, { shouldDirty: true });
-                    }}
-                    placeholder={`Departure ${i + 1} — pick range`}
-                  />
-                </div>
-                <button type="button" onClick={() => removeDate(i)} className="text-ink-soft hover:text-terracotta transition-colors p-1 shrink-0">
-                  <X size={14} />
-                </button>
-              </div>
-            );
-          })}
-          <button
-            type="button"
-            onClick={() => appendDate({ start_date: "", end_date: "" })}
-            className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors mt-1"
-          >
-            <Plus size={12} /> {te("addDeparture")}
-          </button>
-        </div>
-        {datesError && (
-          <p role="alert" className="mt-2 font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta">
-            {datesError}
-          </p>
-        )}
       </div>
+
+      {/* Departure dates */}
+      {!flexibleDeparture && (
+        <div className="md:col-span-2" data-field="dates" tabIndex={-1}>
+          <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium mb-3">
+            {tl("departureDates")}
+            <span className="text-terracotta ml-1 text-[13px] leading-none align-middle" aria-label="required" title="Required">*</span>
+            <span className="ml-2 text-[9px] normal-case tracking-normal text-muted/60">{th("departurePills")}</span>
+          </p>
+          <div className="space-y-3">
+            {dateFields.map((field, i) => {
+              const startVal = watch(`dates.${i}.start_date`);
+              const endVal = watch(`dates.${i}.end_date`);
+              return (
+                <div key={field.id} className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <DateRangePicker
+                      start={startVal}
+                      end={endVal}
+                      onChange={(s, e) => {
+                        setValue(`dates.${i}.start_date`, s, { shouldDirty: true });
+                        setValue(`dates.${i}.end_date`, e, { shouldDirty: true });
+                      }}
+                      placeholder={`Departure ${i + 1} — pick range`}
+                    />
+                  </div>
+                  <button type="button" onClick={() => removeDate(i)} className="text-ink-soft hover:text-terracotta transition-colors p-1 shrink-0">
+                    <X size={14} />
+                  </button>
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => appendDate({ start_date: "", end_date: "" })}
+              className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-soft hover:text-ochre transition-colors mt-1"
+            >
+              <Plus size={12} /> {te("addDeparture")}
+            </button>
+          </div>
+          {datesError && (
+            <p role="alert" className="mt-2 font-mono text-[11px] tracking-[0.18em] uppercase text-terracotta">
+              {datesError}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="md:col-span-2">
         <FormField label={tl("destinations")}>

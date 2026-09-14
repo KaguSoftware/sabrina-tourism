@@ -27,14 +27,22 @@ export function Toggle({
       aria-checked={checked}
       disabled={disabled}
       onClick={() => !disabled && onChange(!checked)}
-      className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
-        checked ? "bg-ochre hover:bg-gold" : "bg-rule hover:bg-ink-soft/40"
-      } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"} focus:outline-none focus:ring-2 focus:ring-ochre/30`}
+      // The global `button { background: none }` reset in globals.css is
+      // unlayered, so it beats Tailwind's bg-* utilities and left the track
+      // invisible. Inline styles win over it.
+      style={{
+        backgroundColor: checked ? "#c99a3f" : "#b5a88f",
+        boxShadow: "inset 0 1px 2px rgba(31, 26, 20, 0.25)",
+      }}
+      className={`relative shrink-0 w-10 h-5 rounded-full transition-colors duration-200 hover:brightness-95 ${
+        disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+      } focus:outline-none focus:ring-2 focus:ring-ochre/30`}
     >
       <span
-        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-cream transition-transform duration-200 ${
+        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-transform duration-200 ${
           checked ? "translate-x-5" : "translate-x-0"
         }`}
+        style={{ backgroundColor: "#fffef9", boxShadow: "0 1px 2px rgba(31, 26, 20, 0.3)" }}
       />
     </button>
   );

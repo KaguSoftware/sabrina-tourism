@@ -44,6 +44,12 @@ function deriveDateSpan(
   return { start: starts[0], end: ends[ends.length - 1] };
 }
 
+function deriveFlexibleSpan(availableFrom: string, availableTo: string): { start: string; end: string } {
+  const today = new Date().toISOString().slice(0, 10);
+  const start = availableFrom || today;
+  return { start, end: availableTo && availableTo >= start ? availableTo : start };
+}
+
 export async function savePremadePackage(payload: PremadeFormValues): Promise<{ error?: string; id?: string }> {
   const auth = await requireAuth(); if (auth.error) return auth;
   const parsed = PremadeSchema.safeParse(payload);
@@ -54,11 +60,18 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   let slug = slugify(data.name);
   if (!slug) return { error: "Name produces an empty slug." };
 
+  // Flexible tours let the guest pick the start date, so fixed departures are
+  // dropped rather than left behind as hidden rows.
+  const departures = data.flexible_departure ? [] : data.dates;
+
   // `premade_packages.start_date` / `end_date` are legacy NOT NULL columns kept
   // for backwards compatibility. Departures now live in `premade_package_dates`,
   // so derive the legacy span from the earliest / latest departure rather than
-  // trusting the (no longer edited) top-level form fields.
-  const span = deriveDateSpan(data.dates);
+  // trusting the (no longer edited) top-level form fields. Flexible tours have
+  // no departures, so fall back to the availability window.
+  const span = data.flexible_departure
+    ? deriveFlexibleSpan(data.available_from, data.available_to)
+    : deriveDateSpan(departures);
   if (!span) return { error: "Add at least one departure date before saving." };
 
   let pkgId = data.id;
@@ -76,6 +89,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     name: data.name,
     start_date: span.start,
     end_date: span.end,
+    flexible_departure: data.flexible_departure,
     destinations: data.destinations,
     short_description: data.short_description,
     hero_image: data.hero_image,
@@ -132,7 +146,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
     .filter((g) => g.url.trim())
     .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), sort_order: i }));
 
-  const dateRows = data.dates.map((d, i) => ({
+  const dateRows = departures.map((d, i) => ({
     package_id: pkgId,
     start_date: d.start_date,
     end_date: d.end_date,

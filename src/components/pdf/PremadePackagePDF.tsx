@@ -208,7 +208,14 @@ function Cover({ pkg, waPhone, baseUrl, fonts, locale }: { pkg: PremadePackagePu
           {tx(pkg.shortDescription, fonts.rtl)}
         </Text>
       </View>
-      {hasDates ? (
+      {pkg.flexibleDeparture ? (
+        <View style={{ marginHorizontal: MARGIN, marginTop: 22, backgroundColor: C.navy, paddingVertical: 14, paddingHorizontal: 16, gap: 6 }}>
+          <Mono style={{ color: C.ochre }} fonts={fonts}>DEPARTURES</Mono>
+          <Text style={{ fontFamily: fonts.body, fontSize: 11, color: C.cream, lineHeight: 1.5, textAlign: fonts.rtl ? "right" : "left" }}>
+            {tx("Flexible — choose your own departure date and follow the itinerary day by day.", fonts.rtl)}
+          </Text>
+        </View>
+      ) : hasDates ? (
         <>
           <View style={{ paddingHorizontal: MARGIN, paddingTop: 22 }}>
             <Mono style={{ color: C.ochre }} fonts={fonts}>DEPARTURES</Mono>
