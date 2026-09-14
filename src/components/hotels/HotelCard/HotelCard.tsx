@@ -17,7 +17,7 @@ interface HotelCardProps {
 
 export function HotelCard({ hotel, selected, onSelect, flat, ctaLabel }: HotelCardProps) {
   const t = useTranslations("cards");
-  const tRegions = useTranslations("tours.regions");
+  const tRegions = useTranslations("nav.regions");
   const image = hotel.images[0] ?? hotel.bedroomImage;
   const regionSlug = REGION_SLUGS[hotel.region as keyof typeof REGION_SLUGS] ?? hotel.region.toLowerCase().replace(/\s+/g, "-");
   const starCount = Math.min(5, Math.max(0, hotel.stars));

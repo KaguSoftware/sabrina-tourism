@@ -1,11 +1,4 @@
 export const tags = {
-  packages: {
-    all: () => 'packages:all',
-    bySlug: (slug: string) => `packages:slug:${slug}`,
-    slugs: () => 'packages:slugs',
-    featured: () => 'packages:featured',
-    admin: () => 'packages:admin',
-  },
   premade: {
     all: () => 'premade:all',
     bySlug: (slug: string) => `premade:slug:${slug}`,

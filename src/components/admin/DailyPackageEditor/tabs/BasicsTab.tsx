@@ -4,7 +4,7 @@ import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Select } from "@/components/admin/Input/Select";
 import { Textarea } from "@/components/admin/Input/Textarea";
-import { Toggle } from "@/components/admin/PackageEditor/primitives";
+import { Toggle } from "@/components/admin/shared/primitives";
 import { DatePicker } from "@/components/primitives/DatePicker/DatePicker";
 import { TimePicker } from "@/components/primitives/TimePicker/TimePicker";
 import { DAILY_SEASON_OPTIONS, type DailyFormValues } from "@/app/admin/(authed)/daily/[id]/schema";

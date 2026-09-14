@@ -10,7 +10,7 @@ import { regionKey } from "@/lib/packages/constants";
 export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackagePublic; priority?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("cards");
-  const tRegions = useTranslations("tours.regions");
+  const tRegions = useTranslations("nav.regions");
   const { currency, rates } = useCurrency();
   return (
     <BaseCard

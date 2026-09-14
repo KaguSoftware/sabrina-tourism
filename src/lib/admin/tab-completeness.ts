@@ -1,73 +1,81 @@
 import type { FieldErrors } from "react-hook-form";
-import type { PackageFormValues, Tab } from "@/components/admin/PackageEditor/types";
-import { PACKAGE_FIELD_TAB } from "@/lib/admin/field-tabs";
+import type { PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
+import { PREMADE_FIELD_TAB } from "@/lib/admin/field-tabs";
+import { flattenFieldErrors, rootField } from "@/lib/admin/form-errors";
 
 export type TabStatus = "error" | "warning" | "ok" | "empty";
 
-export interface TabIssue {
-  tab: Tab;
+/**
+ * `TTab` is the editor's own tab union, so each editor keeps its tab names
+ * type-checked while the shared ReadinessPanel accepts any of them.
+ */
+export interface TabIssue<TTab extends string = string> {
+  tab: TTab;
   severity: "error" | "warning";
   message: string;
 }
 
+/** Tab names used by the fixed-dates (premade) editor. */
+export type PremadeTab =
+  | "Basics"
+  | "Overview"
+  | "Itinerary"
+  | "Tiers"
+  | "Inclusions"
+  | "Imagery"
+  | "Accommodation"
+  | "Vehicle"
+  | "Translations";
 
-function fieldRootKey(path: string): string {
-  return path.split(".")[0]!;
+/**
+ * Turns zod/react-hook-form errors into per-tab blocking issues. Shared by the
+ * editors so a field's tab is resolved the same way everywhere — including the
+ * field-array `root` errors that `flattenFieldErrors` normalises.
+ */
+function errorIssues<TTab extends string>(
+  errors: FieldErrors,
+  fieldToTab: Readonly<Record<string, TTab>>,
+  fallbackTab: TTab,
+): TabIssue<TTab>[] {
+  return flattenFieldErrors(errors).map(({ path, message }) => ({
+    tab: fieldToTab[rootField(path)] ?? fallbackTab,
+    severity: "error" as const,
+    message,
+  }));
 }
 
-function flattenErrors(
-  errs: FieldErrors,
-  prefix = "",
-): Array<{ path: string; message: string }> {
-  const out: Array<{ path: string; message: string }> = [];
-  if (!errs || typeof errs !== "object") return out;
-  for (const key of Object.keys(errs as Record<string, unknown>)) {
-    const node = (errs as Record<string, unknown>)[key];
-    const path = prefix ? `${prefix}.${key}` : key;
-    if (!node || typeof node !== "object") continue;
-    const maybeMsg = (node as { message?: unknown }).message;
-    if (typeof maybeMsg === "string" && maybeMsg.length > 0) {
-      out.push({ path, message: maybeMsg });
-    } else {
-      out.push(...flattenErrors(node as FieldErrors, path));
-    }
-  }
-  return out;
-}
+/**
+ * Fixed-dates equivalent. The premade schema is far more permissive than the
+ * package one — hero image, tiers and itinerary are all optional — so most of
+ * what an admin forgets surfaces here as a warning rather than a blocking
+ * error. Without these the editor saves a tour that renders half-empty on the
+ * public site with nothing having flagged it.
+ */
+export function getPremadeTabIssues(
+  values: Partial<PremadeFormValues>,
+  errors: FieldErrors<PremadeFormValues>,
+): TabIssue<PremadeTab>[] {
+  const issues: TabIssue<PremadeTab>[] = [
+    ...errorIssues<PremadeTab>(errors, PREMADE_FIELD_TAB as Record<string, PremadeTab>, "Basics"),
+  ];
 
-export function getPackageTabIssues(
-  values: Partial<PackageFormValues>,
-  errors: FieldErrors<PackageFormValues>,
-): TabIssue[] {
-  const issues: TabIssue[] = [];
-
-  // Errors first (zod validation)
-  for (const { path, message } of flattenErrors(errors)) {
-    const tab = (PACKAGE_FIELD_TAB as Record<string, Tab>)[fieldRootKey(path)] ?? "Basics";
-    issues.push({ tab, severity: "error", message });
+  if (!values.hero_image) {
+    issues.push({ tab: "Imagery", severity: "warning", message: "No hero image set" });
   }
-
-  // Warnings (recommendations, not blocking)
-  if (!values.gallery || values.gallery.length === 0) {
-    issues.push({
-      tab: "Gallery",
-      severity: "warning",
-      message: "No gallery images added",
-    });
+  if (!values.gallery?.some((g) => g.url?.trim())) {
+    issues.push({ tab: "Imagery", severity: "warning", message: "No gallery images added" });
   }
-  if (!values.itinerary || values.itinerary.length === 0) {
-    issues.push({
-      tab: "Itinerary",
-      severity: "warning",
-      message: "No itinerary days added",
-    });
+  if (!values.itinerary?.length) {
+    issues.push({ tab: "Itinerary", severity: "warning", message: "No itinerary days added" });
   }
-  if (!values.included || values.included.length === 0) {
-    issues.push({
-      tab: "Inclusions",
-      severity: "warning",
-      message: "Nothing marked as included",
-    });
+  if (!values.tiers?.length) {
+    issues.push({ tab: "Tiers", severity: "warning", message: "No tiers added — no pricing will show" });
+  }
+  if (!values.included?.some((i) => i.text?.trim())) {
+    issues.push({ tab: "Inclusions", severity: "warning", message: "Nothing marked as included" });
+  }
+  if (!values.overview?.trim()) {
+    issues.push({ tab: "Overview", severity: "warning", message: "No overview written" });
   }
   if (values.is_published === false) {
     issues.push({
@@ -80,7 +88,7 @@ export function getPackageTabIssues(
   return issues;
 }
 
-export function statusForTab(issues: TabIssue[], tab: Tab): TabStatus {
+export function statusForTab(issues: TabIssue[], tab: string): TabStatus {
   const forTab = issues.filter((i) => i.tab === tab);
   if (forTab.some((i) => i.severity === "error")) return "error";
   if (forTab.some((i) => i.severity === "warning")) return "warning";

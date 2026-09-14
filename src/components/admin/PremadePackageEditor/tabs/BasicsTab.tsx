@@ -5,7 +5,7 @@ import { X, Plus } from "lucide-react";
 import { FormField } from "@/components/admin/FormField/FormField";
 import { Input } from "@/components/admin/Input/Input";
 import { Textarea } from "@/components/admin/Input/Textarea";
-import { Toggle } from "@/components/admin/PackageEditor/primitives";
+import { Toggle } from "@/components/admin/shared/primitives";
 import { DateRangePicker } from "@/components/primitives/DateRangePicker/DateRangePicker";
 import type { PremadeFormValues } from "@/app/admin/(authed)/fixed-dates/[id]/schema";
 
