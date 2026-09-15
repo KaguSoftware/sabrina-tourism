@@ -131,7 +131,7 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
   // public gallery never renders placeholder tiles.
   const galleryRows = data.gallery
     .filter((g) => g.url.trim())
-    .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), sort_order: i }));
+    .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), label: g.label.trim(), sort_order: i }));
 
   const children: Array<[string, Record<string, unknown>[], string]> = [
     ["daily_package_stops", stopRows, "Stops"],

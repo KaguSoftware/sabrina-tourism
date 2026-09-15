@@ -29,7 +29,7 @@ export const DailySchema = z.object({
   })),
   included: z.array(InclusionItemSchema),
   not_included: z.array(InclusionItemSchema),
-  gallery: z.array(z.object({ url: z.string() })),
+  gallery: z.array(z.object({ url: z.string(), label: z.string() })),
   is_published: z.boolean(),
   // Pricing buckets
   price_1_person: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),

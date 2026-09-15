@@ -704,7 +704,7 @@ export function PremadePackageDetailPage({ pkg }: Props) {
             </Reveal>
           </div>
           <div className="max-w-3xl mx-auto">
-            <HotelCarousel images={pkg.gallery} hotelName={pkg.name} showThumbnails={false} />
+            <HotelCarousel images={pkg.gallery} labels={pkg.galleryLabels} hotelName={pkg.name} showThumbnails={false} />
           </div>
         </section>
       )}

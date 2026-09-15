@@ -144,7 +144,7 @@ export async function savePremadePackage(payload: PremadeFormValues): Promise<{ 
   // public gallery never renders placeholder tiles.
   const galleryRows = data.gallery
     .filter((g) => g.url.trim())
-    .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), sort_order: i }));
+    .map((g, i) => ({ package_id: pkgId, url: g.url.trim(), label: g.label.trim(), sort_order: i }));
 
   const dateRows = departures.map((d, i) => ({
     package_id: pkgId,

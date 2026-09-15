@@ -6,7 +6,7 @@ import { Input } from "@/components/admin/Input/Input";
 import { getPublicUrl } from "@/lib/supabase/storage";
 
 interface GalleryFormShape {
-  gallery: Array<{ url: string }>;
+  gallery: Array<{ url: string; label: string }>;
 }
 
 interface GalleryGridProps {
@@ -19,7 +19,7 @@ export function GalleryGrid({ folder, itemLabel = "Image", heading = "Gallery" }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { control, watch, setValue, register } = useFormContext<GalleryFormShape>() as any;
   const { fields, append, remove } = useFieldArray({ control, name: "gallery" });
-  const gallery = watch("gallery") as Array<{ url: string }>;
+  const gallery = watch("gallery") as Array<{ url: string; label: string }>;
 
   return (
     <div>
@@ -66,12 +66,21 @@ export function GalleryGrid({ folder, itemLabel = "Image", heading = "Gallery" }
                 {...register(`gallery.${i}.url`)}
                 placeholder="Or paste URL…"
                 />
+              <div className="space-y-1">
+                <label className="block font-mono text-[10px] tracking-[0.18em] uppercase text-muted">
+                  Tag text
+                </label>
+                <Input
+                  {...register(`gallery.${i}.label`)}
+                  placeholder="e.g. Bedroom, Old Town… (blank hides the tag)"
+                />
+              </div>
             </div>
           );
         })}
         <div
           className="border border-dashed border-ochre/40 flex items-center justify-center min-h-40 cursor-pointer hover:border-ochre transition-colors"
-          onClick={() => append({ url: "" })}
+          onClick={() => append({ url: "", label: "" })}
         >
           <div className="flex flex-col items-center gap-2 text-muted">
             <Plus size={24} />

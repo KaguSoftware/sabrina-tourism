@@ -27,6 +27,7 @@ export interface DailyPackage {
   heroImage: string;
   cardImage: string;
   groupImages: string[]; // landmark/destination images
+  groupImageLabels?: string[]; // tag text per group image, index-aligned
   vehicle: string;
   driver: string;
   price: number;

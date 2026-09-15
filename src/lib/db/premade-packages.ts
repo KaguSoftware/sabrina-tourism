@@ -59,6 +59,8 @@ export interface PremadePackagePublic {
   accommodation: { name: string; description: string; images: [string, string] };
   vehicle: { model: string; features: string[] };
   gallery: string[];
+  // Tag text for each gallery image, index-aligned with `gallery`.
+  galleryLabels: string[];
   dates: Array<{ startDate: string; endDate: string }>;
   // Guest picks their own start date and follows the itinerary from there;
   // `dates` is empty for these tours.
@@ -119,7 +121,7 @@ export interface PremadePackageRaw {
   price_baby: number | null;
   price_single_room_supplement: number | null;
   price_per_child: number | null;
-  premade_package_gallery: Array<{ id: string; url: string; sort_order: number }>;
+  premade_package_gallery: Array<{ id: string; url: string; label?: string | null; sort_order: number }>;
   premade_package_dates: Array<{ id: string; start_date: string; end_date: string; sort_order: number }>;
   premade_package_itinerary_days: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
   premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }>;
@@ -177,7 +179,9 @@ function deriveTripDays(itinerary: PremadeItineraryDayPublic[], duration: string
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRow> = new Map()): PremadePackagePublic {
-  const gallery = byOrder(row.premade_package_gallery ?? []).map((g: { url: string }) => getPublicUrl(g.url));
+  const galleryRows = byOrder(row.premade_package_gallery ?? []);
+  const gallery = galleryRows.map((g: { url: string }) => getPublicUrl(g.url));
+  const galleryLabels = galleryRows.map((g: { label?: string | null }) => g.label ?? "");
   const dates = byOrder(row.premade_package_dates ?? []).map((d: { start_date: string; end_date: string }) => ({ startDate: d.start_date, endDate: d.end_date }));
   const itinerary = byOrder(row.premade_package_itinerary_days ?? []).map((d: { day_number: number; title: string; description: string; title_translations: unknown; description_translations: unknown }) => ({
     day: d.day_number,
@@ -267,6 +271,7 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     },
     vehicle: { model: row.vehicle_model, features: row.vehicle_features ?? [] },
     gallery,
+    galleryLabels,
     dates,
     flexibleDeparture: row.flexible_departure === true,
     tripDays: deriveTripDays(itinerary, row.duration),

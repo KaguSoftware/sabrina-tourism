@@ -38,6 +38,8 @@ export interface DailyPackagePublic {
   included: DailyInclusionItemPublic[];
   notIncluded: DailyInclusionItemPublic[];
   groupImages: string[];
+  // Tag text for each group image, index-aligned with `groupImages`.
+  groupImageLabels: string[];
   pricing: DailyPricingPublic | null;
 }
 
@@ -68,7 +70,7 @@ export interface DailyPackageRaw {
   daily_package_stops: Array<{ id: string; stop_time: string; place: string; description: string; sort_order: number }>;
   daily_package_included: Array<{ id: string; text: string; icon: string | null; sort_order: number }>;
   daily_package_not_included: Array<{ id: string; package_id?: string; text: string; icon: string | null; text_translations?: unknown; sort_order: number }>;
-  daily_package_gallery: Array<{ id: string; url: string; sort_order: number }>;
+  daily_package_gallery: Array<{ id: string; url: string; label?: string | null; sort_order: number }>;
 }
 
 function sortBy<T extends { sort_order: number }>(arr: T[]): T[] { return [...arr].sort((a, b) => a.sort_order - b.sort_order); }
@@ -118,6 +120,8 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
     })),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     groupImages: sortBy(row.daily_package_gallery ?? []).map((g: any) => getPublicUrl(g.url)),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    groupImageLabels: sortBy(row.daily_package_gallery ?? []).map((g: any) => g.label ?? ""),
     pricing: (row.price_1_person ?? row.price_2_people ?? row.price_baby ?? row.price_single_room_supplement ?? row.price_per_child) != null ? {
       onePerson: row.price_1_person ?? null,
       twoPeople: row.price_2_people ?? null,

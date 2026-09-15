@@ -54,7 +54,7 @@ export const PremadeSchema = z.object({
   accommodation_image_b: z.string(),
   vehicle_model: z.string(),
   vehicle_features: z.array(z.string()),
-  gallery: z.array(z.object({ url: z.string() })),
+  gallery: z.array(z.object({ url: z.string(), label: z.string() })),
   is_published: z.boolean(),
   // Rich fields
   region: z.string(),

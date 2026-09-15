@@ -10,9 +10,12 @@ interface HotelCarouselProps {
   roomTypes?: RoomType[];
   activeRoomIndex?: number;
   showThumbnails?: boolean;
+  // Admin-written tag text per image, index-aligned with `images`. When given,
+  // it replaces the default position-based labels and a blank entry hides the tag.
+  labels?: string[];
 }
 
-export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, showThumbnails = true }: HotelCarouselProps) {
+export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, showThumbnails = true, labels }: HotelCarouselProps) {
   const [current, setCurrent] = useState(0);
   const prevRef = useRef(activeRoomIndex);
 
@@ -39,6 +42,9 @@ export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, s
   if (images.length === 0) return null;
 
   const IMAGE_LABELS = ["Exterior", "Bedroom", "Bathroom", "View", "Detail", "Common Area"];
+  const labelFor = (i: number): string =>
+    labels ? (labels[i] ?? "").trim() : (IMAGE_LABELS[i] ?? `Photo ${i + 1}`);
+  const currentLabel = labelFor(current);
 
   return (
     <div className="w-full">
@@ -52,7 +58,7 @@ export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, s
           >
             <Image
               src={src}
-              alt={`${hotelName} — ${IMAGE_LABELS[i] ?? `photo ${i + 1}`}`}
+              alt={`${hotelName} — ${labelFor(i) || `photo ${i + 1}`}`}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 55vw"
@@ -62,9 +68,11 @@ export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, s
         ))}
 
         {/* Label */}
-        <span className="absolute bottom-4 left-4 z-10 bg-ink/70 text-cream font-mono text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 backdrop-blur-sm">
-          {IMAGE_LABELS[current] ?? `Photo ${current + 1}`}
-        </span>
+        {currentLabel && (
+          <span className="absolute bottom-4 left-4 z-10 bg-ink/70 text-cream font-mono text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 backdrop-blur-sm">
+            {currentLabel}
+          </span>
+        )}
 
         {/* Counter */}
         <span className="absolute bottom-4 right-4 z-10 bg-ink/70 text-cream font-mono text-[10px] tracking-[0.14em] px-3 py-1.5 backdrop-blur-sm">
@@ -100,14 +108,14 @@ export function HotelCarousel({ images, hotelName, roomTypes, activeRoomIndex, s
             <button
               key={src}
               onClick={() => setCurrent(i)}
-              aria-label={`View ${IMAGE_LABELS[i] ?? `photo ${i + 1}`}`}
+              aria-label={`View ${labelFor(i) || `photo ${i + 1}`}`}
               className={`relative flex-1 aspect-4/3 overflow-hidden border transition-all duration-200 ${
                 i === current ? "border-ochre" : "border-rule opacity-60 hover:opacity-90"
               }`}
             >
               <Image
                 src={src}
-                alt={IMAGE_LABELS[i] ?? `Photo ${i + 1}`}
+                alt={labelFor(i) || `Photo ${i + 1}`}
                 fill
                 className="object-cover"
                 sizes="120px"

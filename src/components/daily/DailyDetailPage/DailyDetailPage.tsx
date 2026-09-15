@@ -155,7 +155,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
           {/* Carousel — top */}
           <Reveal>
             <div className="mb-14" style={{ zIndex: 10 }}>
-              <HotelCarousel images={pkg.groupImages} hotelName={pkg.name} />
+              <HotelCarousel images={pkg.groupImages} labels={pkg.groupImageLabels} hotelName={pkg.name} />
             </div>
           </Reveal>
 

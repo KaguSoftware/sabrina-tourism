@@ -52,7 +52,7 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
       stops: sorted(pkg.daily_package_stops ?? []).map((s) => ({ place: s.place, description: s.description })),
       included: sorted(pkg.daily_package_included ?? []).map((i) => ({ text: i.text, icon: i.icon ?? null })),
       not_included: sorted(pkg.daily_package_not_included ?? []).map((i) => ({ text: i.text, icon: i.icon ?? null })),
-      gallery: sorted(pkg.daily_package_gallery ?? []).map((g) => ({ url: g.url })),
+      gallery: sorted(pkg.daily_package_gallery ?? []).map((g) => ({ url: g.url, label: g.label ?? "" })),
       is_published: pkg.is_published,
       season: (pkg.season ?? null) as DailyFormValues["season"],
       price_1_person: pkg.price_1_person ?? null,

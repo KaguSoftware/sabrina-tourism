@@ -67,7 +67,7 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
       accommodation_image_b: pkg.accommodation_image_b ?? "",
       vehicle_model: pkg.vehicle_model ?? "",
       vehicle_features: pkg.vehicle_features ?? [],
-      gallery: sorted(pkg.premade_package_gallery ?? []).map((g) => ({ url: g.url })),
+      gallery: sorted(pkg.premade_package_gallery ?? []).map((g) => ({ url: g.url, label: g.label ?? "" })),
       flexible_departure: pkg.flexible_departure ?? false,
       dates: pkg.flexible_departure ? [] : departureDates(pkg),
       is_published: pkg.is_published,
