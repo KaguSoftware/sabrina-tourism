@@ -34,9 +34,14 @@ function revalidateAllRegions() {
 export async function reorderHotels(orderedIds: string[]): Promise<{ error?: string }> {
   const auth = await requireAuth(); if (auth.error) return auth;
   const supabase = db();
-  const updates = orderedIds.map((id, i) => ({ id, sort_order: i }));
-  const { error } = await supabase.from("hotels").upsert(updates);
-  if (error) return { error: error.message };
+  // Plain UPDATEs: upsert would INSERT first and trip NOT NULL columns (slug, name, ...).
+  const results = await Promise.all(
+    orderedIds.map((id, i) =>
+      supabase.from("hotels").update({ sort_order: i }).eq("id", id)
+    )
+  );
+  const failed = results.find((r: { error: { message: string } | null }) => r.error);
+  if (failed?.error) return { error: failed.error.message };
   revalidateAllRegions();
   return {};
 }
