@@ -237,8 +237,7 @@
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
-      "selectHotel": "Select {name}",
-      "freeTransferNote": "Reserva 6+ noches y obtén traslado al aeropuerto gratis"
+      "selectHotel": "Select {name}"
     },
     "step4": {
       "kicker": "Paso 4 de 5",

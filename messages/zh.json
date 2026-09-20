@@ -237,8 +237,7 @@
       "ordinalArea": "第{ord}个区域",
       "viewDetails": "查看详情",
       "moreHotels": "更多酒店可按需提供 — 我们的团队将根据您的行程定制选项。",
-      "selectHotel": "选择 {name}",
-      "freeTransferNote": "预订6晚或以上，免费获得机场接送"
+      "selectHotel": "选择 {name}"
     },
     "step4": {
       "kicker": "第4步，共5步",

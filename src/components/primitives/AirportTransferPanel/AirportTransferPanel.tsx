@@ -42,7 +42,7 @@ function maxCap(capacity: string) {
   return nums ? parseInt(nums[nums.length - 1], 10) : Infinity;
 }
 
-const labelCls = "font-mono text-[9px] tracking-[0.22em] uppercase text-muted mb-1 block";
+const labelCls = "font-mono text-[9px] tracking-[0.22em] uppercase text-muted mb-1 block leading-[1.4] break-words";
 const selectCls = "w-full bg-cream-deep border border-rule px-2 py-1.5 text-[11px] text-ink focus:outline-none focus:border-ochre transition-colors duration-150";
 const fieldCls  = "w-full bg-cream-deep border border-rule px-2 py-1.5 text-[11px] text-ink focus:outline-none focus:border-ochre transition-colors duration-150";
 
@@ -131,15 +131,13 @@ export function AirportTransferPanel({ airports, vehicles, hotelName, onSave }: 
 
       <div className="p-4 flex flex-col gap-4">
 
-        {/* Row 1: Airport + Direction + Passengers + Luggage */}
-        <div className="grid grid-cols-4 gap-3">
-          <div className="col-span-2">
-            <Field label={t("airport")}>
-              <select value={airport} onChange={(e) => setAirport(e.target.value)} className={selectCls}>
-                {airports.map((a) => <option key={a.code} value={a.label}>{a.label}</option>)}
-              </select>
-            </Field>
-          </div>
+        {/* Row 1: Airport + Direction + Passengers + Luggage (2x2 — keeps long labels from colliding) */}
+        <div className="grid grid-cols-2 gap-3">
+          <Field label={t("airport")}>
+            <select value={airport} onChange={(e) => setAirport(e.target.value)} className={selectCls}>
+              {airports.map((a) => <option key={a.code} value={a.label}>{a.label}</option>)}
+            </select>
+          </Field>
           <Field label={t("direction")}>
             <select value={direction} onChange={(e) => setDirection(e.target.value as typeof direction)} className={selectCls}>
               <option value="pickup">{t("pickup")}</option>
@@ -147,14 +145,12 @@ export function AirportTransferPanel({ airports, vehicles, hotelName, onSave }: 
               <option value="both">{t("bothWays")}</option>
             </select>
           </Field>
-          <div className="grid grid-cols-2 gap-2 col-span-1">
-            <Field label={t("passengers")}>
-              <input type="number" min="1" inputMode="numeric" pattern="[0-9]*" value={passengers} onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
-            </Field>
-            <Field label={t("luggageBags")}>
-              <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={luggage} onChange={(e) => setLuggage(e.target.value)} className={fieldCls} />
-            </Field>
-          </div>
+          <Field label={t("passengers")}>
+            <input type="number" min="1" inputMode="numeric" pattern="[0-9]*" value={passengers} onChange={(e) => setPassengers(e.target.value)} className={fieldCls} />
+          </Field>
+          <Field label={t("luggageBags")}>
+            <input type="number" min="0" max="20" inputMode="numeric" pattern="[0-9]*" value={luggage} onChange={(e) => setLuggage(e.target.value)} className={fieldCls} />
+          </Field>
         </div>
 
         {/* Row 2: Pick-up leg */}

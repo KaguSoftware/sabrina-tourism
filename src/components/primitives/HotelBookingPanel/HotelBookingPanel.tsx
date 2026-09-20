@@ -166,9 +166,6 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
           min={today}
           placeholder="Select check-in → check-out"
         />
-        <p className={`mt-2 font-mono text-[9px] tracking-[0.14em] uppercase leading-snug ${nights >= 6 ? "text-ochre" : "text-muted"}`}>
-          {nights >= 6 ? "✓ 6+ nights — airport transfer is free!" : <>Book 6+ nights and get <span className="text-ochre">free</span> airport transfer</>}
-        </p>
       </div>
 
       {/* Room type selector */}
@@ -305,12 +302,6 @@ export function HotelBookingPanel({ hotelName, region, roomTypes, selectedRoomIn
             <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
             <p className="font-sans text-[12px] text-ink-soft leading-snug">{waMessage}</p>
           </div>
-        )}
-
-        {airportTransfer && nights > 0 && nights < 6 && (
-          <p className="mb-3 font-mono text-[10px] tracking-[0.14em] uppercase text-muted leading-snug">
-            Add <span className="text-ochre">{6 - nights} more day{6 - nights !== 1 ? "s" : ""}</span> to get a <span className="text-ochre">free</span> airport transfer!
-          </p>
         )}
 
         <div className="flex flex-col gap-2">

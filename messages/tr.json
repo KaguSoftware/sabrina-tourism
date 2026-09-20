@@ -243,8 +243,7 @@
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
-      "selectHotel": "Select {name}",
-      "freeTransferNote": "6+ gece rezervasyon yapın, ücretsiz havalimanı transferi kazanın"
+      "selectHotel": "Select {name}"
     },
     "step4": {
       "kicker": "Adım 4 / 5",
