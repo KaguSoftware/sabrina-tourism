@@ -11,7 +11,8 @@
     "guests": "Gäste",
     "bedroom": "Schlafzimmer",
     "bedrooms": "Schlafzimmer",
-    "chooseYourDate": "Wählen Sie Ihr Datum"
+    "chooseYourDate": "Wählen Sie Ihr Datum",
+    "private": "Privat"
   },
   "nav": {
     "home": "Startseite",
@@ -237,7 +238,8 @@
       "ordinalArea": "{ord}. Bereich",
       "viewDetails": "Details anzeigen",
       "moreHotels": "Weitere Hotels auf Anfrage verfügbar — unser Team passt die Optionen an Ihre Reiseroute an.",
-      "selectHotel": "{name} auswählen"
+      "selectHotel": "{name} auswählen",
+      "noHotelsInRegion": "Noch keine Partnerhotels in {region} — kein Problem. Kontaktieren Sie uns über WhatsApp-Anfragen, und unser Team organisiert dort ein Hotel für Sie. Wir fügen Ihrer WhatsApp-Nachricht einen entsprechenden Hinweis hinzu."
     },
     "step4": {
       "kicker": "Schritt 4 von 5",
@@ -301,7 +303,21 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "hotelsViaWhatsapp": "Über WhatsApp zu organisieren ({regions})",
+      "whatsappNoPartnerHotels": "There are no partner hotels listed in {regions} — please advise on hotel options there."
+    },
+    "startOver": "Neu beginnen",
+    "discardTitle": "Diese Reise verwerfen?",
+    "discardBody": "Ihre Ziele, Daten und Auswahlen werden gelöscht und Sie beginnen wieder bei Schritt 1.",
+    "keepEditing": "Weiter bearbeiten",
+    "discardConfirm": "Verwerfen & neu beginnen",
+    "privateDayTours": {
+      "kicker": "Private Tagestouren",
+      "heading": "Nur einen Tag? Machen Sie ihn privat.",
+      "sub": "Ihr eigenes Auto, Ihr eigener Fahrer und Ihr eigenes Programm für einen Tag. Wählen Sie ein beliebiges Datum und reservieren Sie mit einer Nachricht.",
+      "buildMultiDay": "Mehrere Tage geplant? Stellen Sie Ihre eigene Reise zusammen",
+      "heroLink": "Private Tagestouren ansehen"
     }
   },
   "whatsapp": {
@@ -420,7 +436,9 @@
   "daily": {
     "dayItinerary": "Tagesreiseplan",
     "whatsIncluded": "Was ist inbegriffen",
-    "whatsNotIncluded": "Was ist nicht inbegriffen"
+    "whatsNotIncluded": "Was ist nicht inbegriffen",
+    "privateBadge": "Privat",
+    "privateNote": "Private Tour – nur für Ihre Gruppe, an einem Datum Ihrer Wahl."
   },
   "packageList": {
     "kicker": "Reiserouten",

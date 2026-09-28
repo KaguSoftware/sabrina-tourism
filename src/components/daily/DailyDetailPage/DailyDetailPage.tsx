@@ -39,6 +39,18 @@ function partyText(adults: number, children: number): string {
   return `${a} and ${c}`;
 }
 
+function bookText(
+  pkg: DailyPackage,
+  date: string,
+  adults: number,
+  children: number,
+  locale: string,
+): string {
+  const dateStr = date ? formatDate(date, locale, "full") : "a date TBD";
+  const tourKind = pkg.isPrivate ? "private day tour" : "daily tour";
+  return `Hey Sabrina — I'd like to book the "${pkg.name}" ${tourKind} on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`;
+}
+
 function bookMessage(
   pkg: DailyPackage,
   date: string,
@@ -47,10 +59,7 @@ function bookMessage(
   locale: string,
 ): string {
   const num = WA_PHONE.replace(/[^\d+]/g, "");
-  const dateStr = date ? formatDate(date, locale, "full") : "a date TBD";
-  const text = encodeURIComponent(
-    `Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`,
-  );
+  const text = encodeURIComponent(bookText(pkg, date, adults, children, locale));
   return `https://wa.me/${num}?text=${text}`;
 }
 
@@ -88,8 +97,11 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
         <div className="relative z-5 max-w-[1320px] mx-auto w-full">
           <Reveal>
             <span className="block font-mono text-[12px] tracking-[0.18em] uppercase text-cream/70 mb-7">
-              <Link href="/tours/daily-packages" className="text-ochre hover:underline">
-                {tNav("dailyPackages")}
+              <Link
+                href={pkg.isPrivate ? "/tours/custom-packages" : "/tours/daily-packages"}
+                className="text-ochre hover:underline"
+              >
+                {pkg.isPrivate ? tNav("privatePackages") : tNav("dailyPackages")}
               </Link>
               <span className="mx-2 opacity-50">/</span>
               {pkg.region}
@@ -101,6 +113,11 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
               <Kicker className="kicker--light">
                 {pkg.region} · DAY EXPERIENCE
               </Kicker>
+              {pkg.isPrivate && (
+                <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-navy/85 text-ochre border border-ochre/60 px-2.5 py-1 rounded-full">
+                  {t("privateBadge")}
+                </span>
+              )}
               {pkg.season && (
                 <span className="inline-block font-mono text-[10px] tracking-[0.2em] uppercase bg-ochre/90 text-navy px-2.5 py-1 rounded-full">
                   {pkg.season}
@@ -248,6 +265,12 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   per person
                 </p>
 
+                {pkg.isPrivate && (
+                  <p className="text-[13px] text-ink-soft leading-[1.5] border-l-2 border-ochre pl-3 mb-5">
+                    {t("privateNote")}
+                  </p>
+                )}
+
                 <div className="border-t border-rule pt-5 mb-5 space-y-3">
                   <div>
                     <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-2">
@@ -336,7 +359,7 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                   <div className="border-l-2 border-ochre bg-cream-deep p-3 mb-4">
                     <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-muted mb-1.5">Message preview</p>
                     <p className="font-sans text-[12px] text-ink-soft leading-snug">
-                      {`Hey Sabrina — I'd like to book the "${pkg.name}" daily tour on ${formatDate(selectedDate, locale, "full")} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`}
+                      {bookText(pkg, selectedDate, adults, children, locale)}
                     </p>
                   </div>
                 )}

@@ -8,12 +8,15 @@ import type { CustomTourState } from "./types";
 import type { Vehicle } from "@/lib/transport/types";
 import { formatDate } from "@/lib/format/date";
 import { WA_PHONE } from "@/lib/whatsapp/constants";
+import { REGIONS } from "@/lib/packages/constants";
+import type { HotelPublic } from "@/lib/db/hotels";
 
 interface Props {
   state: CustomTourState;
   onBack: () => void;
   onConfirm: () => void;
   vehicles: Vehicle[];
+  hotelsByRegion: Record<string, HotelPublic[]>;
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -48,7 +51,7 @@ function ordinal(n: number, locale: string) {
   return `${n}.`;
 }
 
-export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
+export function Step5Review({ state, onBack, onConfirm, vehicles, hotelsByRegion }: Props) {
   const locale = useLocale();
   const t = useTranslations("customTour.step5");
   const whatsappT = useTranslations("whatsapp");
@@ -94,6 +97,11 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
     : state.airportTransferOnly
     ? t("airportTransferOnly")
     : vehicleSummary;
+  const regionsWithoutHotels = state.destinations
+    .filter((id) => REGIONS.includes(id as (typeof REGIONS)[number]))
+    .filter((id) => (hotelsByRegion[id] ?? []).length === 0)
+    .map((id) => DESTINATIONS.find((d) => d.id === id)?.label ?? id)
+    .join(", ");
   const guideType = state.guideType ?? "assistant";
   const guideLanguage = state.guideLanguage ?? "English";
 
@@ -118,6 +126,9 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
       duration,
     }),
     t("whatsappGuests", { value: state.people }),
+    regionsWithoutHotels
+      ? t("whatsappNoPartnerHotels", { regions: regionsWithoutHotels })
+      : "",
     t("whatsappVehicle", {
       value: vehicleReviewValue,
     }),
@@ -173,6 +184,12 @@ export function Step5Review({ state, onBack, onConfirm, vehicles }: Props) {
         )}
         {state.singleRoom && (
           <Row label={t("singleRoomOccupancy")} value={t("yes")} />
+        )}
+        {regionsWithoutHotels && (
+          <Row
+            label={t("hotels")}
+            value={t("hotelsViaWhatsapp", { regions: regionsWithoutHotels })}
+          />
         )}
         <Row
           label={t("vehicle")}

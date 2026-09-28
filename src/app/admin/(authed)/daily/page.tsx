@@ -7,7 +7,7 @@ import { getAdminT } from "@/lib/admin/i18n";
 export default async function DailyPage() {
   const { t } = await getAdminT();
   const packages = await getAdminDailyPackages();
-  const rows = packages.map((p) => ({ id: p.id, slug: p.slug, name: p.name, region: p.region, isPublished: p.isPublished, sortOrder: p.sortOrder }));
+  const rows = packages.map((p) => ({ id: p.id, slug: p.slug, name: p.name, region: p.region, isPublished: p.isPublished, isPrivate: p.isPrivate, sortOrder: p.sortOrder }));
   return (
     <>
       <PageHeader

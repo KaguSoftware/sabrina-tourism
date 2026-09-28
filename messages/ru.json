@@ -11,7 +11,8 @@
     "guests": "гостей",
     "bedroom": "спальня",
     "bedrooms": "спальни",
-    "chooseYourDate": "Выберите дату"
+    "chooseYourDate": "Выберите дату",
+    "private": "Частный"
   },
   "nav": {
     "home": "Главная",
@@ -237,7 +238,8 @@
       "ordinalArea": "{ord}-й регион",
       "viewDetails": "Подробнее",
       "moreHotels": "Другие отели доступны по запросу — наша команда подберёт варианты под ваш маршрут.",
-      "selectHotel": "Выбрать {name}"
+      "selectHotel": "Выбрать {name}",
+      "noHotelsInRegion": "В регионе {region} пока нет отелей-партнёров — не проблема. Свяжитесь с нами через WhatsApp, и наша команда подберёт для вас отель. Мы добавим пометку об этом в ваше сообщение WhatsApp."
     },
     "step4": {
       "kicker": "Шаг 4 из 5",
@@ -301,7 +303,21 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "hotelsViaWhatsapp": "Согласовать через WhatsApp ({regions})",
+      "whatsappNoPartnerHotels": "В {regions} нет отелей-партнёров — подскажите, пожалуйста, варианты отелей там."
+    },
+    "startOver": "Начать заново",
+    "discardTitle": "Отменить эту поездку?",
+    "discardBody": "Выбранные направления, даты и параметры будут удалены, и вы начнёте заново с шага 1.",
+    "keepEditing": "Продолжить",
+    "discardConfirm": "Отменить и начать заново",
+    "privateDayTours": {
+      "kicker": "Частные однодневные туры",
+      "heading": "Всего один день? Сделайте его частным.",
+      "sub": "Собственный автомобиль, водитель и маршрут на один день. Выберите любую удобную дату и забронируйте одним сообщением.",
+      "buildMultiDay": "Планируете несколько дней? Составьте свою поездку",
+      "heroLink": "Частные однодневные туры"
     }
   },
   "whatsapp": {
@@ -420,7 +436,9 @@
   "daily": {
     "dayItinerary": "Дневной маршрут",
     "whatsIncluded": "Что включено",
-    "whatsNotIncluded": "Что не включено"
+    "whatsNotIncluded": "Что не включено",
+    "privateBadge": "Частный",
+    "privateNote": "Частный тур — только ваша группа, в любую выбранную дату."
   },
   "packageList": {
     "kicker": "Маршруты",

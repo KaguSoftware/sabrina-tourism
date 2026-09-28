@@ -39,4 +39,5 @@ export interface DailyPackage {
   region: string;
   season: string | null;
   pricing: DailyPricing | null;
+  isPrivate?: boolean;
 }

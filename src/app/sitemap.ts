@@ -55,7 +55,7 @@ const STATIC_ROUTES: RouteSpec[] = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [premadeSlugs, dailyPackages] = await Promise.all([
     getAllPremadeSlugs(),
-    getAllDailyPackages({ publishedOnly: true }),
+    getAllDailyPackages({ publishedOnly: true, kind: "all" }),
   ]);
   const dailySlugs = dailyPackages.map((p) => p.slug);
   const regionSlugs = Object.values(REGION_SLUGS);

@@ -74,7 +74,7 @@ export async function duplicateDailyPackage(id: string): Promise<{ error?: strin
 
   const { data: newPkg, error: insertErr } = await supabase.from("daily_packages").insert({
     slug: newSlug, name: `${pkg.name} (Copy)`,
-    tour_date: pkg.tour_date, start_time: pkg.start_time, end_time: pkg.end_time,
+    tour_date: pkg.tour_date, is_private: pkg.is_private ?? false, start_time: pkg.start_time, end_time: pkg.end_time,
     region: pkg.region, vehicle: pkg.vehicle, driver: pkg.driver,
     price: pkg.price, currency: pkg.currency, short_description: pkg.short_description,
     hero_image: pkg.hero_image, card_image: pkg.card_image,

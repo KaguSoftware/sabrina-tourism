@@ -27,6 +27,7 @@ export interface AdminDailyRow {
   name: string;
   region: string;
   isPublished: boolean;
+  isPrivate: boolean;
   sortOrder: number;
 }
 
@@ -67,7 +68,12 @@ const SortableRow = memo(function SortableRow({ pkg, onTogglePublished, onDelete
         <button {...attributes} {...listeners} className="cursor-grab text-ink-soft/40 hover:text-ink-soft transition-colors"><GripVertical size={16} /></button>
       </td>
       <td className="px-3 py-3">
-        <p className="font-sans text-[14px] text-ink font-medium">{pkg.name}</p>
+        <p className="font-sans text-[14px] text-ink font-medium">
+          {pkg.name}
+          {pkg.isPrivate && (
+            <span className="ml-2 align-middle font-mono text-[9px] tracking-[0.16em] uppercase px-1.5 py-0.5 border border-teal/40 text-teal bg-teal/5">Private</span>
+          )}
+        </p>
         <p className="font-mono text-[10px] text-muted mt-0.5">{pkg.slug}</p>
       </td>
       <td className="px-3 py-3 hidden md:table-cell">

@@ -30,6 +30,11 @@ export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackageP
           <span className="absolute top-4 left-4 bg-navy/78 text-cream font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5 backdrop-blur-sm">
             {tRegions(regionKey(pkg.region))}
           </span>
+          {pkg.isPrivate && (
+            <span className="absolute top-4 right-4 bg-ochre text-navy font-mono text-[11px] tracking-[0.2em] uppercase px-3 py-1.5">
+              {t("private")}
+            </span>
+          )}
           <span className="absolute bottom-4 left-4 bg-ochre text-navy font-mono text-[11px] tracking-[0.18em] uppercase px-3 py-1.5">
             {pkg.startTime} – {pkg.endTime}
           </span>

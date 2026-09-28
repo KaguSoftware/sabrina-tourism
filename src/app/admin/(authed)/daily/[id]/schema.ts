@@ -11,7 +11,9 @@ const SeasonSchema = z.enum(DAILY_SEASON_OPTIONS).nullable().optional();
 export const DailySchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
-  tour_date: z.string().min(1, "Date is required"),
+  // Required for shared tours only — private day tours let the guest pick the date.
+  tour_date: z.string(),
+  is_private: z.boolean(),
   start_time: z.string().min(1, "Start time is required"),
   end_time: z.string().min(1, "End time is required"),
   region: z.string().min(1, "Region is required"),
@@ -37,6 +39,10 @@ export const DailySchema = z.object({
   price_baby: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
   price_single_room_supplement: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
   price_per_child: z.number("Must be a number").min(0, "Must be 0 or more").nullable().optional(),
+}).superRefine((data, ctx) => {
+  if (!data.is_private && !data.tour_date) {
+    ctx.addIssue({ code: "custom", path: ["tour_date"], message: "Date is required" });
+  }
 });
 
 export type DailyFormValues = z.infer<typeof DailySchema>;

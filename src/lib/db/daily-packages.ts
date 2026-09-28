@@ -41,13 +41,19 @@ export interface DailyPackagePublic {
   // Tag text for each group image, index-aligned with `groupImages`.
   groupImageLabels: string[];
   pricing: DailyPricingPublic | null;
+  /** Private one-day tour: guest picks the date, listed under Private Tours. */
+  isPrivate: boolean;
 }
+
+/** Which daily tours to list: shared ones, private one-day tours, or both. */
+export type DailyPackageKind = 'shared' | 'private' | 'all';
 
 export interface DailyPackageRaw {
   id: string;
   slug: string;
   name: string;
-  tour_date: string;
+  tour_date: string | null;
+  is_private: boolean | null;
   start_time: string;
   end_time: string;
   hero_image: string;
@@ -87,7 +93,7 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
     id: row.id,
     slug: row.slug,
     name: tr(row.name_translations, locale, row.name),
-    date: row.tour_date,
+    date: row.tour_date ?? '',
     startTime: row.start_time,
     endTime: row.end_time,
     heroImage: getPublicUrl(row.hero_image),
@@ -129,6 +135,7 @@ function assemble(row: any, locale = 'en'): DailyPackagePublic {
       singleRoomSupplement: row.price_single_room_supplement ?? null,
       pricePerChild: row.price_per_child ?? null,
     } : null,
+    isPrivate: row.is_private === true,
   };
 }
 
@@ -155,7 +162,11 @@ async function fetchNotIncludedByPackageIds(
   return grouped;
 }
 
-async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}): Promise<DailyPackagePublic[]> {
+async function _getAllDailyPackages({
+  publishedOnly = true,
+  locale = 'en',
+  kind = 'shared' as DailyPackageKind,
+} = {}): Promise<DailyPackagePublic[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAnonClient() as any;
   let q = supabase.from('daily_packages').select(SELECT).order('sort_order');
@@ -163,8 +174,13 @@ async function _getAllDailyPackages({ publishedOnly = true, locale = 'en' } = {}
   const { data, error } = await q;
 
   if (error) { console.error('[db/daily] getAllDailyPackages:', error); return []; }
-  const notIncludedById = await fetchNotIncludedByPackageIds(supabase, (data ?? []).map((row: { id: string }) => row.id));
-  return (data ?? []).map((row: DailyPackageRaw) => assemble({ ...row, daily_package_not_included: notIncludedById.get(row.id) ?? [] }, locale));
+  // Filtered here rather than in the query so listings keep working before the
+  // is_private migration has been applied (every tour then counts as shared).
+  const rows = (data ?? []).filter((row: DailyPackageRaw) =>
+    kind === 'all' || (kind === 'private') === (row.is_private === true),
+  );
+  const notIncludedById = await fetchNotIncludedByPackageIds(supabase, rows.map((row: { id: string }) => row.id));
+  return rows.map((row: DailyPackageRaw) => assemble({ ...row, daily_package_not_included: notIncludedById.get(row.id) ?? [] }, locale));
 }
 
 async function _getDailyPackageBySlug(
@@ -184,12 +200,14 @@ async function _getDailyPackageBySlug(
   return assemble({ ...data, daily_package_not_included: notIncludedById.get(data.id) ?? [] }, locale);
 }
 
-export async function getAllDailyPackages(opts?: { publishedOnly?: boolean; locale?: string }): Promise<DailyPackagePublic[]> {
+/** Defaults to shared tours only; pass `kind` for private one-day tours or both. */
+export async function getAllDailyPackages(opts?: { publishedOnly?: boolean; locale?: string; kind?: DailyPackageKind }): Promise<DailyPackagePublic[]> {
   const publishedOnly = opts?.publishedOnly ?? true;
   const locale = opts?.locale ?? 'en';
+  const kind = opts?.kind ?? 'shared';
   return unstable_cache(
-    () => _getAllDailyPackages({ publishedOnly, locale }),
-    ['daily:all:v2', String(publishedOnly), locale],
+    () => _getAllDailyPackages({ publishedOnly, locale, kind }),
+    ['daily:all:v3', String(publishedOnly), locale, kind],
     { tags: [tags.daily.all()], revalidate: REVALIDATE_SECONDS },
   )();
 }
@@ -216,19 +234,21 @@ export async function getDailyPackageRawById(id: string): Promise<DailyPackageRa
   return { ...data, daily_package_not_included: notIncludedById.get(id) ?? [] } as DailyPackageRaw;
 }
 
-async function _getAdminDailyPackages(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {
+type AdminDailyRow = { id: string; slug: string; name: string; region: string; isPublished: boolean; isPrivate: boolean; sortOrder: number };
+
+async function _getAdminDailyPackages(): Promise<AdminDailyRow[]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createServiceClient() as any;
-  const { data, error } = await supabase.from('daily_packages').select('id,slug,name,region,is_published,sort_order').order('sort_order');
+  const { data, error } = await supabase.from('daily_packages').select('*').order('sort_order');
   if (error) { console.error('[db/daily] getAdminDailyPackages:', error); return []; }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (data ?? []).map((r: any) => ({ id: r.id, slug: r.slug, name: r.name, region: r.region, isPublished: r.is_published, sortOrder: r.sort_order }));
+  return (data ?? []).map((r: any) => ({ id: r.id, slug: r.slug, name: r.name, region: r.region, isPublished: r.is_published, isPrivate: r.is_private === true, sortOrder: r.sort_order }));
 }
 
-export async function getAdminDailyPackages(): Promise<Array<{ id: string; slug: string; name: string; region: string; isPublished: boolean; sortOrder: number }>> {
+export async function getAdminDailyPackages(): Promise<AdminDailyRow[]> {
   return unstable_cache(
     () => _getAdminDailyPackages(),
-    ['daily:admin'],
+    ['daily:admin:v2'],
     { tags: [tags.daily.admin()], revalidate: 300 },
   )();
 }

@@ -56,7 +56,8 @@ export async function saveDailyPackage(payload: DailyFormValues): Promise<{ erro
 
   const coreFields = {
     name: data.name,
-    tour_date: data.tour_date,
+    tour_date: data.is_private ? null : data.tour_date,
+    is_private: data.is_private,
     start_time: data.start_time,
     end_time: data.end_time,
     region: data.region,

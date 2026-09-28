@@ -48,9 +48,15 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
   const t = useTranslations("customTour.step3");
   const locale = useLocale();
   const selectedRegions = getSelectedRegions(state.destinations);
+  // Regions without partner hotels don't block the step — the review's
+  // WhatsApp message asks our team to arrange a hotel there instead.
   const canProceed =
     selectedRegions.length > 0 &&
-    selectedRegions.every((region, i) => Boolean((state.hotelIds ?? {})[region] ?? (i === 0 ? state.hotelId : null)));
+    selectedRegions.every(
+      (region, i) =>
+        (hotelsByRegion[region] ?? []).length === 0 ||
+        Boolean((state.hotelIds ?? {})[region] ?? (i === 0 ? state.hotelId : null))
+    );
 
   function selectedHotelId(region: Region, index: number) {
     return (state.hotelIds ?? {})[region] ?? (index === 0 ? state.hotelId : null);
@@ -94,18 +100,9 @@ export function Step3Hotels({ state, onChange, onNext, onBack, hotelsByRegion }:
 
               {hotels.length === 0 && (
                 <div className="border border-rule bg-cream-warm px-6 py-8 text-center">
-                  <p className="text-ink-soft text-[14px] leading-[1.6]">
-                    {t.has("noHotelsInRegion")
-                      ? t("noHotelsInRegion", { region })
-                      : `No partner hotels available in ${region} yet. Please choose a different region.`}
+                  <p className="text-ink-soft text-[14px] leading-[1.6] max-w-[60ch] mx-auto">
+                    {t("noHotelsInRegion", { region })}
                   </p>
-                  <button
-                    type="button"
-                    onClick={onBack}
-                    className="mt-4 inline-flex items-center gap-2 px-4 py-2 font-mono text-[11px] tracking-[0.16em] uppercase text-ochre hover:text-ink transition-colors"
-                  >
-                    ← {t.has("chooseAnotherRegion") ? t("chooseAnotherRegion") : "Choose another region"}
-                  </button>
                 </div>
               )}
 

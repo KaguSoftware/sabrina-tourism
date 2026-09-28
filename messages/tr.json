@@ -11,7 +11,8 @@
     "guests": "misafir",
     "bedroom": "yatak odası",
     "bedrooms": "yatak odası",
-    "chooseYourDate": "Tarihinizi seçin"
+    "chooseYourDate": "Tarihinizi seçin",
+    "private": "Özel"
   },
   "nav": {
     "home": "Ana Sayfa",
@@ -243,7 +244,8 @@
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
-      "selectHotel": "Select {name}"
+      "selectHotel": "Select {name}",
+      "noHotelsInRegion": "{region} bölgesinde henüz partner otelimiz yok — sorun değil. WhatsApp üzerinden bize ulaşın, ekibimiz sizin için orada bir otel ayarlasın. Bu konuda WhatsApp mesajınıza bir not ekleyeceğiz."
     },
     "step4": {
       "kicker": "Adım 4 / 5",
@@ -313,7 +315,21 @@
       "childrenSummary": "{count} — yaşlar {ages}",
       "singleRoomOccupancy": "Tek kişilik oda konaklaması",
       "yes": "Evet",
-      "noTransfer": "Transfer gerekmiyor"
+      "noTransfer": "Transfer gerekmiyor",
+      "hotelsViaWhatsapp": "WhatsApp üzerinden ayarlanacak ({regions})",
+      "whatsappNoPartnerHotels": "{regions} bölgesinde partner otel bulunmuyor — oradaki otel seçenekleri hakkında bilgi verebilir misiniz?"
+    },
+    "startOver": "Baştan başla",
+    "discardTitle": "Bu seyahat silinsin mi?",
+    "discardBody": "Seçtiğiniz destinasyonlar, tarihler ve tercihler silinecek ve 1. adımdan yeniden başlayacaksınız.",
+    "keepEditing": "Düzenlemeye devam et",
+    "discardConfirm": "Sil ve baştan başla",
+    "privateDayTours": {
+      "kicker": "Günübirlik Özel Turlar",
+      "heading": "Sadece bir gününüz mü var? Özel yapın.",
+      "sub": "Bir gün boyunca size özel araç, şoför ve program. Size uyan herhangi bir tarihi seçin ve tek bir mesajla rezervasyon yapın.",
+      "buildMultiDay": "Birkaç gün mü planlıyorsunuz? Kendi seyahatinizi oluşturun",
+      "heroLink": "Günübirlik özel turları gör"
     }
   },
   "whatsapp": {
@@ -721,7 +737,9 @@
   "daily": {
     "dayItinerary": "Günlük Program",
     "whatsIncluded": "Dahil Olanlar",
-    "whatsNotIncluded": "Dahil Olmayanlar"
+    "whatsNotIncluded": "Dahil Olmayanlar",
+    "privateBadge": "Özel",
+    "privateNote": "Özel tur — yalnızca sizin grubunuz, seçtiğiniz herhangi bir tarihte."
   },
   "packageList": {
     "kicker": "Güzergahlar",

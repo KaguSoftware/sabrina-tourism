@@ -11,7 +11,8 @@
     "guests": "ospiti",
     "bedroom": "camera",
     "bedrooms": "camere",
-    "chooseYourDate": "Scegli la tua data"
+    "chooseYourDate": "Scegli la tua data",
+    "private": "Privato"
   },
   "nav": {
     "home": "Home",
@@ -237,7 +238,8 @@
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
-      "selectHotel": "Select {name}"
+      "selectHotel": "Select {name}",
+      "noHotelsInRegion": "Non ci sono ancora hotel partner a {region}, nessun problema. Contattaci tramite le richieste WhatsApp e il nostro team organizzerà un hotel per te. Aggiungeremo una nota al tuo messaggio WhatsApp."
     },
     "step4": {
       "kicker": "Passo 4 di 5",
@@ -301,7 +303,21 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "hotelsViaWhatsapp": "Da organizzare via WhatsApp ({regions})",
+      "whatsappNoPartnerHotels": "Non ci sono hotel partner a {regions}: potreste consigliarmi delle opzioni di hotel?"
+    },
+    "startOver": "Ricomincia",
+    "discardTitle": "Annullare questo viaggio?",
+    "discardBody": "Destinazioni, date e scelte verranno cancellate e ricomincerai dal passo 1.",
+    "keepEditing": "Continua a modificare",
+    "discardConfirm": "Annulla e ricomincia",
+    "privateDayTours": {
+      "kicker": "Tour privati di un giorno",
+      "heading": "Hai solo un giorno? Rendilo privato.",
+      "sub": "La tua auto, il tuo autista e il tuo itinerario per una giornata. Scegli la data che preferisci e prenota con un solo messaggio.",
+      "buildMultiDay": "Più giorni in programma? Crea il tuo viaggio",
+      "heroLink": "Scopri i tour privati di un giorno"
     }
   },
   "whatsapp": {
@@ -420,7 +436,9 @@
   "daily": {
     "dayItinerary": "Itinerario del giorno",
     "whatsIncluded": "Cosa è incluso",
-    "whatsNotIncluded": "Cosa non è incluso"
+    "whatsNotIncluded": "Cosa non è incluso",
+    "privateBadge": "Privato",
+    "privateNote": "Tour privato: solo il tuo gruppo, nella data che scegli."
   },
   "packageList": {
     "kicker": "Itinerari",

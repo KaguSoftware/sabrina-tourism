@@ -53,6 +53,7 @@ export const PREMADE_FIELD_TAB = {
 export const DAILY_FIELD_TAB = {
   name: "Basics",
   tour_date: "Basics",
+  is_private: "Basics",
   start_time: "Basics",
   end_time: "Basics",
   region: "Basics",

@@ -12,8 +12,9 @@ import { DAILY_SEASON_OPTIONS, type DailyFormValues } from "@/app/admin/(authed)
 const REGIONS = ["Istanbul", "Cappadocia", "Aegean", "Mediterranean", "Black Sea", "Eastern Anatolia"] as const;
 
 export function BasicsTab() {
-  const { register, control, watch, formState: { errors } } = useFormContext<DailyFormValues>();
+  const { register, control, watch, setValue, formState: { errors } } = useFormContext<DailyFormValues>();
   const isPublished = watch("is_published");
+  const isPrivate = watch("is_private");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -23,15 +24,30 @@ export function BasicsTab() {
         </FormField>
       </div>
 
-      <FormField label="Tour date" required error={errors.tour_date?.message}>
-        <Controller
-          name="tour_date"
-          control={control}
-          render={({ field }) => (
-            <DatePicker value={field.value} onChange={field.onChange} placeholder="Select tour date" error={!!errors.tour_date} />
-          )}
+      <div className="md:col-span-2 flex flex-col gap-3" data-field="is_private">
+        <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-muted font-medium">Private one-day tour</p>
+        <Toggle
+          checked={isPrivate}
+          onChange={(v) => setValue("is_private", v, { shouldDirty: true, shouldValidate: true })}
         />
-      </FormField>
+        <p className="font-mono text-[10px] text-muted tracking-wide max-w-[70ch]">
+          {isPrivate
+            ? "Listed under Private Tours. Guests pick any date and the tour runs for their party only — no fixed tour date."
+            : "Off — a shared daily tour listed under Daily Packages."}
+        </p>
+      </div>
+
+      {!isPrivate && (
+        <FormField label="Tour date" required error={errors.tour_date?.message}>
+          <Controller
+            name="tour_date"
+            control={control}
+            render={({ field }) => (
+              <DatePicker value={field.value} onChange={field.onChange} placeholder="Select tour date" error={!!errors.tour_date} />
+            )}
+          />
+        </FormField>
+      )}
       <FormField label="Region" required error={errors.region?.message}>
         <Select {...register("region")}>{REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}</Select>
       </FormField>

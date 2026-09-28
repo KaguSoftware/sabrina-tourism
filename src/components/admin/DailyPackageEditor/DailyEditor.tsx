@@ -38,7 +38,8 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
     return {
       id: pkg.id,
       name: pkg.name,
-      tour_date: pkg.tour_date,
+      tour_date: pkg.tour_date ?? "",
+      is_private: pkg.is_private ?? false,
       start_time: pkg.start_time,
       end_time: pkg.end_time,
       region: pkg.region,
@@ -63,7 +64,7 @@ function defaultValues(pkg?: DailyPackageRaw): DailyFormValues {
     };
   }
   return {
-    name: "", tour_date: "", start_time: "", end_time: "",
+    name: "", tour_date: "", is_private: false, start_time: "", end_time: "",
     region: "Istanbul", vehicle: "", driver: "",
     price: 0, currency: "USD", short_description: "",
     hero_image: "", card_image: "",
@@ -129,7 +130,7 @@ export function DailyEditor({ pkg, initialTranslations = {} }: Props) {
       <form onSubmit={onSubmit} noValidate>
         <div className="flex items-start justify-between gap-6 pb-6 border-b border-rule mb-0">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">Daily Tour</p>
+            <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-muted">{watch("is_private") ? "Private Day Tour" : "Daily Tour"}</p>
             <h1 className="text-[28px] text-ink leading-tight" style={{ fontFamily: "var(--font-fraunces)" }}>{name || "New daily tour"}</h1>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0 pt-1"><SaveButton /></div>

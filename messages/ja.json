@@ -11,7 +11,8 @@
     "guests": "名",
     "bedroom": "ベッドルーム",
     "bedrooms": "ベッドルーム",
-    "chooseYourDate": "日程を選択"
+    "chooseYourDate": "日程を選択",
+    "private": "プライベート"
   },
   "nav": {
     "home": "ホーム",
@@ -237,7 +238,8 @@
       "ordinalArea": "第{ord}エリア",
       "viewDetails": "詳細を見る",
       "moreHotels": "ご要望に応じてさらに多くのホテルをご用意できます — チームが旅程に合わせたオプションをご提案します。",
-      "selectHotel": "{name}を選択"
+      "selectHotel": "{name}を選択",
+      "noHotelsInRegion": "{region}にはまだ提携ホテルがありませんが、ご安心ください。WhatsAppでお問い合わせいただければ、チームが現地のホテルを手配いたします。この件はWhatsAppメッセージに記載されます。"
     },
     "step4": {
       "kicker": "ステップ4 / 5",
@@ -301,7 +303,21 @@
       "whatsappVehicle": "車両：{value}。",
       "whatsappTravelGuide": "ガイド：{value}。",
       "whatsappGuideValue": "{language}での{type}",
-      "whatsappConfirmQuote": "空室状況の確認とお見積もりをお願いできますか？"
+      "whatsappConfirmQuote": "空室状況の確認とお見積もりをお願いできますか？",
+      "hotelsViaWhatsapp": "WhatsAppで手配（{regions}）",
+      "whatsappNoPartnerHotels": "{regions}には提携ホテルがありません。ホテルの選択肢をご提案いただけますか？"
+    },
+    "startOver": "最初からやり直す",
+    "discardTitle": "この旅行プランを破棄しますか？",
+    "discardBody": "選択した目的地・日程・内容はすべて消去され、ステップ1からやり直しになります。",
+    "keepEditing": "編集を続ける",
+    "discardConfirm": "破棄してやり直す",
+    "privateDayTours": {
+      "kicker": "日帰りプライベートツアー",
+      "heading": "1日だけ？ならプライベートで。",
+      "sub": "専用の車・ドライバー・行程で過ごす1日。お好きな日を選んで、メッセージひとつでご予約いただけます。",
+      "buildMultiDay": "数日間の旅行をご計画ですか？オリジナルプランを作成",
+      "heroLink": "日帰りプライベートツアーを見る"
     }
   },
   "whatsapp": {
@@ -420,7 +436,9 @@
   "daily": {
     "dayItinerary": "日程",
     "whatsIncluded": "含まれるもの",
-    "whatsNotIncluded": "含まれないもの"
+    "whatsNotIncluded": "含まれないもの",
+    "privateBadge": "プライベート",
+    "privateNote": "プライベートツアー — お客様のグループだけで、お好きな日に。"
   },
   "packageList": {
     "kicker": "旅程",

@@ -11,7 +11,8 @@
     "guests": "ضيوف",
     "bedroom": "غرفة نوم",
     "bedrooms": "غرف نوم",
-    "chooseYourDate": "اختر تاريخك"
+    "chooseYourDate": "اختر تاريخك",
+    "private": "خاص"
   },
   "nav": {
     "home": "الرئيسية",
@@ -245,7 +246,8 @@
       "ordinalArea": "المنطقة {ord}",
       "viewDetails": "عرض التفاصيل",
       "moreHotels": "فنادق إضافية متاحة عند الطلب — سيضع فريقنا خيارات تناسب برنامجك.",
-      "selectHotel": "اختر {name}"
+      "selectHotel": "اختر {name}",
+      "noHotelsInRegion": "لا توجد فنادق شريكة في {region} حالياً — لا مشكلة. تواصل معنا عبر استفسارات واتساب وسيرتب فريقنا فندقاً لك هناك. سنضيف ملاحظة بذلك إلى رسالة واتساب الخاصة بك."
     },
     "step4": {
       "kicker": "الخطوة 4 من 5",
@@ -315,7 +317,21 @@
       "childrenSummary": "{count} — الأعمار {ages}",
       "singleRoomOccupancy": "إقامة في غرفة فردية",
       "yes": "نعم",
-      "noTransfer": "لا حاجة للنقل"
+      "noTransfer": "لا حاجة للنقل",
+      "hotelsViaWhatsapp": "يُرتَّب عبر واتساب ({regions})",
+      "whatsappNoPartnerHotels": "لا توجد فنادق شريكة في {regions} — يُرجى اقتراح خيارات فنادق هناك."
+    },
+    "startOver": "البدء من جديد",
+    "discardTitle": "هل تريد إلغاء هذه الرحلة؟",
+    "discardBody": "سيتم مسح الوجهات والتواريخ والاختيارات، وستبدأ من جديد من الخطوة 1.",
+    "keepEditing": "متابعة التعديل",
+    "discardConfirm": "إلغاء والبدء من جديد",
+    "privateDayTours": {
+      "kicker": "جولات خاصة ليوم واحد",
+      "heading": "لديك يوم واحد فقط؟ اجعله خاصًا.",
+      "sub": "سيارة وسائق وبرنامج خاص بك ليوم واحد. اختر أي تاريخ يناسبك واحجز برسالة واحدة.",
+      "buildMultiDay": "تخطط لعدة أيام؟ صمّم رحلتك بنفسك",
+      "heroLink": "اطّلع على الجولات الخاصة ليوم واحد"
     }
   },
   "whatsapp": {
@@ -724,7 +740,9 @@
   "daily": {
     "dayItinerary": "جدول اليوم",
     "whatsIncluded": "ما هو مشمول",
-    "whatsNotIncluded": "ما هو غير مشمول"
+    "whatsNotIncluded": "ما هو غير مشمول",
+    "privateBadge": "خاص",
+    "privateNote": "جولة خاصة — لمجموعتك فقط، في أي تاريخ تختاره."
   },
   "packageList": {
     "kicker": "البرامج السياحية",

@@ -11,7 +11,8 @@
     "guests": "guests",
     "bedroom": "bedroom",
     "bedrooms": "bedrooms",
-    "chooseYourDate": "Choose your date"
+    "chooseYourDate": "Choose your date",
+    "private": "Private"
   },
   "nav": {
     "home": "Home",
@@ -245,7 +246,8 @@
       "ordinalArea": "{ord} area",
       "viewDetails": "View details",
       "moreHotels": "More hotels available on request — our team will tailor options to your itinerary.",
-      "selectHotel": "Select {name}"
+      "selectHotel": "Select {name}",
+      "noHotelsInRegion": "No partner hotels in {region} yet — no problem. Contact us through WhatsApp inquiries and our team will arrange a hotel for you there. We'll add a note about this to your WhatsApp message."
     },
     "step4": {
       "kicker": "Step 4 of 5",
@@ -315,7 +317,21 @@
       "childrenSummary": "{count} — ages {ages}",
       "singleRoomOccupancy": "Single-room occupancy",
       "yes": "Yes",
-      "noTransfer": "No transfer needed"
+      "noTransfer": "No transfer needed",
+      "hotelsViaWhatsapp": "To arrange via WhatsApp ({regions})",
+      "whatsappNoPartnerHotels": "There are no partner hotels listed in {regions} — please advise on hotel options there."
+    },
+    "startOver": "Start over",
+    "discardTitle": "Discard this trip?",
+    "discardBody": "Your destinations, dates and choices will be cleared and you'll start again from step 1.",
+    "keepEditing": "Keep editing",
+    "discardConfirm": "Discard & start over",
+    "privateDayTours": {
+      "kicker": "One-Day Private Tours",
+      "heading": "Only have a day? Make it private.",
+      "sub": "Your own car, driver and itinerary for a single day. Pick any date that suits you and reserve in one message.",
+      "buildMultiDay": "Planning several days? Build your own trip",
+      "heroLink": "See one-day private tours"
     }
   },
   "whatsapp": {
@@ -724,7 +740,9 @@
   "daily": {
     "dayItinerary": "Day Itinerary",
     "whatsIncluded": "What's Included",
-    "whatsNotIncluded": "What's Not Included"
+    "whatsNotIncluded": "What's Not Included",
+    "privateBadge": "Private",
+    "privateNote": "Private tour — just your party, on any date you choose."
   },
   "packageList": {
     "kicker": "Itineraries",

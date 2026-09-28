@@ -11,7 +11,8 @@
     "guests": "位客人",
     "bedroom": "间卧室",
     "bedrooms": "间卧室",
-    "chooseYourDate": "自选日期"
+    "chooseYourDate": "自选日期",
+    "private": "私人"
   },
   "nav": {
     "home": "首页",
@@ -237,7 +238,8 @@
       "ordinalArea": "第{ord}个区域",
       "viewDetails": "查看详情",
       "moreHotels": "更多酒店可按需提供 — 我们的团队将根据您的行程定制选项。",
-      "selectHotel": "选择 {name}"
+      "selectHotel": "选择 {name}",
+      "noHotelsInRegion": "{region}暂无合作酒店——没关系。请通过 WhatsApp 咨询联系我们，我们的团队会为您安排当地酒店。我们会在您的 WhatsApp 消息中注明这一点。"
     },
     "step4": {
       "kicker": "第4步，共5步",
@@ -301,7 +303,21 @@
       "whatsappVehicle": "Vehicle: {value}.",
       "whatsappTravelGuide": "Travel guide: {value}.",
       "whatsappGuideValue": "{type} in {language}",
-      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?"
+      "whatsappConfirmQuote": "Could you confirm availability and provide a quote?",
+      "hotelsViaWhatsapp": "通过 WhatsApp 安排（{regions}）",
+      "whatsappNoPartnerHotels": "{regions}暂无合作酒店——请推荐当地的酒店选项。"
+    },
+    "startOver": "重新开始",
+    "discardTitle": "放弃此行程？",
+    "discardBody": "您选择的目的地、日期和选项将被清除，并从第 1 步重新开始。",
+    "keepEditing": "继续编辑",
+    "discardConfirm": "放弃并重新开始",
+    "privateDayTours": {
+      "kicker": "一日私人游",
+      "heading": "只有一天？那就来一场私人之旅。",
+      "sub": "专属车辆、司机和行程，尽享一天。选择任意合适的日期，一条消息即可预订。",
+      "buildMultiDay": "计划多日行程？定制您的专属旅行",
+      "heroLink": "查看一日私人游"
     }
   },
   "whatsapp": {
@@ -420,7 +436,9 @@
   "daily": {
     "dayItinerary": "行程安排",
     "whatsIncluded": "包含项目",
-    "whatsNotIncluded": "不包含项目"
+    "whatsNotIncluded": "不包含项目",
+    "privateBadge": "私人",
+    "privateNote": "私人游 — 仅限您的同行者，日期由您选择。"
   },
   "packageList": {
     "kicker": "行程",

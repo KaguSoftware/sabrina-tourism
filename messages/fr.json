@@ -11,7 +11,8 @@
     "guests": "voyageurs",
     "bedroom": "chambre",
     "bedrooms": "chambres",
-    "chooseYourDate": "Choisissez votre date"
+    "chooseYourDate": "Choisissez votre date",
+    "private": "Privé"
   },
   "nav": {
     "home": "Accueil",
@@ -237,7 +238,8 @@
       "ordinalArea": "{ord}e zone",
       "viewDetails": "Voir les détails",
       "moreHotels": "D'autres hôtels sont disponibles sur demande — notre équipe adaptera les options à votre itinéraire.",
-      "selectHotel": "Sélectionner {name}"
+      "selectHotel": "Sélectionner {name}",
+      "noHotelsInRegion": "Pas encore d'hôtels partenaires à {region} — aucun souci. Contactez-nous via WhatsApp et notre équipe vous trouvera un hôtel sur place. Nous ajouterons une note à ce sujet dans votre message WhatsApp."
     },
     "step4": {
       "kicker": "Étape 4 sur 5",
@@ -301,7 +303,21 @@
       "whatsappVehicle": "Véhicule : {value}.",
       "whatsappTravelGuide": "Guide de voyage : {value}.",
       "whatsappGuideValue": "{type} en {language}",
-      "whatsappConfirmQuote": "Pourriez-vous confirmer la disponibilité et nous faire un devis ?"
+      "whatsappConfirmQuote": "Pourriez-vous confirmer la disponibilité et nous faire un devis ?",
+      "hotelsViaWhatsapp": "À organiser via WhatsApp ({regions})",
+      "whatsappNoPartnerHotels": "Il n'y a pas d'hôtels partenaires à {regions} — pourriez-vous me proposer des options d'hébergement ?"
+    },
+    "startOver": "Recommencer",
+    "discardTitle": "Abandonner ce voyage ?",
+    "discardBody": "Vos destinations, dates et choix seront effacés et vous recommencerez à l'étape 1.",
+    "keepEditing": "Continuer",
+    "discardConfirm": "Abandonner et recommencer",
+    "privateDayTours": {
+      "kicker": "Excursions privées d'une journée",
+      "heading": "Une seule journée ? Rendez-la privée.",
+      "sub": "Votre propre voiture, votre chauffeur et votre itinéraire pour une journée. Choisissez la date qui vous convient et réservez en un message.",
+      "buildMultiDay": "Vous prévoyez plusieurs jours ? Créez votre propre voyage",
+      "heroLink": "Voir les excursions privées d'une journée"
     }
   },
   "whatsapp": {
@@ -420,7 +436,9 @@
   "daily": {
     "dayItinerary": "Programme de la journée",
     "whatsIncluded": "Ce qui est inclus",
-    "whatsNotIncluded": "Ce qui n'est pas inclus"
+    "whatsNotIncluded": "Ce qui n'est pas inclus",
+    "privateBadge": "Privé",
+    "privateNote": "Excursion privée — uniquement votre groupe, à la date de votre choix."
   },
   "packageList": {
     "kicker": "Itinéraires",
