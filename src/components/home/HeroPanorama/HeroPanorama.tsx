@@ -1,6 +1,5 @@
 import { getLocale } from "next-intl/server";
 import { GoldButton } from "@/components/primitives/GoldButton/GoldButton";
-import { Reveal } from "@/components/primitives/Reveal/Reveal";
 import { DEFAULT_LOCALE } from "@/i18n/locales";
 import { KenBurnsImage } from "./KenBurnsImage";
 interface HeroPanoramaProps {
@@ -30,13 +29,15 @@ export async function HeroPanorama({
         <div className="absolute inset-0 bg-cream/50" aria-hidden="true" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-5 inline-block max-w-200">
+      {/* Content. Animated with CSS only: the copy and its backdrop panel paint
+          with the first HTML instead of waiting for hydration, so visitors
+          never see an empty grey panel. */}
+      <div className="relative z-5 inline-block max-w-200 motion-safe:animate-[hero-in_500ms_ease-out_both]">
         <div
           className="absolute -left-5 -right-56 -inset-y-6 bg-black/20 rounded-xl"
           aria-hidden="true"
         />
-        <Reveal delay={140}>
+        <div className="relative">
           <h1 className="font-display font-semibold text-[clamp(48px,7vw,96px)] leading-[0.9] tracking-[-0.04em] text-navy mb-7">
             {headlineTop}
             <br />
@@ -44,13 +45,13 @@ export async function HeroPanorama({
               {headlineEm}
             </em>
           </h1>
-        </Reveal>
-        <Reveal delay={300}>
+        </div>
+        <div className="relative">
           <p className="text-[clamp(16px,1.5vw,19px)] leading-[1.6] text-navy max-w-130 mb-11">
             {sub}
           </p>
-        </Reveal>
-        <Reveal delay={460}>
+        </div>
+        <div className="relative">
           <div className="flex gap-4 flex-wrap">
             <GoldButton href={`${localePfx}/packages`} variant="solid">
               {ctaBrowse}
@@ -59,7 +60,7 @@ export async function HeroPanorama({
               {ctaChauffeur}
             </GoldButton>
           </div>
-        </Reveal>
+        </div>
       </div>
 
       {/* Decorative rings — bottom right (bigger, more layers) */}
