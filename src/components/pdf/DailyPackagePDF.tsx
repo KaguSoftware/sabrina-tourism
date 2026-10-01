@@ -9,6 +9,7 @@ import { registerFonts } from "@/lib/pdf/fonts";
 import { C, MARGIN, getFontsForLocale, upper, type FontSet } from "@/lib/pdf/theme";
 import { visualRTL } from "@/lib/pdf/rtl";
 import { PdfIcon } from "@/lib/pdf/icons";
+import { formatTimeRange } from "@/lib/daily/time-range";
 
 const LOGO_LIGHT = path.join(process.cwd(), "public/logo_1_sabrina_cropped.png");
 const LOGO_DARK = path.join(process.cwd(), "public/logo_2_sabrina_cropped.png");
@@ -85,8 +86,9 @@ export function DailyPackagePDF({ pkg, waPhone = "", baseUrl = "", locale = "en"
     ? `${upper(pkg.region)} · DAILY PACKAGE · ${upper(pkg.season)}`
     : `${upper(pkg.region)} · DAILY PACKAGE`;
 
+  const timeRange = formatTimeRange(pkg.startTime, pkg.endTime);
   const facts: Array<{ k: string; v: string; icon: string | null }> = [
-    { k: "Timeframe", v: `${pkg.startTime} – ${pkg.endTime}`, icon: "clock" },
+    ...(timeRange ? [{ k: "Timeframe", v: timeRange, icon: "clock" }] : []),
     { k: "Region",    v: pkg.region, icon: "map-pin" },
   ];
   if (pkg.season) {

@@ -10,6 +10,7 @@ import { HotelCarousel } from "@/components/primitives/HotelCarousel/HotelCarous
 import { InclusionIcon } from "@/lib/icons/InclusionIcon";
 import { useScrollAnchorGlow } from "@/lib/hooks/useScrollAnchorGlow/useScrollAnchorGlow";
 import { DailyPrices } from "@/components/daily/DailyPrices/DailyPrices";
+import { formatTimeRange } from "@/lib/daily/time-range";
 import type { DailyPackage, DailyInclusionItem } from "@/lib/daily/types";
 import { useLocale, useTranslations } from "next-intl";
 import { useCurrency } from "@/lib/currency/context";
@@ -48,7 +49,9 @@ function bookText(
 ): string {
   const dateStr = date ? formatDate(date, locale, "full") : "a date TBD";
   const tourKind = pkg.isPrivate ? "private day tour" : "daily tour";
-  return `Hey Sabrina — I'd like to book the "${pkg.name}" ${tourKind} on ${dateStr} (${pkg.startTime}–${pkg.endTime}) for ${partyText(adults, children)}. Could you confirm availability?`;
+  const timeRange = formatTimeRange(pkg.startTime, pkg.endTime);
+  const timeText = timeRange ? ` (${timeRange.replace(" – ", "–")})` : "";
+  return `Hey Sabrina — I'd like to book the "${pkg.name}" ${tourKind} on ${dateStr}${timeText} for ${partyText(adults, children)}. Could you confirm availability?`;
 }
 
 function bookMessage(
@@ -64,6 +67,7 @@ function bookMessage(
 }
 
 export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
+  const timeRange = formatTimeRange(pkg.startTime, pkg.endTime);
   const locale = useLocale();
   const t = useTranslations("daily");
   const tA = useTranslations("aria");
@@ -132,11 +136,13 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                 {pkg.name}
               </h1>
             </Reveal>
-            <Reveal delay={360}>
-              <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-cream/80 mb-3">
-                {pkg.startTime} – {pkg.endTime}
-              </p>
-            </Reveal>
+            {timeRange && (
+              <Reveal delay={360}>
+                <p className="font-mono text-[13px] tracking-[0.16em] uppercase text-cream/80 mb-3">
+                  {timeRange}
+                </p>
+              </Reveal>
+            )}
             <Reveal delay={440}>
               <p className="font-display italic font-light text-[clamp(18px,2vw,26px)] text-cream/88 max-w-[36ch] leading-[1.4]">
                 {pkg.shortDescription}
@@ -345,14 +351,16 @@ export function DailyDetailPage({ pkg }: { pkg: DailyPackage }) {
                       {formatPrice(totalPrice, currency, rates, locale)}
                     </p>
                   </div>
-                  <div>
-                    <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
-                      Timeframe
-                    </p>
-                    <p className="text-[14px] text-ink font-medium">
-                      {pkg.startTime} – {pkg.endTime}
-                    </p>
-                  </div>
+                  {timeRange && (
+                    <div>
+                      <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted mb-0.5">
+                        Timeframe
+                      </p>
+                      <p className="text-[14px] text-ink font-medium">
+                        {timeRange}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {selectedDate && (

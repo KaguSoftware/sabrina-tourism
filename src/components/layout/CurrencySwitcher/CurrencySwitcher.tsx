@@ -28,7 +28,7 @@ function formatTimeAgo(iso: string | null, locale: string): string {
 export function CurrencySwitcher({ transparent }: { transparent?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("currencySwitcher");
-  const { currency, setCurrency, isLive, fetchedAt } = useCurrency();
+  const { currency, setCurrency, isLive, isLoading, hasRates, fetchedAt } = useCurrency();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -46,9 +46,14 @@ export function CurrencySwitcher({ transparent }: { transparent?: boolean }) {
     setCurrency(next, { manual: true });
   }
 
-  const footer = isLive
+  // While the first request is in flight there is nothing to report yet, so say
+  // nothing instead of flashing "unavailable". Cached rates are still shown with
+  // their age; the "unavailable" note only appears when there are no rates at all.
+  const footer = hasRates
     ? t("liveRates", { time: formatTimeAgo(fetchedAt, locale) })
-    : t("ratesUnavailable");
+    : isLoading || isLive
+      ? null
+      : t("ratesUnavailable");
 
   return (
     <div ref={ref} className="relative">
@@ -102,9 +107,11 @@ export function CurrencySwitcher({ transparent }: { transparent?: boolean }) {
             </span>
           </button>
         ))}
-        <p className="px-4 py-2.5 font-mono text-[9.5px] tracking-[0.12em] uppercase italic text-muted bg-cream-warm/60 border-t border-rule">
-          {footer}
-        </p>
+        {footer && (
+          <p className="px-4 py-2.5 font-mono text-[9.5px] tracking-[0.12em] uppercase italic text-muted bg-cream-warm/60 border-t border-rule">
+            {footer}
+          </p>
+        )}
       </div>
     </div>
   );

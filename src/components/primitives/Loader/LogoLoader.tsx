@@ -7,7 +7,7 @@ interface LogoLoaderProps {
 
 // Branded loading state — pulses the Sabrina logo with an ochre rotating ring.
 // Pure CSS animations (no client JS), respects prefers-reduced-motion via
-// `motion-safe:` modifiers.
+// `motion-safe:` modifiers. The label is screen-reader only.
 export function LogoLoader({ label = "Loading", fullscreen = false }: LogoLoaderProps) {
   return (
     <div
@@ -44,9 +44,8 @@ export function LogoLoader({ label = "Loading", fullscreen = false }: LogoLoader
             />
           </span>
         </div>
-        <span className="font-mono text-[11px] tracking-[0.24em] uppercase text-ink-soft motion-safe:animate-[fade-pulse_1.6s_ease-in-out_infinite]">
-          {label}
-        </span>
+        {/* Announced to screen readers, not painted: the logo ring says "loading" on its own. */}
+        <span className="sr-only">{label}</span>
       </div>
     </div>
   );
