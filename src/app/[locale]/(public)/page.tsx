@@ -9,7 +9,7 @@ import { HowItWorks } from "@/components/home/HowItWorks/HowItWorks";
 import { QuoteStrip } from "@/components/home/QuoteStrip/QuoteStrip";
 import { getSiteContentBatch } from "@/lib/db/site-content";
 import { getAllPremadePackages, type PremadePackagePublic } from "@/lib/db/premade-packages";
-import { getAllDailyPackages } from "@/lib/db/daily-packages";
+import { getAllDailyPackages, type DailyPackagePublic } from "@/lib/db/daily-packages";
 import { getFeaturedHotels, type HotelPublic } from "@/lib/db/hotels";
 import type { Step } from "@/components/home/HowItWorks/types";
 
@@ -72,20 +72,34 @@ async function FeaturedHotelsSection({
   return <FeaturedHotels sectionHeading={heading} hotels={featuredHotels} kicker={kicker} ctaLabel={ctaLabel} />;
 }
 
+async function FeaturedDailySection({
+  heading,
+  kicker,
+  ctaLabel,
+  packagesPromise,
+}: {
+  heading: string;
+  kicker: string;
+  ctaLabel: string;
+  packagesPromise: Promise<DailyPackagePublic[]>;
+}) {
+  const dailyPackages = await packagesPromise;
+  return <FeaturedPackages sectionHeading={heading} packages={dailyPackages.slice(0, 3)} kicker={kicker} ctaLabel={ctaLabel} />;
+}
+
 const SectionFallback = () => <div className="min-h-[40vh]" />;
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
 
-  // Kick off all queries in parallel. The two large ones flow through Suspense
-  // so they don't block initial paint, but they still start fetching now.
+  // Kick off all queries in parallel. Only the site copy is awaited here, so
+  // the hero (the LCP element) renders as soon as its own text is ready. The
+  // package and hotel sections stream in through Suspense.
   const premadePromise = getAllPremadePackages({ locale });
+  const dailyPromise = getAllDailyPackages({ locale });
   const featuredHotelsPromise = getFeaturedHotels(locale);
 
-  const [content, dailyPackages] = await Promise.all([
-    getSiteContentBatch(HOME_KEYS, locale),
-    getAllDailyPackages({ locale }),
-  ]);
+  const content = await getSiteContentBatch(HOME_KEYS, locale);
 
   const hero = content.home_hero;
   const about = content.home_about;
@@ -114,12 +128,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           packagesPromise={premadePromise}
         />
       </Suspense>
-      <FeaturedPackages
-        sectionHeading={featuredHeading.section_heading}
-        packages={dailyPackages.slice(0, 3)}
-        kicker={featuredHeading.kicker ?? "Our Daily Packages"}
-        ctaLabel={featuredHeading.cta_label ?? "See all daily packages"}
-      />
+      <Suspense fallback={<SectionFallback />}>
+        <FeaturedDailySection
+          heading={featuredHeading.section_heading}
+          kicker={featuredHeading.kicker ?? "Our Daily Packages"}
+          ctaLabel={featuredHeading.cta_label ?? "See all daily packages"}
+          packagesPromise={dailyPromise}
+        />
+      </Suspense>
       <Suspense fallback={<SectionFallback />}>
         <FeaturedHotelsSection
           heading={featuredHotelsHeading.section_heading ?? "Where comfort meets culture"}
