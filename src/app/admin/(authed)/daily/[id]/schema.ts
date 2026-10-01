@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { normalizeTime } from "@/lib/daily/time-range";
 
 const InclusionItemSchema = z.object({
   text: z.string(),
@@ -42,6 +43,11 @@ export const DailySchema = z.object({
 }).superRefine((data, ctx) => {
   if (!data.is_private && !data.tour_date) {
     ctx.addIssue({ code: "custom", path: ["tour_date"], message: "Date is required" });
+  }
+  const start = normalizeTime(data.start_time);
+  const end = normalizeTime(data.end_time);
+  if (start && end && start === end) {
+    ctx.addIssue({ code: "custom", path: ["end_time"], message: "End time must be different from the start time" });
   }
 });
 

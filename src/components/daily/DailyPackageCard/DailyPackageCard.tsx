@@ -6,12 +6,14 @@ import type { DailyPackagePublic } from "@/lib/db/daily-packages";
 import { useCurrency } from "@/lib/currency/context";
 import { formatPrice } from "@/lib/currency/format";
 import { regionKey } from "@/lib/packages/constants";
+import { formatTimeRange } from "@/lib/daily/time-range";
 
 export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackagePublic; priority?: boolean }) {
   const locale = useLocale();
   const t = useTranslations("cards");
   const tRegions = useTranslations("nav.regions");
   const { currency, rates } = useCurrency();
+  const timeRange = formatTimeRange(pkg.startTime, pkg.endTime);
   return (
     <BaseCard
       href={`/tours/daily/${pkg.slug ?? pkg.id}`}
@@ -35,15 +37,19 @@ export function DailyPackageCard({ pkg, priority = false }: { pkg: DailyPackageP
               {t("private")}
             </span>
           )}
-          <span className="absolute bottom-4 left-4 bg-ochre text-navy font-mono text-[11px] tracking-[0.18em] uppercase px-3 py-1.5">
-            {pkg.startTime} – {pkg.endTime}
-          </span>
+          {timeRange && (
+            <span className="absolute bottom-4 left-4 bg-ochre text-navy font-mono text-[11px] tracking-[0.18em] uppercase px-3 py-1.5">
+              {timeRange}
+            </span>
+          )}
         </>
       }
     >
-      <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre mb-3">
-        {pkg.startTime} – {pkg.endTime}
-      </p>
+      {timeRange && (
+        <p className="font-mono text-[11px] tracking-[0.14em] uppercase text-ochre mb-3">
+          {timeRange}
+        </p>
+      )}
       <h3 className="font-display font-normal text-[clamp(22px,2.4vw,30px)] tracking-[-0.012em] leading-[1.1] mb-2.5">
         {pkg.name}
       </h3>
