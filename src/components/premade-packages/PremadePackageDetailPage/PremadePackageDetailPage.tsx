@@ -601,8 +601,9 @@ export function PremadePackageDetailPage({ pkg }: Props) {
                         <div className="p-4">
                           <p className="font-display text-[19px] leading-tight text-ink">{tierItem.hotel.name}</p>
                           <p className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted mt-1">
-                            {tierItem.hotel.region}
-                            {tierItem.hotel.stars ? ` · ${"★".repeat(tierItem.hotel.stars)}` : ""}
+                            {[tierItem.hotel.region, tierItem.hotel.stars ? "★".repeat(tierItem.hotel.stars) : ""]
+                              .filter(Boolean)
+                              .join(" · ")}
                           </p>
                         </div>
                       </div>

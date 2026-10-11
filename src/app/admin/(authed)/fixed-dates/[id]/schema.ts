@@ -5,6 +5,14 @@ const TierSchema = z.object({
   vehicle_class: z.string(),
   accommodation: z.string(),
   hotel_id: z.string().uuid().nullable().optional(),
+  // A hotel that exists only on this tour (not in the public hotel list).
+  // Mutually exclusive with hotel_id; null when the tier has none.
+  custom_hotel: z.object({
+    name: z.string().trim().min(1, "Hotel name required"),
+    region: z.string(),
+    stars: z.number().int().min(1).max(5).nullable(),
+    image: z.string(),
+  }).nullable().optional(),
   group_size: z.string(),
   guide_languages: z.array(z.string()),
   meals_included: z.string(),

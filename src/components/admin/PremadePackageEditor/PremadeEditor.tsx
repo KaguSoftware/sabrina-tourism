@@ -83,6 +83,14 @@ function defaultValues(pkg?: PremadePackageRaw): PremadeFormValues {
         vehicle_class: t.vehicle_class,
         accommodation: t.accommodation,
         hotel_id: t.hotel_id ?? null,
+        custom_hotel: t.custom_hotel_name
+          ? {
+              name: t.custom_hotel_name,
+              region: t.custom_hotel_region ?? "",
+              stars: t.custom_hotel_stars ?? null,
+              image: t.custom_hotel_image ?? "",
+            }
+          : null,
         group_size: t.group_size,
         guide_languages: t.guide_languages ?? [],
         meals_included: t.meals_included,

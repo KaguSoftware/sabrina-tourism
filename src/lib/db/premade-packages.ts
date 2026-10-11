@@ -124,7 +124,7 @@ export interface PremadePackageRaw {
   premade_package_gallery: Array<{ id: string; url: string; label?: string | null; sort_order: number }>;
   premade_package_dates: Array<{ id: string; start_date: string; end_date: string; sort_order: number }>;
   premade_package_itinerary_days: Array<{ id: string; day_number: number; title: string; description: string; sort_order: number }>;
-  premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }>;
+  premade_package_tiers: Array<{ id: string; tier_name: string; vehicle_class: string; accommodation: string; hotel_id: string | null; custom_hotel_name: string | null; custom_hotel_region: string | null; custom_hotel_stars: number | null; custom_hotel_image: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; sort_order: number; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }>;
   premade_package_inclusions: Array<{ id: string; kind: string; text: string; icon: string | null; sort_order: number }>;
 }
 
@@ -170,6 +170,29 @@ function toTierHotel(row: HotelLookupRow | undefined): PremadeTierPublic['hotel'
   };
 }
 
+// A hotel stored on the tier itself — exists only on this tour, so it has no
+// hotels-table id or public page.
+function toCustomTierHotel(tier: {
+  custom_hotel_name?: string | null;
+  custom_hotel_region?: string | null;
+  custom_hotel_stars?: number | null;
+  custom_hotel_image?: string | null;
+}): PremadeTierPublic['hotel'] {
+  const name = tier.custom_hotel_name?.trim();
+  if (!name) return null;
+  const image = tier.custom_hotel_image?.trim();
+  return {
+    id: '',
+    slug: '',
+    name,
+    region: tier.custom_hotel_region?.trim() ?? '',
+    stars: tier.custom_hotel_stars ?? 0,
+    description: '',
+    bedroomImage: '',
+    images: image ? [getPublicUrl(image)] : [],
+  };
+}
+
 function deriveTripDays(itinerary: PremadeItineraryDayPublic[], duration: string | null): number | null {
   const lastDay = Math.max(0, ...itinerary.map((d) => d.day));
   if (lastDay > 0) return lastDay;
@@ -188,12 +211,12 @@ function assemble(row: any, locale = 'en', hotelsById: Map<string, HotelLookupRo
     title: t(d.title_translations, locale, d.title),
     description: t(d.description_translations, locale, d.description),
   }));
-  const tiers = byOrder(row.premade_package_tiers ?? []).map((tier: { tier_name: string; vehicle_class: string; accommodation: string; hotel_id?: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }) => ({
+  const tiers = byOrder(row.premade_package_tiers ?? []).map((tier: { tier_name: string; vehicle_class: string; accommodation: string; hotel_id?: string | null; custom_hotel_name?: string | null; custom_hotel_region?: string | null; custom_hotel_stars?: number | null; custom_hotel_image?: string | null; group_size: string; guide_languages: string[]; meals_included: string; highlights: string[]; tier_name_translations: unknown; vehicle_class_translations: unknown; group_size_translations: unknown; meals_included_translations: unknown; guide_languages_translations: unknown; highlights_translations: unknown; price_2_people: number | null; price_single_room_supplement: number | null; price_per_child: number | null }) => ({
     name: t(tier.tier_name_translations, locale, tier.tier_name),
     vehicleClass: t(tier.vehicle_class_translations, locale, tier.vehicle_class),
     accommodation: tier.accommodation,
     hotelId: tier.hotel_id ?? null,
-    hotel: toTierHotel(tier.hotel_id ? hotelsById.get(tier.hotel_id) : undefined),
+    hotel: tier.hotel_id ? toTierHotel(hotelsById.get(tier.hotel_id)) : toCustomTierHotel(tier),
     groupSize: t(tier.group_size_translations, locale, tier.group_size),
     guideLanguages: locale !== 'en' && tier.guide_languages_translations
       ? (t(tier.guide_languages_translations, locale, '') || '').split('\n').filter(Boolean)
